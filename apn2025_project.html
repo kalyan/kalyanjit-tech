@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APN 2025 CRRP: Interactive Proponent Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals with Blue Accent -->
+    <!-- Application Structure Plan: 
+        Structure: Single-page application with a sticky top navigation bar (Home, Key Info, Eligibility, Application Process, Dates, Review). This provides clear, persistent wayfinding.
+        Key Interactions:
+        1. Navigation: Smooth scrolling to sections via the nav bar.
+        2. Key Info: A Chart.js bar chart showing funding tiers.
+        3. Eligibility: An interactive checklist (HTML/JS) for self-assessment.
+        4. Application Process: A prominent Tabbed Interface (JS) to switch between "Stage 1: Summary Proposal" (the default view) and "Stage 2: Full Proposal".
+        5. Review Criteria: Accordion/collapsible sections (JS) for each major review criterion from Appendix 1.
+        User Flow: Users can scroll linearly or use the nav to jump to specific, task-oriented sections (e.g., "Am I eligible?", "What do I need for Stage 1?").
+        Justification: This structure is chosen over a linear document because proponents have specific, non-linear tasks. This task-oriented, interactive design (Eligibility Check, Stage 1/2 Tabs, Review Accordion) makes the dense information from the guide more accessible, digestible, and actionable, directly supporting the goal of helping someone write a proposal.
+    -->
+    <!-- Visualization & Content Choices:
+        - Info: Funding Limits. Goal: Inform. Viz/Method: Bar Chart (Chart.js). Interaction: Hover for tooltip. Justification: Visually represents the two funding tiers (1-year vs 2-year). Library: Chart.js.
+        - Info: Eligibility Criteria (p. 2-6). Goal: Inform / Self-Assess. Viz/Method: Interactive Checklist (HTML/CSS). Interaction: Visual self-assessment (non-functional checkboxes). Justification: Turns passive text into an active self-assessment tool. Library: HTML/Tailwind.
+        - Info: Application Process (Summary vs. Full). Goal: Organize / Inform. Viz/Method: Tabbed Interface. Interaction: Click tabs (JS onclick event) to show/hide content for Stage 1 (from Appendix 2) and Stage 2 (from Appendix 3). Justification: Clearest way to separate the two distinct stages and manage detailed content, addressing the user's focus on "summary proposal". Library: HTML/JS.
+        - Info: Important Dates (p. 8, logically adjusted). Goal: Inform. Viz/Method: Vertical Timeline (HTML/Tailwind). Interaction: None. Justification: More intuitive and engaging presentation of deadlines than a simple list. Library: HTML/Tailwind.
+        - Info: Review Criteria (Appendix 1). Goal: Organize / Inform. Viz/Method: Accordion (Collapsible Sections). Interaction: Click header (JS onclick) to expand/collapse detailed questions for each criterion. Justification: Manages information density, allowing users to scan and then dive into details. Library: HTML/JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .nav-sticky {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-active {
+            border-bottom-width: 3px;
+            border-bottom-color: #1d4ed8;
+            color: #1d4ed8;
+            font-weight: 600;
+        }
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-in-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-content.open {
+            max-height: 1000px;
+            opacity: 1;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #1d4ed8;
+            border: 4px solid #bfdbfe;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <nav class="nav-sticky shadow-md w-full">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-blue-700">APN 2025 CRRP Guide</span>
+                </div>
+                <div class="hidden md:flex md:items-center md:space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                    <a href="#key-info" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Key Info</a>
+                    <a href="#eligibility" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Eligibility</a>
+                    <a href="#process" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Application Process</a>
+                    <a href="#dates" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Dates</a>
+                    <a href="#review" class="text-gray-600 hover:text-blue-700 px-3 py-2 rounded-md text-sm font-medium">Review</a>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-blue-700 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <svg id="menu-icon-open" class="block h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="menu-icon-close" class="hidden h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#key-info" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Key Info</a>
+                <a href="#eligibility" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Eligibility</a>
+                <a href="#process" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Application Process</a>
+                <a href="#dates" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Dates</a>
+                <a href="#review" class="text-gray-600 hover:text-blue-700 block px-3 py-2 rounded-md text-base font-medium">Review</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="home" class="container mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6">APN 2025 Collaborative Regional Research Programme</h1>
+            <p class="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto mb-10">An interactive guide to help proponents prepare and submit proposals for global change research in the Asia-Pacific region.</p>
+            <a href="#process" class="bg-blue-700 text-white font-semibold px-8 py-3 rounded-lg shadow-lg hover:bg-blue-800 transition-colors duration-300 text-lg">Start Application Guide</a>
+            
+            <div class="grid md:grid-cols-2 gap-8 text-left mt-20 max-w-5xl mx-auto">
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-4">What is APN?</h3>
+                    <p class="text-gray-700">The Asia-Pacific Network for Global Change Research (APN) is dedicated to fostering a dynamic community of researchers, policymakers, practitioners, and civil society. It engages in transdisciplinary approaches to build a more resilient and sustainable future by supporting research, bridging science and policy, and strengthening regional capacity.</p>
+                </div>
+                <div class="bg-white p-8 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-2xl font-bold text-blue-700 mb-4">What is the CRRP?</h3>
+                    <p class="text-gray-700">The Collaborative Regional Research Programme (CRRP) is APN's flagship programme. It funds regional-based research and capacity-building activities that address gaps in knowledge, contribute to policy development, and build strong collaborations across the Asia-Pacific region to tackle global change challenges.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="key-info" class="bg-white py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">Key Programme Information</h2>
+                <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-16">This section highlights the core features of the CRRP, including its main objectives, the two-stage application process, and the available funding tiers. Use this information to align your project's scope and budget.</p>
+                
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6">Core Features & Objectives</h3>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="text-blue-700 font-bold text-xl mr-3">&#10003;</span>
+                                <span class="text-gray-700">Supports regional-based collaborative research and capacity building in global change.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-700 font-bold text-xl mr-3">&#10003;</span>
+                                <span class="text-gray-700">Requires collaboration among researchers from at least 3 APN member countries.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-700 font-bold text-xl mr-3">&#10003;</span>
+                                <span class="text-gray-700">Encourages transdisciplinary, co-design, and co-production of knowledge with stakeholders.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-700 font-bold text-xl mr-3">&#10003;</span>
+                                <span class="text-gray-700">Aims to contribute to policy-making and practical actions for sustainability.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-blue-700 font-bold text-xl mr-3">&#10003;</span>
+                                <span class="text-gray-700">Follows a two-stage application process: (1) Summary Proposal, (2) Full Proposal.</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-6 text-center">Funding Tiers</h3>
+                        <div class="chart-container bg-gray-50 p-4 rounded-lg shadow-inner">
+                            <canvas id="fundingChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="eligibility" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">Eligibility Checklist</h2>
+                <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-16">Are you eligible to apply? This guide is designed to help you quickly assess if your project and team meet the fundamental requirements. Please review the official guide for full details, as this is a summary.</p>
+                
+                <div class="max-w-3xl mx-auto bg-white p-8 md:p-10 rounded-lg shadow-lg border border-gray-100">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8">Project & Team Requirements</h3>
+                    <div class="space-y-5">
+                        <label class="flex items-start p-4 bg-gray-50 rounded-md">
+                            <input type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1" disabled>
+                            <span class="ml-4 text-gray-700"><strong class="text-gray-900">Regional Collaboration:</strong> Does your proposal involve at least 3 APN member countries? (Note: Project Proponent must be from an APN member country).</span>
+                        </label>
+                        <label class="flex items-start p-4 bg-gray-50 rounded-md">
+                            <input type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1" disabled>
+                            <span class="ml-4 text-gray-700"><strong class="text-gray-900">Proponent Status:</strong> Is the Proponent (lead researcher) from an APN member country?</span>
+                        </label>
+                        <label class="flex items-start p-4 bg-gray-50 rounded-md">
+                            <input type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1" disabled>
+                            <span class="ml-4 text-gray-700"><strong class="text-gray-900">Funding Scope:</strong> Is your request within the funding limit (max USD 40,000 for 1 year, max USD 80,000 for 2 years)?</span>
+                        </label>
+                        <label class="flex items-start p-4 bg-gray-50 rounded-md">
+                            <input type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1" disabled>
+                            <span class="ml-4 text-gray-700"><strong class="text-gray-900">Research Focus:</strong> Does your project address global change research and capacity development?</span>
+                        </label>
+                        <label class="flex items-start p-4 bg-gray-50 rounded-md">
+                            <input type="checkbox" class="h-5 w-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500 mt-1" disabled>
+                            <span class="ml-4 text-gray-700"><strong class="text-gray-900">Exclusions:</strong> Your project must NOT be for funding scholarships, laboratory equipment, or the construction of new facilities.</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="process" class="bg-white py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">The Two-Stage Application Process</h2>
+                <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-16">The CRRP uses a two-stage process. You must first submit a Summary Proposal (Stage 1). If successful, you will be invited to submit a Full Proposal (Stage 2). This section details the required components for each stage, with a focus on the Stage 1 Summary Proposal.</p>
+
+                <div class="flex justify-center border-b-2 border-gray-200 mb-10">
+                    <button id="tab-stage1" class="tab-button px-6 py-3 text-lg font-medium text-gray-500 border-b-3 border-transparent hover:text-blue-600 tab-active">
+                        Stage 1: Summary Proposal
+                    </button>
+                    <button id="tab-stage2" class="tab-button px-6 py-3 text-lg font-medium text-gray-500 border-b-3 border-transparent hover:text-blue-600">
+                        Stage 2: Full Proposal
+                    </button>
+                </div>
+
+                <div id="content-stage1" class="tab-content max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Summary Proposal Components (Appendix 2)</h3>
+                    <div class="space-y-4">
+                        <details class="bg-gray-50 rounded-lg border border-gray-200" open>
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                1. Cover Sheet
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <p>Proponents must complete the cover sheet provided in the APNIS system, which includes:</p>
+                                <ul>
+                                    <li>Project Title</li>
+                                    <li>Proponent (Name, Affiliation, Contact)</li>
+                                    <li>Abstract (max 200 words)</li>
+                                    <li>Keywords (up to 5)</li>
+                                    <li>Duration of Project (1 or 2 years)</li>
+                                    <li>Total Amount Requested from APN (USD)</li>
+                                    <li>Co-funding (if any)</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                2. Summary of Proposal (Max 3 pages)
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <p>This is the core of your Stage 1 application. It must include:</p>
+                                <ul>
+                                    <li><strong>Background and Rationale:</strong> Why is this project needed? (max 200 words)</li>
+                                    <li><strong>Aims/Objectives:</strong> What will the project achieve? (max 100 words)</li>
+                                    <li><strong>Methodology/Approach:</strong> How will you conduct the research? (max 500 words)</li>
+                                    <li><strong>Expected Outputs:</strong> What tangible products will result? (e.g., reports, papers, workshops) (max 150 words)</li>
+                                    <li><strong>Potential Outcomes/Impacts:</strong> What changes or benefits will the project lead to? (max 150 words)</li>
+                                    <li><strong>Relevance to APN:</strong> How does it align with APN's goals? (max 100 words)</li>
+                                    <li><strong>Policy Relevance:</strong> How will it inform policy or decision-making? (max 100 words)</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                3. Proponent & Collaborators (Max 1 page)
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <p>A list of the Proponent and major collaborators, including:</p>
+                                <ul>
+                                    <li>Name, Organisation, Postal Address, Email</li>
+                                    <li>Country (must be at least 3 APN member countries)</li>
+                                    <li>Briefly describe the role of each collaborator.</li>
+                                </ul>
+                            </div>
+                        </details>
+                        
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                4. CVs (Max 2 pages)
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <ul>
+                                    <li>A 1-page CV for the Proponent (lead researcher).</li>
+                                    <li>A 1-page CV for the national focal point (if different from Proponent).</li>
+                                    <li>CVs are NOT required for other collaborators at Stage 1.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+                
+                <div id="content-stage2" class="tab-content hidden max-w-4xl mx-auto">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">Full Proposal Components (Appendix 3)</h3>
+                    <p class="text-center text-gray-600 mb-8">This content is required only if you are invited to Stage 2. It builds upon the Summary Proposal.</p>
+                    <div class="space-y-4">
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                1. Cover Sheet & Abstract
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <p>An updated cover sheet and a refined abstract (max 300 words), plus a lay-person summary (max 150 words).</p>
+                            </div>
+                        </details>
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                2. Detailed Proposal (Max 10 pages)
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <p>A comprehensive document detailing:</p>
+                                <ul>
+                                    <li>Background and Rationale (expanded)</li>
+                                    <li>Aims and Objectives (detailed)</li>
+                                    <li>Methodology, Approach, and Work Plan</li>
+                                    <li>Expected Outputs and Outcomes (detailed)</li>
+                                    <li>Data Management Plan</li>
+                                    <li>Communication and Outreach Plan</li>
+                                    <li>Policy Relevance and Stakeholder Engagement</li>
+                                    <li>Capacity Building and Enhancement</li>
+                                    <li>Gender and Social Inclusion</li>
+                                </ul>
+                            </div>
+                        </details>
+                        <details class="bg-gray-50 rounded-lg border border-gray-200">
+                            <summary class="p-5 font-semibold text-lg text-gray-800 cursor-pointer list-none flex justify-between items-center">
+                                3. Appendices
+                                <span class="text-blue-600 text-sm">(Click to expand/collapse)</span>
+                            </summary>
+                            <div class="p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                                <ul>
+                                    <li><strong>Appendix 1: Timeline:</strong> A full month-by-month timeline.</li>
+                                    <li><strong>Appendix 2: Budget:</strong> A detailed budget estimate in USD with year-by-year breakdown.</li>
+                                    <li><strong>Appendix 3: Collaborators & CVs:</strong> Full list of all collaborators and CVs (2 pages for Proponent, 1 page for others).</li>
+                                    <li><strong>Appendix 4: Logical Framework Matrix:</strong> A logframe for project management.</li>
+                                </ul>
+                            </div>
+                        </details>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="dates" class="py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">Important Dates & Timeline</h2>
+                <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-16">Mark your calendar. Here are the key deadlines for the 2025 CRRP call, leading to awards starting in October 2026. (Note: These dates are illustrative based on the call's timeline).</p>
+                
+                <div class="relative max-w-2xl mx-auto">
+                    <div class="absolute left-0 top-0 h-full w-1 bg-blue-200 ml-3.5" style="transform: translateX(-50%);"></div>
+                    <div class="space-y-12">
+                        <div class="relative pl-12">
+                            <div class="timeline-item"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Call for Proposals Opens</h4>
+                            <p class="text-blue-700 font-medium">November 1, 2025</p>
+                            <p class="text-gray-600 mt-2">The APNIS online submission system opens for Stage 1 Summary Proposals.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="timeline-item"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Deadline for Summary Proposals (Stage 1)</h4>
+                            <p class="text-red-600 font-medium">January 10, 2026</p>
+                            <p class="text-gray-600 mt-2">All Stage 1 Summary Proposals must be submitted via the APNIS system.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="timeline-item"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Notification of Stage 1 Results</h4>
+                            <p class="text-blue-700 font-medium">Early March 2026</p>
+                            <p class="text-gray-600 mt-2">Successful proponents are invited to submit a Stage 2 Full Proposal.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="timeline-item"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Deadline for Full Proposals (Stage 2)</h4>
+                            <p class="text-red-600 font-medium">May 1, 2026</p>
+                            <p class="text-gray-600 mt-2">Invited Full Proposals must be submitted via the APNIS system.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="timeline-item"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Notification of Final Awards</h4>
+                            <p class="text-blue-700 font-medium">Early August 2026</p>
+                            <p class="text-gray-600 mt-2">Final decisions on funding are communicated to all Stage 2 proponents.</p>
+                        </div>
+                        <div class="relative pl-12">
+                            <div class="timeline-item" style="background-color: #16a34a; border-color: #86efac;"></div>
+                            <h4 class="text-xl font-semibold text-gray-900 mb-1">Project Funding Begins</h4>
+                            <p class="text-green-700 font-medium">October 2026</p>
+                            <p class="text-gray-600 mt-2">Contracts are finalized and funding commences for successful projects.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="review" class="bg-white py-20 md:py-24">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl md:text-4xl font-bold text-gray-900 text-center mb-6">Proposal Review Criteria</h2>
+                <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-16">How will your proposal be evaluated? This section breaks down the five core review criteria from Appendix 1. Use this as a checklist to strengthen your proposal and ensure it aligns with APN's priorities.</p>
+                
+                <div class="max-w-4xl mx-auto space-y-4" id="accordion-container">
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full p-5 text-left font-semibold text-lg text-gray-800 flex justify-between items-center hover:bg-gray-50">
+                            1. Scientific Merit and Rationale
+                            <span class="accordion-icon text-blue-600 text-2xl font-light transform transition-transform duration-300">-</span>
+                        </button>
+                        <div class="accordion-content open p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                            <ul>
+                                <li>Is the rationale for the project clearly stated?</li>
+                                <li>Is the project scientifically sound and the methodology appropriate?</li>
+                                <li>Does the project address a gap in knowledge?</li>
+                                <li>Are the aims and objectives clear, concise, and achievable?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full p-5 text-left font-semibold text-lg text-gray-800 flex justify-between items-center hover:bg-gray-50">
+                            2. Regional Collaboration and Transdisciplinarity
+                            <span class="accordion-icon text-blue-600 text-2xl font-light transform transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                            <ul>
+                                <li>Does the proposal clearly demonstrate active regional collaboration?</li>
+                                <li>Does the project involve at least three APN member countries?</li>
+                                <li>Does the project foster transdisciplinary, co-design, and co-production of knowledge?</li>
+                                <li>Does the project involve appropriate stakeholders (policymakers, civil society) from the beginning?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full p-5 text-left font-semibold text-lg text-gray-800 flex justify-between items-center hover:bg-gray-50">
+                            3. Policy Relevance and Stakeholder Engagement
+                            <span class="accordion-icon text-blue-600 text-2xl font-light transform transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                            <ul>
+                                <li>Is the project relevant to policy-making processes?</li>
+                                <li>Are the communication and outreach plans clear and effective for engaging stakeholders?</li>
+                                <li>Does the project demonstrate a clear pathway to impact?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full p-5 text-left font-semibold text-lg text-gray-800 flex justify-between items-center hover:bg-gray-50">
+                            4. Capacity Building
+                            <span class="accordion-icon text-blue-600 text-2xl font-light transform transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                            <ul>
+                                <li>Does the project contribute to building scientific capacity in the region?</li>
+                                <li>Does it support the development of early-career researchers?</li>
+                                <li>Are capacity-building elements well-integrated into the project plan?</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="border border-gray-200 rounded-lg">
+                        <button class="accordion-toggle w-full p-5 text-left font-semibold text-lg text-gray-800 flex justify-between items-center hover:bg-gray-50">
+                            5. Budget and Feasibility
+                            <span class="accordion-icon text-blue-600 text-2xl font-light transform transition-transform duration-300">+</span>
+                        </button>
+                        <div class="accordion-content p-5 border-t border-gray-200 text-gray-700 prose max-w-none">
+                            <ul>
+                                <li>Is the project feasible within the proposed timeframe and budget?</li>
+                                <li>Is the budget realistic, well-justified, and compliant with APN financial regulations?</li>
+                                <li>Is co-funding secured or realistically planned?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-10">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p>&copy; 2025 Interactive Guide. All content is based on the "2025 CRRP Guide for Proponents v.F.pdf".</p>
+            <p class="text-sm mt-2">This is an unofficial, interactive visualization created to assist proponents. Always refer to the official APN documentation for submission.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const ctx = document.getElementById('fundingChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['1-Year Project', '2-Year Project'],
+                    datasets: [{
+                        label: 'Maximum Funding (USD)',
+                        data: [40000, 80000],
+                        backgroundColor: [
+                            'rgba(59, 130, 246, 0.7)',
+                            'rgba(29, 78, 216, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(29, 78, 216, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += '$' + context.parsed.y.toLocaleString();
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            const tabStage1 = document.getElementById('tab-stage1');
+            const tabStage2 = document.getElementById('tab-stage2');
+            const contentStage1 = document.getElementById('content-stage1');
+            const contentStage2 = document.getElementById('content-stage2');
+            const tabs = [tabStage1, tabStage2];
+            const contents = [contentStage1, contentStage2];
+
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('tab-active'));
+                    contents.forEach(c => c.classList.add('hidden'));
+                    
+                    tab.classList.add('tab-active');
+                    if (tab.id === 'tab-stage1') {
+                        contentStage1.classList.remove('hidden');
+                    } else {
+                        contentStage2.classList.remove('hidden');
+                    }
+                });
+            });
+
+            const accordions = document.querySelectorAll('.accordion-toggle');
+            accordions.forEach(accordion => {
+                const content = accordion.nextElementSibling;
+                const icon = accordion.querySelector('.accordion-icon');
+                
+                if (content.classList.contains('open')) {
+                    icon.textContent = '-';
+                } else {
+                    icon.textContent = '+';
+                }
+
+                accordion.addEventListener('click', () => {
+                    content.classList.toggle('open');
+                    if (content.classList.contains('open')) {
+                        icon.textContent = '-';
+                        icon.classList.remove('rotate-0');
+                        icon.classList.add('rotate-180');
+                    } else {
+                        icon.textContent = '+';
+                        icon.classList.remove('rotate-180');
+                        icon.classList.add('rotate-0');
+                    }
+                });
+            });
+
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIconOpen = document.getElementById('menu-icon-open');
+            const menuIconClose = document.getElementById('menu-icon-close');
+
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+                menuIconOpen.classList.toggle('hidden');
+                menuIconClose.classList.toggle('hidden');
+            });
+            
+            document.querySelectorAll('#mobile-menu a').forEach(anchor => {
+                anchor.addEventListener('click', () => {
+                    mobileMenu.classList.add('hidden');
+                    menuIconOpen.classList.remove('hidden');
+                    menuIconClose.classList.add('hidden');
+                });
+            });
+
+            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if(targetElement) {
+                        const navHeight = document.querySelector('nav').offsetHeight;
+                        const targetPosition = targetElement.offsetTop - navHeight - 20;
+                        window.scrollTo({
+                            top: targetPosition,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
