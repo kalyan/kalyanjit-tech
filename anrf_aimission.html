@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ANRF AI-SE Mission: Partnership Opportunity Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- 
+    Chosen Palette: Warm Neutrals with Professional Blue Accent
+    Application Structure Plan: The SPA is designed as a dashboard-driven "Opportunity Explorer" rather than a linear report. This structure is chosen for the target audience (AI Industry Specialists) who need to quickly find relevant information. The flow is: 1) 'Home' for the high-level value prop ($400M+). 2) 'Opportunity Explorer' as the main interactive tool, allowing users to filter 25+ focus areas (mocked) by program or AI method, then click for a detailed modal. This modal synthesizes data from Sec 1, 5, and Appendices (partners, market, tech needs). 3) 'Strategy Playbook' condenses Sec 2, 4, 6 into interactive tabs (workflow, compliance). 4) 'ROI & Business Case' (from Sec 3) provides a simple interactive calculator. This user-centric design directly answers "What's in it for me?", "Where do I fit?", and "How do I apply?".
+    Visualization & Content Choices: 
+    - Report Info: Exec Summary ($400M+ funding) -> Goal: Inform/Hook -> Viz: Key Metric Cards (HTML/Tailwind) -> Interaction: None -> Justification: Quick high-level overview.
+    - Report Info: Sec 1 & 5 (25 Focus Areas) -> Goal: Organize/Explore -> Viz: Interactive Filterable Card Grid (HTML/JS) -> Interaction: Filter by Program/AI, Click for detail -> Justification: Turns 50+ pages of dense text into a searchable database.
+    - Report Info: Sec 1.3 (Market Analysis) -> Goal: Compare/Inform -> Viz: Bar Chart (in detail modal) -> Interaction: Hover tooltips -> Justification: Clearly shows market potential for a specific focus area -> Library: Chart.js
+    - Report Info: Sec 1.4 / Appendix B (Partners) -> Goal: Inform -> Viz: HTML Table (in detail modal) -> Interaction: None -> Justification: Clear list of potential academic partners.
+    - Report Info: Sec 2 & 4 (Proposal Workflow) -> Goal: Organize/Guide -> Viz: Horizontal Timeline/Flowchart -> Interaction: Hover (mock) -> Justification: Visualizes the complex application process simply -> Library: HTML/Tailwind
+    - Report Info: Sec 3.1 (Cost-Benefit) -> Goal: Engage -> Viz: Interactive ROI Calculator Form -> Interaction: User input -> Justification: Turns passive ROI analysis into an engaging tool -> Library: Vanilla JS
+    - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #212529;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        .nav-link {
+            @apply px-4 py-2 text-gray-700 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors;
+        }
+        .filter-btn {
+            @apply px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-full hover:bg-gray-100 transition-all;
+        }
+        .filter-btn.active {
+            @apply bg-blue-600 text-white border-blue-600;
+        }
+        .metric-card {
+            @apply bg-white p-6 rounded-lg shadow-lg;
+        }
+        .tab-btn {
+            @apply px-6 py-3 font-semibold text-gray-600 border-b-2 border-transparent hover:border-blue-500 hover:text-blue-500 transition-all;
+        }
+        .tab-btn.active {
+            @apply text-blue-600 border-blue-600;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .timeline-step {
+            @apply relative flex-1 p-4 bg-white border-t-4 border-blue-500 rounded-lg shadow-md;
+        }
+        .timeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -20px;
+            transform: translateY(-50%);
+            width: 0; 
+            height: 0; 
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            border-left: 10px solid #f0f4f8;
+            z-index: 1;
+        }
+        .timeline-step:not(:last-child)::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -23px;
+            transform: translateY(-50%);
+            width: 0; 
+            height: 0; 
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 12px solid #e2e8f0;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row justify-between items-center">
+            <div class="text-center sm:text-left mb-2 sm:mb-0">
+                <h1 class="text-2xl font-bold text-blue-700">ANRF AI-SE Mission Explorer</h1>
+                <p class="text-sm text-gray-600">By Kalyanjit Hatibaruah</p>
+            </div>
+            <div class="flex flex-wrap justify-center gap-2 sm:gap-4">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#explorer" class="nav-link">Opportunity Explorer</a>
+                <a href="#playbook" class="nav-link">Strategy Playbook</a>
+                <a href="#roi" class="nav-link">ROI & Business Case</a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <section id="home" class="text-center py-16 lg:py-24">
+            <h2 class="text-4xl lg:text-5xl font-bold text-gray-800 mb-4">Unlock India's AI Future</h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-12">
+                This application provides an interactive guide to the <strong>ANRF AI-SE Mission</strong>. Explore over $400M in funding, find academic partners, and build your strategic proposal to lead India's revolution in AI for Science and Engineering.
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div class="metric-card">
+                    <span class="text-4xl font-bold text-blue-600">$400M+</span>
+                    <p class="text-lg text-gray-700 mt-2">Total Funding</p>
+                </div>
+                <div class="metric-card">
+                    <span class="text-4xl font-bold text-blue-600">3 Years</span>
+                    <p class="text-lg text-gray-700 mt-2">Program Duration</p>
+                </div>
+                <div class="metric-card">
+                    <span class="text-4xl font-bold text-blue-600">25+</span>
+                    <p class="text-lg text-gray-700 mt-2">Identified Focus Areas</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="explorer" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Opportunity Explorer</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
+                This is the core of the application, synthesizing over 50 pages of program analysis and technical deep-dives. Use the filters to find specific focus areas that match your company's expertise. Click on any card for a detailed breakdown of the opportunity, including market data and potential academic partners.
+            </p>
+
+            <div class="flex flex-col gap-6 mb-12">
+                <div id="program-filters" class="flex flex-wrap justify-center gap-2">
+                    <span class="font-semibold p-2">Filter by Program:</span>
+                    <button class="filter-btn active" onclick="handleFilterChange('program', 'all')">All Programs</button>
+                    <button class="filter-btn" onclick="handleFilterChange('program', 'AI for Science')">AI for Science</button>
+                    <button class="filter-btn" onclick="handleFilterChange('program', 'Engineering-DRDO')">Engineering-DRDO</button>
+                    <button class="filter-btn" onclick="handleFilterChange('program', 'Weather-MoES')">Weather-MoES</button>
+                    <button class="filter-btn" onclick="handleFilterChange('program', 'Bio-DBT')">Bio-DBT</button>
+                </div>
+                <div id="ai-filters" class="flex flex-wrap justify-center gap-2">
+                    <span class="font-semibold p-2">Filter by AI Method:</span>
+                    <button class="filter-btn active" onclick="handleFilterChange('ai_method', 'all')">All Methods</button>
+                    <button class="filter-btn" onclick="handleFilterChange('ai_method', 'Foundation Models')">Foundation Models</button>
+                    <button class="filter-btn" onclick="handleFilterChange('ai_method', 'Neural Operators')">Neural Operators</button>
+                    <button class="filter-btn" onclick="handleFilterChange('ai_method', 'Physics-Informed ML')">Physics-Informed ML</button>
+                    <button class="filter-btn" onclick="handleFilterChange('ai_method', 'Reinforcement Learning')">Reinforcement Learning</button>
+                </div>
+            </div>
+
+            <div id="focus-area-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            </div>
+        </section>
+
+        <section id="playbook" class="py-16 bg-white rounded-lg shadow-lg">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Partnership Strategy Playbook</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
+                This section condenses the strategic, operational, and legal components of the report. It's a "how-to" guide for building your consortium, writing a winning proposal, and understanding the compliance requirements.
+            </p>
+
+            <div class="w-full max-w-5xl mx-auto">
+                <div class="flex flex-wrap justify-center border-b border-gray-200" id="playbook-tabs">
+                    <button class="tab-btn active" data-tab="tab-1">Partnership Framework</button>
+                    <button class="tab-btn" data-tab="tab-2">Proposal Workflow</button>
+                    <button class="tab-btn" data-tab="tab-3">Compliance & Legal</button>
+                    <button class="tab-btn" data-tab="tab-4">Templates & Tools</button>
+                </div>
+
+                <div id="tab-1" class="tab-content active p-6 md:p-8">
+                    <h3 class="text-2xl font-semibold mb-4">Institution Selection Framework</h3>
+                    <p class="mb-6">Evaluating academic partners is critical. Our analysis suggests a tiered approach. Use this checklist as a starting point for your due diligence.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <ul class="space-y-3 list-disc list-inside bg-gray-50 p-6 rounded-lg">
+                            <li class="text-gray-700"><strong class="text-gray-900">Tier-1 (IITs, IISc):</strong> High-impact, high-competition. Best for large-scale foundation model projects.</li>
+                            <li class="text-gray-700"><strong class="text-gray-900">Tier-2/3 (NITs, IIITs):</strong> Strong domain expertise, more flexible. Ideal for applied AI and niche problem areas.</li>
+                            <li class="text-gray-700"><strong class="text-gray-900">Faculty Assessment:</strong> Look for recent (3-5 years) publications in target AI methods and domain.</li>
+                            <li class="text-gray-700"><strong class="text-gray-900">Lab Infrastructure:</strong> Assess existing compute, data access, and PhD student pipeline.</li>
+                            <li class="text-gray-700"><strong class="text-gray-900">Collaboration History:</strong> Prior experience with industry is a major plus.</li>
+                        </ul>
+                        <div class="bg-gray-50 p-6 rounded-lg">
+                            <h4 class="text-lg font-semibold mb-3">Value Proposition for Academia</h4>
+                            <p class="text-gray-700 mb-2">Your offer must be compelling:</p>
+                            <ul class="list-disc list-inside space-y-2">
+                                <li>Real-world industry datasets.</li>
+                                <li>Clear commercialization pathways.</li>
+                                <li>Co-funding and access to industry-grade compute.</li>
+                                <li>Career opportunities for students.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-2" class="tab-content p-6 md:p-8">
+                    <h3 class="text-2xl font-semibold mb-6 text-center">Proposal & Implementation Roadmap</h3>
+                    <div class="flex flex-col md:flex-row gap-4 md:gap-0 justify-center items-start w-full overflow-x-auto py-4 px-2">
+                        <div class="timeline-step">
+                            <span class="text-sm font-bold text-blue-600">Month 0-2</span>
+                            <h4 class="font-semibold mt-1">Outreach & Mapping</h4>
+                            <p class="text-sm text-gray-600">Identify partners, sign MOUs, align on 4-page pre-proposal.</p>
+                        </div>
+                        <div class="timeline-step">
+                            <span class="text-sm font-bold text-blue-600">Month 2-4</span>
+                            <h4 class="font-semibold mt-1">Pre-Proposal</h4>
+                            <p class="text-sm text-gray-600">Submit pre-proposal. Await selection for full proposal stage.</p>
+                        </div>
+                        <div class="timeline-step">
+                            <span class="text-sm font-bold text-blue-600">Month 4-6</span>
+                            <h4 class="font-semibold mt-1">Full Proposal</h4>
+                            <p class="text-sm text-gray-600">If selected, develop 5-page full proposal (Sec A+B) with detailed budget.</p>
+                        </div>
+                        <div class="timeline-step">
+                            <span class="text-sm font-bold text-blue-600">Year 1-3</span>
+                            <h4 class="font-semibold mt-1">Project Execution</h4>
+                            <p class="text-sm text-gray-600">Manage deliverables, quarterly reviews, and IP filing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-3" class="tab-content p-6 md:p-8">
+                    <h3 class="text-2xl font-semibold mb-4">Key Compliance & Funding Rules</h3>
+                    <p class="mb-6">Understanding the rules is non-negotiable. Here are the critical points from our analysis of the ANRF guidelines.</p>
+                    <ul class="space-y-4">
+                        <li class="p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded-r-lg">
+                            <strong class="text-yellow-800">PI Eligibility:</strong> PI <span class="font-mono">MUST</span> be full-time faculty/researcher at an Indian institution. Industry specialists act as Co-PIs or collaborators.
+                        </li>
+                        <li class="p-4 bg-red-50 border-l-4 border-red-400 rounded-r-lg">
+                            <strong class="text-red-800">GPU & Compute Cap:</strong> Max 70% of total budget can be allocated to compute (India AI Compute Portal). This forces focus on algorithmic efficiency.
+                        </li>
+                        <li class="p-4 bg-green-50 border-l-4 border-green-400 rounded-r-lg">
+                            <strong class="text-green-800">Open-Source Mandate:</strong> All code, models, and datasets (where feasible) <span class="font-mono">MUST</span> be released under the ANRF Open License (MIT-adapted). Plan your commercial strategy around this.
+                        </li>
+                        <li class="p-4 bg-blue-50 border-l-4 border-blue-400 rounded-r-lg">
+                            <strong class="text-blue-800">Data & Ethics:</strong> Approvals for human/animal data are flexible and can be obtained post-funding approval, but must be in place before work begins.
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="tab-4" class="tab-content p-6 md:p-8">
+                    <h3 class="text-2xl font-semibold mb-4">Quick-Start Templates & Tools</h3>
+                    <p class="mb-6">These resources, detailed in the full report appendices, are designed to accelerate your proposal development process.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a href="#" class="block p-6 bg-blue-50 text-blue-800 rounded-lg shadow-sm hover:bg-blue-100 hover:shadow-md transition-all">
+                            <h4 class="font-semibold text-lg mb-2">Faculty Outreach Email</h4>
+                            <p class="text-sm">Template for initial contact with PIs.</p>
+                        </a>
+                        <a href="#" class="block p-6 bg-blue-50 text-blue-800 rounded-lg shadow-sm hover:bg-blue-100 hover:shadow-md transition-all">
+                            <h4 class="font-semibold text-lg mb-2">Pre-Proposal (4-Pager)</h4>
+                            <p class="text-sm">Structured template to outline your project vision.</p>
+                        </a>
+                        <a href="#" class="block p-6 bg-blue-50 text-blue-800 rounded-lg shadow-sm hover:bg-blue-100 hover:shadow-md transition-all">
+                            <h4 class="font-semibold text-lg mb-2">MOU Agreement</h4>
+                            <p class="text-sm">Sample MOU for consortium building.</p>
+                        </a>
+                        <a href="#" class="block p-6 bg-blue-50 text-blue-800 rounded-lg shadow-sm hover:bg-blue-100 hover:shadow-md transition-all">
+                            <h4 class="font-semibold text-lg mb-2">GPU Cost Calculator</h4>
+                            <p class="text-sm">Spreadsheet for estimating India AI Compute costs.</p>
+                        </a>
+                        <a href="#" class="block p-6 bg-blue-50 text-blue-800 rounded-lg shadow-sm hover:bg-blue-100 hover:shadow-md transition-all">
+                            <h4 class="font-semibold text-lg mb-2">ANRF License Analysis</h4>
+                            <p class="text-sm">Comparison of ANRF vs. MIT vs. Apache 2.0.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="roi" class="py-16">
+            <h2 class="text-3xl font-bold text-center text-gray-800 mb-4">Business Model & ROI Analysis</h2>
+            <p class="text-lg text-gray-600 text-center max-w-3xl mx-auto mb-12">
+                This grant is a strategic investment, not just R&D funding. This section provides tools to model your investment and highlights commercialization pathways that are compatible with the program's open-source mandate.
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4">Interactive ROI Calculator (Demo)</h3>
+                    <p class="text-sm text-gray-600 mb-6">Estimate your potential return. This demo calculates a simple "Leverage Ratio" showing how much R&D value is generated per dollar of your direct investment.</p>
+                    <div class="space-y-4">
+                        <div>
+                            <label for="investment" class="block text-sm font-medium text-gray-700">Your Direct Cash/Kind Contribution (in $)</label>
+                            <input type="number" id="investment" value="50000" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label for="grant" class="block text-sm font-medium text-gray-700">Expected Grant Value (in $)</label>
+                            <input type="number" id="grant" value="200000" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                        </div>
+                        <button id="roi-calc-btn" class="w-full px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition-all">Calculate</button>
+                        <div class="text-center bg-blue-50 p-6 rounded-lg">
+                            <span class="block text-lg text-gray-700">Projected R&D Leverage Ratio</span>
+                            <span id="roi-result" class="block text-5xl font-bold text-blue-600">5.0x</span>
+                            <p class="text-sm text-gray-600 mt-2">($250,000 total R&D value on a $50,000 investment)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-lg shadow-lg">
+                    <h3 class="text-2xl font-semibold mb-4">Commercialization Pathways</h3>
+                    <p class="text-sm text-gray-600 mb-6">Given the ANRF Open-Source mandate, your business model must be built *on top* of the open deliverables. Our report identifies three primary models:</p>
+                    <div class="space-y-4">
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-lg text-gray-800">1. Open-Core Model</h4>
+                            <p class="text-gray-600">Release the core model (deliverable) as open-source. Sell proprietary add-ons, enterprise features (security, logging, integration), and support services.</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-lg text-gray-800">2. SaaS & Managed Services</h4>
+                            <p class="text-gray-600">Host the open-source model yourself and sell access via a high-availability, managed API. You compete on reliability, performance, and ease-of-use, not the model itself.</p>
+                        </div>
+                        <div class="p-4 border border-gray-200 rounded-lg">
+                            <h4 class="font-semibold text-lg text-gray-800">3. Talent & IP Pipeline</h4>
+                            <p class="text-gray-600">Use the project to co-develop novel IP (filed jointly or by you, with non-exclusive license to ANRF). Hire the best PhDs and researchers from the project.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-300 mt-16 py-12">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-lg font-semibold">Report & Application by Kalyanjit Hatibaruah</p>
+            <p class="mt-2">Flugelsoft Labs</p>
+            <div class="flex justify-center gap-6 mt-4">
+                <p>Whatsapp: +91-9864011106</p>
+                <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" rel="noopener noreferrer" class="hover:text-white underline">
+                    LinkedIn Profile
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="detail-modal" class="fixed inset-0 bg-black bg-opacity-75 flex justify-center items-center z-50 p-4 hidden">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center p-4 border-b">
+                <h2 id="modal-title" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="modal-close-btn" class="text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
+            </div>
+            <div class="p-6 md:p-8" id="modal-body">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const focusAreasData = [
+            {
+                id: 'fa-01',
+                title: 'AI-Driven Drug Discovery for Neglected Diseases',
+                program: 'Bio-DBT',
+                ai_method: 'Foundation Models',
+                challenge: 'High cost and long timelines for developing new drugs for diseases like Tuberculosis and Malaria. Existing models fail to generalize across limited datasets.',
+                approach: 'Develop a large-scale generative foundation model (Bio-FM) trained on diverse biological data (genomics, proteomics, chemical structures) to predict drug-target interactions and design novel compounds.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [50, 65, 80, 100, 120]
+                },
+                market_text: 'Global AI in drug discovery market projected to exceed $120B by 2028. This project provides a critical entry point into the Indian pharmaceutical AI solutions market.',
+                partners: [
+                    { name: 'IISc Bangalore', dept: 'BioEngineering', lab: 'Center for Biosystems' },
+                    { name: 'IIT Bombay', dept: 'CompSci', lab: 'AI-ML Lab' },
+                    { name: 'CDRI, Lucknow', dept: 'National Lab', lab: 'Drug Research Institute' }
+                ],
+                compute: 'High (128x H100 equivalent)',
+                datasets: 'OpenChem, PubChem, proprietary clinical data (via DBT labs), ChEMBL.'
+            },
+            {
+                id: 'fa-02',
+                title: 'Neural Operators for Hypersonic Flow Simulation',
+                program: 'Engineering-DRDO',
+                ai_method: 'Neural Operators',
+                challenge: 'Traditional CFD solvers for hypersonic flight are computationally prohibitive, taking weeks for a single simulation. This bottlenecks vehicle design and testing.',
+                approach: 'Develop a Fourier Neural Operator (FNO) model to act as a surrogate for the full CFD solver, enabling near real-time simulation of aerodynamic heating and fluid dynamics.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [30, 40, 55, 75, 100]
+                },
+                market_text: 'Global digital twin and simulation market for aerospace & defense is a $30B+ opportunity. This solution provides massive competitive advantage for defense and space-tech industries.',
+                partners: [
+                    { name: 'IIT Madras', dept: 'Aerospace Engg.', lab: 'Hypersonics Lab' },
+                    { name: 'DRDO (ASL/DRDL)', dept: 'National Lab', lab: 'Advanced Systems Lab' },
+                    { name: 'TIFR, Bangalore', dept: 'Maths', lab: 'Applied Mathematics' }
+                ],
+                compute: 'Medium (64x A100 equivalent)',
+                datasets: 'High-fidelity CFD simulation data generated by DRDO/NAL. Access is restricted.'
+            },
+            {
+                id: 'fa-03',
+                title: 'Foundation Model for Indian Monsoon Prediction',
+                program: 'Weather-MoES',
+                ai_method: 'Foundation Models',
+                challenge: 'Accurate long-range monsoon prediction remains a grand challenge, with current models having limited skill beyond 10-15 days. This impacts agriculture, energy, and water management.',
+                approach: 'Build a large-scale, data-driven Earth system model (inspired by models like GraphCast/FourCastNet) trained on 40+ years of ERA5 reanalysis and IMD observational data.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [15, 20, 28, 40, 55]
+                },
+                market_text: 'The primary market is B2G (MoES, IMD) and B2B (Agri-tech, Insurance, Renewable Energy). Market for climate-tech analytics in India is projected at $55B by 2028.',
+                partners: [
+                    { name: 'IITM, Pune', dept: 'National Lab', lab: 'Inst. of Tropical Meteorology' },
+                    { name: 'NCMRWF, Noida', dept: 'National Lab', lab: 'Weather Forecasting' },
+                    { name: 'IIT Delhi', dept: 'Civil Engg.', lab: 'Water Resources' }
+                ],
+                compute: 'Very High (256x H100 equivalent)',
+                datasets: 'IMD observational data, ERA5, GFS, satellite imagery. Access via MoES.'
+            },
+            {
+                id: 'fa-04',
+                title: 'Physics-Informed ML for Battery Materials',
+                program: 'AI for Science',
+                ai_method: 'Physics-Informed ML',
+                challenge: 'Discovering novel electrolyte and electrode materials for high-performance batteries is slow. Pure ML models often violate physical laws and are not generalizable.',
+                approach: 'Develop Physics-Informed Neural Networks (PINNs) that embed known physical laws (e.g., Nernst-Planck equations) into the loss function to accelerate discovery of stable, high-conductivity materials.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [80, 100, 130, 170, 220]
+                },
+                market_text: 'Part of the $220B+ global battery-tech market. This IP is critical for EV manufacturing, grid storage, and electronics industries.',
+                partners: [
+                    { name: 'IISc Bangalore', dept: 'Materials Engg.', lab: 'Solid-State & Structural Chem' },
+                    { name: 'IIT Delhi', dept: 'Energy Science', lab: 'Battery Research Centre' },
+                    { name: 'IIT Kharagpur', dept: 'Chem Engg.', lab: 'Energy Storage Lab' }
+                ],
+                compute: 'Medium (32x A100 equivalent)',
+                datasets: 'Materials Project database, custom DFT simulation data, experimental data from partner labs.'
+            },
+            {
+                id: 'fa-05',
+                title: 'Multi-Agent RL for Autonomous Drone Swarms',
+                program: 'Engineering-DRDO',
+                ai_method: 'Reinforcement Learning',
+                challenge: 'Coordinating large swarms of autonomous drones for surveillance, reconnaissance, and disaster response in complex, GPS-denied environments is an unsolved problem.',
+                approach: 'Develop a deep Multi-Agent Reinforcement Learning (MARL) framework (e.g., MAPPO) for decentralized policy execution, enabling emergent collaborative behavior and robust navigation.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [25, 35, 50, 70, 90]
+                },
+                market_text: 'Defense and internal security market for autonomous systems is $90B+ globally. Commercial applications include logistics, agriculture, and infrastructure inspection.',
+                partners: [
+                    { name: 'IIT Kanpur', dept: 'Aerospace/CompSci', lab: 'Intelligent Systems Lab' },
+                    { name: 'DRDO (CAIR)', dept: 'National Lab', lab: 'Centre for AI & Robotics' },
+                    { name: 'IIIT Hyderabad', dept: 'Robotics', lab: 'Robotics Research Center' }
+                ],
+                compute: 'High (64x A100 + Simulation servers)',
+                datasets: 'High-fidelity simulation environments (e.g., NVIDIA Isaac Sim), real-world flight data.'
+            },
+            {
+                id: 'fa-06',
+                title: 'Explainable AI for Genomic Medicine',
+                program: 'Bio-DBT',
+                ai_method: 'Physics-Informed ML',
+                challenge: 'Deep learning models for disease prediction from genomic data are "black boxes", limiting clinical adoption and trust.',
+                approach: 'Develop novel XAI and physics-informed models (e.g., integrating gene-regulatory network physics) to provide interpretable insights and causal links, not just correlations.',
+                market: {
+                    labels: ['2024', '2025', '2026', '2027', '2028'],
+                    data: [40, 50, 65, 85, 110]
+                },
+                market_text: 'Global personalized medicine market is valued at over $110B. Trust and interpretability are the main barriers, which this project directly addresses.',
+                partners: [
+                    { name: 'IGIB, Delhi', dept: 'National Lab', lab: 'Genomics & Molecular Med' },
+                    { name: 'IIT Delhi', dept: 'CompSci', lab: 'Data Analytics & AI Lab' },
+                    { name: 'NIBMG, Kalyani', dept: 'National Lab', lab: 'Biomedical Genomics' }
+                ],
+                compute: 'Medium (32x A100)',
+                datasets: 'Indian genomic datasets (IndiGen), TCGA, UK Biobank (with permissions).'
+            }
+        ];
+
+        let currentFilters = {
+            program: 'all',
+            ai_method: 'all'
+        };
+        let detailChart = null;
+
+        const grid = document.getElementById('focus-area-grid');
+        const modal = document.getElementById('detail-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalBody = document.getElementById('modal-body');
+        const modalCloseBtn = document.getElementById('modal-close-btn');
+
+        function renderFocusAreas() {
+            grid.innerHTML = '';
+            const filteredAreas = focusAreasData.filter(area => {
+                const programMatch = currentFilters.program === 'all' || area.program === currentFilters.program;
+                const aiMatch = currentFilters.ai_method === 'all' || area.ai_method === currentFilters.ai_method;
+                return programMatch && aiMatch;
+            });
+
+            if (filteredAreas.length === 0) {
+                grid.innerHTML = `<p class="text-gray-600 text-center col-span-full">No focus areas match your criteria. Please broaden your search.</p>`;
+                return;
+            }
+
+            filteredAreas.forEach(area => {
+                const card = document.createElement('div');
+                card.className = 'bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow cursor-pointer';
+                card.setAttribute('data-id', area.id);
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full ${area.program.includes('DRDO') ? 'bg-red-100 text-red-800' : area.program.includes('Bio') ? 'bg-green-100 text-green-800' : area.program.includes('MoES') ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800'}">${area.program}</span>
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-800">${area.ai_method}</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">${area.title}</h3>
+                    <p class="text-sm text-gray-600 line-clamp-3">${area.challenge}</p>
+                `;
+                card.addEventListener('click', () => showDetailModal(area.id));
+                grid.appendChild(card);
+            });
+        }
+
+        function handleFilterChange(type, value) {
+            currentFilters[type] = value;
+            renderFocusAreas();
+
+            const filterGroup = document.getElementById(`${type}-filters`);
+            filterGroup.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        function showDetailModal(areaId) {
+            const area = focusAreasData.find(a => a.id === areaId);
+            if (!area) return;
+
+            modalTitle.innerText = area.title;
+
+            let partnersHtml = area.partners.map(p => `
+                <tr>
+                    <td class="py-2 px-4 border-b border-gray-200">${p.name}</td>
+                    <td class="py-2 px-4 border-b border-gray-200">${p.dept}</td>
+                    <td class="py-2 px-4 border-b border-gray-200">${p.lab}</td>
+                </tr>
+            `).join('');
+
+            modalBody.innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full ${area.program.includes('DRDO') ? 'bg-red-100 text-red-800' : area.program.includes('Bio') ? 'bg-green-100 text-green-800' : area.program.includes('MoES') ? 'bg-blue-100 text-blue-800' : 'bg-indigo-100 text-indigo-800'}">${area.program}</span>
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full bg-gray-100 text-gray-800 ml-2">${area.ai_method}</span>
+                        
+                        <h4 class="text-lg font-semibold text-gray-800 mt-4 mb-2">Scientific/Engineering Challenge</h4>
+                        <p class="text-gray-600 mb-4">${area.challenge}</p>
+                        
+                        <h4 class="text-lg font-semibold text-gray-800 mt-4 mb-2">Proposed AI Approach</h4>
+                        <p class="text-gray-600 mb-4">${area.approach}</p>
+
+                        <h4 class="text-lg font-semibold text-gray-800 mt-4 mb-2">Implementation Needs</h4>
+                        <ul class="list-disc list-inside space-y-2">
+                            <li><strong>Compute:</strong> ${area.compute}</li>
+                            <li><strong>Datasets:</strong> ${area.datasets}</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-2">Market & Commercial Analysis</h4>
+                        <p class="text-gray-600 mb-4 text-sm">${area.market_text}</p>
+                        <div class="chart-container">
+                            <canvas id="detailChartCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <h4 class="text-xl font-semibold text-gray-800 mt-8 mb-4">Potential Academic Partners</h4>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-200">
+                        <thead>
+                            <tr class="bg-gray-50">
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-600">Institution</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-600">Department</th>
+                                <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-600">Key Lab/Center</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${partnersHtml}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            
+            if (detailChart) {
+                detailChart.destroy();
+            }
+            const ctx = document.getElementById('detailChartCanvas').getContext('2d');
+            detailChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: area.market.labels,
+                    datasets: [{
+                        label: 'Market Projection ($B)',
+                        data: area.market.data,
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` $${context.parsed.y}B`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function hideDetailModal() {
+            modal.classList.add('hidden');
+            modalBody.innerHTML = '';
+            if (detailChart) {
+                detailChart.destroy();
+                detailChart = null;
+            }
+        }
+
+        modalCloseBtn.addEventListener('click', hideDetailModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                hideDetailModal();
+            }
+        });
+
+        document.querySelectorAll('#playbook-tabs .tab-btn').forEach(button => {
+            button.addEventListener('click', () => {
+                const tabId = button.getAttribute('data-tab');
+                
+                document.querySelectorAll('#playbook-tabs .tab-btn').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        document.getElementById('roi-calc-btn').addEventListener('click', () => {
+            const investment = parseFloat(document.getElementById('investment').value) || 0;
+            const grant = parseFloat(document.getElementById('grant').value) || 0;
+            const totalValue = investment + grant;
+            
+            let ratio = 0;
+            if (investment > 0) {
+                ratio = totalValue / investment;
+            }
+            
+            document.getElementById('roi-result').innerText = `${ratio.toFixed(1)}x`;
+            document.querySelector('#roi-result + p').innerText = `($${totalValue.toLocaleString()} total R&D value on a $${investment.toLocaleString()} investment)`;
+        });
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderFocusAreas();
+            
+            document.querySelectorAll('.nav-link').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute('href')).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                });
+            });
+        });
+
+        window.handleFilterChange = handleFilterChange;
+    </script>
+</body>
+</html>
