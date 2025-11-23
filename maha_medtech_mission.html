@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAHA MedTech Mission - Strategic Prioritization</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: "Calm Neutrals & Professional Blue" (BG: bg-gray-50, Section: bg-white, Primary: bg-blue-600, Text: bg-gray-800, Accent: bg-blue-100) -->
+    <!-- Application Structure Plan: A single-page, top-down narrative flow. Starts with 'Home' (Mission Intro) and 'The Challenge' (Problem). The centerpiece (ID: 'framework') is an interactive 2x2 Prioritization Matrix (built with Tailwind Grid). Clicking a quadrant (e.g., 'Strategic Bets') dynamically updates a 'Details' pane below the matrix with that quadrant's description and examples. This is the primary interaction, allowing users to explore the core framework. This is followed by a 'Deep Dive' (ID: 'bets') on the key recommendation ('Strategic Bets') using interactive tabs to explore each technology (AI, Telemedicine, etc.). A bar chart visually compares these bets. The app concludes with the 'Roadmap & Enablers' (ID: 'roadmap') using static cards and a timeline. Navigation is via a sticky header. This structure was chosen because it transforms the report's linear text into an interactive exploration, focusing the user's attention on the central framework and its most important outcome ('Strategic Bets'), which is more usable and engaging than a simple text-based site. -->
+    <!-- Visualization & Content Choices:
+        1.  Report Info: Key Challenges (Cost, Regulation, Imports).
+            Goal: Inform/Summarize.
+            Viz/Method: 4-column Tailwind card layout (ID: 'challenge').
+            Interaction: None (static info).
+            Justification: Clear, scannable summary of the problem.
+            Library/Method: HTML/Tailwind.
+        2.  Report Info: The 2x2 Prioritization Framework (Impact vs. Feasibility) and the four quadrants (Strategic Bets, Niche, Future, Low Priority) with their examples.
+            Goal: Organize/Explore.
+            Viz/Method: Interactive 2x2 grid (ID: 'framework-matrix') built with HTML/Tailwind. A separate 'Details' div (ID: 'framework-details') below it.
+            Interaction: On-click event for each quadrant. JS function (`showQuadrantDetails`) updates the 'Details' div's innerHTML with the clicked quadrant's name, description, and a list of examples (data stored in a JS object). The clicked quadrant gets a visual highlight (e.g., `bg-blue-100`).
+            Justification: This is the report's core. Making it interactive and explorable (click-to-see-details) is the most effective way to convey the prioritization logic.
+            Library/Method: HTML/Tailwind/Vanilla JS.
+        3.  Report Info: Detailed analysis of "Strategic Bets" (AI, Telemedicine, Consumables, POC).
+            Goal: Compare/Deep Dive.
+            Viz/Method: Tabbed interface (ID: 'bets-tabs') and a Bar Chart (Chart.js, ID: 'bets-chart').
+            Interaction:
+                - Tabs: On-click event for each tab button. JS function (`changeTab`) hides all tab panels and shows the active one.
+                - Chart: A Chart.js bar chart comparing the four "Strategic Bets" on two synthetic metrics: "Impact Potential" and "Feasibility Score" (rated 1-10 based on the report's qualitative text). This chart is dynamically rendered on load.
+            Justification: Tabs organize the deep-dive content cleanly. The bar chart provides a scannable visual comparison of the report's key recommendations, which is more impactful than text alone.
+            Library/Method: HTML/Tailwind/Vanilla JS (Tabs), Chart.js (Bar Chart).
+        4.  Report Info: Implementation Roadmap (3 Phases).
+            Goal: Inform/Show Change.
+            Viz/Method: A horizontal timeline-like structure (HTML/CSS/Tailwind).
+            Interaction: None (static info).
+            Justification: A timeline is the most intuitive way to present a phased roadmap.
+            Library/Method: HTML/Tailwind.
+        5.  Report Info: Key Enablers (Policy, Funding, etc.).
+            Goal: Inform/Organize.
+            Viz/Method: 5-column grid of cards (ID: 'enablers').
+            Interaction: None (static info).
+            Justification: Scannable card layout.
+            Library/Method: HTML/Tailwind.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
+        .tab-btn.active {
+            @apply bg-blue-600 text-white border-blue-600;
+        }
+        .tab-panel {
+            display: none;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        .quadrant {
+            @apply p-6 border border-gray-300 rounded-lg cursor-pointer transition-all duration-300 h-40 flex items-center justify-center text-center font-semibold;
+        }
+        .quadrant:hover {
+            @apply shadow-md scale-105;
+        }
+        .quadrant.active {
+            @apply bg-blue-100 border-blue-500 shadow-lg scale-105;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans">
+
+    <!-- Header & Navigation -->
+    <header class="sticky top-0 z-50 bg-white shadow-md">
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex-shrink-0">
+                    <span class="font-bold text-xl text-blue-700">MAHA MedTech Mission</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#challenge" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">The Challenge</a>
+                        <a href="#framework" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">The Framework</a>
+                        <a href="#bets" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Strategic Bets</a>
+                        <a href="#roadmap" class="nav-link text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Roadmap</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button type="button" id="menu-btn" class="bg-gray-100 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-200" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <span class="block h-6 w-6">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                            </svg>
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </nav>
+        <div class="hidden md:hidden" id="mobile-menu">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="nav-link text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#challenge" class="nav-link text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">The Challenge</a>
+                <a href="#framework" class="nav-link text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">The Framework</a>
+                <a href="#bets" class="nav-link text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Strategic Bets</a>
+                <a href="#roadmap" class="nav-link text-gray-700 hover:text-blue-600 block px-3 py-2 rounded-md text-base font-medium">Roadmap</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Section 1: Home / Introduction -->
+        <section id="home" class="py-20">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                    <span class="block">Strategic Prioritization for the</span>
+                    <span class="block text-blue-600">"MAHA MedTech Mission"</span>
+                </h1>
+                <p class="mt-6 max-w-2xl mx-auto text-xl text-gray-600">
+                    Maharashtra aims to become a top 10 global MedTech hub. This ambitious mission requires a focused strategy to overcome significant challenges. This analysis presents a prioritization framework to guide investment and effort for maximum impact.
+                </p>
+                <div class="mt-8 max-w-md mx-auto">
+                    <div class="rounded-md bg-red-100 border-l-4 border-red-500 p-4 shadow">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <span class="text-3xl">✈️</span>
+                            </div>
+                            <div class="ml-3 text-left">
+                                <h3 class="text-lg font-medium text-red-800">Key Challenge: Import Dependency</h3>
+                                <div class="mt-2 text-md text-red-700">
+                                    <p>India currently imports <strong>80-85%</strong> of its medical devices. A core goal of the mission is to drastically reduce this dependency through domestic innovation and manufacturing.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: The Challenge -->
+        <section id="challenge" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        Hurdles to MedTech Leadership
+                    </h2>
+                    <p class="mt-4 max-w-2xl mx-auto text-lg text-gray-600">
+                        The path to becoming a global hub is blocked by several key challenges that the "MAHA MedTech Mission" must strategically address.
+                    </p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
+                        <span class="text-5xl">💰</span>
+                        <h3 class="mt-4 text-xl font-bold text-gray-900">High R&D Costs</h3>
+                        <p class="mt-2 text-gray-600">Long gestation periods and high capital expenditure for research and development deter new entrants.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
+                        <span class="text-5xl">📜</span>
+                        <h3 class="mt-4 text-xl font-bold text-gray-900">Regulatory Hurdles</h3>
+                        <p class="mt-2 text-gray-600">Complex and lengthy approval processes can slow down innovation and time-to-market.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
+                        <span class="text-5xl">🧑‍🔬</span>
+                        <h3 class="mt-4 text-xl font-bold text-gray-900">Skilled Talent Gap</h3>
+                        <p class="mt-2 text-gray-600">A shortage of specialized talent in biomedical engineering, AI, and regulatory affairs.</p>
+                    </div>
+                    <div class="bg-gray-50 p-6 rounded-lg shadow-md text-center">
+                        <span class="text-5xl">✈️</span>
+                        <h3 class="mt-4 text-xl font-bold text-gray-900">Import Dependency</h3>
+                        <p class="mt-2 text-gray-600">Heavy reliance on foreign-made devices creates supply chain risks and drains foreign exchange.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Prioritization Framework -->
+        <section id="framework" class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        A Framework for Strategic Prioritization
+                    </h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        To focus efforts and maximize impact, we propose a 2x2 prioritization matrix. It categorizes technologies based on two key axes: <strong>Impact Potential</strong> (disease burden, market size) and <strong>Feasibility of Implementation</strong> (local R&D, manufacturing base).
+                    </p>
+                </div>
+
+                <!-- Interactive 2x2 Matrix -->
+                <div class="mt-12 max-w-4xl mx-auto relative">
+                    <div class="absolute -left-2 top-1/2 -translate-y-1/2 -rotate-90 origin-bottom-left text-lg font-semibold text-gray-700">
+                        Impact Potential
+                        <span class="text-sm font-normal">(Low → High)</span>
+                    </div>
+                    <div class="absolute -bottom-8 left-1/2 -translate-x-1/2 text-lg font-semibold text-gray-700">
+                        Feasibility of Implementation
+                        <span class="text-sm font-normal">(Low → High)</span>
+                    </div>
+
+                    <div id="framework-matrix" class="grid grid-cols-2 gap-2 ml-16 mb-16">
+                        <div class="quadrant bg-gray-100" data-quad="q3">
+                            <h3 class="text-xl text-gray-800">Quadrant 3: <br> Future Prospects <br> <span class="text-sm font-normal">(High Impact, Low Feasibility)</span></h3>
+                        </div>
+                        <div class="quadrant bg-blue-50" data-quad="q1">
+                            <h3 class="text-xl text-blue-800">Quadrant 1: <br> Strategic Bets <br> <span class="text-sm font-normal">(High Impact, High Feasibility)</span></h3>
+                        </div>
+                        <div class="quadrant bg-gray-100" data-quad="q4">
+                            <h3 class="text-xl text-gray-800">Quadrant 4: <br> Low Priority <br> <span class="text-sm font-normal">(Low Impact, Low Feasibility)</span></h3>
+                        </div>
+                        <div class="quadrant bg-gray-100" data-quad="q2">
+                            <h3 class="text-xl text-gray-800">Quadrant 2: <br> Niche Opportunities <br> <span class="text-sm font-normal">(Low Impact, High Feasibility)</span></h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Details Pane -->
+                <div id="framework-details" class="mt-8 max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg min-h-[250px] transition-all duration-300">
+                    <p class="text-center text-gray-500">Click any quadrant above to see its description and examples.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Deep Dive: Strategic Bets -->
+        <section id="bets" class="py-16 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        Deep Dive: The "Strategic Bets" (Quadrant 1)
+                    </h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        The report strongly recommends focusing on 'Strategic Bets'—technologies with both high impact and high feasibility. This section explores the four key areas identified, which represent the fastest path to reducing import dependency and building a globally competitive ecosystem.
+                    </p>
+                </div>
+
+                <div class="mt-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <!-- Left Col: Chart -->
+                    <div class="flex flex-col">
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4 text-center">Comparative Analysis of Strategic Bets</h3>
+                        <p class="text-center text-gray-600 mb-4">A visual comparison of the recommended "Strategic Bets" based on their relative impact and feasibility, as derived from the report's analysis.</p>
+                        <div class="chart-container">
+                            <canvas id="bets-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Right Col: Tabs -->
+                    <div id="bets-tabs" class="mt-4 lg:mt-0">
+                        <div class="border-b border-gray-200">
+                            <nav class="-mb-px flex space-x-4" aria-label="Tabs">
+                                <button class="tab-btn whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="ai">
+                                    AI Diagnostics
+                                </button>
+                                <button class="tab-btn whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tele">
+                                    Telemedicine
+                                </button>
+                                <button class="tab-btn whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="consum">
+                                    Consumables
+                                </button>
+                                <button class="tab-btn whitespace-nowrap py-3 px-4 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="poc">
+                                    POC Diagnostics
+                                </button>
+                            </nav>
+                        </div>
+                        <div class="mt-6">
+                            <div id="ai" class="tab-panel space-y-4">
+                                <h4 class="text-2xl font-bold text-gray-900">AI-Powered Diagnostic Tools</h4>
+                                <p class="text-lg text-gray-700"><strong>Why High Impact?</strong><br> Addresses the significant shortage of specialists like radiologists and pathologists, improves diagnostic accuracy, and has high export potential.</p>
+                                <p class="text-lg text-gray-700"><strong>Why High Feasibility?</strong><br> Leverages Maharashtra's world-class IT and software ecosystem, particularly in hubs like Pune and Mumbai. A strong pool of AI/ML talent already exists.</p>
+                            </div>
+                            <div id="tele" class="tab-panel space-y-4">
+                                <h4 class="text-2xl font-bold text-gray-900">Telemedicine & Remote Patient Monitoring (RPM)</h4>
+                                <p class="text-lg text-gray-700"><strong>Why High Impact?</strong><br> Bridges the vast urban-rural healthcare divide, enables continuous care for chronic diseases (diabetes, hypertension), and improves access in remote areas.</p>
+                                <p class="text-lg text-gray-700"><strong>Why High Feasibility?</strong><br> Growing internet and smartphone penetration. A burgeoning startup ecosystem is already active in this space, providing a solid foundation for scaling.</p>
+                            </div>
+                            <div id="consum" class="tab-panel space-y-4">
+                                <h4 class="text-2xl font-bold text-gray-900">Low-Cost, High-Volume Consumables</h4>
+                                <p class="text-lg text-gray-700"><strong>Why High Impact?</strong><br> Directly tackles the 80%+ import dependency. These (e.g., syringes, catheters, gloves) are high-volume, recurring needs, and domestic production ensures supply chain security.</p>
+                                <p class="text-lg text-gray-700"><strong>Why High Feasibility?</strong><br> Maharashtra has an established manufacturing base in plastics, precision engineering, and textiles, which can be readily adapted for medical-grade products.</p>
+                            </div>
+                            <div id="poc" class="tab-panel space-y-4">
+                                <h4 class="text-2xl font-bold text-gray-900">Point-of-Care (POC) Diagnostic Devices</h4>
+                                <p class="text-lg text-gray-700"><strong>Why High Impact?</strong><br> Crucial for rapid screening of infectious diseases (like TB, malaria) and managing non-communicable diseases (NCDs) in low-resource settings. Enables faster treatment decisions.</p>
+                                <p class="text-lg text-gray-700"><strong>Why High Feasibility?</strong><br> Builds on existing expertise in biotechnology and diagnostics, especially in the Pune cluster. Lower regulatory barriers for some POC devices compared to high-risk implants.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Roadmap & Key Enablers -->
+        <section id="roadmap" class="py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+                        Implementation: Roadmap & Key Enablers
+                    </h2>
+                    <p class="mt-4 max-w-3xl mx-auto text-lg text-gray-600">
+                        A focused strategy requires a clear plan. The proposed roadmap outlines a phased approach, while key enablers must be established to ensure the mission's success.
+                    </p>
+                </div>
+
+                <!-- Roadmap -->
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold text-gray-900 text-center">Proposed Implementation Roadmap</h3>
+                    <div class="mt-8 flex flex-col md:flex-row justify-between space-y-8 md:space-y-0 md:space-x-8">
+                        <div class="flex-1 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                            <h4 class="text-xl font-bold text-blue-700">Phase 1 (0-2 Years)</h4>
+                            <p class="mt-2 text-gray-600"><strong>Focus & Foundation:</strong> Prioritize "Strategic Bets". Establish Centers of Excellence (CoEs), create a single-window clearance for regulations, and launch targeted skill development programs.</p>
+                        </div>
+                        <div class="flex-1 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                            <h4 class="text-xl font-bold text-blue-700">Phase 2 (2-5 Years)</h4>
+                            <p class="mt-2 text-gray-600"><strong>Scale & Incubate:</strong> Scale up manufacturing of "Strategic Bets". Begin incubating technologies from the "Future Prospects" quadrant. Attract significant private and VC investment.</p>
+                        </div>
+                        <div class="flex-1 bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
+                            <h4 class="text-xl font-bold text-blue-700">Phase 3 (5+ Years)</h4>
+                            <p class="mt-2 text-gray-600"><strong>Lead & Expand:</strong> Achieve global leadership in the "Strategic Bets" categories. Mature "Future Prospects" move into the "Strategic Bets" quadrant, creating a sustainable cycle of innovation.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Key Enablers -->
+                <div class="mt-16">
+                    <h3 class="text-2xl font-bold text-gray-900 text-center">Key Enablers for Success</h3>
+                    <div class="mt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+                        <div class="bg-blue-50 p-4 rounded-lg shadow-md text-center">
+                            <span class="text-4xl">🏛️</span>
+                            <h4 class="mt-2 text-lg font-semibold text-blue-800">Policy & Regulation</h4>
+                            <p class="text-sm text-blue-700">Streamlined, predictable, and supportive regulatory pathways.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg shadow-md text-center">
+                            <span class="text-4xl">💸</span>
+                            <h4 class="mt-2 text-lg font-semibold text-blue-800">Funding & Investment</h4>
+                            <p class="text-sm text-blue-700">Access to VC, public grants, and Production-Linked Incentive (PLI) schemes.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg shadow-md text-center">
+                            <span class="text-4xl">🏭</span>
+                            <h4 class="mt-2 text-lg font-semibold text-blue-800">Infrastructure</h4>
+                            <p class="text-sm text-blue-700">Dedicated MedTech Parks, and accredited testing & calibration labs.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg shadow-md text-center">
+                            <span class="text-4xl">🎓</span>
+                            <h4 class="mt-2 text-lg font-semibold text-blue-800">Talent Development</h4>
+                            <p class="text-sm text-blue-700">Curriculum reform and partnerships with industry for specialized skills.</p>
+                        </div>
+                        <div class="bg-blue-50 p-4 rounded-lg shadow-md text-center">
+                            <span class="text-4xl">🤝</span>
+                            <h4 class="mt-2 text-lg font-semibold text-blue-800">Industry-Academia</h4>
+                            <p class="text-sm text-blue-700">Strong collaboration to translate research from lab to market.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-gray-300 py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-lg font-medium">Author: Kalyanjit Hatibaruah</p>
+            <div class="mt-3 flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6">
+                <span class="flex items-center hover:text-white transition-colors">
+                    <span class="mr-2">📱</span> Whatsapp: +91-9864011106
+                </span>
+                <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" rel="noopener noreferrer" class="hover:text-white text-blue-400 hover:underline flex items-center transition-colors">
+                    <span class="mr-1">🔗</span> LinkedIn
+                </a>
+            </div>
+            <p class="mt-4 text-sm text-gray-400">
+                Copyrights Flugelsoft Labs. For collaborations in projects please message.
+            </p>
+            <p class="mt-2 text-xs text-gray-600">This web application is an interactive representation of the "Strategic Prioritization of Medical Technologies" report.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // Mobile Menu Toggle
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            menuBtn.addEventListener('click', () => {
+                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+                menuBtn.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('hidden');
+                
+                const svg = menuBtn.querySelector('svg');
+                if (!isExpanded) {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />`;
+                } else {
+                    svg.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />`;
+                }
+            });
+
+            // Smooth Scroll for Nav Links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        targetElement.scrollIntoView({ behavior: 'smooth' });
+                    }
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        menuBtn.click();
+                    }
+                });
+            });
+
+            // Quadrant Interaction
+            const quadrantData = {
+                q1: {
+                    name: "Quadrant 1: Strategic Bets (High Impact, High Feasibility)",
+                    desc: "The top priority. These technologies address significant needs and are highly achievable given Maharashtra's existing strengths. Focus on these for immediate R&D, manufacturing, and policy support.",
+                    examples: [
+                        "AI-powered diagnostic tools (radiology, pathology)",
+                        "Telemedicine and remote patient monitoring (RPM) platforms",
+                        "Low-cost, high-volume consumables (syringes, catheters)",
+                        "Point-of-care (POC) diagnostic devices"
+                    ]
+                },
+                q2: {
+                    name: "Quadrant 2: Niche Opportunities (Low Impact, High Feasibility)",
+                    desc: "These are 'low-hanging fruit' that can be easily manufactured domestically. While not transformative, they help reduce import dependency and build manufacturing capacity.",
+                    examples: [
+                        "Specialized surgical instruments",
+                        "Rehabilitation and assistive devices",
+                        "Basic hospital furniture"
+                    ]
+                },
+                q3: {
+                    name: "Quadrant 3: Future Prospects (High Impact, Low Feasibility)",
+                    desc: "These are transformative technologies that require significant, long-term R&D. These should be incubated in research institutions and CoEs for the next wave of growth.",
+                    examples: [
+                        "Advanced robotics for surgery",
+                        "Implantable smart devices (pacemakers, glucose monitors)",
+                        "Genomic sequencing and personalized medicine tech"
+                    ]
+                },
+                q4: {
+                    name: "Quadrant 4: Low Priority (Low Impact, Low Feasibility)",
+                    desc: "These technologies should not be a strategic focus for the mission. They offer low market/social returns and are difficult to develop locally. Resources are better spent elsewhere.",
+                    examples: [
+                        "Highly specialized, low-demand research equipment",
+                        "Legacy technologies with declining markets"
+                    ]
+                }
+            };
+
+            const quadrants = document.querySelectorAll('.quadrant');
+            const detailsPane = document.getElementById('framework-details');
+
+            function showQuadrantDetails(quadId) {
+                const data = quadrantData[quadId];
+                if (data) {
+                    quadrants.forEach(q => {
+                        q.classList.remove('active', 'bg-blue-100', 'border-blue-500', 'shadow-lg');
+                        if (q.dataset.quad === quadId) {
+                            q.classList.add('active', 'bg-blue-100', 'border-blue-500', 'shadow-lg');
+                        }
+                    });
+
+                    let examplesList = data.examples.map(ex => `<li class="relative pl-5 before:content-['✓'] before:absolute before:left-0 before:text-blue-500">${ex}</li>`).join('');
+                    
+                    detailsPane.innerHTML = `
+                        <h3 class="text-2xl font-bold text-blue-700">${data.name}</h3>
+                        <p class="mt-2 text-lg text-gray-700">${data.desc}</p>
+                        <ul class="mt-4 space-y-2 text-gray-600 list-none">
+                            ${examplesList}
+                        </ul>
+                    `;
+                }
+            }
+
+            quadrants.forEach(quad => {
+                quad.addEventListener('click', () => {
+                    showQuadrantDetails(quad.dataset.quad);
+                });
+            });
+
+            // Initialize with Q1 selected
+            showQuadrantDetails('q1');
+
+            // Tabs Interaction
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabPanels = document.querySelectorAll('.tab-panel');
+
+            function changeTab(tabId) {
+                tabBtns.forEach(btn => {
+                    btn.classList.remove('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+                    if (btn.dataset.tab === tabId) {
+                        btn.classList.add('active', 'bg-blue-600', 'text-white', 'border-blue-600');
+                    }
+                });
+
+                tabPanels.forEach(panel => {
+                    panel.classList.remove('active');
+                    if (panel.id === tabId) {
+                        panel.classList.add('active');
+                    }
+                });
+            }
+
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    changeTab(btn.dataset.tab);
+                });
+            });
+            
+            // Initialize with first tab active
+            changeTab('ai');
+
+            // Chart.js - Strategic Bets Comparison
+            const ctx = document.getElementById('bets-chart').getContext('2d');
+            const betsChartData = {
+                labels: ['AI Diagnostics', 'Telemedicine & RPM', 'Low-Cost Consumables', 'POC Diagnostics'],
+                datasets: [
+                    {
+                        label: 'Impact Potential (Score 1-10)',
+                        data: [9, 8, 7, 8],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Feasibility (Score 1-10)',
+                        data: [8, 9, 9, 7],
+                        backgroundColor: 'rgba(34, 197, 94, 0.7)',
+                        borderColor: 'rgba(34, 197, 94, 1)',
+                        borderWidth: 1
+                    }
+                ]
+            };
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: betsChartData,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: false,
+                            text: 'Strategic Bets Analysis'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: 'Score (out of 10)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                autoSkip: false,
+                                maxRotation: 0,
+                                minRotation: 0
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
