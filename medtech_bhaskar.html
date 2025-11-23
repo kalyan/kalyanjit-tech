@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Nexus: MAHA MedTech Mission</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        
+        .tab-button.active {
+            border-bottom-color: #2563EB;
+            color: #2563EB;
+            font-weight: 600;
+        }
+
+        .filter-button.active {
+            background-color: #2563EB;
+            color: #ffffff;
+        }
+
+        .accordion-button.active {
+            background-color: #EFF6FF;
+            color: #1D4ED8;
+        }
+        
+        .project-card {
+            transition: all 0.3s ease;
+        }
+    </style>
+    <!-- Chosen Palette: Calm Harmony (Base: bg-gray-50, bg-white, text-gray-800. Accent: blue-600) -->
+    <!-- Application Structure Plan: Designed a 4-tab SPA ('Overview', 'Project Explorer', 'Deep Dives', 'Conclusion'). This structure de-linearizes the report, allowing users to choose their exploration path. The 'Project Explorer' (Tab 2) uses interactive filters and a summary chart for quick browsing of all 20 projects. The 'Deep Dives' tab (Tab 3) uses an accordion to present detailed project info clearly. This task-oriented design is more usable than a long scrolling document. -->
+    <!-- Visualization & Content Choices: 
+        1. Report Info: 20 projects across 5 categories. Goal: Summarize project distribution. Viz/Method: Doughnut Chart (Chart.js). Interaction: None (static summary). Justification: Provides a quick visual summary of the report's project portfolio, breaking up the text-heavy 'Explorer' page.
+        2. Report Info: 20 project list. Goal: Organize/Filter. Viz/Method: Interactive HTML Cards. Interaction: JS-based category filtering. Justification: Allows users to easily find projects of interest and see all projects in a given theme.
+        3. Report Info: 6 detailed project deep-dives. Goal: Organize/Inform. Viz/Method: HTML Accordion. Interaction: JS-based expand/collapse. Justification: Manages information density, allowing users to focus on one detailed project at a time without clutter.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans leading-relaxed">
+
+    <div class="max-w-7xl mx-auto p-4 md:p-8 flex flex-col min-h-screen">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-bold text-blue-800 mb-2">Project Nexus</h1>
+            <p class="text-lg md:text-xl text-gray-600">Fusing MAHA MedTech Mission Goals with Proven Orthopaedic R&D Expertise</p>
+        </header>
+
+        <main class="flex-grow">
+            <div class="mb-6 border-b border-gray-200">
+                <div class="flex flex-wrap -mb-px" role="tablist">
+                    <button class="tab-button active text-lg py-4 px-6 border-b-2 border-transparent" role="tab" data-target="page-overview">Overview</button>
+                    <button class="tab-button text-lg py-4 px-6 border-b-2 border-transparent" role="tab" data-target="page-explorer">Project Explorer</button>
+                    <button class="tab-button text-lg py-4 px-6 border-b-2 border-transparent" role="tab" data-target="page-deep-dives">Deep Dives</button>
+                    <button class="tab-button text-lg py-4 px-6 border-b-2 border-transparent" role="tab" data-target="page-conclusion">Conclusion</button>
+                </div>
+            </div>
+
+            <div id="tab-content">
+                
+                <div id="page-overview" role="tabpanel">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Executive Summary</h2>
+                        <p class="mb-4 text-gray-700">This report outlines 20 high-impact medical technology projects designed to be pursued under the umbrella of the MAHA MedTech Mission. The projects are strategically curated to lie at the precise intersection of the Mission's national objectives (e.g., reducing 70-80% import dependency, focusing on AI, robotics, and implants) and the specific, proven expertise of Dr. Bhaskar Borgohain.</p>
+                        <p class="mb-6 text-gray-700">Dr. Borgohain's profile as an academic leader, a high-volume surgeon, and a successful R&D collaborator makes him a pivotal figure for translating the Mission's vision into tangible, indigenously-developed ("Atmanirbhar") solutions. The projects are grouped into five strategic categories reflecting this synergy.</p>
+                        
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Strategic Context</h2>
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div class="border border-gray-200 p-4 rounded-md">
+                                <h3 class="text-xl font-semibold text-blue-700 mb-2">MAHA MedTech Mission</h3>
+                                <p class="text-gray-700">Aims to dismantle India's 70-80% import dependency on medical devices. It prioritizes high-impact areas, including advanced implants, diagnostics, AI/ML, and robotics, through a mission-mode ecosystem approach.</p>
+                            </div>
+                            <div class="border border-gray-200 p-4 rounded-md">
+                                <h3 class="text-xl font-semibold text-blue-700 mb-2">Dr. Bhaskar Borgohain's Profile</h3>
+                                <p class="text-gray-700">Represents a rare blend of deep clinical expertise (orthopaedics, trauma, sports injury, joint replacement) and proven R&D capabilities. His past projects are direct precursors to the type of innovation the MAHA Mission seeks to fund.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-explorer" role="tabpanel" class="hidden">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm">
+                        <p class="text-lg text-gray-700 mb-6 text-center">This section provides a complete, interactive list of all 20 project proposals. Use the filters to narrow projects by their strategic category, or browse the full list. The chart provides a high-level summary of how projects are distributed across these key themes.</p>
+                        
+                        <div class="grid md:grid-cols-3 gap-8">
+                            
+                            <div class="md:col-span-1 space-y-6">
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-3">Filter by Category</h3>
+                                    <div id="filter-container" class="flex flex-col space-y-2">
+                                        <button class="filter-button active w-full text-left p-3 rounded-md transition duration-150 ease-in-out" data-filter="all">All Projects (20)</button>
+                                        <button class="filter-button w-full text-left p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100" data-filter="implants">Implants & Biomaterials (5)</button>
+                                        <button class="filter-button w-full text-left p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100" data-filter="ai-robotics">AI & Robotics (5)</button>
+                                        <button class="filter-button w-full text-left p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100" data-filter="diagnostics">Smart Diagnostics (4)</button>
+                                        <button class="filter-button w-full text-left p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100" data-filter="frugal">Frugal Innovation (4)</button>
+                                        <button class="filter-button w-full text-left p-3 rounded-md transition duration-150 ease-in-out hover:bg-gray-100" data-filter="ecosystem">Ecosystem & Skills (2)</button>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h3 class="text-xl font-semibold text-gray-900 mb-3 text-center">Projects per Category</h3>
+                                    <div class="chart-container">
+                                        <canvas id="categoryChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="md:col-span-2">
+                                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Project List</h2>
+                                <div id="project-card-grid" class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-deep-dives" role="tabpanel" class="hidden">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm">
+                        <p class="text-lg text-gray-700 mb-6">Below is a comprehensive analysis of six high-priority 'exemplar' projects. These projects were selected for their high impact and strong alignment with both the MAHA Mission's goals and Dr. Borgohain's proven expertise. Click any project title to expand and read the full deep-dive analysis.</p>
+                        <div id="accordion-container" class="space-y-2">
+                        </div>
+                    </div>
+                </div>
+
+                <div id="page-conclusion" role="tabpanel" class="hidden">
+                    <div class="bg-white p-6 md:p-8 rounded-lg shadow-sm">
+                        <h2 class="text-2xl font-semibold text-gray-900 mb-4">Conclusion</h2>
+                        <p class="text-gray-700">The 20 projects outlined in this report represent a strategic and actionable roadmap. They are designed to be immediately pursuable by leveraging the powerful synergy between the MAHA MedTech Mission's national goals and the proven, on-the-ground R&D and clinical expertise exemplified by Dr. Bhaskar Borgohain. These projects move beyond simple ideas, providing a clear pathway to develop tangible, high-impact medical technologies that can lead India to self-reliance.</p>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+        
+        <footer class="mt-12 border-t border-gray-200 pt-8 pb-4 text-center">
+            <div class="mb-4">
+                <p class="font-bold text-gray-900 text-lg">Author: Kalyanjit Hatibaruah</p>
+            </div>
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-2 md:space-y-0 md:space-x-6 text-gray-600 mb-4">
+                <a href="https://wa.me/919864011106" target="_blank" class="hover:text-green-600 transition-colors flex items-center">
+                    <span class="mr-2 text-xl">📱</span> WhatsApp: +91-9864011106
+                </a>
+                <span class="hidden md:inline text-gray-300">|</span>
+                <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="hover:text-blue-700 transition-colors flex items-center">
+                    <span class="mr-2 text-xl">🔗</span> LinkedIn Profile
+                </a>
+            </div>
+            <p class="text-sm text-gray-500 max-w-2xl mx-auto">
+                Copyright &copy; Flugelsoft Labs. For collaborations in projects please message.
+            </p>
+        </footer>
+
+    </div>
+
+    <script>
+        const projectData = [
+            { id: 1, title: "Bio-resorbable Nanocomposite Screws", category: "implants", deepDive: false },
+            { id: 2, title: "Patient-Specific 3D Printed Pelvic Implants", category: "implants", deepDive: false },
+            { id: 3, title: "High-Durability TKR Nanocomposites", category: "implants", deepDive: false },
+            { id: 4, title: "Smart Hip Fixation Device with Sensing", category: "implants", deepDive: true },
+            { id: 5, title: "Indigenous Spine Pedicle Screw System", category: "implants", deepDive: false },
+            { id: 6, title: "AI-Powered Pre-op Planning for Trauma", category: "ai-robotics", deepDive: true },
+            { id: 7, title: "Low-Cost Robotic System for Spine Fixation", category: "ai-robotics", deepDive: false },
+            { id: 8, title: "Haptic VR Simulator for Arthroscopy", category: "ai-robotics", deepDive: false },
+            { id: 9, title: "AI Clinical Decision Support for Polytrauma", category: "ai-robotics", deepDive: false },
+            { id: 10, title: "Frugal AI Computer Navigation for TKR", category: "ai-robotics", deepDive: true },
+            { id: 11, title: "Wearable IoT for Remote Rehab Monitoring", category: "diagnostics", deepDive: true },
+            { id: 12, title: "AI Radiograph Analysis for Implant Loosening", category: "diagnostics", deepDive: false },
+            { id: 13, title: "Non-invasive Sensor for Compartment Syndrome", category: "diagnostics", deepDive: false },
+            { id: 14, title: "Tele-rehabilitation Platform for Sports Injury", category: "diagnostics", deepDive: false },
+            { id: 15, title: "Low-Cost, High-Durability Polycentric Knee", category: "frugal", deepDive: true },
+            { id: 16, title: "A 'Trauma-in-a-Box' Toolkit for Rural/Disaster", category: "frugal", deepDive: false },
+            { id: 17, title: "Solar-Powered Portable Orthopaedic Drill", category: "frugal", deepDive: false },
+            { id: 18, title: "Simplified, Modular External Fixator System", category: "frugal", deepDive: false },
+            { id: 19, title: "National Network of Cadaveric & Sim Labs", category: "ecosystem", deepDive: false },
+            { id: 20, title: "National Implant Registry & AI Failure Database", category: "ecosystem", deepDive: true }
+        ];
+
+        const categoryMap = {
+            "implants": "Implants & Biomaterials",
+            "ai-robotics": "AI & Robotics",
+            "diagnostics": "Smart Diagnostics",
+            "frugal": "Frugal Innovation",
+            "ecosystem": "Ecosystem & Skills"
+        };
+        
+        const deepDiveData = [
+            {
+                id: 4,
+                title: "Project 4: Smart Hip Fixation Device with Integrated Strain Sensing",
+                problem: "Conventional hip fixation devices are 'dumb.' The surgeon has no data on the healing process until a follow-up X-ray, weeks later. This can lead to delayed/non-unions or implant failure.",
+                solution: "Evolve the existing patent-pending 'New Hip Fixation Device' by integrating micro-strain gauges or fibre-optic sensors. These sensors will provide real-time, quantitative feedback on the load being transferred across the fracture site, read wirelessly by a clinician.",
+                alignment: "Directly supports the development of high-value, 'smart' implants, moving beyond simple import substitution to creating next-generation technology.",
+                expertise: "A direct 'next step' for the 2020-2022 R&D project with IIT Guwahati. Dr. Borgohain has the clinical, biomechanical, and collaborative experience to lead this.",
+                impact: "Revolutionizes post-operative care for hip fractures, enabling personalized rehab protocols, early detection of failure, and reduced revision surgeries."
+            },
+            {
+                id: 6,
+                title: "Project 6: AI-Powered Pre-operative Planning Software for Complex Trauma",
+                problem: "Reconstructing complex fractures (e.g., pelvic, acetabular) is like solving a 3D jigsaw puzzle. Planning is time-consuming, subjective, and relies heavily on the surgeon's experience.",
+                solution: "A software that takes CT scan data and uses an AI model to: 1. Automatically segment all bone fragments. 2. Create a 3D digital model. 3. Allow the surgeon to virtually 'reduce' the fragments and select/place virtual implants. 4. Provide pre-operative measurements.",
+                alignment: "Directly addresses the priority area of 'AI and ML in Healthcare.' It creates a high-value software product that can be scaled nationally.",
+                expertise: "Dr. Borgohain's specialty in trauma and experience with computer-navigated surgery provides the exact clinical insight needed to guide the AI development and validate its utility.",
+                impact: "Drastically reduces surgical planning time, improves surgical accuracy, reduces operation time, and allows less-experienced surgeons to confidently tackle complex cases."
+            },
+            {
+                id: 10,
+                title: "Project 10: Frugal, AI-based Computer Navigation System for TKR",
+                problem: "High-end robotic and navigation systems for Total Knee Replacement (TKR) are prohibitively expensive (>$1M USD), limiting their use to elite urban hospitals and creating a major quality gap.",
+                solution: "Develop a 'frugal' navigation system using off-the-shelf components (laptop, optical camera, 3D-printable trackers) and an AI-powered software that achieves navigation without expensive pre-operative imaging.",
+                alignment: "A 'Frugal Innovation' approach to the 'Robotics' and 'AI' priority areas. This has potential for massive national adoption, directly replacing costly imports.",
+                expertise: "Dr. Borgohain has been trained in computer-navigated TKR since 2005-2006. He is perfectly positioned to define the clinical requirements and validate a frugal alternative.",
+                impact: "Democratizes precision knee replacement, making it affordable for district-level hospitals and Tier-2/3 cities, improving outcomes for thousands of patients."
+            },
+            {
+                id: 11,
+                title: "Project 11: Wearable IoT Sensor System for Remote Rehab Monitoring",
+                problem: "The success of a joint replacement or arthroscopic surgery is 50% surgery and 50% rehabilitation. Patient compliance is difficult to track, leading to poor outcomes.",
+                solution: "A low-cost wearable band (with IMU sensor) that tracks key metrics (range of motion, step count, gait quality, exercise compliance). Data is synced to a mobile app for remote monitoring by the physiotherapist and surgeon.",
+                alignment: "Aligns with 'Diagnostics & Monitoring' and 'Telemedicine.' It creates a scalable, data-driven model for post-operative care.",
+                expertise: "As a surgeon performing TKR and running a sports injury clinic, Dr. Borgohain sees the consequences of poor rehab daily and can guide development of clinically relevant metrics.",
+                impact: "Improves patient outcomes, reduces the need for in-person physio visits (lowering cost), and creates a valuable dataset for optimizing rehab protocols."
+            },
+            {
+                id: 15,
+                title: "Project 15: Low-Cost, High-Durability Polycentric Knee Joint for Artificial Limbs",
+                problem: "Most affordable artificial limbs in India use a simple, single-axis knee joint, which is unstable and provides an unnatural gait. High-performance polycentric knees are expensive and imported.",
+                solution: "Evolve the 2012-2015 project on nanotech limbs. Use learnings from nanocomposites to design and manufacture a polycentric knee joint that is lightweight, durable, mechanically robust, and affordable to manufacture in India.",
+                alignment: "A perfect example of 'Frugal Innovation' and indigenous R&D to create a 'best-in-class' product, reducing import dependency for a high-need area.",
+                expertise: "This is a direct continuation of Dr. Borgohain's past successful, funded R&D. He has already proven his capability in this exact domain.",
+                impact: "Provides a stable, more natural-walking knee joint to thousands of amputees at an affordable price, dramatically improving their quality of life."
+            },
+            {
+                id: 20,
+                title: "Project 20: National Implant Registry & AI-Enabled Failure Analysis Database",
+                problem: "When an imported implant fails, the failure data is lost to the foreign manufacturer. India loses the most valuable resource for R&D: failure data. We don't know why implants are failing in our specific population.",
+                solution: "A national, web-based registry to track every implant, coupled with a national network for 'Implant Retrieval & Failure Analysis.' An AI model would be trained on this database (X-rays, notes, analysis) to identify failure patterns.",
+                alignment: "This is a foundational 'Ecosystem' project. It provides the crucial feedback loop that will guide all other indigenous R&D, as outlined in the MAHA mission.",
+                expertise: "As a Professor, HoD, and high-volume joint replacement surgeon, Dr. Borgohain has the national standing and clinical perspective to champion and help design such a registry.",
+                impact: "Creates a 'data moat' for Indian MedTech. It will be the single most valuable resource for indigenous companies to design better, safer, and more effective implants for the Indian population."
+            }
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+
+            initTabs();
+            renderProjectCards();
+            initFilters();
+            renderDeepDives();
+            initAccordion();
+            renderCategoryChart();
+
+        });
+
+        function initTabs() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('[role="tabpanel"]');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const targetId = button.getAttribute('data-target');
+
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    tabContents.forEach(content => {
+                        if (content.id === targetId) {
+                            content.classList.remove('hidden');
+                        } else {
+                            content.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+
+        function renderProjectCards() {
+            const grid = document.getElementById('project-card-grid');
+            let html = '';
+            
+            projectData.forEach(project => {
+                const categoryName = categoryMap[project.category] || 'General';
+                const deepDiveBadge = project.deepDive ? '<span class="absolute top-2 right-2 inline-block bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded-full">Deep Dive</span>' : '';
+                
+                html += `
+                    <div classclass="project-card relative bg-white p-4 rounded-lg shadow border border-gray-100 hover:shadow-md" data-category="${project.category}">
+                        ${deepDiveBadge}
+                        <h4 class="text-lg font-semibold text-gray-900 mb-1">Project ${project.id}: ${project.title}</h4>
+                        <p class="text-sm text-blue-600">${categoryName}</p>
+                        ${project.deepDive ? '<a href="#" class="text-sm font-medium text-blue-700 hover:underline deep-dive-link" data-target-id="' + project.id + '">See Deep Dive &rarr;</a>' : ''}
+                    </div>
+                `;
+            });
+            grid.innerHTML = html;
+            
+            grid.querySelectorAll('.deep-dive-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = e.target.getAttribute('data-target-id');
+                    
+                    document.querySelector('.tab-button[data-target="page-deep-dives"]').click();
+                    
+                    setTimeout(() => {
+                        const targetAccordion = document.querySelector(`.accordion-button[data-accordion-id="${targetId}"]`);
+                        if (targetAccordion && !targetAccordion.classList.contains('active')) {
+                            targetAccordion.click();
+                        }
+                        targetAccordion.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
+                });
+            });
+        }
+
+        function initFilters() {
+            const filterButtons = document.querySelectorAll('.filter-button');
+            const projectCards = document.querySelectorAll('.project-card');
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filter = button.getAttribute('data-filter');
+
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    projectCards.forEach(card => {
+                        if (filter === 'all' || card.getAttribute('data-category') === filter) {
+                            card.classList.remove('hidden');
+                        } else {
+                            card.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        }
+
+        function renderDeepDives() {
+            const container = document.getElementById('accordion-container');
+            let html = '';
+            
+            deepDiveData.forEach(project => {
+                html += `
+                    <div>
+                        <button class="accordion-button w-full flex justify-between items-center text-left p-4 rounded-md bg-gray-100 hover:bg-gray-200 focus:outline-none" data-accordion-id="${project.id}">
+                            <span class="text-lg font-semibold text-gray-800">${project.title}</span>
+                            <span class="text-2xl text-gray-500 accordion-icon">+</span>
+                        </button>
+                        <div class="accordion-content hidden p-6 bg-white border border-gray-200 rounded-b-md">
+                            <h4 class="text-md font-semibold text-gray-900">Problem Statement</h4>
+                            <p class="mb-3 text-gray-700">${project.problem}</p>
+                            <h4 class="text-md font-semibold text-gray-900">Proposed Solution</h4>
+                            <p class="mb-3 text-gray-700">${project.solution}</p>
+                            <h4 class="text-md font-semibold text-gray-900">MAHA Mission Alignment</h4>
+                            <p class="mb-3 text-gray-700">${project.alignment}</p>
+                            <h4 class="text-md font-semibold text-gray-900">Relevance to Expertise</h4>
+                            <p class="mb-3 text-gray-700">${project.expertise}</p>
+                            <h4 class="text-md font-semibold text-gray-900">Potential Impact</h4>
+                            <p class="mb-3 text-gray-700">${project.impact}</p>
+                        </div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        function initAccordion() {
+            const accordionButtons = document.querySelectorAll('.accordion-button');
+
+            accordionButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const content = button.nextElementSibling;
+                    const icon = button.querySelector('.accordion-icon');
+                    const isActive = button.classList.contains('active');
+                    
+                    document.querySelectorAll('.accordion-content').forEach(c => {
+                        if (c !== content) {
+                            c.classList.add('hidden');
+                        }
+                    });
+                    document.querySelectorAll('.accordion-button').forEach(b => {
+                         if (b !== button) {
+                            b.classList.remove('active');
+                            b.querySelector('.accordion-icon').textContent = '+';
+                         }
+                    });
+
+                    if (isActive) {
+                        content.classList.add('hidden');
+                        button.classList.remove('active');
+                        icon.textContent = '+';
+                    } else {
+                        content.classList.remove('hidden');
+                        button.classList.add('active');
+                        icon.textContent = '-';
+                    }
+                });
+            });
+        }
+        
+        function renderCategoryChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            const data = {
+                labels: [
+                    'Implants & Biomaterials',
+                    'AI & Robotics',
+                    'Smart Diagnostics',
+                    'Frugal Innovation',
+                    'Ecosystem & Skills'
+                ],
+                datasets: [{
+                    label: 'Number of Projects',
+                    data: [5, 5, 4, 4, 2],
+                    backgroundColor: [
+                        '#3B82F6',
+                        '#10B981',
+                        '#F59E0B',
+                        '#EF4444',
+                        '#6366F1'
+                    ],
+                    hoverOffset: 4
+                }]
+            };
+            const options = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 15,
+                            boxWidth: 12,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            };
+            
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: data,
+                options: options
+            });
+        }
+
+    </script>
+</body>
+</html>
