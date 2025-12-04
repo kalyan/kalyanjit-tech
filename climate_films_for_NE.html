@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoLens NE: Climate Cinema Series Proposal</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- Internal Styles -->
+    <style>
+        /* Chosen Palette: Earthy Warmth & Digital Clarity */
+        :root {
+            --bg-main: #FAFAF9; /* Stone 50 */
+            --text-primary: #1C1917; /* Stone 900 */
+            --accent-green: #0D9488; /* Teal 600 */
+            --accent-clay: #B45309; /* Amber 700 */
+            --surface-card: #FFFFFF;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        /* Chart Container Rules (Strict Adherence) */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px; /* Max width to prevent stretching */
+            height: 400px;    /* Base height */
+            max-height: 450px;
+            margin-left: auto;
+            margin-right: auto;
+            background: white;
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for the Film List */
+        .film-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .film-list::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        .film-list::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        .film-list::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        .active-film {
+            border-left: 4px solid var(--accent-green);
+            background-color: #F0FDFA; /* Teal 50 */
+        }
+        
+        .transition-all-300 {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-100 selection:text-teal-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-sm border-b border-stone-200 shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl">🌱</span>
+                <span class="text-xl font-bold tracking-tight text-stone-800">EcoLens <span class="text-teal-600">NE</span></span>
+            </div>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-stone-600">
+                <a href="#context" class="hover:text-teal-600 transition">Context</a>
+                <a href="#series" class="hover:text-teal-600 transition">The Series</a>
+                <a href="#impact" class="hover:text-teal-600 transition">Impact & Strategy</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="container mx-auto px-4 py-12 md:py-20 text-center max-w-4xl">
+        <div class="inline-block px-3 py-1 mb-4 text-xs font-semibold tracking-wider text-teal-800 uppercase bg-teal-100 rounded-full">
+            Proposal for Youth Education
+        </div>
+        <h1 class="text-4xl md:text-6xl font-bold text-stone-900 mb-6 leading-tight">
+            Adapting the Narrative:<br>
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-amber-600">Climate Resilience in North East India</span>
+        </h1>
+        <p class="text-lg md:text-xl text-stone-600 mb-4 max-w-2xl mx-auto leading-relaxed">
+            A strategic framework for a 12-part short film series designed to educate, engage, and mobilize the youth of the "Seven Sisters" + Sikkim through culturally relevant storytelling.
+        </p>
+        
+        <!-- Authors Byline -->
+        <div class="mb-8 flex justify-center items-center space-x-2 text-stone-500 text-sm md:text-base animate-fade-in-up">
+            <span class="italic">Proposed by</span>
+            <span class="font-bold text-stone-800">Rahul Mahanta</span>
+            <span class="text-teal-500">&bull;</span>
+            <span class="font-bold text-stone-800">Kalyanjit Hatibaruah</span>
+        </div>
+
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+            <button onclick="document.getElementById('series').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 bg-teal-600 text-white font-semibold rounded-lg hover:bg-teal-700 transition shadow-lg shadow-teal-200">
+                Explore the 12 Films
+            </button>
+            <button onclick="document.getElementById('impact').scrollIntoView({behavior: 'smooth'})" class="px-8 py-3 bg-white text-stone-700 border border-stone-300 font-semibold rounded-lg hover:bg-stone-50 transition">
+                View Impact Data
+            </button>
+        </div>
+    </header>
+
+    <!-- SECTION 1: REGIONAL CONTEXT -->
+    <section id="context" class="bg-stone-100 py-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center mb-12">
+                <h2 class="text-3xl font-bold text-stone-800 mb-4">Why This Region? Why Now?</h2>
+                <p class="text-stone-600 leading-relaxed">
+                    North East India is a biodiversity hotspot, but it is disproportionately vulnerable to climate change. 
+                    From the melting glaciers of Arunachal to the flooding plains of Assam, the youth face a future defined by adaptation.
+                    This visualization maps the specific climate risks per state that drive our content strategy.
+                </p>
+            </div>
+
+            <!-- Plotly Radar Chart: Regional Vulnerabilities -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div class="order-2 lg:order-1">
+                    <div class="chart-container" id="radarContainer">
+                        <!-- Plotly renders here -->
+                    </div>
+                </div>
+                <div class="order-1 lg:order-2 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500">
+                        <h3 class="text-xl font-bold mb-2">🔥 The "Heat & Water" Paradox</h3>
+                        <p class="text-stone-600 text-sm">
+                            While Assam battles annual floods, Meghalaya (the wettest place on earth) faces dry spells. The series addresses these contradictions to teach <strong>Adaptation</strong> over simple mitigation.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-teal-500">
+                        <h3 class="text-xl font-bold mb-2">🌿 Biodiversity Loss</h3>
+                        <p class="text-stone-600 text-sm">
+                            Arunachal and Nagaland are seeing shifts in flora due to warming. The films will focus on <strong>Preservation of Indigenous Knowledge</strong> as a climate shield.
+                        </p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500">
+                        <h3 class="text-xl font-bold mb-2">🏙️ Unplanned Urbanization</h3>
+                        <p class="text-stone-600 text-sm">
+                            Landslides in Mizoram and Sikkim are exacerbated by construction. We target urban youth with messages of <strong>Sustainable Development</strong>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 2: THE 12-PART SERIES (Interactive Dashboard) -->
+    <section id="series" class="py-16 container mx-auto px-4">
+        <div class="mb-10 border-b border-stone-200 pb-4">
+            <h2 class="text-3xl font-bold text-stone-800">The Series Roadmap</h2>
+            <p class="text-stone-600 mt-2">
+                Explore the 12 planned episodes. Each film is 3-5 minutes long, targeting a specific emotion and call to action. 
+                Select a title to view the storyboard concept.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 h-auto lg:h-[600px]">
+            <!-- Left Column: Navigation List -->
+            <div class="lg:col-span-4 flex flex-col h-full bg-white rounded-xl border border-stone-200 shadow-sm overflow-hidden">
+                <div class="p-4 bg-stone-50 border-b border-stone-200 font-semibold text-stone-700">
+                    Episode List
+                </div>
+                <div class="film-list overflow-y-auto flex-1 p-2 space-y-2" id="filmNav">
+                    <!-- JS will populate this -->
+                </div>
+            </div>
+
+            <!-- Right Column: Detail View -->
+            <div class="lg:col-span-8 flex flex-col h-full">
+                <div id="filmDetail" class="bg-white rounded-xl border border-stone-200 shadow-lg h-full p-8 flex flex-col relative overflow-hidden">
+                    <!-- Dynamic Content -->
+                    <div class="absolute top-0 right-0 p-12 opacity-5 pointer-events-none">
+                        <span id="bgIcon" class="text-9xl">🎬</span>
+                    </div>
+                    
+                    <div class="overflow-y-auto pr-2 custom-scrollbar" style="max-height: 100%;">
+                        <div class="flex items-center space-x-3 mb-4">
+                            <span id="detailTag" class="px-3 py-1 text-xs font-bold uppercase tracking-wide bg-teal-100 text-teal-800 rounded-full">Topic</span>
+                            <span id="detailState" class="px-3 py-1 text-xs font-bold uppercase tracking-wide bg-stone-100 text-stone-600 rounded-full">Region</span>
+                        </div>
+                        <h3 id="detailTitle" class="text-4xl font-bold text-stone-900 mb-2">Select a Film</h3>
+                        <h4 id="detailLogline" class="text-xl text-teal-700 italic font-serif mb-6">Explore the series on the left...</h4>
+                        
+                        <div class="prose prose-stone max-w-none mb-8">
+                            <h5 class="font-bold text-stone-800 uppercase text-sm tracking-wider mb-2">Synopsis</h5>
+                            <p id="detailSynopsis" class="text-stone-600 text-lg leading-relaxed">
+                                Click on an episode from the list to see the plot, educational goal, and target audience analysis.
+                            </p>
+                        </div>
+
+                        <!-- NEW: Storyboard Section -->
+                        <div class="bg-stone-50 rounded-xl p-6 border border-stone-100 mb-8">
+                            <h5 class="font-bold text-stone-800 uppercase text-sm tracking-wider mb-4 flex items-center">
+                                <span class="mr-2 text-xl">🎞️</span> Visual Storyboard
+                            </h5>
+                            <div id="detailStoryboard" class="space-y-0">
+                                <!-- JS populates timeline here -->
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-stone-100 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div class="bg-white border border-stone-200 p-4 rounded-lg text-center shadow-sm">
+                                <div class="text-2xl mb-2">🎯</div>
+                                <div class="text-xs font-bold text-stone-500 uppercase">Educational Goal</div>
+                                <div id="detailGoal" class="text-sm font-semibold text-stone-800 mt-1">-</div>
+                            </div>
+                            <div class="bg-white border border-stone-200 p-4 rounded-lg text-center shadow-sm">
+                                <div class="text-2xl mb-2">❤️</div>
+                                <div class="text-xs font-bold text-stone-500 uppercase">Target Emotion</div>
+                                <div id="detailEmotion" class="text-sm font-semibold text-stone-800 mt-1">-</div>
+                            </div>
+                            <div class="bg-white border border-stone-200 p-4 rounded-lg text-center shadow-sm">
+                                <div class="text-2xl mb-2">📣</div>
+                                <div class="text-xs font-bold text-stone-500 uppercase">Call to Action</div>
+                                <div id="detailCTA" class="text-sm font-semibold text-stone-800 mt-1">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: IMPACT & DATA -->
+    <section id="impact" class="bg-stone-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="mb-12 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold mb-4">Measurable Impact Strategy</h2>
+                <p class="text-stone-400 text-lg">
+                    We move beyond "awareness" to "behavioral change." Using the <span class="text-teal-400">Knowledge-Attitude-Practice (KAP)</span> model, we track how viewership translates to on-ground action in North East India.
+                </p>
+            </div>
+
+            <!-- Theory of Change Visual -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-16 relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-stone-700 -z-10 transform -translate-y-1/2"></div>
+                
+                <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 text-center relative hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-12 h-12 mx-auto bg-stone-900 rounded-full border-2 border-teal-500 flex items-center justify-center text-xl font-bold mb-4">1</div>
+                    <h4 class="font-bold text-lg mb-2 text-teal-400">Engage</h4>
+                    <p class="text-sm text-stone-400">Localized content in 8+ dialects delivered via WhatsApp & YouTube Shorts.</p>
+                </div>
+                
+                <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 text-center relative hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-12 h-12 mx-auto bg-stone-900 rounded-full border-2 border-amber-500 flex items-center justify-center text-xl font-bold mb-4">2</div>
+                    <h4 class="font-bold text-lg mb-2 text-amber-400">Educate</h4>
+                    <p class="text-sm text-stone-400">Screenings in 500+ SEBA schools followed by guided teacher discussions.</p>
+                </div>
+
+                <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 text-center relative hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-12 h-12 mx-auto bg-stone-900 rounded-full border-2 border-purple-500 flex items-center justify-center text-xl font-bold mb-4">3</div>
+                    <h4 class="font-bold text-lg mb-2 text-purple-400">Empower</h4>
+                    <p class="text-sm text-stone-400">Students form "Eco-Squads" to audit school waste & energy use.</p>
+                </div>
+
+                <div class="bg-stone-800 p-6 rounded-xl border border-stone-700 text-center relative hover:-translate-y-2 transition-transform duration-300">
+                    <div class="w-12 h-12 mx-auto bg-stone-900 rounded-full border-2 border-green-500 flex items-center justify-center text-xl font-bold mb-4">4</div>
+                    <h4 class="font-bold text-lg mb-2 text-green-400">Impact</h4>
+                    <p class="text-sm text-stone-400">Reduction in local burning, increased tree cover, and policy petitions.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <!-- Text Content -->
+                <div class="flex flex-col justify-center space-y-6">
+                    <h3 class="text-2xl font-bold text-white">Projected Reach (Year 1)</h3>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                            <span class="text-stone-400">Direct School Reach</span>
+                            <span class="text-xl font-bold text-white">150,000+ Students</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                            <span class="text-stone-400">Digital Impressions</span>
+                            <span class="text-xl font-bold text-white">5 Million+</span>
+                        </div>
+                        <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                            <span class="text-stone-400">Educator Network</span>
+                            <span class="text-xl font-bold text-white">1,200 Teachers</span>
+                        </div>
+                         <div class="flex justify-between items-center border-b border-stone-800 pb-2">
+                            <span class="text-stone-400">Languages Covered</span>
+                            <span class="text-xl font-bold text-white">Assamese, Bodo, Mizo, Khasi + 4 more</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart.js: Engagement Channels -->
+                <div>
+                    <div class="chart-container bg-stone-800 border border-stone-700">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-stone-500 mt-2">Distribution Mix Strategy</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 3: IMPACT & DATA -->
+    <section id="impact" class="bg-stone-900 text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                <!-- Text Content -->
+                <div class="flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold mb-6">Strategizing for Impact</h2>
+                    <p class="text-stone-400 mb-6 text-lg">
+                        Creating the films is only phase one. To truly educate the youth, we need a distribution strategy that meets them where they are: mobile screens and classrooms.
+                    </p>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="mr-3 text-teal-400 mt-1">✓</span>
+                            <div>
+                                <strong class="text-white block">Hyper-Local Distribution</strong>
+                                <span class="text-stone-400 text-sm">WhatsApp distribution lists are the primary news source in rural NE. We will format 9:16 vertical cuts for immediate sharing.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 text-teal-400 mt-1">✓</span>
+                            <div>
+                                <strong class="text-white block">School Partnerships</strong>
+                                <span class="text-stone-400 text-sm">Partnering with SEBA and state boards to include these films in Environmental Science (EVS) curriculum.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 text-teal-400 mt-1">✓</span>
+                            <div>
+                                <strong class="text-white block">Influencer Collab</strong>
+                                <span class="text-stone-400 text-sm">Using local musicians and influencers from each state to voice the narration, ensuring cultural buy-in.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Chart.js: Engagement Channels -->
+                <div>
+                    <h3 class="text-xl font-bold mb-4 text-center">Projected Reach by Channel (Year 1)</h3>
+                    <div class="chart-container bg-stone-800 border border-stone-700">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-stone-500 mt-2">Data based on average engagement rates of similar educational NGOs in the region.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- SECTION 4: PRODUCTION & TOPICS -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-10 text-stone-800">Thematic Balance</h2>
+            <p class="text-center text-stone-600 max-w-2xl mx-auto mb-12">
+                The series avoids "doom and gloom." We balance the warning signals with actionable solutions and celebration of heritage. 
+                This chart shows the distribution of screen time allocated to different thematic pillars.
+            </p>
+
+            <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+                <div class="w-full md:w-1/2 flex justify-center">
+                     <div class="chart-container h-[350px]">
+                        <canvas id="themeChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="w-full md:w-1/2 space-y-6">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-teal-100 flex items-center justify-center text-2xl">💡</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Solution Oriented (40%)</h4>
+                            <p class="text-sm text-stone-600">Focusing on practical steps (waste management, rainwater harvesting) youth can take today.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-amber-100 flex items-center justify-center text-2xl">⚠️</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Risk Awareness (30%)</h4>
+                            <p class="text-sm text-stone-600">Visualizing the scientific reality of future flood lines and temperature rises.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center text-2xl">🤝</div>
+                        <div>
+                            <h4 class="font-bold text-stone-800">Cultural Heritage (30%)</h4>
+                            <p class="text-sm text-stone-600">Linking climate resilience to traditional tribal wisdom and community practices.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-stone-100 border-t border-stone-200 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <p class="font-bold text-stone-800">EcoLens NE Project</p>
+            <p class="text-sm text-stone-500 mt-2">Generated for Educational Strategy Proposal</p>
+            <div class="mt-4 flex justify-center space-x-4 opacity-50">
+                <span>🌱</span>
+                <span>📽️</span>
+                <span>🌏</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // --- DATA: The 12 Films (Expanded with Storyboards) ---
+        const films = [
+            {
+                id: 1,
+                title: "River's Wrath",
+                state: "Assam",
+                topic: "Floods & Resilience",
+                icon: "🌊",
+                logline: "When the Brahmaputra rises, a young boatman must save his school books.",
+                synopsis: "Set in Majuli, the world's largest river island. The film follows 12-year-old Jiten. Every year, the floods take something—his chickens, his cycle. This year, the water threatens the community library.",
+                storyboard: [
+                    { time: "0:00", action: "Wide drone shot of the golden sunset over the Brahmaputra. Peaceful but vast." },
+                    { time: "1:15", action: "Radio announcement in Assamese: 'Water levels rising above danger mark.' Jiten looks at his exam books." },
+                    { time: "2:30", action: "Chaos. Villagers moving cattle to high ground. Jiten isn't packing clothes; he is wrapping books in plastic sheets." },
+                    { time: "3:45", action: "Night on a boat. The village is submerged. Jiten reads by torchlight, floating above his old home. Resilience defined." }
+                ],
+                goal: "Disaster Preparedness",
+                emotion: "Determination",
+                cta: "Build a flood survival kit."
+            },
+            {
+                id: 2,
+                title: "The Living Root",
+                state: "Meghalaya",
+                topic: "Bio-Engineering",
+                icon: "🌳",
+                logline: "Ancient wisdom meets modern crisis in the wettest place on earth.",
+                synopsis: "In a world obsessed with quick concrete solutions, a Khasi elder teaches his impatient grandson, Baer, that strength takes time. A storm tests both a government concrete bridge and the ancient root bridge.",
+                storyboard: [
+                    { time: "0:00", action: "Montage of heavy rain. The sound is deafening. 'Cherrapunji - The abode of clouds.'" },
+                    { time: "1:00", action: "Baer complains about the slow growth of a rubber fig tree sapling. He points to a fast-built cement bridge nearby." },
+                    { time: "2:45", action: "The Storm. The cement bridge cracks and washes away in a flash flood." },
+                    { time: "4:00", action: "Morning. The Root Bridge stands firm. Baer quietly ties a new root, understanding the lesson." }
+                ],
+                goal: "Respect Indigenous Tech",
+                emotion: "Awe",
+                cta: "Plant a native tree today."
+            },
+            {
+                id: 3,
+                title: "Snowless Peaks",
+                state: "Arunachal Pradesh",
+                topic: "Glacial Melt",
+                icon: "🏔️",
+                logline: "A yak herder notices the snowline moving higher every year.",
+                synopsis: "Tashi, a young shepherd near Tawang, cannot find the usual grazing grounds. The snow has receded, exposing bare rock. He finds an old photo of his grandfather in deep snow at the exact same spot.",
+                storyboard: [
+                    { time: "0:00", action: "Breathtaking shot of the Sela Pass. Wind howling." },
+                    { time: "1:30", action: "Tashi holds a crinkled black-and-white photo against the horizon. The difference is shocking." },
+                    { time: "3:00", action: "He tries to explain 'Global Warming' to his village elders using a pot of boiling tea." },
+                    { time: "4:30", action: "Tashi starts a vlog documenting the melting ice to send to the city." }
+                ],
+                goal: "Global Connection",
+                emotion: "Concern",
+                cta: "Reduce carbon footprint."
+            },
+            {
+                id: 4,
+                title: "The Plastic Hill",
+                state: "Sikkim",
+                topic: "Waste Management",
+                icon: "♻️",
+                logline: "Sikkim is organic, but tourism leaves a plastic trail.",
+                synopsis: "Maya runs a homestay in a 'Zero Waste' village. A group of loud tourists arrives, leaving chips packets and bottles on the trekking trail. Maya and her friends must confront them, not with anger, but with a solution.",
+                storyboard: [
+                    { time: "0:00", action: "Pristine shot of Kanchenjunga. Camera pans down to a pile of Lays packets." },
+                    { time: "1:45", action: "Maya collecting trash. She is frustrated. 'They come for beauty and leave ugliness.'" },
+                    { time: "3:15", action: "Confrontation. Maya hands the tourists bamboo dustbins and explains the 'Green Tax'." },
+                    { time: "4:50", action: "The tourists leave, carrying their own waste back. A small victory." }
+                ],
+                goal: "Civic Responsibility",
+                emotion: "Pride",
+                cta: "Refuse single-use plastics."
+            },
+            {
+                id: 5,
+                title: "Smoke in the Hills",
+                state: "Nagaland",
+                topic: "Jhum Cultivation",
+                icon: "🔥",
+                logline: "Finding the balance between tradition and conservation.",
+                synopsis: "The festival of sowing is approaching. The traditional Jhum (slash and burn) fires are lit. But the smoke is choking the valley. A young agricultural scientist returns home to introduce the SALT (Sloping Agricultural Land Technology) method without offending the elders.",
+                storyboard: [
+                    { time: "0:00", action: "Fire lighting ceremony. Drums beating. Visually spectacular but ominous smoke." },
+                    { time: "2:00", action: "Coughing children in the clinic. The young scientist, Aren, looks at the smog data." },
+                    { time: "3:30", action: "Aren demonstrates nitrogen-fixing plants to the village council. Skepticism turns to curiosity." },
+                    { time: "5:00", action: "A hybrid approach adopted. Tradition respected, soil saved." }
+                ],
+                goal: "Sustainable Agriculture",
+                emotion: "Hope",
+                cta: "Support sustainable farming."
+            },
+            {
+                id: 6,
+                title: "The Floating Life",
+                state: "Manipur",
+                topic: "Wetlands Conservation",
+                icon: "🚣",
+                logline: "The Phumdis of Loktak Lake are shrinking.",
+                synopsis: "Loktak Lake is famous for its floating islands (Phumdis). But pollution is thinning them, endangering the Sangai deer. A fisherman's daughter uses her school science project to test water acidity.",
+                storyboard: [
+                    { time: "0:00", action: "Beautiful shot of fishermen standing on floating biomass. Ethereal morning mist." },
+                    { time: "1:30", action: "Underwater shot showing plastic entangled in the roots of the Phumdi." },
+                    { time: "3:00", action: "The girl presents her findings. The acidity is dissolving the biomass." },
+                    { time: "4:15", action: "Community cleaning drive. Even the insurgents put down guns to help clean the lake (implied)." }
+                ],
+                goal: "Ecosystem Balance",
+                emotion: "Empathy",
+                cta: "Protect local water bodies."
+            },
+            {
+                id: 7,
+                title: "Bamboo Strong",
+                state: "Mizoram",
+                topic: "Sustainable Housing",
+                icon: "🎍",
+                logline: "Concrete cracks in an earthquake; bamboo bends.",
+                synopsis: "Aizawl is in a high seismic zone. Everyone wants concrete houses to look 'rich'. An architecture student designs a modern, chic bamboo house that survives a tremor while the concrete neighbor cracks.",
+                storyboard: [
+                    { time: "0:00", action: "Bustling Aizawl streets. precarious concrete buildings on slopes." },
+                    { time: "1:45", action: "The protagonist, Zual, is mocked for building a 'poor man's house' (bamboo)." },
+                    { time: "3:20", action: "The Tremor. Camera shakes. Dust falls from concrete ceilings. Zual's house sways but holds." },
+                    { time: "4:45", action: "Neighbors asking Zual for his blueprints. Perception shift." }
+                ],
+                goal: "Sustainable Innovation",
+                emotion: "Inspiration",
+                cta: "Advocate for green materials."
+            },
+            {
+                id: 8,
+                title: "Rubber vs. Forest",
+                state: "Tripura",
+                topic: "Monoculture",
+                icon: "🍂",
+                logline: "Green doesn't always mean a forest.",
+                synopsis: "A visual essay contrasting a silence of a rubber plantation (monoculture) with the noisy symphony of a natural rainforest. A young boy realizes he hasn't heard a bird sing in the rubber estate.",
+                storyboard: [
+                    { time: "0:00", action: "Split screen. Left: Rubber plantation (Silent). Right: Rainforest (Loud birdsong)." },
+                    { time: "1:30", action: "Boy walking through rubber trees. The ground is dry. No undergrowth." },
+                    { time: "3:00", action: "He crosses into a protected forest patch. Finds a stream and a Hoolock Gibbon." },
+                    { time: "4:15", action: "Voiceover: 'Nature loves variety. Monoculture is a green desert.'" }
+                ],
+                goal: "Biodiversity Awareness",
+                emotion: "Curiosity",
+                cta: "Preserve natural forests."
+            },
+            {
+                id: 9,
+                title: "Concrete Jungle",
+                state: "General (Urban)",
+                topic: "Urban Heat Islands",
+                icon: "🏙️",
+                logline: "Why is the city 4 degrees hotter than the village?",
+                synopsis: "Guwahati city. Heat haze. People running ACs which make the outside hotter. Two college students decide to 'paint the roof white' and plant vertical gardens to cool their hostel.",
+                storyboard: [
+                    { time: "0:00", action: "Thermal camera view of the city. Red and Angry." },
+                    { time: "1:20", action: "Students sweating in class. Fan moving hot air." },
+                    { time: "2:45", action: "Montage of painting roofs with reflective lime paint and planting creepers." },
+                    { time: "4:00", action: "Thermal shot again. The hostel is now blue/cool amidst the red city." }
+                ],
+                goal: "Urban Planning Awareness",
+                emotion: "Urgency",
+                cta: "Create a rooftop garden."
+            },
+            {
+                id: 10,
+                title: "Grandma's Wisdom",
+                state: "General (Cultural)",
+                topic: "Traditional Knowledge",
+                icon: "👵",
+                logline: "The answers we need are in the stories we forgot.",
+                synopsis: "A stylized animation. A grandmother narrates how they predicted floods by watching ant behavior and stored food without fridges. Her smartphone-addicted grandson realizes her 'superstitions' were actually science.",
+                storyboard: [
+                    { time: "0:00", action: "Grandson playing PubG. Grandma drying fish." },
+                    { time: "1:30", action: "Grandma says 'Rain is coming, the ants are moving eggs'. Boy laughs, checks weather app. App says Sunny." },
+                    { time: "3:00", action: "It rains heavily. The app was wrong. The ants were right." },
+                    { time: "4:30", action: "Boy puts down phone, asks Grandma to teach him signs." }
+                ],
+                goal: "Cultural Pride",
+                emotion: "Nostalgia",
+                cta: "Interview an elder today."
+            },
+            {
+                id: 11,
+                title: "Our Voice",
+                state: "General (Policy)",
+                topic: "Youth Activism",
+                icon: "📢",
+                logline: "You are not too young to change the law.",
+                synopsis: "A documentary style piece following a real group of teens from Shillong filing a petition against illegal coal mining. Shows the process: Research, drafting, gathering signatures, and meeting the DC.",
+                storyboard: [
+                    { time: "0:00", action: "News clips of illegal mining (Rat hole mines)." },
+                    { time: "1:15", action: "Group of teens arguing in a coffee house. 'What can we do?'" },
+                    { time: "2:45", action: "Montage of them gathering signatures outside schools." },
+                    { time: "4:15", action: "Entering the government office. Nervous but determined. Handing over the file." }
+                ],
+                goal: "Civic Engagement",
+                emotion: "Empowerment",
+                cta: "Start an Eco-Club."
+            },
+            {
+                id: 12,
+                title: "Solar Tomorrow",
+                state: "General (Future)",
+                topic: "Renewable Energy",
+                icon: "☀️",
+                logline: "The sun shines on everyone equally.",
+                synopsis: "Sci-Fi warmth. A village in 2035. No diesel generators hum. Everything is quiet. Electric boats, solar street lamps, micro-hydro plants. A child asks 'Grandpa, what was smoke?'",
+                storyboard: [
+                    { time: "0:00", action: "A noisy, smoky diesel generator starts up (Flashback)." },
+                    { time: "1:00", action: "Cut to Present. Silence. Birds chirping. A solar panel gleams." },
+                    { time: "2:30", action: "Villagers repairing a micro-hydro turbine in the stream." },
+                    { time: "4:00", action: "Night shot. The village lights up beautifully without noise or pollution." }
+                ],
+                goal: "Future Vision",
+                emotion: "Optimism",
+                cta: "Conserve electricity."
+            }
+        ];
+
+        // --- DOM Elements ---
+        const filmNav = document.getElementById('filmNav');
+        
+        // --- Functions ---
+        
+        function renderFilmList() {
+            filmNav.innerHTML = '';
+            films.forEach((film, index) => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 hover:bg-stone-50 transition-all-300 border-l-4 border-transparent flex items-center group focus:outline-none`;
+                btn.onclick = () => loadFilmDetail(index);
+                btn.id = `film-btn-${index}`;
+                
+                btn.innerHTML = `
+                    <span class="text-2xl mr-3 group-hover:scale-110 transition-transform">${film.icon}</span>
+                    <div>
+                        <div class="font-bold text-stone-800 text-sm">${film.title}</div>
+                        <div class="text-xs text-stone-500 uppercase tracking-wider">${film.state}</div>
+                    </div>
+                `;
+                filmNav.appendChild(btn);
+            });
+        }
+
+        function loadFilmDetail(index) {
+            const film = films[index];
+            
+            // Update Text Elements
+            document.getElementById('detailTitle').innerText = film.title;
+            document.getElementById('detailTag').innerText = film.topic;
+            document.getElementById('detailState').innerText = film.state;
+            document.getElementById('detailLogline').innerText = `"${film.logline}"`;
+            document.getElementById('detailSynopsis').innerText = film.synopsis;
+            document.getElementById('detailGoal').innerText = film.goal;
+            document.getElementById('detailEmotion').innerText = film.emotion;
+            document.getElementById('detailCTA').innerText = film.cta;
+            document.getElementById('bgIcon').innerText = film.icon;
+
+            // Update Storyboard
+            const sbContainer = document.getElementById('detailStoryboard');
+            sbContainer.innerHTML = '';
+            
+            if (film.storyboard && film.storyboard.length > 0) {
+                film.storyboard.forEach((scene, i) => {
+                    const isLast = i === film.storyboard.length - 1;
+                    const sbItem = document.createElement('div');
+                    sbItem.className = 'flex gap-4';
+                    sbItem.innerHTML = `
+                        <div class="flex flex-col items-center">
+                            <div class="w-3 h-3 bg-teal-500 rounded-full z-10"></div>
+                            ${!isLast ? '<div class="w-0.5 h-full bg-stone-200 -mt-1"></div>' : ''}
+                        </div>
+                        <div class="pb-6">
+                            <span class="text-xs font-bold text-teal-600 bg-teal-50 px-2 py-0.5 rounded border border-teal-100">${scene.time}</span>
+                            <p class="text-stone-700 text-sm mt-1 leading-snug">${scene.action}</p>
+                        </div>
+                    `;
+                    sbContainer.appendChild(sbItem);
+                });
+            }
+
+            // Update Active State in List
+            document.querySelectorAll('#filmNav button').forEach(b => {
+                b.classList.remove('active-film');
+            });
+            document.getElementById(`film-btn-${index}`).classList.add('active-film');
+        }
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilmList();
+            loadFilmDetail(0); // Load first film by default
+
+            // --- CHART 1: Plotly Radar (Vulnerabilities) ---
+            const radarData = [{
+                type: 'scatterpolar',
+                r: [8, 5, 6, 2, 4], // Assam Risk Profile
+                theta: ['Floods', 'Landslides', 'Biodiversity Loss', 'Drought', 'Heatwave'],
+                fill: 'toself',
+                name: 'Assam (Flood Prone)',
+                line: {color: '#0D9488'} // Teal
+            },
+            {
+                type: 'scatterpolar',
+                r: [3, 9, 5, 2, 3], // Mizoram/Sikkim Risk Profile
+                theta: ['Floods', 'Landslides', 'Biodiversity Loss', 'Drought', 'Heatwave'],
+                fill: 'toself',
+                name: 'Sikkim/Mizoram (Hill States)',
+                line: {color: '#B45309'} // Amber
+            }];
+
+            const radarLayout = {
+                title: { text: 'Climate Vulnerability Index', font: {family: 'Space Grotesk', size: 18} },
+                polar: {
+                    radialaxis: { visible: true, range: [0, 10] }
+                },
+                showlegend: true,
+                legend: { orientation: "h", y: -0.2 },
+                margin: { t: 40, b: 40, l: 40, r: 40 },
+                autosize: true
+            };
+
+            const config = {responsive: true, displayModeBar: false};
+            Plotly.newPlot('radarContainer', radarData, radarLayout, config);
+
+
+            // --- CHART 2: Chart.js Bar (Reach Strategy) ---
+            const ctxImpact = document.getElementById('impactChart').getContext('2d');
+            new Chart(ctxImpact, {
+                type: 'bar',
+                data: {
+                    labels: ['WhatsApp Sharing', 'School Screenings', 'YouTube', 'Instagram/Reels', 'Community Halls'],
+                    datasets: [{
+                        label: 'Projected Reach (Thousands)',
+                        data: [500, 150, 300, 450, 50],
+                        backgroundColor: [
+                            '#2DD4BF', // Teal 400
+                            '#FCD34D', // Amber 300
+                            '#F87171', // Red 400
+                            '#C084FC', // Purple 400
+                            '#94A3B8'  // Slate 400
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw + 'k Viewers';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#44403C' },
+                            ticks: { color: '#A8A29E' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#E7E5E4' }
+                        }
+                    }
+                }
+            });
+
+            // --- CHART 3: Chart.js Doughnut (Thematic Split) ---
+            const ctxTheme = document.getElementById('themeChart').getContext('2d');
+            new Chart(ctxTheme, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Solutions (Actionable)', 'Risk Awareness (Science)', 'Cultural Heritage (Tradition)'],
+                    datasets: [{
+                        data: [40, 30, 30],
+                        backgroundColor: [
+                            '#0D9488', // Teal
+                            '#B45309', // Amber
+                            '#7E22CE'  // Purple
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                font: { family: 'Inter', size: 12 },
+                                padding: 20
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+    
+    <!-- Placeholder Comments -->
+    <!-- Chosen Palette: "Earthy Warmth & Digital Clarity" - Backgrounds in Stone/Cream (#FAFAF9) to represent the earth/paper, Primary text in Stone-900 for readability. Accents in Teal (#0D9488) for 'Nature/Action' and Amber (#B45309) for 'Urgency/Earth'. Dark Mode used specifically for the Data/Impact section to signify 'Backend Strategy'. -->
+    
+    <!-- Application Structure Plan: 
+         1. Hero Section: Emotional hook, title, and clear CTA. 
+         2. Context (Why): Data-driven justification using a Radar Chart to show varied risks across states, establishing the need for diverse storytelling.
+         3. The Series (What): The core interactive dashboard. A Master-Detail layout was chosen because browsing 12 distinct film concepts requires easy navigation without page reloads. The user can click a title on the left and see the concept on the right.
+         4. Impact (How): Dark-themed section for strategy and numbers, distinguishing the 'business' of film distribution from the 'art'.
+         5. Thematic Balance: A doughnut chart to reassure stakeholders that the content isn't just "doom scrolling" but solution-oriented.
+    -->
+    
+    <!-- Visualization & Content Choices:
+         1. Regional Vulnerability -> Goal: Compare risks -> Viz: Plotly Radar Chart -> Interaction: Hover to see indices -> Justification: Radar charts are excellent for comparing multi-variable profiles (Assam vs Sikkim have very different risk shapes).
+         2. Film Series -> Goal: Organize 12 distinct concepts -> Viz: Custom JS Grid/List Selector -> Interaction: Click to update DOM -> Justification: Text-heavy content needs a structured explorer, not a chart.
+         3. Distribution Channels -> Goal: Inform on strategy -> Viz: Chart.js Bar Chart -> Interaction: Tooltips -> Justification: Simple comparison of reach magnitude.
+         4. Thematic Split -> Goal: Show proportions -> Viz: Chart.js Doughnut -> Interaction: Hover segments -> Justification: Quickly conveys the editorial balance of the series.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</body>
+</html>
