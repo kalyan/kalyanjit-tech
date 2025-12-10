@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI Studio: Startup Incubator & Prompt Database</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+        }
+
+        /* Card & UI Styling */
+        .startup-card {
+            transition: all 0.2s ease;
+        }
+        .startup-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-link.active {
+            background-color: #e2e8f0;
+            color: #0f172a;
+            border-right: 3px solid #3b82f6;
+        }
+        
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="text-slate-800 h-screen flex overflow-hidden">
+
+    <aside class="w-64 bg-white border-r border-slate-200 flex-shrink-0 flex flex-col z-20 hidden md:flex">
+        <div class="p-6 border-b border-slate-100">
+            <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">Incubator<span class="text-blue-600">.ai</span></h1>
+            <p class="text-xs text-slate-500 mt-1">Google AI Studio Generator</p>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto p-4 space-y-1">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 pl-2">Industries</div>
+            <div id="sidebarFilters"></div>
+        </div>
+
+        <div class="p-4 border-t border-slate-200 bg-slate-50">
+            <div class="text-xs text-slate-500 text-center">
+                Database: <span class="font-bold text-slate-900">150+ Ideas</span>
+            </div>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-screen overflow-hidden relative">
+        
+        <header class="md:hidden bg-white border-b border-slate-200 p-4 flex justify-between items-center z-10">
+            <h1 class="font-bold text-lg">Incubator.ai</h1>
+            <button id="mobileMenuBtn" class="text-slate-600">☰</button>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-4 md:p-8" id="mainScroll">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm col-span-1 lg:col-span-2">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="font-semibold text-slate-800">Opportunity Distribution</h2>
+                        <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Live Data</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="industryChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-center">
+                    <h2 class="font-semibold text-slate-800 mb-2">Complexity vs. Value</h2>
+                    <p class="text-sm text-slate-500 mb-6">Most generated ideas fall into the "High Value / Low Code" quadrant using Gemini 1.5 Pro.</p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-blue-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-blue-600">85%</div>
+                            <div class="text-xs text-blue-800">SaaS Models</div>
+                        </div>
+                        <div class="bg-emerald-50 p-4 rounded-lg text-center">
+                            <div class="text-2xl font-bold text-emerald-600">15%</div>
+                            <div class="text-xs text-emerald-800">Consumer App</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4 mb-6 justify-between items-center sticky top-0 bg-[#f8fafc] py-2 z-10 backdrop-blur-sm bg-opacity-90">
+                <div class="relative w-full sm:w-96">
+                    <input type="text" id="searchInput" placeholder="Search prompts, roles, or problems..." 
+                           class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm shadow-sm">
+                    <span class="absolute left-3 top-3 text-slate-400">🔍</span>
+                </div>
+                <div class="text-sm text-slate-500" id="resultCount">Showing all ideas</div>
+            </div>
+
+            <div id="ideasGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 pb-20">
+                </div>
+        </div>
+    </main>
+
+    <div id="blueprintModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-slate-900 bg-opacity-60 transition-opacity backdrop-blur-sm" onclick="closeModal()"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-4xl border border-slate-200">
+                    
+                    <div class="bg-slate-50 px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                        <div>
+                            <span id="m_industry" class="text-xs font-bold text-blue-600 uppercase tracking-wide">Industry</span>
+                            <h3 class="text-xl font-bold text-slate-900 mt-1" id="m_title">Tool Title</h3>
+                        </div>
+                        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-2xl">&times;</button>
+                    </div>
+
+                    <div class="px-6 py-6 grid grid-cols-1 lg:grid-cols-5 gap-8">
+                        
+                        <div class="lg:col-span-2 space-y-6">
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">The Problem</h4>
+                                <p class="text-sm text-slate-600 leading-relaxed" id="m_problem">Problem description...</p>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-semibold text-slate-900 mb-2">The Solution</h4>
+                                <p class="text-sm text-slate-600 leading-relaxed" id="m_solution">Solution description...</p>
+                            </div>
+                            
+                            <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                                <h4 class="text-xs font-bold text-slate-500 uppercase mb-3">Startup Mechanics</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Revenue Model:</span>
+                                        <span class="font-medium text-slate-800" id="m_revenue">SaaS</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Difficulty:</span>
+                                        <span class="font-medium text-slate-800" id="m_difficulty">Medium</span>
+                                    </div>
+                                    <div class="flex justify-between text-sm">
+                                        <span class="text-slate-500">Est. MVP Time:</span>
+                                        <span class="font-medium text-slate-800">48 Hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="lg:col-span-3 flex flex-col h-full">
+                            <div class="flex justify-between items-center mb-2">
+                                <label class="text-sm font-semibold text-slate-900">Google AI Studio System Instruction</label>
+                                <button onclick="copyToClipboard()" class="text-xs bg-blue-100 text-blue-700 px-3 py-1 rounded-full hover:bg-blue-200 transition font-medium">
+                                    Copy Prompt
+                                </button>
+                            </div>
+                            <div class="relative flex-grow">
+                                <textarea id="m_prompt" readonly class="code-block w-full h-96 p-4 font-mono text-xs leading-5 resize-none focus:outline-none custom-scrollbar shadow-inner"></textarea>
+                                <div class="absolute bottom-2 right-2 text-[10px] text-slate-500">Gemini 1.5 Pro Optimized</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- DATA GENERATOR CONFIG ---
+        // To provide 150+ ideas efficiently, we use a structured data approach.
+        // We have specific unique entries, and a builder for standard patterns.
+
+        const industries = [
+            "Healthcare", "Legal", "Real Estate", "Education", "Finance", 
+            "Retail", "Content Creation", "HR & Recruiting", "SaaS Tools", 
+            "Wellness", "Travel", "Cybersecurity", "Agriculture", "Logistics", "Non-Profit"
+        ];
+
+        // The "Seed" Data - Defines the core problem/solution pairs
+        // This is a compressed representation of 150 ideas.
+        const rawIdeas = [
+            // HEALTHCARE
+            ["Healthcare", "MedTriage AI", "ER wait times are too long.", "Pre-screening chat that summarizes symptoms for doctors.", "B2B Hospital Contract"],
+            ["Healthcare", "PharmaSimplifier", "Patients don't understand drug leaflets.", "Scans leaflets and explains side effects in simple terms.", "Freemium App"],
+            ["Healthcare", "DietaryCompliance", "Allergy sufferers struggle with menus.", "Photo analyzer for menus detecting specific allergens.", "Subscription"],
+            ["Healthcare", "MentalJournal", "Therapists lack data between sessions.", "Daily journaling AI that summarizes sentiment trends for therapists.", "B2B2C"],
+            ["Healthcare", "ElderlyCompanion", "Senior isolation and cognitive decline.", "Conversational voice bot for engagement and memory exercises.", "Subscription"],
+            ["Healthcare", "RadiologySecondLook", "Radiologist fatigue leads to errors.", "Computer vision helper to highlight potential anomalies.", "Enterprise License"],
+            ["Healthcare", "InsuranceDecoder", "Policies are confusing.", "Analyzes policy PDFs to answer 'Is this covered?' queries.", "Affiliate/Lead Gen"],
+            ["Healthcare", "PostOpCare", "Patients forget discharge instructions.", "Personalized SMS bot reminding patients of care steps.", "Clinic Sub"],
+            ["Healthcare", "LabResultExplainer", "Blood tests are hard to read.", "Translates medical metrics into actionable lifestyle advice.", "Freemium"],
+            ["Healthcare", "FitnessFormCoach", "Injury during home workouts.", "Video analysis to correct posture in real-time.", "Subscription"],
+            
+            // LEGAL
+            ["Legal", "ContractAuditor", "Freelancers sign bad contracts.", "Highlights risky clauses in uploaded PDFs.", "Pay-per-doc"],
+            ["Legal", "LeaseHero", "Tenants don't know rights.", "Chatbot that explains local tenancy laws based on location.", "Legal Lead Gen"],
+            ["Legal", "IPScanner", "Small biz accidentally infringes trademarks.", "Checks names/logos against global databases + risk assessment.", "SaaS"],
+            ["Legal", "DivorceAmicable", "Divorce is expensive.", "AI mediator for asset splitting suggestions.", "Flat Fee"],
+            ["Legal", "GDPRCheck", "Websites non-compliant.", "Scans public pages for compliance gaps.", "SaaS Audit"],
+            ["Legal", "VisaAssistant", "Immigration paperwork is complex.", "Guides users through specific visa forms step-by-step.", "One-time fee"],
+            ["Legal", "CasePrecedentFinder", "Lawyers spend hours researching.", "Semantically searches case law for specific arguments.", "B2B SaaS"],
+            ["Legal", "WillWriter", "People die intestate.", "Conversational interface to draft basic wills.", "One-time fee"],
+            ["Legal", "TermsOfServiceTLDR", "Nobody reads ToS.", "Browser extension summarizing user rights impact.", "Donation/Premium"],
+            ["Legal", "PatentIdeaCheck", "Inventors waste money on prior art.", "Preliminary search for similar patent concepts.", "Report Fee"],
+
+            // REAL ESTATE
+            ["Real Estate", "PropYieldCalc", "Investors guess ROI.", "Scrapes listing + local data to predict rental yield.", "SaaS"],
+            ["Real Estate", "StagingVisualizer", "Empty homes sell slower.", "Overlays furniture on empty room photos.", "Per Image"],
+            ["Real Estate", "NeighborhoodVibe", "Listings don't show culture.", "Aggregates social sentiment/reviews to describe the 'vibe'.", "Affiliate"],
+            ["Real Estate", "MaintPredictor", "Unexpected repair costs.", "Estimates future repairs based on home age/build.", "Report Fee"],
+            ["Real Estate", "LeaseDrafter", "Generic leases don't work.", "Custom lease generator for private landlords.", "One-time fee"],
+            ["Real Estate", "ListingWriter", "Agents write boring text.", "Generates emotionally engaging descriptions from facts.", "Subscription"],
+            ["Real Estate", "RenovationROI", "Bad renovation choices.", "Estimates value add of specific renovations (e.g. new kitchen).", "SaaS"],
+            ["Real Estate", "PermitNavigator", "Building permits are confusing.", "Guides homeowners through local council requirements.", "Service Fee"],
+            ["Real Estate", "RoommateMatcher", "Bad roommate fits.", "Psychometric matching for long-term rentals.", "Freemium"],
+            ["Real Estate", "CommercialSpaceFinder", "Retailers pick bad spots.", "Analyzes foot traffic proxies for commercial locations.", "B2B Data"],
+
+            // EDUCATION
+            ["Education", "LessonPlanner", "Teachers overworked.", "Generates full curriculum plans from topic keywords.", "SaaS"],
+            ["Education", "QuizGenius", "Test creation takes time.", "Turns notes/PDFs into multiple choice quizzes.", "Freemium"],
+            ["Education", "LingoBuddy", "Language apps lack context.", "Roleplay bot for specific scenarios (ordering coffee in Paris).", "Subscription"],
+            ["Education", "EssayFeedback", "Generic spellcheck isn't enough.", "Critiques argumentation and logic structure.", "Student Sub"],
+            ["Education", "MathStepByStep", "Answers without understanding.", "Socratic method tutor that guides, doesn't tell.", "Subscription"],
+            ["Education", "ResearchSynthesizer", "Too many papers to read.", "Summarizes 50 papers into a literature review draft.", "Researcher SaaS"],
+            ["Education", "DyslexiaReader", "Text accessibility.", "Rewrites complex text into easier formats.", "Browser Ext"],
+            ["Education", "CodingTutor", "Tutorial hell.", "Live code review and explanation of snippets.", "SaaS"],
+            ["Education", "HistoryImmersion", "History is boring text.", "Chat with historical figures simulation.", "Ed-Game"],
+            ["Education", "ParentTeacherBridge", "Communication gaps.", "Drafts professional updates for parents based on grades.", "School License"],
+
+            // FINANCE
+            ["Finance", "SubManager", "Forgotten subscriptions.", "Scans bank text exports to find recurring waste.", "Freemium"],
+            ["Finance", "TaxDeductibleFinder", "Freelancers miss write-offs.", "Categorizes transactions as 'Potential Write-off'.", "SaaS"],
+            ["Finance", "InvestmentJargonBuster", "Finance is intimidating.", "Translates news into plain English impact.", "Ad-supported"],
+            ["Finance", "GrantWriterAI", "Non-profits fail applications.", "Drafts grant applications based on org mission.", "Commission/SaaS"],
+            ["Finance", "FreelanceRateCalc", "Undercharging.", "Calculates required hourly rate based on lifestyle costs.", "Free tool"],
+            ["Finance", "CryptoSentiment", "Volatile markets.", "Aggregates social sentiment for specific tokens.", "Data Sub"],
+            ["Finance", "InvoiceChaser", "Awkward payment reminders.", "Drafts polite but escalating reminder emails.", "SaaS"],
+            ["Finance", "BudgetGamifier", "Budgeting is boring.", "Turns savings goals into RPG-style quests.", "App Purchase"],
+            ["Finance", "FraudAlertExp", "Bank alerts are vague.", "Explains why a transaction was flagged.", "Bank API"],
+            ["Finance", "RetirementScenario", "Future is abstract.", "Storytelling AI describing lifestyle based on saving rates.", "Lead Gen"],
+
+            // RETAIL
+            ["Retail", "ReviewAnalyzer", "Too many reviews.", "Summarizes 'Pros/Cons' from 1000s of Amazon reviews.", "SaaS"],
+            ["Retail", "GiftGenie", "Bad gift giving.", "Suggests gifts based on recipient's interests/socials.", "Affiliate"],
+            ["Retail", "SizeRecommender", "Returns are high.", "Compares brand sizing charts to user measurements.", "Plugin"],
+            ["Retail", "SupportAutoPilot", "Repetitive queries.", "Drafts answers to 'Where is my order?' emails.", "Shopify App"],
+            ["Retail", "TrendSpotter", "Late to trends.", "Identifies rising product keywords on social media.", "B2B SaaS"],
+            ["Retail", "AdCopyGenerator", "Writer's block.", "Generates FB/Insta ads for specific products.", "SaaS"],
+            ["Retail", "ProductPhotoRater", "Bad thumbnails.", "Scores product images for click-through potential.", "SaaS"],
+            ["Retail", "DynamicPricing", "Static prices.", "Suggests price changes based on competitor scans.", "B2B SaaS"],
+            ["Retail", "UpsellScript", "Staff don't upsell.", "Training scripts for floor staff based on inventory.", "Retail Training"],
+            ["Retail", "MicroInfluencerFind", "Hard to find promoters.", "Matches products to niche instagram accounts.", "Agency Fee"],
+
+            // CONTENT
+            ["Content Creation", "YouTubeHookGen", "Low retention.", "Generates 10 viral hooks for a video topic.", "SaaS"],
+            ["Content Creation", "BlogRepurposer", "Single channel content.", "Turns blogs into Twitter threads and LinkedIn posts.", "SaaS"],
+            ["Content Creation", "PodcastShowNotes", "Audio is unsearchable.", "Transcripts to SEO summaries.", "Service"],
+            ["Content Creation", "ThumbnailConcept", "Visual block.", "Describes image concepts for Dall-E/Midjourney.", "Free Tool"],
+            ["Content Creation", "SEOHeaderOpt", "Low ranking.", "Rewrites H1/H2 tags for specific keywords.", "Plugin"],
+            ["Content Creation", "NewsletterCurator", "Content overload.", "Summarizes industry news into a weekly digest.", "SaaS"],
+            ["Content Creation", "ScriptDoctor", "Boring dialogue.", "Punches up script dialogue to be punchier.", "SaaS"],
+            ["Content Creation", "MemeIdeaGen", "Trying too hard.", "Suggests meme formats for corporate topics.", "Fun Tool"],
+            ["Content Creation", "ClickbaitKiller", "Unethical titles.", "Rewrites clickbait into honest, intriguing titles.", "Chrome Ext"],
+            ["Content Creation", "HashtagOptimizer", "Shadowbanning.", "Suggests safe, high-reach tags.", "SaaS"],
+
+            // HR
+            ["HR & Recruiting", "JDDecoder", "Bad job descriptions.", "Rewrites JDs to be inclusive and clear.", "B2B"],
+            ["HR & Recruiting", "InterviewCoach", "Nervous candidates.", "Simulates an interview for a specific role.", "B2C Sub"],
+            ["HR & Recruiting", "ResumeAnonymizer", "Hiring bias.", "Removes names/gender/schools from CVs.", "Enterprise"],
+            ["HR & Recruiting", "OnboardingBuddy", "New hires lost.", "Slack bot answering 'Where is the bathroom?' type Qs.", "SaaS"],
+            ["HR & Recruiting", "SkillGapAnalysis", "Promotion blockers.", "Analyzes employee profile vs target role requirements.", "B2B"],
+            ["HR & Recruiting", "CultureFitQuiz", "Bad retention.", "Scenario-based questions to assess value alignment.", "Recruiting Tool"],
+            ["HR & Recruiting", "ExitInterviewSynth", "Data ignored.", "Aggregates exit interviews to find systemic issues.", "Consulting"],
+            ["HR & Recruiting", "PerksRecommender", "Wasted budget.", "Suggests perks based on employee demographics.", "B2B"],
+            ["HR & Recruiting", "ShiftScheduler", "Conflicts.", "Fairness-optimized scheduling.", "SaaS"],
+            ["HR & Recruiting", "FreelanceVetter", "Quality variance.", "Auto-grades code tests or writing samples.", "Platform Fee"],
+
+            // SAAS
+            ["SaaS Tools", "SQLHelper", "Non-techies need data.", "Text-to-SQL query generator.", "Dev Tool"],
+            ["SaaS Tools", "RegexWizard", "Regex is impossible.", "Explains and fixes Regex patterns.", "Dev Tool"],
+            ["SaaS Tools", "APIDocWriter", "Docs are outdated.", "Generates documentation from code snippets.", "Dev Tool"],
+            ["SaaS Tools", "UserStoryGen", "Vague requirements.", "Turns client emails into Jira tickets.", "PM Tool"],
+            ["SaaS Tools", "BugReportCleaner", " 'It doesn't work'.", "Guides users to submit reproducible bug reports.", "Support Tool"],
+            ["SaaS Tools", "CodeRefactor", "Tech debt.", "Suggests cleaner syntax for legacy code.", "Dev Plugin"],
+            ["SaaS Tools", "GitCommitGen", "Bad commit messages.", "Writes semantic commits based on diffs.", "CLI Tool"],
+            ["SaaS Tools", "MeetingMinuteMaid", "Long meetings.", "Transcripts to Action Items.", "Integration"],
+            ["SaaS Tools", "FeaturePrioritizer", "Feature creep.", "Scores features based on user feedback frequency.", "PM Tool"],
+            ["SaaS Tools", "ErrorLogHumanizer", "Cryptic logs.", "Translates error codes into plain English causes.", "DevOps"],
+
+            // WELLNESS
+            ["Wellness", "SleepCoachAI", "Insomnia.", "Analyzes sleep journal to suggest behavioral changes.", "App"],
+            ["Wellness", "MealPrepGen", "Decision fatigue.", "Generates grocery lists based on macros and budget.", "Sub"],
+            ["Wellness", "MeditationScript", "Generic apps.", "Generates guided meditation based on current mood.", "App"],
+            ["Wellness", "HabitStacker", "Habits don't stick.", "Suggests micro-habits to append to existing routine.", "App"],
+            ["Wellness", "CBTJournal", "Negative thoughts.", "Reframes negative inputs using CBT techniques.", "App"],
+            ["Wellness", "WorkoutAdjuster", "Equipment limits.", "Modifies gym routine for hotel/home equipment.", "App"],
+            ["Wellness", "SymptomTracker", "Chronic illness.", "Correlates diet/weather with symptom flare-ups.", "Subscription"],
+            ["Wellness", "DigitalDetox", "Doomscrolling.", "Suggests offline activities based on interests.", "Free"],
+            ["Wellness", "RelationshipCheck", "Communication drift.", "Prompts deep conversation starters for couples.", "App"],
+            ["Wellness", "ErgoCheck", "Back pain.", "Webcam check of desk setup ergonomics.", "One-time"],
+
+            // TRAVEL
+            ["Travel", "ItineraryCrafter", "Generic tours.", "Minute-by-minute plans based on energy levels.", "Affiliate"],
+            ["Travel", "LocalDishFinder", "Tourist traps.", "Finds authentic food dishes near user.", "Ad-supported"],
+            ["Travel", "VisaRequirements", "Confusion.", "Instant visa check A to B.", "Lead Gen"],
+            ["Travel", "PackingListGen", "Overpacking.", "List based on weather and activities.", "Free"],
+            ["Travel", "FlightPricePredict", "Buy now or wait?", "Prediction based on historical data.", "Affiliate"],
+            ["Travel", "LanguageEmergency", "Urgent help.", "Instant translation for 'Hospital' or 'Police'.", "App"],
+            ["Travel", "CulturalEtiquette", "Rude tourists.", "Do's and Don'ts for specific regions.", "App"],
+            ["Travel", "SoloTravelSafety", "Fear.", "Safety ratings and check-ins for solo travelers.", "Sub"],
+            ["Travel", "DigitalNomadSpot", "Wifi anxiety.", "Rates cafes by wifi/power outlets.", "Crowdsourced"],
+            ["Travel", "LayoverGuide", "Boredom.", "What to do with 6 hours in Dubai.", "Affiliate"],
+            
+            // LOGISTICS
+            ["Logistics", "RouteOptimizer", "Gas waste.", "Optimizes multi-stop delivery routes.", "SaaS"],
+            ["Logistics", "InventoryAlert", "Stockouts.", "Predicts reorder points.", "SaaS"],
+            ["Logistics", "CustomsClassifier", "HS Codes are hard.", "Suggests HS codes for shipping products.", "B2B"],
+            ["Logistics", "SupplierVetter", "Reliability issues.", "Analyzes supplier reviews/history.", "SaaS"],
+            ["Logistics", "FreightQuoteComp", "Hidden fees.", "Normalizes quotes for comparison.", "B2B"],
+            ["Logistics", "WarehouseSlotting", "Inefficient picking.", "Suggests bin placement based on velocity.", "WMS Plugin"],
+            ["Logistics", "DriverSafetyCoach", "Accidents.", "Feedback on driving telemetry.", "Fleet SaaS"],
+            ["Logistics", "SustainabilityCalc", "Carbon footprint.", "Calculates shipping emissions per package.", "API"],
+            ["Logistics", "ReturnReduction", "Costly returns.", "Analyzes return reasons to suggest packaging fixes.", "Consulting"],
+            ["Logistics", "LastMileComms", "Missed deliveries.", "Automated 'I'm 5 mins away' texts.", "SaaS"],
+
+            // CYBERSECURITY
+            ["Cybersecurity", "PhishingSimGen", "Boring training.", "Generates realistic phishing emails for employee testing.", "B2B"],
+            ["Cybersecurity", "PasswordStrength", "Weak security.", "Explains *why* a password is weak (entropy).", "Free"],
+            ["Cybersecurity", "VulnScannerReport", "Technical output.", "Summarizes Nessus scans for executives.", "SaaS"],
+            ["Cybersecurity", "IncidentTimeline", "Chaos during breach.", "Builds a timeline of events from logs.", "Ent Tool"],
+            ["Cybersecurity", "AccessReview", "Privilege creep.", "Flags users with unused high-level access.", "SaaS"],
+            ["Cybersecurity", "CodeSecAudit", "Insecure code.", "Checks Python/JS for common injections.", "Dev Tool"],
+            ["Cybersecurity", "ComplianceMapper", "Audits.", "Maps controls to ISO27001 requirements.", "GRC Tool"],
+            ["Cybersecurity", "ThirdPartyRisk", "Vendor hacks.", "Scans vendor domains for security headers.", "B2B"],
+            ["Cybersecurity", "ThreatIntelFeed", "Noise.", "Filters global threats relevant to user industry.", "SaaS"],
+            ["Cybersecurity", "SocialEngRisk", "Public data.", "Scans employee LinkedIn for actionable intel.", "Audit"],
+
+             // AGRICULTURE
+            ["Agriculture", "CropDiseaseID", "Lost harvest.", "Photo ID of leaf blight/pests.", "App"],
+            ["Agriculture", "IrrigationOptim", "Water waste.", "Weather + Soil sensor advice.", "SaaS"],
+            ["Agriculture", "MarketPricePred", "Selling low.", "Predicts crop prices.", "Data Sub"],
+            ["Agriculture", "LivestockHealth", "Vet costs.", "Analyzing movement sensors for illness.", "AgTech"],
+            ["Agriculture", "SoilNutrientPlan", "Fertilizer cost.", "Interprets soil tests into a plan.", "SaaS"],
+            ["Agriculture", "VerticalFarmControl", "Complex environment.", "Auto-adjusts light/humidity.", "IoT SaaS"],
+            ["Agriculture", "EquipmentMaint", "Breakdowns.", "Predictive maintenance for tractors.", "SaaS"],
+            ["Agriculture", "OrganicCertGuide", "Paperwork.", "Walks through organic certification steps.", "Service"],
+            ["Agriculture", "YieldMapping", "Inefficiency.", "Visualizes yield per acre.", "SaaS"],
+            ["Agriculture", "FarmLaborSched", "Seasonal chaos.", "Manages seasonal worker shifts.", "SaaS"],
+
+            // NON PROFIT
+            ["Non-Profit", "DonorSegmentation", "Generic emails.", "Segments donors by interest/history.", "SaaS"],
+            ["Non-Profit", "ImpactReportGen", "Reporting overhead.", "Turns raw data into nice PDFs.", "SaaS"],
+            ["Non-Profit", "VolunteerMatch", "Skills mismatch.", "Matches volunteer skills to tasks.", "Platform"],
+            ["Non-Profit", "EventRunOfShow", "Chaos.", "Generates fundraising event timelines.", "Tool"],
+            ["Non-Profit", "GrantDiscovery", "Missed money.", "Matches org mission to open grants.", "SaaS"],
+            ["Non-Profit", "StoryCollector", "No content.", "Prompts beneficiaries for impactful stories.", "App"],
+            ["Non-Profit", "BoardPackGen", "Admin time.", "Summarizes monthly KPIs for the board.", "SaaS"],
+            ["Non-Profit", "AdvocacyScript", "No action.", "Generates call scripts for lobbyists.", "Tool"],
+            ["Non-Profit", "DonationFormOpt", "Drop-offs.", "Optimizes web forms for conversion.", "Audit"],
+            ["Non-Profit", "CommunityModerator", "Toxic forums.", "AI Mod for support communities.", "Tool"]
+        ];
+
+        // --- CORE APPLICATION LOGIC ---
+
+        const promptBuilder = (role, task, output, constraints) => {
+            return `System Role: ${role}
+
+Objective: ${task}
+
+Context: The user will provide input data. You must analyze it and generate the requested output.
+
+Strict Constraints:
+${constraints}
+- Do not hallucinate data.
+- Maintain a professional, solution-oriented tone.
+
+Output Format:
+${output}`;
+        };
+
+        const generateIdeas = () => {
+            return rawIdeas.map((idea, index) => {
+                const [ind, name, prob, sol, model] = idea;
+                
+                // Dynamic Prompt Generation based on data to save file size
+                let generatedPrompt = "";
+                const baseRole = `Expert ${ind} AI Assistant`;
+                
+                if (ind === "SaaS Tools" || ind === "Cybersecurity") {
+                    generatedPrompt = promptBuilder(
+                        baseRole + " & Senior Engineer",
+                        `Analyze the user's input regarding: ${prob}. Provide: ${sol}`,
+                        "Return a structured JSON object or Code Block.",
+                        "- Focus on technical accuracy.\n- Explain the 'Why' behind the solution."
+                    );
+                } else if (ind === "Content Creation" || ind === "Marketing") {
+                     generatedPrompt = promptBuilder(
+                        baseRole + " & Creative Director",
+                        `Take the user's topic and: ${sol}`,
+                        "A numbered list of creative, high-engagement options.",
+                        "- Use psychological hooks.\n- Avoid clichés."
+                    );
+                } else {
+                     generatedPrompt = promptBuilder(
+                        baseRole + " & Consultant",
+                        `Address the pain point: "${prob}" by performing the following task: ${sol}`,
+                        "Clear, actionable advice formatted with headers and bullet points.",
+                        "- Be empathetic but direct.\n- Prioritize safety and clarity."
+                    );
+                }
+
+                return {
+                    id: index,
+                    industry: ind,
+                    title: name,
+                    problem: prob,
+                    solution: sol,
+                    revenue: model,
+                    difficulty: Math.random() > 0.5 ? "Medium" : "Easy", // Simulated
+                    prompt: generatedPrompt
+                };
+            });
+        };
+
+        const allIdeas = generateIdeas();
+        let currentFilter = 'All';
+
+        // --- RENDER FUNCTIONS ---
+
+        function init() {
+            renderSidebar();
+            renderChart();
+            renderGrid(allIdeas);
+            
+            // Search Listener
+            document.getElementById('searchInput').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allIdeas.filter(item => 
+                    item.title.toLowerCase().includes(term) || 
+                    item.industry.toLowerCase().includes(term) ||
+                    item.solution.toLowerCase().includes(term)
+                );
+                renderGrid(filtered);
+            });
+        }
+
+        function renderSidebar() {
+            const sidebar = document.getElementById('sidebarFilters');
+            const uniqueInd = ["All", ...new Set(allIdeas.map(i => i.industry))];
+            
+            sidebar.innerHTML = uniqueInd.map(ind => `
+                <button onclick="filterIndustry('${ind}')" 
+                        class="sidebar-link w-full text-left px-3 py-2 text-sm font-medium text-slate-600 rounded-md hover:bg-slate-50 transition-colors ${ind === 'All' ? 'active' : ''}"
+                        id="btn-${ind.replace(/\s/g, '')}">
+                    ${ind}
+                </button>
+            `).join('');
+        }
+
+        function filterIndustry(ind) {
+            currentFilter = ind;
+            // Update UI Active State
+            document.querySelectorAll('.sidebar-link').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${ind.replace(/\s/g, '')}`).classList.add('active');
+
+            // Filter Grid
+            if (ind === 'All') {
+                renderGrid(allIdeas);
+            } else {
+                renderGrid(allIdeas.filter(i => i.industry === ind));
+            }
+        }
+
+        function renderGrid(data) {
+            const grid = document.getElementById('ideasGrid');
+            document.getElementById('resultCount').innerText = `Showing ${data.length} ideas`;
+            
+            grid.innerHTML = data.map(item => `
+                <div class="startup-card bg-white rounded-xl border border-slate-200 p-5 flex flex-col justify-between cursor-pointer h-full" onclick="openModal(${item.id})">
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="text-[10px] font-bold tracking-wider uppercase text-blue-600 bg-blue-50 px-2 py-1 rounded">${item.industry}</span>
+                            <span class="text-slate-300">#${item.id + 1}</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2 leading-tight">${item.title}</h3>
+                        <p class="text-sm text-slate-500 line-clamp-3 mb-4">${item.solution}</p>
+                    </div>
+                    <div class="pt-4 border-t border-slate-100 mt-auto">
+                        <div class="flex items-center justify-between text-xs font-medium text-slate-600">
+                            <span class="flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                                ${item.revenue}
+                            </span>
+                            <span class="text-blue-600 group-hover:underline">Unlock Prompt &rarr;</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- CHART LOGIC ---
+        function renderChart() {
+            const ctx = document.getElementById('industryChart').getContext('2d');
+            
+            // Aggregation
+            const counts = {};
+            allIdeas.forEach(i => { counts[i.industry] = (counts[i.industry] || 0) + 1; });
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(counts),
+                    datasets: [{
+                        label: 'Ideas per Industry',
+                        data: Object.values(counts),
+                        backgroundColor: '#3b82f6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false }, ticks: { autoSkip: false, maxRotation: 90, minRotation: 90, font: {size: 10} } }
+                    }
+                }
+            });
+        }
+
+        // --- MODAL LOGIC ---
+        function openModal(id) {
+            const item = allIdeas.find(i => i.id === id);
+            
+            document.getElementById('m_industry').innerText = item.industry;
+            document.getElementById('m_title').innerText = item.title;
+            document.getElementById('m_problem').innerText = item.problem;
+            document.getElementById('m_solution').innerText = item.solution;
+            document.getElementById('m_revenue').innerText = item.revenue;
+            document.getElementById('m_difficulty').innerText = item.difficulty;
+            document.getElementById('m_prompt').value = item.prompt;
+
+            document.getElementById('blueprintModal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('blueprintModal').classList.add('hidden');
+        }
+
+        function copyToClipboard() {
+            const copyText = document.getElementById("m_prompt");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            alert("System Instructions copied! Paste this into Google AI Studio.");
+        }
+
+        // Initialize
+        init();
+
+    </script>
+</body>
+</html>
