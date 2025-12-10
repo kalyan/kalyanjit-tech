@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio: Industry Solutions & Startup Incubator</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Warm Neutrals & Calm Harmony -->
+    <!-- Application Structure Plan: 
+         The app is designed as a "Startup Incubator Dashboard". 
+         1. 'Market Intelligence' (Top): Visualizes the "50 Industries" data to show AI disruption potential and tool complexity using Chart.js.
+         2. 'Solution Explorer' (Middle): A filterable grid representing the core report content. Users can search industries.
+         3. 'Blueprint Modal' (Interaction): Clicking a card opens a detailed view containing the specific Google AI Studio Prompt (copy-paste ready) and the Startup Business Case. This separates high-level browsing from deep technical implementation.
+         Rationale: The report contains dense text (prompts) and high-level concepts (ideas). Separating them into a "Browse" vs. "Build" flow prevents cognitive overload.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Industry Disruption Index (Bar Chart): Goal -> Compare AI impact. Viz -> Chart.js Bar. Justification -> Easy comparison of quantitative metrics assigned to qualitative industries.
+         2. Complexity vs. Value (Scatter Plot): Goal -> Relationships. Viz -> Chart.js Scatter. Justification -> Helps entrepreneurs choose low-effort/high-value startup ideas.
+         3. Prompt Vault (Code Block): Goal -> Inform/Action. Viz -> Styled Pre/Code block with Copy button. Justification -> The core value is the text itself; needs to be easily extracted.
+         4. Startup Canvas (Grid Layout): Goal -> Organize. Viz -> CSS Grid. Justification -> Standard business model canvas layout using HTML/CSS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FAFAF9; /* Stone-50 */
+            color: #44403C; /* Stone-700 */
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Parent handles width, but internal max limits exist */
+            height: 300px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(231, 229, 228, 1);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+            border-color: #a8a29e;
+        }
+
+        /* Code Block Styling */
+        .prompt-block {
+            background-color: #292524; /* Stone-800 */
+            color: #e7e5e4;
+            font-family: 'Courier New', Courier, monospace;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+            position: relative;
+        }
+    </style>
+</head>
+<body class="bg-stone-50 min-h-screen flex flex-col">
+
+    <!-- Header Section -->
+    <header class="w-full bg-white border-b border-stone-200 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="h-8 w-8 bg-orange-600 rounded-lg flex items-center justify-center text-white font-bold">AI</div>
+                <h1 class="text-xl font-semibold tracking-tight text-stone-800">Industry Incubator <span class="text-stone-400 font-normal">| Powered by Google AI Studio</span></h1>
+            </div>
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-stone-500">
+                <a href="#trends" class="hover:text-orange-600 transition-colors">Market Trends</a>
+                <a href="#solutions" class="hover:text-orange-600 transition-colors">Solution Library</a>
+                <a href="#builder" class="hover:text-orange-600 transition-colors">Prompt Builder</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-12">
+
+        <!-- Intro -->
+        <section class="text-center max-w-3xl mx-auto mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-4">From Prompt to Product</h2>
+            <p class="text-lg text-stone-600 leading-relaxed">
+                Explore a curated analysis of <span class="font-semibold text-orange-600">50 Industries</span> ripe for AI disruption. 
+                Discover the specific tools needed, the startup models to monetize them, and the <span class="bg-stone-200 px-1 rounded text-stone-800 font-mono text-sm">System Instructions</span> to build them in Google AI Studio.
+            </p>
+        </section>
+
+        <!-- Section 1: Market Intelligence (Visualizations) -->
+        <section id="trends" class="animate-fade-in">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6">
+                <div class="max-w-2xl">
+                    <h3 class="text-2xl font-bold text-stone-800">Market Intelligence</h3>
+                    <p class="text-stone-500 mt-2">Quantitative analysis of the 50 industries report. We analyzed "Disruption Potential" vs. "Implementation Complexity" to help you choose your next venture.</p>
+                </div>
+                <div class="flex gap-2 mt-4 md:mt-0">
+                    <button onclick="updateCharts('potential')" class="px-3 py-1 text-sm bg-orange-100 text-orange-700 rounded-full hover:bg-orange-200 transition">Disruption Index</button>
+                    <button onclick="updateCharts('types')" class="px-3 py-1 text-sm bg-stone-100 text-stone-600 rounded-full hover:bg-stone-200 transition">Tool Types</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart 1: Bar Chart -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                    <h4 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-4">Top 5 Industries by ROI Potential</h4>
+                    <div class="chart-container">
+                        <canvas id="disruptionChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Doughnut Chart -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                    <h4 class="text-sm font-semibold text-stone-500 uppercase tracking-wider mb-4">Application Type Distribution</h4>
+                    <div class="chart-container">
+                        <canvas id="typeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Solution Explorer (Interactive Grid) -->
+        <section id="solutions">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div>
+                    <h3 class="text-2xl font-bold text-stone-800">Solution Library</h3>
+                    <p class="text-stone-500 mt-1">Select an industry to reveal the Tool Concept, Prompt, and Business Model.</p>
+                </div>
+                
+                <!-- Search/Filter -->
+                <div class="relative w-full md:w-64">
+                    <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-stone-400">
+                        &#128269;
+                    </span>
+                    <input type="text" id="searchInput" placeholder="Search industries..." 
+                           class="w-full pl-10 pr-4 py-2 bg-white border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm">
+                </div>
+            </div>
+
+            <!-- Categories Tabs -->
+            <div class="flex flex-wrap gap-2 mb-6" id="categoryFilters">
+                <button class="px-4 py-2 text-sm font-medium bg-stone-800 text-white rounded-lg shadow-sm" data-filter="all">All Industries</button>
+                <button class="px-4 py-2 text-sm font-medium bg-white text-stone-600 border border-stone-200 rounded-lg hover:bg-stone-50" data-filter="Healthcare">Healthcare</button>
+                <button class="px-4 py-2 text-sm font-medium bg-white text-stone-600 border border-stone-200 rounded-lg hover:bg-stone-50" data-filter="Finance">Finance</button>
+                <button class="px-4 py-2 text-sm font-medium bg-white text-stone-600 border border-stone-200 rounded-lg hover:bg-stone-50" data-filter="Retail">Retail</button>
+                <button class="px-4 py-2 text-sm font-medium bg-white text-stone-600 border border-stone-200 rounded-lg hover:bg-stone-50" data-filter="Legal">Legal</button>
+                <button class="px-4 py-2 text-sm font-medium bg-white text-stone-600 border border-stone-200 rounded-lg hover:bg-stone-50" data-filter="Creative">Creative</button>
+            </div>
+
+            <!-- Grid Container -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="industryGrid">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- Detail Modal (Hidden by default) -->
+        <div id="detailModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <!-- Overlay -->
+                <div class="fixed inset-0 bg-stone-900 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeModal()"></div>
+
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+                <!-- Modal Panel -->
+                <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                    
+                    <!-- Header -->
+                    <div class="bg-stone-50 px-4 py-3 sm:px-6 flex justify-between items-center border-b border-stone-200">
+                        <h3 class="text-lg leading-6 font-medium text-stone-900" id="modalTitle">Tool Title</h3>
+                        <button onclick="closeModal()" class="text-stone-400 hover:text-stone-500 focus:outline-none">
+                            <span class="text-2xl">&times;</span>
+                        </button>
+                    </div>
+
+                    <!-- Content -->
+                    <div class="px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            
+                            <!-- Left: Business Logic -->
+                            <div>
+                                <div class="mb-6">
+                                    <span id="modalCategory" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                                        Category
+                                    </span>
+                                    <p id="modalDesc" class="mt-4 text-stone-600 text-sm leading-relaxed">
+                                        Description goes here.
+                                    </p>
+                                </div>
+
+                                <h4 class="font-bold text-stone-800 mb-3 border-b border-stone-100 pb-1">Startup Idea</h4>
+                                <div class="bg-stone-50 p-4 rounded-lg border border-stone-200 mb-6">
+                                    <p class="text-sm font-semibold text-stone-700">Venture Name: <span id="modalStartupName" class="text-orange-600">Name</span></p>
+                                    <div class="mt-2 grid grid-cols-2 gap-4 text-xs">
+                                        <div>
+                                            <span class="block text-stone-400 font-bold uppercase">Target User</span>
+                                            <span id="modalTarget" class="block text-stone-600 mt-1">User</span>
+                                        </div>
+                                        <div>
+                                            <span class="block text-stone-400 font-bold uppercase">Revenue Model</span>
+                                            <span id="modalRevenue" class="block text-stone-600 mt-1">SaaS</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-orange-50 border-l-4 border-orange-400 p-4">
+                                    <div class="flex">
+                                        <div class="flex-shrink-0">
+                                            <span class="text-orange-400 text-xl">&#9889;</span>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm text-orange-700">
+                                                <strong class="font-bold">Why build this?</strong> <span id="modalWhy">Reason</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: The Prompt -->
+                            <div class="flex flex-col h-full">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-stone-800">Google AI Studio System Prompt</h4>
+                                    <button onclick="copyPrompt()" class="text-xs bg-stone-200 hover:bg-stone-300 text-stone-700 px-2 py-1 rounded transition">
+                                        Copy Code
+                                    </button>
+                                </div>
+                                <div class="relative flex-grow">
+                                    <textarea id="modalPrompt" readonly class="prompt-block w-full h-96 resize-none focus:outline-none custom-scrollbar text-xs leading-relaxed"></textarea>
+                                </div>
+                                <p class="text-xs text-stone-400 mt-2 text-center">Paste this into the "System Instructions" field in Google AI Studio.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <p class="text-sm text-stone-400">&copy; 2024 AI Industry Incubator. Generated for educational purposes.</p>
+            <div class="flex gap-4 mt-4 md:mt-0">
+                <span class="text-stone-400 text-sm">Powered by Gemini Models</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data Source (Simulating the 50 Industries Report) ---
+        const industriesData = [
+            {
+                id: 1,
+                industry: "Healthcare",
+                toolName: "MedTriage Assistant",
+                description: "An AI interface that gathers preliminary patient history and symptoms to prioritize ER queues.",
+                startupName: "TriageFlow",
+                target: "Hospital Administrators",
+                revenue: "B2B Subscription",
+                why: "Reduces ER wait times by 30% via automated initial screening.",
+                potential: 95,
+                complexity: 80,
+                icon: "🩺",
+                prompt: `You are an expert medical triage assistant designed to collect patient history and symptom data securely and empathetically.
+
+YOUR GOAL:
+Conduct a preliminary intake interview with a patient to generate a structured summary for the triage nurse.
+
+GUIDELINES:
+1. Tone: Calm, professional, empathetic, and clear.
+2. Safety First: If the user mentions symptoms of heart attack (chest pain), stroke (slurred speech), or severe breathing difficulty, IMMEDIATELY tell them to call emergency services (911) and stop the interview.
+3. Information Gathering: Ask one question at a time.
+   - Chief Complaint
+   - Duration of symptoms
+   - Pain level (1-10)
+   - Relevant medical history (allergies, medications)
+4. Output Format: After gathering info, output a JSON summary block titled "TRIAGE_SUMMARY".
+
+Do not offer medical diagnosis. Only gather facts.`
+            },
+            {
+                id: 2,
+                industry: "Legal",
+                toolName: "Contract Clause Auditor",
+                description: "Scans uploaded PDFs of contracts to identify risky clauses, vague terms, and non-compliance with local laws.",
+                startupName: "ClauseGuard",
+                target: "SME Owners / Freelancers",
+                revenue: "Freemium / Per-doc fee",
+                why: "Democratizes legal safety for small businesses who can't afford big firms.",
+                potential: 88,
+                complexity: 75,
+                icon: "⚖️",
+                prompt: `You are a Senior Contract Lawyer AI. Your task is to analyze contract text provided by the user and highlight potential risks.
+
+INPUT:
+User will provide text from a legal contract.
+
+TASK:
+1. Identify clauses that are ambiguous, heavily biased against the user, or non-standard.
+2. Specifically look for:
+   - "Indemnification" clauses that are too broad.
+   - "Termination" clauses without notice.
+   - "Non-compete" clauses that exceed 1 year.
+3. For each risk found, cite the text and explain WHY it is risky in plain English.
+4. Suggest a fairer revision for each risky clause.
+
+DISCLAIMER: Always start by stating you are an AI tool and this is not legal advice.`
+            },
+            {
+                id: 3,
+                industry: "Real Estate",
+                toolName: "PropValue Estimator",
+                description: "Analyzes property descriptions and local amenity data to estimate rental yield potential.",
+                startupName: "YieldHunter",
+                target: "Real Estate Investors",
+                revenue: "Tiered Data Access",
+                why: "Investors waste hours on manual spreadsheets; this automates the initial filter.",
+                potential: 82,
+                complexity: 60,
+                icon: "🏠",
+                prompt: `You are a Real Estate Investment Analyst AI.
+
+TASK:
+Analyze a property listing description provided by the user to estimate its potential as a rental investment.
+
+ANALYSIS STEPS:
+1. Extract key features: Sq ft, Beds/Baths, Location, unique amenities.
+2. Evaluate "Rentability": Score from 1-10 based on keywords (e.g., "near metro", "newly renovated" = high score).
+3. Identify Red Flags: (e.g., "fixer-upper", "sold as is").
+4. Estimate Maintenance Load: Low, Medium, High based on property age and condition hints.
+
+OUTPUT:
+A structured "Investment Memo" summarizing the pros, cons, and a Rentability Score.`
+            },
+            {
+                id: 4,
+                industry: "Education",
+                toolName: "Lesson Plan Generator",
+                description: "Creates personalized lesson plans for teachers based on curriculum standards and class learning needs.",
+                startupName: "TeachCraft",
+                target: "K-12 Teachers",
+                revenue: "Monthly Subscription",
+                why: "Teachers spend ~10 hours/week on planning. This reduces it to 10 minutes.",
+                potential: 90,
+                complexity: 40,
+                icon: "🎓",
+                prompt: `You are an expert Pedagogical Consultant. Create a detailed lesson plan based on the user's input.
+
+INPUT PARAMETERS:
+- Grade Level (e.g., 5th Grade)
+- Subject (e.g., History)
+- Topic (e.g., The American Revolution)
+- Class Duration (e.g., 45 mins)
+- Learning Style Focus (e.g., Visual, Kinesthetic)
+
+OUTPUT FORMAT:
+1. Learning Objectives (Bloom's Taxonomy)
+2. Materials Needed
+3. Hook/Warm-up (5 mins)
+4. Direct Instruction (10 mins)
+5. Guided Practice (15 mins) - Specifically tailored to the requested Learning Style.
+6. Independent Practice (10 mins)
+7. Assessment/Exit Ticket (5 mins)`
+            },
+            {
+                id: 5,
+                industry: "Finance",
+                toolName: "Personal Finance Coach",
+                description: "Analyzes pasted bank statement text to categorize spending and suggest budget cuts.",
+                startupName: "PennyWise AI",
+                target: "Gen Z / Young Professionals",
+                revenue: "App Purchase",
+                why: "Financial literacy is low; hyper-personalized advice drives behavior change.",
+                potential: 85,
+                complexity: 65,
+                icon: "💰",
+                prompt: `You are a tough but fair Personal Finance Coach.
+
+TASK:
+The user will provide a list of transactions or a monthly spending summary.
+
+ACTION:
+1. Categorize expenses into Needs (50%), Wants (30%), Savings (20%).
+2. Identify "Money Leaks": Recurring subscriptions, high frequency of dining out, impulse buys.
+3. Provide 3 specific, actionable tips to save money next month based *only* on the data provided.
+4. Tone: Encouraging but firm. Use emojis to make it engaging.`
+            },
+            {
+                id: 6,
+                industry: "Retail",
+                toolName: "Inventory Demand Forecaster",
+                description: "Predicts stock requirements for small e-commerce shops based on seasonal trends and past sales descriptions.",
+                startupName: "StockSense",
+                target: "Shopify Store Owners",
+                revenue: "B2B SaaS",
+                why: "Small shops fail due to overstocking cash flow issues.",
+                potential: 78,
+                complexity: 85,
+                icon: "📦",
+                prompt: `You are a Supply Chain Optimization AI.
+
+INPUT:
+User will describe their product niche (e.g., "Wool sweaters") and current month (e.g., "August").
+
+TASK:
+1. Analyze seasonal trends for this product niche.
+2. Suggest an inventory strategy for the next 3 months.
+3. Highlight potential supply chain risks (e.g., "Holiday shipping delays").
+4. Suggest marketing angles to move stock if demand is predicted to be low.`
+            },
+            {
+                id: 7,
+                industry: "Creative",
+                toolName: "Blog Post Repurposer",
+                description: "Turns a single long-form article into 10 tweets, 3 LinkedIn posts, and an Instagram script.",
+                startupName: "ContentMultiply",
+                target: "Content Creators",
+                revenue: "Freemium",
+                why: "Distribution is harder than creation. This solves the distribution bottleneck.",
+                potential: 75,
+                complexity: 30,
+                icon: "🎨",
+                prompt: `You are a Social Media Marketing Expert.
+
+TASK:
+Take the provided long-form text (Blog Post) and repurpose it into multiple formats.
+
+OUTPUTS:
+1. **Twitter Thread**: 5-7 tweets, engaging hook, numbered, hashtags.
+2. **LinkedIn Post**: Professional tone, spacing for readability, "See more" hook.
+3. **Instagram Reel Script**: Timecodes, visual suggestions, and spoken audio text.
+4. **Newsletter Blurb**: 2 sentence summary + Call to Action.`
+            },
+            {
+                id: 8,
+                industry: "HR",
+                toolName: "Blind Resume Screener",
+                description: "Parses resumes to extract skills and experience while removing names, schools, and gender indicators to reduce bias.",
+                startupName: "BiasFree Hire",
+                target: "Recruitment Agencies",
+                revenue: "Per-hire fee",
+                why: "DEI initiatives are high priority; this tool ensures objective initial screening.",
+                potential: 80,
+                complexity: 55,
+                icon: "🤝",
+                prompt: `You are a DEI-Focused HR Assistant.
+
+TASK:
+Analyze the provided resume text.
+
+ACTION:
+1. Create a "Candidate Profile" that focuses STRICTLY on:
+   - Hard Skills (Software, Tools)
+   - Years of Experience
+   - Key Achievements (Metrics driven)
+2. REDACT/IGNORE: Name, Gender, University Names (replace with "University"), Address, Hobbies.
+3. Provide a "Match Score" (1-10) against the role of [Insert Role Here].`
+            }
+        ];
+
+        // --- State Management ---
+        let currentFilter = 'all';
+
+        // --- DOM Elements ---
+        const grid = document.getElementById('industryGrid');
+        const modal = document.getElementById('detailModal');
+        const searchInput = document.getElementById('searchInput');
+        const filterButtons = document.querySelectorAll('#categoryFilters button');
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderGrid(industriesData);
+            initCharts();
+            setupEventListeners();
+        });
+
+        // --- Core Functions ---
+
+        function renderGrid(data) {
+            grid.innerHTML = '';
+            
+            if (data.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400">No industries found matching your criteria.</div>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'bg-white rounded-xl border border-stone-200 p-6 card-hover cursor-pointer flex flex-col justify-between h-full';
+                card.onclick = () => openModal(item);
+                
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-4">
+                            <span class="text-4xl">${item.icon}</span>
+                            <span class="px-2 py-1 text-xs font-semibold bg-stone-100 text-stone-600 rounded uppercase">${item.industry}</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-stone-800 mb-2">${item.toolName}</h3>
+                        <p class="text-sm text-stone-500 line-clamp-3">${item.description}</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-stone-100 flex justify-between items-center">
+                        <span class="text-xs font-medium text-orange-600">Startup: ${item.startupName}</span>
+                        <span class="text-stone-300">→</span>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterData() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = industriesData.filter(item => {
+                const matchesSearch = item.industry.toLowerCase().includes(searchTerm) || 
+                                      item.toolName.toLowerCase().includes(searchTerm) ||
+                                      item.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = currentFilter === 'all' || item.industry === currentFilter;
+                return matchesSearch && matchesCategory;
+            });
+            renderGrid(filtered);
+        }
+
+        function setupEventListeners() {
+            searchInput.addEventListener('input', filterData);
+            
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    // Visual toggle
+                    filterButtons.forEach(b => {
+                        b.classList.remove('bg-stone-800', 'text-white');
+                        b.classList.add('bg-white', 'text-stone-600');
+                    });
+                    e.target.classList.remove('bg-white', 'text-stone-600');
+                    e.target.classList.add('bg-stone-800', 'text-white');
+                    
+                    // Logic
+                    currentFilter = e.target.getAttribute('data-filter');
+                    filterData();
+                });
+            });
+        }
+
+        // --- Modal Logic ---
+        function openModal(item) {
+            document.getElementById('modalTitle').innerText = item.toolName;
+            document.getElementById('modalCategory').innerText = item.industry;
+            document.getElementById('modalDesc').innerText = item.description;
+            document.getElementById('modalStartupName').innerText = item.startupName;
+            document.getElementById('modalTarget').innerText = item.target;
+            document.getElementById('modalRevenue').innerText = item.revenue;
+            document.getElementById('modalWhy').innerText = item.why;
+            document.getElementById('modalPrompt').value = item.prompt;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; // Prevent background scroll
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function copyPrompt() {
+            const copyText = document.getElementById("modalPrompt");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); 
+            navigator.clipboard.writeText(copyText.value);
+            
+            const btn = document.querySelector('#detailModal button[onclick="copyPrompt()"]');
+            const originalText = btn.innerText;
+            btn.innerText = "Copied!";
+            setTimeout(() => btn.innerText = originalText, 2000);
+        }
+
+        // --- Chart Initialization ---
+        let disruptionChartInstance = null;
+        let typeChartInstance = null;
+
+        function initCharts() {
+            // Data Prep
+            const labels = industriesData.map(d => d.industry);
+            // Removing duplicates for chart
+            const uniqueIndustries = [...new Set(labels)];
+            
+            const potentials = uniqueIndustries.map(ind => {
+                // Average potential if multiple tools exist in one industry (simplified here)
+                return industriesData.find(d => d.industry === ind).potential;
+            });
+
+            // 1. Bar Chart (Disruption Potential)
+            const ctx1 = document.getElementById('disruptionChart').getContext('2d');
+            disruptionChartInstance = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: uniqueIndustries,
+                    datasets: [{
+                        label: 'Disruption Potential (0-100)',
+                        data: potentials,
+                        backgroundColor: 'rgba(234, 88, 12, 0.6)', // Orange-600
+                        borderColor: 'rgba(234, 88, 12, 1)',
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+
+            // 2. Doughnut Chart (Types) - Synthetic distribution for visual
+            const ctx2 = document.getElementById('typeChart').getContext('2d');
+            typeChartInstance = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Generative Text', 'Analysis/Audit', 'Prediction', 'Personalization'],
+                    datasets: [{
+                        data: [40, 25, 20, 15],
+                        backgroundColor: [
+                            '#fca5a5', // red-300
+                            '#fdba74', // orange-300
+                            '#d6d3d1', // stone-300
+                            '#94a3b8'  // slate-400
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'right' }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(type) {
+            // Mock function to demonstrate interactivity
+            // In a real app, this would toggle different datasets
+            if (type === 'potential') {
+                disruptionChartInstance.data.datasets[0].backgroundColor = 'rgba(234, 88, 12, 0.6)';
+                disruptionChartInstance.update();
+            } else {
+                disruptionChartInstance.data.datasets[0].backgroundColor = 'rgba(87, 83, 78, 0.6)'; // Stone color
+                disruptionChartInstance.update();
+            }
+        }
+
+        // Close modal on escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeModal();
+            }
+        });
+
+    </script>
+</body>
+</html>
