@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Studio Startup Incubator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals -->
+    <!-- Primary Background: Stone-50 (#fafaf9) -->
+    <!-- Secondary Background: Stone-100 (#f5f5f4) -->
+    <!-- Text: Stone-800 (#292524) -->
+    <!-- Accents: Amber-600, Orange-500 (subtle warmth) -->
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #fafaf9; /* Stone-50 */
+            color: #292524; /* Stone-800 */
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        /* Custom Scrollbar for prompt areas */
+        .prompt-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .prompt-scroll::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+        .prompt-scroll::-webkit-scrollbar-thumb {
+            background-color: #d6d3d1;
+            border-radius: 4px;
+        }
+
+        /* Card Hover Effects */
+        .idea-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .idea-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .active-nav {
+            background-color: #f5f5f4;
+            border-left: 4px solid #d97706; /* Amber-600 */
+            font-weight: 600;
+        }
+        
+        .inactive-nav {
+            border-left: 4px solid transparent;
+        }
+        .inactive-nav:hover {
+            background-color: #fafaf9;
+            border-left: 4px solid #e7e5e4;
+        }
+    </style>
+</head>
+<body class="flex flex-col h-screen overflow-hidden">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-stone-200 py-4 px-6 flex justify-between items-center z-10 shadow-sm shrink-0">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-amber-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">AI</div>
+            <div>
+                <h1 class="text-xl font-bold text-stone-900 tracking-tight">Startup Incubator</h1>
+                <p class="text-xs text-stone-500">Powered by Google AI Studio</p>
+            </div>
+        </div>
+        <div class="hidden md:flex gap-4 text-sm font-medium text-stone-600">
+            <span>70+ Ideas</span>
+            <span>•</span>
+            <span>7 Industries</span>
+            <span>•</span>
+            <span>Ready-to-use Prompts</span>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <nav class="w-64 bg-white border-r border-stone-200 flex-shrink-0 flex flex-col overflow-y-auto">
+            <div class="p-4">
+                <h3 class="text-xs font-bold text-stone-400 uppercase tracking-wider mb-3">Industries</h3>
+                <div id="nav-container" class="space-y-1">
+                    <!-- Nav items injected via JS -->
+                </div>
+            </div>
+            
+            <div class="mt-auto p-4 border-t border-stone-100">
+                <div class="bg-amber-50 rounded-lg p-3 border border-amber-100">
+                    <h4 class="text-amber-800 font-semibold text-sm mb-1">Getting Started</h4>
+                    <p class="text-amber-700 text-xs">Select an industry to explore high-potential startup ideas and get the specific AI prompts to build them.</p>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto bg-stone-50 p-6 md:p-8" id="main-scroll">
+            
+            <!-- Intro / Dashboard Header -->
+            <div class="max-w-7xl mx-auto mb-8">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                    <div>
+                        <h2 id="section-title" class="text-3xl font-bold text-stone-800 mb-2">Select an Industry</h2>
+                        <p id="section-desc" class="text-stone-600 max-w-2xl">
+                            Explore curated startup concepts. Use the analytics below to identify low-hanging fruit or high-impact moonshots.
+                        </p>
+                    </div>
+                    <div class="mt-4 md:mt-0 px-4 py-2 bg-white rounded-full border border-stone-200 shadow-sm text-sm font-medium text-stone-600">
+                        <span id="idea-count">0</span> Active Ideas
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <!-- Chart 1: Difficulty vs Impact -->
+                    <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-stone-800">Feasibility Analysis</h3>
+                            <span class="text-xs text-stone-400 bg-stone-100 px-2 py-1 rounded">XY Scatter</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="scatterChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-3 text-center">
+                            X: Development Complexity | Y: Potential Market Impact
+                        </p>
+                    </div>
+
+                    <!-- Chart 2: Idea Type Distribution -->
+                    <div class="bg-white p-5 rounded-xl border border-stone-200 shadow-sm">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-semibold text-stone-800">Tool Categories</h3>
+                            <span class="text-xs text-stone-400 bg-stone-100 px-2 py-1 rounded">Distribution</span>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                         <p class="text-xs text-stone-500 mt-3 text-center">
+                            Breakdown of tool types (Analysis, Generation, Automation, etc.)
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Ideas Grid -->
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold text-stone-800 mb-4">Startup Concepts & Prompts</h3>
+                    <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                        <!-- Cards injected via JS -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer -->
+            <footer class="max-w-7xl mx-auto border-t border-stone-200 pt-6 text-center text-stone-400 text-sm pb-10">
+                <p>Generated for Google AI Studio Ideation • No external images used</p>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Modal for Prompt Display -->
+    <div id="prompt-modal" class="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-in fade-in zoom-in duration-200">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-stone-100 flex justify-between items-center bg-stone-50">
+                <div>
+                    <h3 id="modal-title" class="text-lg font-bold text-stone-800">Idea Title</h3>
+                    <span id="modal-tag" class="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-100">Category</span>
+                </div>
+                <button id="close-modal" class="text-stone-400 hover:text-stone-600 p-2 rounded-full hover:bg-stone-200 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto prompt-scroll">
+                <div class="mb-6">
+                    <h4 class="text-sm font-bold text-stone-900 uppercase tracking-wide mb-2">Concept Description</h4>
+                    <p id="modal-desc" class="text-stone-600 leading-relaxed"></p>
+                </div>
+
+                <div class="bg-stone-900 rounded-xl p-6 relative group">
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-stone-400 text-xs font-bold uppercase tracking-widest">Google AI Studio Prompt</h4>
+                        <button id="copy-btn" class="text-stone-400 hover:text-white text-xs flex items-center gap-1 transition-colors">
+                            <span id="copy-text">Copy</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        </button>
+                    </div>
+                    <pre id="modal-prompt" class="text-stone-300 font-mono text-sm whitespace-pre-wrap leading-6"></pre>
+                </div>
+                
+                <div class="mt-6 bg-amber-50 border border-amber-100 p-4 rounded-lg">
+                    <h5 class="text-amber-800 font-semibold text-sm mb-1">Implementation Tip</h5>
+                    <p id="modal-tip" class="text-amber-700 text-sm"></p>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="px-6 py-4 border-t border-stone-100 bg-stone-50 flex justify-end">
+                <button id="close-modal-btn" class="px-5 py-2 bg-stone-200 hover:bg-stone-300 text-stone-700 font-medium rounded-lg transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Logic -->
+    <script>
+        // --- 1. Data Source ---
+        // This object contains all report data, prompts, and metadata.
+        const appData = {
+            "crypto": {
+                name: "Crypto & Digital Assets",
+                icon: "₿",
+                description: "Blockchain technology requires complex data analysis and code verification. AI tools here focus on security, sentiment, and education.",
+                ideas: [
+                    {
+                        title: "Smart Contract Auditor",
+                        desc: "An AI tool that scans Solidity code for common vulnerabilities like reentrancy attacks and gas optimization issues.",
+                        complexity: 8, // 1-10
+                        impact: 9,
+                        type: "Security",
+                        prompt: "Act as a Senior Smart Contract Auditor. I will provide you with Solidity code. Your task is to: 1) Identify security vulnerabilities (e.g., Reentrancy, Overflow). 2) Suggest gas optimization techniques. 3) Provide the corrected code snippet. \n\nHere is the code: [PASTE_CODE_HERE]",
+                        tip: "Use the 'Gemini 1.5 Pro' model for larger context windows when pasting full contracts."
+                    },
+                    {
+                        title: "Crypto Sentiment Tracker",
+                        desc: "Analyzes thousands of tweets and news headlines to predict short-term price movements for specific tokens.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Analysis",
+                        prompt: "Analyze the sentiment of the following news headlines regarding [TOKEN_NAME]. Classify the overall sentiment as Bullish, Bearish, or Neutral. Provide a confidence score (0-100) and summarize the key narrative driving the market sentiment. \n\nHeadlines: [PASTE_HEADLINES]",
+                        tip: "Connect this to a news API in Python to feed headlines dynamically."
+                    },
+                    {
+                        title: "NFT Generative Artist",
+                        desc: "A creative assistant that generates prompt chains for image models to create cohesive NFT collections with varied traits.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Creative",
+                        prompt: "Act as an Art Director for an NFT collection. The theme is 'Cyberpunk Hamsters'. Generate a table of 50 unique traits across 5 categories (Headwear, Eyes, Fur, Background, Accessory). Then, write 5 specific image generation prompts that combine these traits randomly.",
+                        tip: "Use the output prompts in Imagen or Midjourney."
+                    },
+                    {
+                        title: "DeFi Yield Optimizer",
+                        desc: "Analyzes various liquidity pools and staking APYs to suggest the best risk-adjusted portfolio allocation.",
+                        complexity: 9,
+                        impact: 8,
+                        type: "Finance",
+                        prompt: "You are a DeFi Portfolio Manager. I have $10,000 ETH. Given the following yield data from 5 protocols (Aave, Compound, Uniswap, Curve, Lido), suggest a split that minimizes impermanent loss risk while maximizing APY. Explain your mathematical reasoning.",
+                        tip: "Requires feeding current APY data into the context."
+                    },
+                    {
+                        title: "Whitepaper Summarizer",
+                        desc: "Digests complex technical whitepapers and explains the tokenomics and utility in simple terms for investors.",
+                        complexity: 3,
+                        impact: 6,
+                        type: "Education",
+                        prompt: "Summarize the attached crypto whitepaper. Focus specifically on: 1) The problem they are solving. 2) The Tokenomics (distribution, utility, burn mechanism). 3) The roadmap. Explain it as if I am a 15-year-old student.",
+                        tip: "Upload the PDF directly to Google AI Studio."
+                    },
+                    {
+                        title: "DAO Governance Bot",
+                        desc: "Summarizes active governance proposals and recommends voting decisions based on a user's pre-defined values.",
+                        complexity: 5,
+                        impact: 7,
+                        type: "Governance",
+                        prompt: "My core values for this DAO are: Decentralization, Security, and Long-term Growth. Analyze the following governance proposal text. Does this proposal align with my values? List pros and cons, and suggest a Vote (YES/NO).",
+                        tip: "Fine-tune on past proposals for better accuracy."
+                    },
+                    {
+                        title: "Personalized Crypto Tutor",
+                        desc: "An adaptive learning bot that teaches blockchain concepts based on the user's current knowledge level.",
+                        complexity: 4,
+                        impact: 5,
+                        type: "Education",
+                        prompt: "Act as a Socratic Crypto Tutor. I want to learn about [TOPIC, e.g., Zero Knowledge Proofs]. Assess my current understanding by asking a question first. Then, explain concepts using analogies suitable for a non-technical person. Do not dump text; engage in a dialogue.",
+                        tip: "Set temperature to 0.7 for more conversational style."
+                    },
+                    {
+                        title: "Rug Pull Detector",
+                        desc: "Analyzes token distribution and wallet behavior to flag high-risk projects.",
+                        complexity: 8,
+                        impact: 9,
+                        type: "Security",
+                        prompt: "Analyze this token distribution data: [DATA]. If the top 5 wallets hold > 50% of supply, or if liquidity is not locked, flag this as High Risk. Explain the specific 'Red Flags' found in the data.",
+                        tip: "Best used as a backend logic for a scanning tool."
+                    },
+                    {
+                        title: "Web3 Career Matcher",
+                        desc: "Matches Web2 skills to Web3 job opportunities.",
+                        complexity: 3,
+                        impact: 6,
+                        type: "HR",
+                        prompt: "I am a [CURRENT ROLE, e.g., Java Developer] looking to move into Web3. What specific blockchain technologies, languages (e.g., Rust, Solidity), and frameworks should I learn? Suggest a 3-month learning roadmap.",
+                        tip: "Use this to build a personalized career planning app."
+                    },
+                    {
+                        title: "Metaverse Real Estate Valuer",
+                        desc: "Estimates the value of virtual land based on location relative to popular hubs.",
+                        complexity: 7,
+                        impact: 6,
+                        type: "Finance",
+                        prompt: "Estimate the value of a parcel in Decentraland located at [COORDINATES]. Factors: Proximity to Genesis Plaza, recent sales of neighbors [DATA], and size. Provide a valuation range in MANA and USD.",
+                        tip: "Requires recent sales data in the context window."
+                    }
+                ]
+            },
+            "metaverse": {
+                name: "Metaverse & Gaming",
+                icon: "🥽",
+                description: "Virtual worlds need content. AI tools here focus on asset creation, NPC dialogue, and world-building.",
+                ideas: [
+                    {
+                        title: "NPC Dialogue Generator",
+                        desc: "Generates infinite, context-aware dialogue for non-player characters in RPGs.",
+                        complexity: 5,
+                        impact: 8,
+                        type: "Gaming",
+                        prompt: "Act as an NPC named 'Eldrin', an old shopkeeper in a fantasy village. The player just walked in holding a rare dragon scale. React to this item with surprise and offer to buy it, but try to lowball the price. Maintain a grumpy but curious tone.",
+                        tip: "Integrate via API for real-time chat in Unity/Unreal."
+                    },
+                    {
+                        title: "3D Asset Concept Generator",
+                        desc: "Creates detailed textual descriptions for 3D modelers or prompt-to-3D AIs.",
+                        complexity: 3,
+                        impact: 6,
+                        type: "Design",
+                        prompt: "Describe a futuristic hover-bike for a 3D modeler. Include details on: Materials (chrome, carbon fiber), Lighting (neon accents), Wear and Tear (scratches, rust), and silhouette. Be highly specific about textures.",
+                        tip: "Use these descriptions to feed into models like Point-E or Meshy."
+                    },
+                    {
+                        title: "Virtual Event Planner",
+                        desc: "Designing agendas and spatial layouts for metaverse conferences.",
+                        complexity: 4,
+                        impact: 5,
+                        type: "Productivity",
+                        prompt: "Plan a 2-hour virtual launch party in a metaverse space. Theme: 'Space Exploration'. deliverables: 1) A schedule of interactive activities. 2) Ideas for spatial layout (e.g., zero-gravity dance floor). 3) Engagement mechanics to keep avatars active.",
+                        tip: "Good for community managers."
+                    },
+                    {
+                        title: "Avatar Personality Maker",
+                        desc: "Generates backstories and personality traits for virtual avatars.",
+                        complexity: 2,
+                        impact: 4,
+                        type: "Creative",
+                        prompt: "Generate a rich backstory for a Cyberpunk avatar. Name: [NAME]. Include: Origin story, a defining scar or cybernetic implant and how they got it, a secret they are hiding, and their primary motivation.",
+                        tip: "Useful for roleplay communities."
+                    },
+                    {
+                        title: "Quest Generator",
+                        desc: "Creates dynamic quests for players based on their level and past actions.",
+                        complexity: 6,
+                        impact: 7,
+                        type: "Gaming",
+                        prompt: "Generate a side-quest for a Level 5 Paladin. The quest must involve a moral dilemma, not just killing monsters. Setting: A cursed swamp. Reward: A magical item that has a drawback.",
+                        tip: "Chain prompts to generate the outcome based on user choice."
+                    },
+                    {
+                        title: "Virtual Tour Guide",
+                        desc: "An AI guide that narrates history and facts about virtual replicas of real-world locations.",
+                        complexity: 5,
+                        impact: 6,
+                        type: "Education",
+                        prompt: "Act as a Tour Guide in a virtual reconstruction of Ancient Rome. The user is standing in the Colosseum. Explain the architecture, the seating arrangement, and a typical day of games in the year 80 AD. Keep it engaging and concise.",
+                        tip: "Combine with Text-to-Speech for audio guides."
+                    },
+                    {
+                        title: "Metaverse Economy Balancer",
+                        desc: "Simulates economic models for game currencies to prevent hyperinflation.",
+                        complexity: 9,
+                        impact: 8,
+                        type: "Economics",
+                        prompt: "Analyze this game economy model: Players earn 10 Gold per kill. Potions cost 50 Gold. Repairs cost 10 Gold. If the average player kills 20 mobs per hour, is this economy sustainable? Suggest sinks (ways to remove gold) to prevent inflation.",
+                        tip: "Crucial for Play-to-Earn developers."
+                    },
+                    {
+                        title: "Moderation Bot",
+                        desc: "Detects toxic behavior or hate speech in voice/text chat in real-time.",
+                        complexity: 7,
+                        impact: 9,
+                        type: "Safety",
+                        prompt: "Classify the following chat log for toxicity: [CHAT_LOG]. Categories: Harassment, Hate Speech, Spam, Safe. If toxic, explain why and cite the specific phrase.",
+                        tip: "Fine-tune on gaming slang to avoid false positives."
+                    },
+                    {
+                        title: "Lore Bible Manager",
+                        desc: "Keeps track of a game's expanding lore to ensure consistency.",
+                        complexity: 4,
+                        impact: 5,
+                        type: "Writing",
+                        prompt: "I am adding a new faction 'The Iron Legion'. Check the existing lore [PASTE_LORE] to see if this conflicts with the history of the 'Silver Kingdom'. If there is a conflict, suggest a narrative workaround.",
+                        tip: "Use long-context models."
+                    },
+                    {
+                        title: "Accessibility Describer",
+                        desc: "Generates alt-text and audio descriptions for visual metaverse environments.",
+                        complexity: 5,
+                        impact: 8,
+                        type: "Accessibility",
+                        prompt: "Provide a descriptive audio script for a blind user navigating this virtual room. Describe the layout, obstacles, ambient sounds, and the atmosphere. Room details: [PASTE_DETAILS].",
+                        tip: "Essential for inclusive design."
+                    }
+                ]
+            },
+            "education": {
+                name: "Education (EdTech)",
+                icon: "🎓",
+                description: "Personalization is the key in EdTech. AI tools here focus on curriculum design, tutoring, and administrative automation.",
+                ideas: [
+                    {
+                        title: "Syllabus Generator",
+                        desc: "Instantly creates detailed course structures for teachers based on topic and duration.",
+                        complexity: 3,
+                        impact: 7,
+                        type: "Planning",
+                        prompt: "Create a 4-week course syllabus for 'Introduction to Python for Kids (Ages 10-12)'. Include learning objectives, weekly topics, and one fun hands-on project for each week. Ensure the language is age-appropriate.",
+                        tip: "Output in Markdown for easy formatting."
+                    },
+                    {
+                        title: "Flashcard Creator",
+                        desc: "Converts text notes or PDFs into Q&A pairs for spaced repetition apps.",
+                        complexity: 2,
+                        impact: 6,
+                        type: "Study Tool",
+                        prompt: "Extract 10 key concepts from the text below and format them as Flashcards (Front: Question, Back: Answer). Focus on definitions and dates. Text: [PASTE_TEXT]",
+                        tip: "Format as CSV for import into Anki."
+                    },
+                    {
+                        title: "Language Roleplay Partner",
+                        desc: "Simulates real-world conversations for language learners.",
+                        complexity: 5,
+                        impact: 8,
+                        type: "Language",
+                        prompt: "Act as a waiter in a French café. I am a student learning French. Conduct a dialogue where I order coffee and a croissant. Correct my grammar only if I make a major mistake, otherwise keep the conversation flowing naturally.",
+                        tip: "Can be adapted for any language."
+                    },
+                    {
+                        title: "Essay Grading Assistant",
+                        desc: "Provides preliminary feedback on student essays, focusing on structure and clarity.",
+                        complexity: 7,
+                        impact: 8,
+                        type: "Admin",
+                        prompt: "Evaluate this student essay based on the rubric: 1) Thesis Clarity (0-5), 2) Evidence (0-5), 3) Grammar (0-5). Provide the score and 3 specific constructive comments on how to improve the argument flow. Essay: [PASTE_ESSAY]",
+                        tip: "Always have a human teacher review the AI's grade."
+                    },
+                    {
+                        title: "Math Word Problem Solver",
+                        desc: "Explains the step-by-step logic behind complex math problems.",
+                        complexity: 6,
+                        impact: 7,
+                        type: "Tutoring",
+                        prompt: "Solve this calculus problem: [PROBLEM]. Do not just give the answer. Break it down into steps. Explain the rule used at each step (e.g., Chain Rule). Explain it like I am a high school student.",
+                        tip: "Use LaTeX formatting for math symbols."
+                    },
+                    {
+                        title: "Custom Storybook Generator",
+                        desc: "Creates personalized stories for children featuring them as the protagonist.",
+                        complexity: 3,
+                        impact: 5,
+                        type: "Creative",
+                        prompt: "Write a 500-word bedtime story for a girl named 'Maya' who loves dinosaurs and space. In the story, she travels to Mars and finds a friendly T-Rex. Include a moral about sharing.",
+                        tip: "Great for parents."
+                    },
+                    {
+                        title: "Debate Opponent",
+                        desc: "Helps students practice debating by taking the opposing side of any argument.",
+                        complexity: 5,
+                        impact: 6,
+                        type: "Critical Thinking",
+                        prompt: "I want to debate the topic: 'Universal Basic Income is necessary'. You will take the AGAINST stance. I will start. Respond to my points with counter-arguments and data. Keep responses under 100 words.",
+                        tip: "Encourages critical thinking."
+                    },
+                    {
+                        title: "Research Paper Summarizer",
+                        desc: "Simplifies academic papers into key findings and methodology.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Research",
+                        prompt: "Summarize this academic paper for a layman. Structure the summary as: 1) The Hypothesis, 2) The Methodology (how they tested it), 3) Key Results, 4) Implications. Paper text: [PASTE_TEXT]",
+                        tip: "Essential for grad students."
+                    },
+                    {
+                        title: "Career Path Visualizer",
+                        desc: "Maps out necessary skills and certifications for specific jobs.",
+                        complexity: 4,
+                        impact: 6,
+                        type: "Counseling",
+                        prompt: "I want to become a 'Data Scientist'. Outline a roadmap starting from zero knowledge. Break it down into: Beginner (Months 1-3), Intermediate (Months 4-9), and Advanced. List specific tools (Python, SQL, etc.) to learn at each stage.",
+                        tip: "Use standard lists."
+                    },
+                    {
+                        title: "Quiz Generator",
+                        desc: "Generates multiple-choice questions from study material.",
+                        complexity: 3,
+                        impact: 8,
+                        type: "Assessment",
+                        prompt: "Create a 5-question multiple choice quiz based on the text below. For each question, provide 4 options (A,B,C,D) and indicate the correct answer. Text: [PASTE_TEXT]",
+                        tip: "Automates teacher prep time."
+                    }
+                ]
+            },
+            "realestate": {
+                name: "Real Estate",
+                icon: "🏘️",
+                description: "Property markets rely on data and legal text. AI helps in valuation, lease generation, and market trends.",
+                ideas: [
+                    {
+                        title: "Lease Agreement Generator",
+                        desc: "Drafts custom lease clauses based on specific landlord requirements.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Legal",
+                        prompt: "Draft a residential lease agreement clause regarding 'Pets'. Conditions: Tenant is allowed one dog under 20kg. A non-refundable deposit of $200 is required. Tenant is responsible for all damage. Tone: Formal and legally binding.",
+                        tip: "Must contain a disclaimer: 'Not legal advice'."
+                    },
+                    {
+                        title: "Property Listing Optimizer",
+                        desc: "Rewrites listing descriptions to be more persuasive and SEO-friendly.",
+                        complexity: 3,
+                        impact: 7,
+                        type: "Marketing",
+                        prompt: "Rewrite this property description to be more luxurious and inviting. Highlight the 'natural light' and 'modern kitchen'. Target audience: Young professionals. Original text: '2 bed apt, good light, new kitchen.'",
+                        tip: "A/B test different styles."
+                    },
+                    {
+                        title: "Neighborhood Vibe Analyzer",
+                        desc: "Aggregates reviews and data to describe the 'feel' of a neighborhood.",
+                        complexity: 5,
+                        impact: 6,
+                        type: "Analysis",
+                        prompt: "Based on these reviews of the 'Capitol Hill' neighborhood [PASTE_REVIEWS], summarize the vibe. Is it noisy? Family-friendly? Nightlife-focused? Provide a summary and a 'Noise Level' rating (1-10).",
+                        tip: "Great for relocation apps."
+                    },
+                    {
+                        title: "Investment ROI Calculator",
+                        desc: "Projects rental yield and cash flow based on input financial data.",
+                        complexity: 7,
+                        impact: 9,
+                        type: "Finance",
+                        prompt: "Calculate the Cash-on-Cash Return for this property. Purchase Price: $500k. Down Payment: 20%. Interest Rate: 6%. Monthly Rent: $3000. Monthly Expenses (Tax, Insurance, Maint): $800. Show the math.",
+                        tip: "Ensure mathematical accuracy in the prompt instructions."
+                    },
+                    {
+                        title: "Interior Design Stager",
+                        desc: "Suggests furniture layouts and decor styles for empty rooms.",
+                        complexity: 4,
+                        impact: 5,
+                        type: "Design",
+                        prompt: "I have a living room that is 15x20 feet with a fireplace on the north wall. Suggest 2 furniture layout options. Style: Mid-Century Modern. List the furniture pieces needed.",
+                        tip: "Pair with image generation for visuals."
+                    },
+                    {
+                        title: "Market Trend Forecaster",
+                        desc: "Summarizes quarterly market reports into actionable advice.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Analysis",
+                        prompt: "Read this market report [PASTE_TEXT]. Summarize the trend for 'Single Family Homes'. Are prices rising or falling? Is inventory increasing? Conclusion: Is it a Buyer's or Seller's market right now?",
+                        tip: "Useful for newsletters."
+                    },
+                    {
+                        title: "Maintenance Chatbot",
+                        desc: "Triages tenant maintenance requests for property managers.",
+                        complexity: 5,
+                        impact: 7,
+                        type: "Ops",
+                        prompt: "Act as a Property Manager Assistant. A tenant says: 'The water heater is leaking'. Ask diagnostic questions to determine if this is an Emergency (requires immediate dispatch) or Routine (can wait 24h).",
+                        tip: "Reduces after-hours calls."
+                    },
+                    {
+                        title: "Gentrification Indicator",
+                        desc: "Analyzes business openings (coffee shops, art galleries) to predict property value spikes.",
+                        complexity: 7,
+                        impact: 6,
+                        type: "Analysis",
+                        prompt: "Analyze this list of new business permits in Zip Code 90210. Count the number of 'Specialty Coffee', 'Yoga Studios', and 'Breweries'. Compare to last year. Does this indicate early gentrification?",
+                        tip: "Requires business permit data."
+                    },
+                    {
+                        title: "Lead Qualifier",
+                        desc: "Engages with website visitors to see if they are serious buyers.",
+                        complexity: 4,
+                        impact: 8,
+                        type: "Sales",
+                        prompt: "You are a Real Estate Agent Assistant. Chat with a user to find out: 1) Their budget. 2) Their timeline (when do they need to move?). 3) Pre-approval status. Be polite but persistent in getting these details.",
+                        tip: "Standard chatbot use case."
+                    },
+                    {
+                        title: "Zoning Code Explainer",
+                        desc: "Translates complex zoning laws into plain English for developers.",
+                        complexity: 8,
+                        impact: 7,
+                        type: "Legal",
+                        prompt: "Explain the zoning code 'R-3' for this city [PASTE_CODE]. Can I build a 4-plex on a 5000 sqft lot? What are the setbacks and height restrictions?",
+                        tip: "High value for small developers."
+                    }
+                ]
+            },
+            "renewables": {
+                name: "Renewables & Climate",
+                icon: "🌱",
+                description: "Green tech needs optimization. AI assists in solar calculations, energy efficiency, and carbon tracking.",
+                ideas: [
+                    {
+                        title: "Solar Potential Calculator",
+                        desc: "Estimates energy generation based on roof size and location data.",
+                        complexity: 7,
+                        impact: 9,
+                        type: "Engineering",
+                        prompt: "Given a roof area of 50 sq meters in Phoenix, Arizona (high solar irradiance), and a panel efficiency of 20%, calculate the estimated annual kWh generation. Account for a 15% loss due to heat/dust.",
+                        tip: "Need specific location irradiance data."
+                    },
+                    {
+                        title: "Energy Bill Auditor",
+                        desc: "Analyzes utility bills to find usage spikes and suggest savings.",
+                        complexity: 5,
+                        impact: 8,
+                        type: "Consumer",
+                        prompt: "Analyze this monthly electricity usage data [PASTE_DATA]. Identify the month with the highest usage. Compare it to the average. Suggest 3 generic ways to reduce HVAC costs during that peak season.",
+                        tip: "OCR can be used to read bill PDFs."
+                    },
+                    {
+                        title: "Carbon Footprint Tracker",
+                        desc: "Calculates personal or business carbon emissions based on activity logs.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Analysis",
+                        prompt: "Calculate the carbon footprint for a flight from London to New York (Economy class). Then, calculate the footprint for driving a gasoline car 500 miles. Compare the two.",
+                        tip: "Use standard emission factors."
+                    },
+                    {
+                        title: "Grant Writer for Green Tech",
+                        desc: "Drafts grant applications for renewable energy startups.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Admin",
+                        prompt: "Write a 'Statement of Need' for a grant application. Project: A community solar garden in a low-income neighborhood. Emphasize: Energy equity, cost savings for residents, and job creation.",
+                        tip: "Saves hours of paperwork."
+                    },
+                    {
+                        title: "Recycling Sorter Assistant",
+                        desc: "Identifies objects via camera and tells you how to recycle them.",
+                        complexity: 8,
+                        impact: 6,
+                        type: "Vision",
+                        prompt: "Describe the object in this image. Is it recyclable in a standard single-stream bin? If it is a pizza box with grease, explain why it cannot be recycled.",
+                        tip: "Requires image input capabilities."
+                    },
+                    {
+                        title: "Smart Grid Load Balancer",
+                        desc: "Predicts peak energy demand to optimize battery storage release.",
+                        complexity: 9,
+                        impact: 10,
+                        type: "Engineering",
+                        prompt: "Analyze this 24-hour energy demand curve [DATA]. Identify the peak demand hours. Suggest a battery discharge schedule to shave the peak by 20%.",
+                        tip: "Enterprise level tool."
+                    },
+                    {
+                        title: "Sustainable Material Finder",
+                        desc: "Suggests eco-friendly alternatives to common construction materials.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Construction",
+                        prompt: "I am building a house. Suggest 3 sustainable alternatives to 'Concrete' for the foundation or walls. Compare them based on: Cost, Durability, and CO2 impact.",
+                        tip: "Great for architects."
+                    },
+                    {
+                        title: "Agri-Tech Crop Advisor",
+                        desc: "Advises farmers on crop rotation to maintain soil health.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Agriculture",
+                        prompt: "I just harvested Corn. My soil is low in Nitrogen. Suggest a cover crop to plant next to replenish Nitrogen. Explain why this crop helps.",
+                        tip: "Focus on regenerative agriculture."
+                    },
+                    {
+                        title: "ESG Report Generator",
+                        desc: "Drafts Environmental, Social, and Governance reports for companies.",
+                        complexity: 5,
+                        impact: 7,
+                        type: "Corporate",
+                        prompt: "Draft the 'Environmental' section of an ESG report for a Software Company. Focus on: Remote work reducing commute emissions, cloud server efficiency, and e-waste recycling policies.",
+                        tip: "Standard corporate requirement."
+                    },
+                    {
+                        title: "Wind Turbine Maintenance Log",
+                        desc: "Predicts failure probabilities based on vibration sensor logs.",
+                        complexity: 9,
+                        impact: 9,
+                        type: "Maintenance",
+                        prompt: "Analyze these vibration sensor readings from a wind turbine gearbox. [DATA]. Identify any anomalies that deviate > 2 standard deviations from the mean. Recommend maintenance if found.",
+                        tip: "Predictive maintenance is huge."
+                    }
+                ]
+            },
+            "ev": {
+                name: "Electric Vehicles (EV)",
+                icon: "⚡",
+                description: "The EV transition needs infrastructure and user support. AI helps in route planning and battery health.",
+                ideas: [
+                    {
+                        title: "EV Route Planner",
+                        desc: "Plans road trips accounting for charging stops and elevation changes.",
+                        complexity: 8,
+                        impact: 9,
+                        type: "Navigation",
+                        prompt: "Plan a route from San Francisco to Los Angeles for a Tesla Model 3 (Standard Range, 250mi). List charging stops. Ensure I never arrive at a charger with less than 10% battery.",
+                        tip: "Need map/charger location data."
+                    },
+                    {
+                        title: "Battery Health Monitor",
+                        desc: "Explains battery degradation stats to non-technical owners.",
+                        complexity: 6,
+                        impact: 7,
+                        type: "Hardware",
+                        prompt: "My EV battery has 90% State of Health (SoH) after 3 years / 40k miles. Is this normal? Explain factors that might accelerate degradation (e.g., Fast Charging, Heat).",
+                        tip: "Educates users on longevity."
+                    },
+                    {
+                        title: "Home Charger Installer Matcher",
+                        desc: "Estimates installation costs and finds local electricians.",
+                        complexity: 4,
+                        impact: 6,
+                        type: "Service",
+                        prompt: "I want to install a Level 2 charger. My electrical panel is 50 feet from the garage. I have a 100 Amp panel. Estimate the scope of work (e.g., trenching, panel upgrade?) and rough cost range.",
+                        tip: "Generates leads for electricians."
+                    },
+                    {
+                        title: "Fleet Transition Calculator",
+                        desc: "Calculates savings for companies switching fleets from gas to EV.",
+                        complexity: 7,
+                        impact: 9,
+                        type: "B2B",
+                        prompt: "Calculate the TCO (Total Cost of Ownership) over 5 years for a Ford F-150 (Gas) vs. Ford F-150 Lightning (EV). Assumptions: 15k miles/year, Gas $3.50/gal, Electricity $0.12/kWh. Include maintenance savings.",
+                        tip: "Powerful sales tool."
+                    },
+                    {
+                        title: "Smart Charging Scheduler",
+                        desc: "Optimizes charging times based on Time-of-Use electricity rates.",
+                        complexity: 5,
+                        impact: 8,
+                        type: "Utility",
+                        prompt: "My electricity rates are: Peak ($0.40) 4pm-9pm, Off-Peak ($0.10) 9pm-4pm. I plug in at 6pm with 20%. I need 80% by 7am. Create a charging schedule to minimize cost.",
+                        tip: "Saves money for users."
+                    },
+                    {
+                        title: "EV Tax Credit Guide",
+                        desc: "Clarifies complex eligibility rules for government incentives.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Finance",
+                        prompt: "Explain the eligibility requirements for the US Federal EV Tax Credit (IRA). I am single, income $100k. I want to buy a Tesla Model Y. Do I qualify? Explain income caps and vehicle price caps.",
+                        tip: "Keep updated with latest laws."
+                    },
+                    {
+                        title: "Used EV Valuator",
+                        desc: "Adjusts used car prices based on battery health reports.",
+                        complexity: 6,
+                        impact: 8,
+                        type: "Sales",
+                        prompt: "Value a 2018 Nissan Leaf. Mileage: 50k. Battery Health: 8 bars out of 12 (Degraded). How much does the battery degradation lower the value compared to a pristine unit?",
+                        tip: "Crucial for the used market."
+                    },
+                    {
+                        title: "Charging Station Review Summarizer",
+                        desc: "Aggregates PlugShare reviews to determine station reliability.",
+                        complexity: 5,
+                        impact: 7,
+                        type: "Data",
+                        prompt: "Summarize these 10 reviews for the 'Downtown Charger'. Is it reliable? What is the most common complaint (e.g., Broken screen, slow speed)? Reviews: [PASTE_REVIEWS]",
+                        tip: "Fixes range anxiety."
+                    },
+                    {
+                        title: "V2G (Vehicle to Grid) ROI",
+                        desc: "Estimates earnings from selling power back to the grid.",
+                        complexity: 8,
+                        impact: 6,
+                        type: "Finance",
+                        prompt: "If I sell 10kWh back to the grid every day during peak hours ($0.40/kWh) and recharge at night ($0.10/kWh), what is my annual profit? Does this cover the battery wear cost?",
+                        tip: "Future-facing idea."
+                    },
+                    {
+                        title: "DIY Conversion Assistant",
+                        desc: "Guides hobbyists converting classic cars to electric.",
+                        complexity: 7,
+                        impact: 5,
+                        type: "Hobby",
+                        prompt: "I am converting a VW Beetle to electric. I need a motor with 100hp. Suggest suitable motor types (AC vs DC) and battery voltage (96V vs 144V) for a lightweight build.",
+                        tip: "Niche but passionate market."
+                    }
+                ]
+            },
+            "semiconductors": {
+                name: "Semiconductors",
+                icon: "💾",
+                description: "The chip industry is highly technical. AI assists in supply chain, defect detection, and datasheet analysis.",
+                ideas: [
+                    {
+                        title: "Datasheet Chatbot",
+                        desc: "Answers technical questions by reading 500-page component datasheets.",
+                        complexity: 6,
+                        impact: 9,
+                        type: "Engineering",
+                        prompt: "Based on the attached datasheet for the 'STM32F4 Microcontroller', what is the maximum clock frequency? What is the pinout for UART1? Output the pin numbers.",
+                        tip: "Huge time saver for engineers."
+                    },
+                    {
+                        title: "Supply Chain Risk Monitor",
+                        desc: "Tracks geopolitical news to predict neon or silicon shortages.",
+                        complexity: 7,
+                        impact: 10,
+                        type: "Logistics",
+                        prompt: "Analyze recent news regarding 'Neon Gas exports from Ukraine'. How might this impact the semiconductor lithography supply chain? Rate the disruption risk (Low/Med/High).",
+                        tip: "Enterprise strategy tool."
+                    },
+                    {
+                        title: "Verilog Code Commenter",
+                        desc: "Automatically adds documentation to legacy hardware description code.",
+                        complexity: 8,
+                        impact: 7,
+                        type: "Coding",
+                        prompt: "Add comments to this Verilog code module explaining what the logic does. Identify the clock signal and the reset logic. Code: [PASTE_VERILOG]",
+                        tip: "Helps modernize legacy chips."
+                    },
+                    {
+                        title: "Defect Classifier (Vision)",
+                        desc: "Identifies wafer defects from microscope images.",
+                        complexity: 9,
+                        impact: 9,
+                        type: "Manufacturing",
+                        prompt: "Analyze this image of a silicon wafer. Classify the defect: Scratch, Particle, or Pattern Error? Provide a confidence score.",
+                        tip: "Requires vision model tuning."
+                    },
+                    {
+                        title: "PCB Component Placer",
+                        desc: "Suggests optimal component placement on a circuit board to minimize trace length.",
+                        complexity: 8,
+                        impact: 8,
+                        type: "Design",
+                        prompt: "I have a PCB with a CPU and RAM. Suggest placement rules to minimize signal interference. Should the decoupling capacitors be close to the pins? Why?",
+                        tip: "EDA tool plugin."
+                    },
+                    {
+                        title: "Chip Industry News Aggregator",
+                        desc: "Summarizes niche industry news (TSMC, Intel, NVIDIA) for investors.",
+                        complexity: 4,
+                        impact: 7,
+                        type: "Finance",
+                        prompt: "Summarize the latest earnings call from TSMC. Focus on: 3nm yield rates, CAPEX spending, and guidance for the next quarter.",
+                        tip: "High value for traders."
+                    },
+                    {
+                        title: "Inventory Matcher",
+                        desc: "Finds alternative parts when a specific chip is out of stock.",
+                        complexity: 6,
+                        impact: 9,
+                        type: "Sourcing",
+                        prompt: "The 'LM317' voltage regulator is out of stock. Suggest 3 equivalent parts with similar specs (Voltage range, Current capacity, Package type). Check for pin compatibility.",
+                        tip: "Critical during shortages."
+                    },
+                    {
+                        title: "FPGA Learning Assistant",
+                        desc: "Teaches digital logic design concepts.",
+                        complexity: 5,
+                        impact: 6,
+                        type: "Education",
+                        prompt: "Explain the difference between 'Blocking' (=) and 'Non-Blocking' (<=) assignments in Verilog. Give a code example showing how they result in different hardware synthesis.",
+                        tip: "Niche education tool."
+                    },
+                    {
+                        title: "Cleanroom Protocol Trainer",
+                        desc: "Chatbot that quizzes staff on contamination protocols.",
+                        complexity: 3,
+                        impact: 5,
+                        type: "Training",
+                        prompt: "I am entering an ISO 5 Cleanroom. List the Gowning procedure in the correct order (Bouffant, Booties, Mask, etc.). What happens if I touch my face?",
+                        tip: "Standard Operating Procedure enforcement."
+                    },
+                    {
+                        title: "Yield Analysis Reporter",
+                        desc: "Analyzes test logs to find which step in manufacturing is causing failures.",
+                        complexity: 8,
+                        impact: 10,
+                        type: "Analytics",
+                        prompt: "Analyze this yield data. Batch A had 90% yield. Batch B had 60% yield. The only variable changed was 'Etch Time'. Is there a correlation between Etch Time and failure rate?",
+                        tip: "Data science for fabs."
+                    }
+                ]
+            }
+        };
+
+        // --- 2. State & DOM ---
+        let currentIndustry = "crypto";
+        const navContainer = document.getElementById('nav-container');
+        const mainScroll = document.getElementById('main-scroll');
+        const ideasGrid = document.getElementById('ideas-grid');
+        const sectionTitle = document.getElementById('section-title');
+        const sectionDesc = document.getElementById('section-desc');
+        const ideaCount = document.getElementById('idea-count');
+        
+        // Modal Elements
+        const modal = document.getElementById('prompt-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalTag = document.getElementById('modal-tag');
+        const modalDesc = document.getElementById('modal-desc');
+        const modalPrompt = document.getElementById('modal-prompt');
+        const modalTip = document.getElementById('modal-tip');
+        const closeModalBtn = document.getElementById('close-modal');
+        const closeModalBtn2 = document.getElementById('close-modal-btn');
+        const copyBtn = document.getElementById('copy-btn');
+
+        // Chart Instances
+        let scatterChartInstance = null;
+        let categoryChartInstance = null;
+
+        // --- 3. Initialization ---
+        function init() {
+            renderNav();
+            loadIndustry(currentIndustry);
+            setupEventListeners();
+        }
+
+        // --- 4. Render Logic ---
+        function renderNav() {
+            navContainer.innerHTML = '';
+            Object.keys(appData).forEach(key => {
+                const industry = appData[key];
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left px-4 py-3 rounded-lg flex items-center gap-3 transition-colors ${key === currentIndustry ? 'active-nav text-amber-900' : 'text-stone-600 hover:bg-stone-50 inactive-nav'}`;
+                btn.innerHTML = `
+                    <span class="text-lg">${industry.icon}</span>
+                    <span class="font-medium text-sm">${industry.name}</span>
+                `;
+                btn.onclick = () => {
+                    currentIndustry = key;
+                    renderNav(); // Re-render to update active class
+                    loadIndustry(key);
+                };
+                navContainer.appendChild(btn);
+            });
+        }
+
+        function loadIndustry(key) {
+            const data = appData[key];
+            
+            // Update Header
+            sectionTitle.textContent = data.name;
+            sectionDesc.textContent = data.description;
+            ideaCount.textContent = data.ideas.length;
+
+            // Render Grid
+            ideasGrid.innerHTML = '';
+            data.ideas.forEach((idea, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-xl border border-stone-200 idea-card flex flex-col justify-between h-full";
+                
+                // Complexity Bar Logic
+                let barColor = 'bg-green-500';
+                if(idea.complexity > 4) barColor = 'bg-yellow-500';
+                if(idea.complexity > 7) barColor = 'bg-red-500';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start mb-3">
+                            <span class="inline-block px-2 py-1 bg-stone-100 text-stone-500 text-xs font-semibold rounded uppercase tracking-wider">${idea.type}</span>
+                            <div class="flex items-center gap-1" title="Complexity: ${idea.complexity}/10">
+                                <span class="text-xs text-stone-400 font-medium">Diff:</span>
+                                <div class="w-12 h-1.5 bg-stone-100 rounded-full overflow-hidden">
+                                    <div class="h-full ${barColor}" style="width: ${idea.complexity * 10}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <h4 class="text-lg font-bold text-stone-800 mb-2">${idea.title}</h4>
+                        <p class="text-sm text-stone-500 mb-6 leading-relaxed">${idea.desc}</p>
+                    </div>
+                    <button onclick="openPrompt(${index})" class="w-full py-2.5 px-4 bg-white border-2 border-amber-600 text-amber-700 font-semibold rounded-lg hover:bg-amber-50 transition-colors flex items-center justify-center gap-2 group">
+                        <span>Get System Prompt</span>
+                        <svg class="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </button>
+                `;
+                ideasGrid.appendChild(card);
+            });
+
+            // Update Charts
+            updateCharts(data.ideas);
+            
+            // Scroll to top
+            mainScroll.scrollTop = 0;
+        }
+
+        // --- 5. Chart.js Logic ---
+        function updateCharts(ideas) {
+            // Data Prep
+            const scatterData = ideas.map(i => ({ x: i.complexity, y: i.impact, title: i.title }));
+            
+            const categories = {};
+            ideas.forEach(i => {
+                categories[i.type] = (categories[i.type] || 0) + 1;
+            });
+
+            // Destroy old charts
+            if(scatterChartInstance) scatterChartInstance.destroy();
+            if(categoryChartInstance) categoryChartInstance.destroy();
+
+            // 1. Scatter Chart (Feasibility)
+            const ctxScatter = document.getElementById('scatterChart').getContext('2d');
+            scatterChartInstance = new Chart(ctxScatter, {
+                type: 'scatter',
+                data: {
+                    datasets: [{
+                        label: 'Ideas',
+                        data: scatterData,
+                        backgroundColor: '#d97706', // Amber 600
+                        pointRadius: 6,
+                        pointHoverRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.raw.title;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Complexity (Low to High)' },
+                            min: 0, max: 11,
+                            grid: { color: '#f5f5f4' }
+                        },
+                        y: {
+                            title: { display: true, text: 'Impact (Low to High)' },
+                            min: 0, max: 11,
+                            grid: { color: '#f5f5f4' }
+                        }
+                    }
+                }
+            });
+
+            // 2. Doughnut Chart (Categories)
+            const ctxCategory = document.getElementById('categoryChart').getContext('2d');
+            categoryChartInstance = new Chart(ctxCategory, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(categories),
+                    datasets: [{
+                        data: Object.values(categories),
+                        backgroundColor: [
+                            '#d97706', '#f59e0b', '#78716c', '#a8a29e', '#fbbf24', '#b45309'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11} } }
+                    }
+                }
+            });
+        }
+
+        // --- 6. Interaction Logic ---
+        window.openPrompt = function(index) {
+            const data = appData[currentIndustry].ideas[index];
+            modalTitle.textContent = data.title;
+            modalTag.textContent = data.type;
+            modalDesc.textContent = data.desc;
+            modalPrompt.textContent = data.prompt;
+            modalTip.textContent = data.tip;
+            
+            modal.classList.remove('hidden');
+            // Reset copy button
+            document.getElementById('copy-text').textContent = 'Copy';
+        };
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        function setupEventListeners() {
+            closeModalBtn.addEventListener('click', closeModal);
+            closeModalBtn2.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) closeModal();
+            });
+
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(modalPrompt.textContent).then(() => {
+                    const textSpan = document.getElementById('copy-text');
+                    textSpan.textContent = 'Copied!';
+                    setTimeout(() => textSpan.textContent = 'Copy', 2000);
+                });
+            });
+        }
+
+        // Run
+        init();
+
+    </script>
+</body>
+</html>
