@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silicon Future: India's Chip Design Roadmap</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+        
+        .card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%;
+            height: 300px;
+            margin: auto;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 20px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e2e8f0;
+            z-index: 0;
+        }
+
+        .nav-active {
+            color: #2563eb; /* Blue 600 */
+            border-bottom: 2px solid #2563eb;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .logic-gate-canvas {
+            border: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
+
+    <!-- Chosen Palette: Slate & Blue (Professional, Tech-focused, Clean) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: Statement of Intent (India's Semiconductor Mission).
+         2. Navigation: Tabs for Industry, Education, Curriculum, Simulator.
+         3. Section 1 (Industry): Interactive grid of companies + Charts showing the "Why".
+         4. Section 2 (Education Philosophy): "Python vs Silicon" comparison.
+         5. Section 3 (Curriculum): Interactive Roadmap (School -> Uni).
+         6. Section 4 (Simulator): Interactive Logic Gate playground (Proof of concept for school tools).
+    -->
+    <!-- Visualization & Content Choices:
+         - Charts: Pie chart for Industry split, Bar chart for Talent Gap. Goal: Show urgency.
+         - Interactive Grid: Company list with filters. Goal: Show scope of existing ecosystem.
+         - Timeline: Vertical interactive list for Curriculum. Goal: Step-by-step clarity.
+         - Custom Canvas: Logic Gate simulator. Goal: Show that hardware logic is accessible to kids.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">Si</div>
+                    <span class="font-bold text-xl tracking-tight text-slate-800">Silicon Future <span class="text-blue-600 font-normal">| India</span></span>
+                </div>
+                <nav class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('landscape')" id="nav-landscape" class="nav-btn nav-active py-2 px-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Industry Landscape</button>
+                    <button onclick="switchTab('education')" id="nav-education" class="nav-btn py-2 px-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Education Strategy</button>
+                    <button onclick="switchTab('curriculum')" id="nav-curriculum" class="nav-btn py-2 px-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Curriculum Roadmap</button>
+                    <button onclick="switchTab('simulator')" id="nav-simulator" class="nav-btn py-2 px-1 text-sm font-medium text-slate-500 hover:text-slate-900 transition-colors">Lab: Logic Gates</button>
+                </nav>
+                <div class="md:hidden">
+                    <!-- Mobile menu button placeholder -->
+                    <button class="text-slate-500 hover:text-slate-900">Menu</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- VIEW 1: INDUSTRY LANDSCAPE -->
+        <div id="view-landscape" class="view-section animate-fade-in">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-4">The Chip Design Ecosystem in India</h1>
+                <p class="text-lg text-slate-600 max-w-3xl">
+                    India is already a powerhouse for semiconductor design, hosting R&D centers for almost every major global player. 
+                    However, the shift is now moving from "Service & Verification" to "Core Architecture & Product Design." 
+                    Understanding who hires is the first step in designing the education pipeline.
+                </p>
+            </div>
+
+            <!-- Top Level Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6 border-l-4 border-blue-500">
+                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Design Engineers</h3>
+                    <p class="text-3xl font-bold text-slate-900 mt-2">120,000+</p>
+                    <p class="text-sm text-slate-600 mt-1">Current workforce estimate (2024)</p>
+                </div>
+                <div class="card p-6 border-l-4 border-indigo-500">
+                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Projected Demand</h3>
+                    <p class="text-3xl font-bold text-slate-900 mt-2">500,000+</p>
+                    <p class="text-sm text-slate-600 mt-1">By 2030 for VLSI & Embedded</p>
+                </div>
+                <div class="card p-6 border-l-4 border-emerald-500">
+                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider">Global Contribution</h3>
+                    <p class="text-3xl font-bold text-slate-900 mt-2">20%</p>
+                    <p class="text-sm text-slate-600 mt-1">Of world's chip design talent is in India</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Chart Column -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="card p-6">
+                        <h3 class="font-bold text-slate-800 mb-4">Industry Composition</h3>
+                        <div class="chart-container">
+                            <canvas id="industryPieChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center">Breakdown of companies by primary operation type.</p>
+                    </div>
+                    
+                    <div class="card p-6 bg-slate-800 text-white">
+                        <h3 class="font-bold text-white mb-2">Key Insight</h3>
+                        <p class="text-sm text-slate-300">
+                            While MNCs (Intel, NVIDIA, etc.) provide the bulk of high-end jobs, the <strong>Startup ecosystem</strong> 
+                            (InCore, Mindgrove) is crucial for India's self-reliance (RISC-V architecture). Education must cater to both.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Interactive Company Directory -->
+                <div class="lg:col-span-2 card p-6">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+                        <h3 class="font-bold text-slate-800 text-xl">Major Players Explorer</h3>
+                        <div class="flex gap-2">
+                            <button onclick="filterCompanies('all')" class="filter-btn active px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition">All</button>
+                            <button onclick="filterCompanies('MNC')" class="filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition">Global MNCs</button>
+                            <button onclick="filterCompanies('Service')" class="filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition">Design Services</button>
+                            <button onclick="filterCompanies('Startup')" class="filter-btn px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600 hover:bg-blue-100 hover:text-blue-600 transition">Indie Startups</button>
+                        </div>
+                    </div>
+                    
+                    <div id="company-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[500px] overflow-y-auto pr-2">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 2: EDUCATION STRATEGY -->
+        <div id="view-education" class="view-section hidden">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-4">Paradigm Shift: The "Silicon Thinking" Strategy</h1>
+                <p class="text-lg text-slate-600 max-w-3xl">
+                    To replicate the success of Python/Software in schools, we must introduce hardware concepts not as "electronics" (soldering/wires) but as "Logic & Architecture" (chips/flow).
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Comparison Table -->
+                <div class="card p-6">
+                    <h3 class="font-bold text-lg mb-4 text-slate-800">Software Mindset vs. Silicon Mindset</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead class="bg-slate-50 text-slate-600 font-bold">
+                                <tr>
+                                    <th class="p-3">Feature</th>
+                                    <th class="p-3 text-blue-600">Standard (Python/Java)</th>
+                                    <th class="p-3 text-indigo-600">Proposed (Silicon/VLSI)</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-100">
+                                <tr>
+                                    <td class="p-3 font-medium">Core Concept</td>
+                                    <td class="p-3">Sequential Logic (Step-by-step)</td>
+                                    <td class="p-3 bg-indigo-50 font-semibold">Parallel Logic (Everything at once)</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">School Tool</td>
+                                    <td class="p-3">Coding IDE / Scratch</td>
+                                    <td class="p-3 bg-indigo-50 font-semibold">Logic Simulators / FPGA Boards</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">Outcome</td>
+                                    <td class="p-3">App/Website</td>
+                                    <td class="p-3 bg-indigo-50 font-semibold">Processor/Controller</td>
+                                </tr>
+                                <tr>
+                                    <td class="p-3 font-medium">Key Math</td>
+                                    <td class="p-3">Algebra, Statistics</td>
+                                    <td class="p-3 bg-indigo-50 font-semibold">Boolean Algebra, State Machines</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Talent Gap Chart -->
+                <div class="card p-6 flex flex-col justify-between">
+                    <div>
+                        <h3 class="font-bold text-lg mb-2 text-slate-800">The Urgency: The Supply-Demand Gap</h3>
+                        <p class="text-sm text-slate-500 mb-4">Projected shortage of skilled VLSI engineers in India vs. Supply from current academic programs.</p>
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="gapChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-100">
+                        <p class="text-sm text-yellow-800">
+                            <strong>Problem:</strong> Most ECE graduates end up in IT services because college curriculums focus on outdated analog concepts rather than modern Digital VLSI and Verification.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategic Pillars -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card p-6 text-center hover:border-blue-500 border-2 border-transparent transition-colors">
+                    <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+                    <h3 class="font-bold text-slate-900">Gamification (Grade 6-8)</h3>
+                    <p class="text-sm text-slate-600 mt-2">
+                        Use Minecraft Redstone and drag-and-drop logic simulators. Teach "AND", "OR", "NOT" as building blocks of decision making.
+                    </p>
+                </div>
+                <div class="card p-6 text-center hover:border-indigo-500 border-2 border-transparent transition-colors">
+                    <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+                    <h3 class="font-bold text-slate-900">Architecture (Grade 9-10)</h3>
+                    <p class="text-sm text-slate-600 mt-2">
+                        Move beyond "Using Arduino" to "Understanding the Microcontroller". How does the CPU fetch instructions? What is a Register?
+                    </p>
+                </div>
+                <div class="card p-6 text-center hover:border-emerald-500 border-2 border-transparent transition-colors">
+                    <div class="w-12 h-12 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+                    <h3 class="font-bold text-slate-900">Design & Verify (Uni)</h3>
+                    <p class="text-sm text-slate-600 mt-2">
+                        Mandatory courses on HDLs (Verilog), RISC-V Architecture, and UVM (Verification). Access to industry-grade EDA tools.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 3: CURRICULUM ROADMAP -->
+        <div id="view-curriculum" class="view-section hidden">
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-slate-900 mb-4">Proposed National Curriculum Framework</h1>
+                <p class="text-lg text-slate-600 max-w-3xl">
+                    A phased approach to integrating Chip Design from Middle School to Undergraduate, ensuring "Industry Readiness" upon graduation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Timeline Navigation -->
+                <div class="lg:col-span-4 space-y-2">
+                    <h3 class="font-bold text-slate-400 uppercase tracking-wider text-xs mb-3">Select Level</h3>
+                    <button onclick="updateRoadmap('middle')" class="roadmap-btn w-full text-left p-4 rounded-lg bg-white shadow-sm hover:shadow-md border-l-4 border-blue-500 transition-all group">
+                        <span class="block font-bold text-slate-800">Middle School (Gr 6-8)</span>
+                        <span class="text-xs text-slate-500">The Logic Foundation</span>
+                    </button>
+                    <button onclick="updateRoadmap('high')" class="roadmap-btn w-full text-left p-4 rounded-lg bg-white shadow-sm hover:shadow-md border-l-4 border-transparent hover:border-indigo-500 transition-all group">
+                        <span class="block font-bold text-slate-800">High School (Gr 9-10)</span>
+                        <span class="text-xs text-slate-500">Architecture & Embedded</span>
+                    </button>
+                    <button onclick="updateRoadmap('higher')" class="roadmap-btn w-full text-left p-4 rounded-lg bg-white shadow-sm hover:shadow-md border-l-4 border-transparent hover:border-purple-500 transition-all group">
+                        <span class="block font-bold text-slate-800">Higher Sec (Gr 11-12)</span>
+                        <span class="text-xs text-slate-500">Physics & FPGA Basics</span>
+                    </button>
+                    <button onclick="updateRoadmap('uni')" class="roadmap-btn w-full text-left p-4 rounded-lg bg-white shadow-sm hover:shadow-md border-l-4 border-transparent hover:border-emerald-500 transition-all group">
+                        <span class="block font-bold text-slate-800">Undergraduate (B.Tech)</span>
+                        <span class="text-xs text-slate-500">Professional VLSI Design</span>
+                    </button>
+                </div>
+
+                <!-- Detailed Content Display -->
+                <div class="lg:col-span-8">
+                    <div id="roadmap-content" class="card p-8 min-h-[400px]">
+                        <!-- Dynamic Content injected here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW 4: SIMULATOR LAB -->
+        <div id="view-simulator" class="view-section hidden">
+            <div class="mb-6 flex flex-col md:flex-row justify-between items-end">
+                <div>
+                    <h1 class="text-3xl font-bold text-slate-900 mb-2">The "Hello World" of Chips</h1>
+                    <p class="text-lg text-slate-600">
+                        Before code exists, logic gates exist. This simulator demonstrates how we can teach 6th graders to "think in silicon."
+                    </p>
+                </div>
+                <div class="bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-semibold mt-4 md:mt-0">
+                    Try clicking the switches!
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2">
+                    <div class="card p-1">
+                        <canvas id="logicGateCanvas" width="800" height="400" class="logic-gate-canvas w-full"></canvas>
+                    </div>
+                    <div class="mt-4 flex gap-4 justify-center">
+                        <button onclick="setGateType('AND')" class="gate-selector px-4 py-2 rounded-lg bg-blue-600 text-white font-bold shadow-md hover:bg-blue-700">AND Gate</button>
+                        <button onclick="setGateType('OR')" class="gate-selector px-4 py-2 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold shadow-sm hover:bg-slate-50">OR Gate</button>
+                        <button onclick="setGateType('XOR')" class="gate-selector px-4 py-2 rounded-lg bg-white text-slate-700 border border-slate-300 font-bold shadow-sm hover:bg-slate-50">XOR Gate</button>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 space-y-4">
+                    <div class="card p-6 border-t-4 border-blue-500">
+                        <h3 class="font-bold text-slate-900 mb-2">Current Component</h3>
+                        <div id="gate-description" class="text-slate-600 text-sm">
+                            <strong class="text-lg block mb-1">AND Gate</strong>
+                            The output is ON (1) only if <strong>BOTH</strong> inputs are ON (1). This is the fundamental building block of "checking conditions" in hardware.
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6">
+                        <h3 class="font-bold text-slate-900 mb-2">Why teach this?</h3>
+                        <p class="text-sm text-slate-600 mb-3">
+                            Understanding gates demystifies computers. It teaches students that computers aren't magic boxes, but massive collections of simple switches.
+                        </p>
+                        <h4 class="font-bold text-xs uppercase text-slate-400 mt-4">Real World Application</h4>
+                        <p class="text-sm text-slate-600">
+                            Millions of these make up the processor in your phone. An i7 processor has billions of these gates working in sync.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-slate-500 text-sm">© 2025 Silicon Future Initiative. Generated for Educational Strategy Planning.</p>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- DATA STORE ---
+        const companyData = [
+            { name: "NVIDIA", type: "MNC", location: "Bangalore, Hyderabad, Pune", focus: "GPU, AI Hardware", desc: "Major R&D center designing next-gen AI chips." },
+            { name: "Intel", type: "MNC", location: "Bangalore", focus: "CPU, SoC", desc: "Largest design center outside USA. Focus on Core & Xeon." },
+            { name: "Qualcomm", type: "MNC", location: "Bangalore, Chennai", focus: "Mobile Processors, 5G", desc: "Key contributions to Snapdragon series." },
+            { name: "Texas Instruments", type: "MNC", location: "Bangalore", focus: "Analog, Embedded", desc: "One of the first to set up in India (1985)." },
+            { name: "AMD", type: "MNC", location: "Bangalore, Hyderabad", focus: "CPU, GPU", desc: "Expanding rapidly for Ryzen and EPYC development." },
+            { name: "Wipro", type: "Service", location: "Global", focus: "Design Services", desc: "Provides VLSI design services to global giants." },
+            { name: "HCL Tech", type: "Service", location: "Noida, Bangalore", focus: "Semiconductor Services", desc: "End-to-end silicon product engineering." },
+            { name: "Tata Elxsi", type: "Service", location: "Bangalore", focus: "Auto Electronics", desc: "Specializes in automotive semiconductor design." },
+            { name: "MosChip", type: "Service", location: "Hyderabad", focus: "Turnkey ASIC", desc: "First publicly traded semiconductor company in India." },
+            { name: "InCore", type: "Startup", location: "Chennai", focus: "RISC-V Cores", desc: "Building India's own Shakti processor family." },
+            { name: "Mindgrove", type: "Startup", location: "Chennai", focus: "SoC Design", desc: "Designing chips for IoT and Vision applications." },
+            { name: "Saankhya Labs", type: "Startup", location: "Bangalore", focus: "SDR, 5G", desc: "Pioneers in Software Defined Radio chipsets." }
+        ];
+
+        const roadmapData = {
+            middle: {
+                title: "Middle School (Grades 6-8): The Logic Foundation",
+                color: "blue",
+                modules: [
+                    { name: "Binary Math & Boolean Logic", desc: "Understanding 0s and 1s. Basic AND/OR/NOT operations using games." },
+                    { name: "Minecraft Redstone Engineering", desc: "Using the game Minecraft to build actual logic circuits visually." },
+                    { name: "History of Computing", desc: "From Abacus to Transistors. Demystifying the 'Black Box'." }
+                ],
+                outcome: "Students understand that computers are built on simple logic decisions."
+            },
+            high: {
+                title: "High School (Grades 9-10): Architecture & Embedded",
+                color: "indigo",
+                modules: [
+                    { name: "Microcontroller Anatomy", desc: "Moving beyond coding Arduino to understanding its datasheets, memory map, and pins." },
+                    { name: "Von Neumann Architecture", desc: "CPU, Memory, I/O. How instructions are fetched and executed." },
+                    { name: "Sensors & Signals", desc: "Analog vs Digital signals. ADC/DAC concepts." }
+                ],
+                outcome: "Students can distinguish between software logic and hardware constraints."
+            },
+            higher: {
+                title: "Higher Secondary (Grades 11-12): Physics & Systems",
+                color: "purple",
+                modules: [
+                    { name: "Semiconductor Physics", desc: "PN Junctions, Transistors (MOSFETs) as switches (integrated with Physics curriculum)." },
+                    { name: "Intro to FPGA", desc: "Field Programmable Gate Arrays. 'Hardware that can be changed like software'." },
+                    { name: "Basic Verilog", desc: "Optional elective: Introduction to Hardware Description Languages." }
+                ],
+                outcome: "Students are ready to choose Electronics/VLSI as a major with intent."
+            },
+            uni: {
+                title: "Undergraduate (B.Tech): Professional Mastery",
+                color: "emerald",
+                modules: [
+                    { name: "Digital VLSI Design", desc: "RTL Coding, Synthesis, Static Timing Analysis." },
+                    { name: "Verification (UVM)", desc: "SystemVerilog and Universal Verification Methodology (Highest hiring demand)." },
+                    { name: "Physical Design", desc: "Floorplanning, Placement, Routing, Clock Tree Synthesis." },
+                    { name: "RISC-V Architecture", desc: "Deep dive into open instruction set architectures." }
+                ],
+                outcome: "Industry-ready engineer capable of contributing to tape-outs."
+            }
+        };
+
+        // --- NAVIGATION LOGIC ---
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('animate-fade-in');
+            });
+            
+            // Show selected
+            const activeSection = document.getElementById('view-' + tabId);
+            activeSection.classList.remove('hidden');
+            activeSection.classList.add('animate-fade-in'); // Simple CSS animation class
+
+            // Update Nav State
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('nav-active', 'text-blue-600', 'border-blue-600');
+                btn.classList.add('text-slate-500', 'border-transparent');
+            });
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('nav-active');
+            activeBtn.classList.remove('text-slate-500', 'border-transparent');
+        }
+
+        // --- VIEW 1: LANDSCAPE LOGIC ---
+        function renderCompanies(filter) {
+            const grid = document.getElementById('company-grid');
+            grid.innerHTML = '';
+            
+            const filtered = filter === 'all' ? companyData : companyData.filter(c => c.type === filter);
+            
+            filtered.forEach(c => {
+                let badgeColor = c.type === 'MNC' ? 'bg-blue-100 text-blue-800' : 
+                               c.type === 'Service' ? 'bg-indigo-100 text-indigo-800' : 
+                               'bg-emerald-100 text-emerald-800';
+                
+                const el = document.createElement('div');
+                el.className = 'border rounded-lg p-4 hover:bg-slate-50 transition';
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-slate-800">${c.name}</h4>
+                        <span class="text-[10px] font-bold px-2 py-1 rounded ${badgeColor}">${c.type.toUpperCase()}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-1"><span class="font-semibold">Loc:</span> ${c.location}</p>
+                    <p class="text-xs text-slate-600 italic mb-2">${c.focus}</p>
+                    <p class="text-xs text-slate-500 leading-snug">${c.desc}</p>
+                `;
+                grid.appendChild(el);
+            });
+        }
+
+        function filterCompanies(type) {
+            // Update Buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-blue-600', 'text-white');
+                btn.classList.add('bg-slate-100', 'text-slate-600');
+            });
+            // Highlight clicked (simplistic approach for demo, ideally pass 'this')
+            event.target.classList.remove('bg-slate-100', 'text-slate-600');
+            event.target.classList.add('bg-blue-600', 'text-white');
+            
+            renderCompanies(type);
+        }
+
+        // --- VIEW 3: ROADMAP LOGIC ---
+        function updateRoadmap(level) {
+            const data = roadmapData[level];
+            const container = document.getElementById('roadmap-content');
+            
+            // Highlight active button style
+            document.querySelectorAll('.roadmap-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-50', 'border-l-4'); 
+                // Reset to default interactive classes handled by CSS hover mainly, 
+                // but we need to manage the active border color manually or via class toggle
+                btn.style.borderColor = 'transparent';
+            });
+            // We'll rely on the click to re-render content primarily.
+            
+            let colorClass = `text-${data.color}-600`;
+            let bgClass = `bg-${data.color}-50`;
+            let borderClass = `border-${data.color}-500`;
+
+            let modulesHtml = data.modules.map((m, i) => `
+                <div class="flex gap-4 mb-6 relative">
+                    <div class="flex flex-col items-center">
+                        <div class="w-8 h-8 rounded-full ${bgClass} ${colorClass} flex items-center justify-center font-bold text-sm border border-${data.color}-200 z-10">
+                            ${i + 1}
+                        </div>
+                        ${i !== data.modules.length - 1 ? '<div class="w-0.5 h-full bg-slate-200 -my-1"></div>' : ''}
+                    </div>
+                    <div class="pb-2">
+                        <h4 class="font-bold text-slate-800 text-lg">${m.name}</h4>
+                        <p class="text-slate-600 text-sm mt-1">${m.desc}</p>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <h2 class="text-2xl font-bold text-slate-900 mb-2">${data.title}</h2>
+                    <div class="h-1 w-20 ${bgClass.replace('50', '500')} mb-6 rounded"></div>
+                    
+                    <div class="mb-8">
+                        ${modulesHtml}
+                    </div>
+
+                    <div class="p-4 ${bgClass} rounded-lg border ${borderClass} border-opacity-30">
+                        <h4 class="font-bold ${colorClass} text-sm uppercase tracking-wide mb-1">Target Outcome</h4>
+                        <p class="text-slate-800 font-medium">${data.outcome}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        // --- VIEW 4: SIMULATOR LOGIC (CANVAS) ---
+        let currentGate = 'AND';
+        let inputA = 0;
+        let inputB = 0;
+        
+        function initSimulator() {
+            const canvas = document.getElementById('logicGateCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Event Listener for clicks
+            canvas.addEventListener('click', function(event) {
+                const rect = canvas.getBoundingClientRect();
+                const x = event.clientX - rect.left;
+                const y = event.clientY - rect.top;
+                
+                // Scale for canvas resolution
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const clickX = x * scaleX;
+                const clickY = y * scaleY;
+
+                // Check Input A Switch (Coords based on draw function)
+                if (clickX > 100 && clickX < 180 && clickY > 100 && clickY < 150) {
+                    inputA = inputA === 0 ? 1 : 0;
+                    drawCircuit();
+                }
+                // Check Input B Switch
+                if (clickX > 100 && clickX < 180 && clickY > 250 && clickY < 300) {
+                    inputB = inputB === 0 ? 1 : 0;
+                    drawCircuit();
+                }
+            });
+
+            drawCircuit();
+        }
+
+        function setGateType(type) {
+            currentGate = type;
+            // Update UI buttons
+            document.querySelectorAll('.gate-selector').forEach(btn => {
+                if(btn.textContent.includes(type)) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                    btn.classList.remove('bg-white', 'text-slate-700');
+                } else {
+                    btn.classList.remove('bg-blue-600', 'text-white');
+                    btn.classList.add('bg-white', 'text-slate-700');
+                }
+            });
+            
+            // Update Description
+            const descEl = document.getElementById('gate-description');
+            if(type === 'AND') descEl.innerHTML = `<strong class="text-lg block mb-1">AND Gate</strong>Output is 1 only if <strong>BOTH</strong> inputs are 1.`;
+            if(type === 'OR') descEl.innerHTML = `<strong class="text-lg block mb-1">OR Gate</strong>Output is 1 if <strong>AT LEAST ONE</strong> input is 1.`;
+            if(type === 'XOR') descEl.innerHTML = `<strong class="text-lg block mb-1">XOR Gate</strong>Output is 1 only if inputs are <strong>DIFFERENT</strong>.`;
+
+            drawCircuit();
+        }
+
+        function drawCircuit() {
+            const canvas = document.getElementById('logicGateCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Clear
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Styles
+            ctx.lineWidth = 4;
+            ctx.font = 'bold 20px Inter';
+            
+            // Calculate Output
+            let output = 0;
+            if (currentGate === 'AND') output = (inputA && inputB) ? 1 : 0;
+            else if (currentGate === 'OR') output = (inputA || inputB) ? 1 : 0;
+            else if (currentGate === 'XOR') output = (inputA !== inputB) ? 1 : 0;
+
+            // Colors
+            const colorOff = '#94a3b8'; // Slate 400
+            const colorOn = '#2563eb'; // Blue 600
+            
+            // Draw Wires (Input A)
+            ctx.strokeStyle = inputA ? colorOn : colorOff;
+            ctx.beginPath();
+            ctx.moveTo(180, 125); // Switch A right
+            ctx.lineTo(350, 125); // Gate Top Input
+            if(currentGate === 'OR' || currentGate === 'XOR') ctx.lineTo(370, 150); // Curve adjust
+            ctx.stroke();
+
+            // Draw Wires (Input B)
+            ctx.strokeStyle = inputB ? colorOn : colorOff;
+            ctx.beginPath();
+            ctx.moveTo(180, 275); // Switch B right
+            ctx.lineTo(350, 275); // Gate Bottom Input
+            if(currentGate === 'OR' || currentGate === 'XOR') ctx.lineTo(370, 250); // Curve adjust
+            ctx.stroke();
+
+            // Draw Output Wire
+            ctx.strokeStyle = output ? colorOn : colorOff;
+            ctx.beginPath();
+            ctx.moveTo(550, 200); // Gate Output
+            ctx.lineTo(650, 200); // Bulb
+            ctx.stroke();
+
+            // Draw Switches
+            drawSwitch(ctx, 100, 100, "Input A", inputA);
+            drawSwitch(ctx, 100, 250, "Input B", inputB);
+
+            // Draw Gate Symbol (Simplified)
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 4;
+            
+            // Gate Body
+            ctx.beginPath();
+            if (currentGate === 'AND') {
+                ctx.moveTo(350, 100);
+                ctx.lineTo(450, 100);
+                ctx.arc(450, 200, 100, -Math.PI/2, Math.PI/2);
+                ctx.lineTo(350, 300);
+                ctx.closePath();
+            } else if (currentGate === 'OR') {
+                ctx.moveTo(350, 100);
+                ctx.quadraticCurveTo(450, 100, 550, 200);
+                ctx.quadraticCurveTo(450, 300, 350, 300);
+                ctx.quadraticCurveTo(400, 200, 350, 100);
+            } else if (currentGate === 'XOR') {
+                // XOR Body
+                ctx.moveTo(370, 100);
+                ctx.quadraticCurveTo(470, 100, 550, 200);
+                ctx.quadraticCurveTo(470, 300, 370, 300);
+                ctx.quadraticCurveTo(420, 200, 370, 100);
+                // Extra line
+                ctx.moveTo(340, 100);
+                ctx.quadraticCurveTo(390, 200, 340, 300);
+                // Adjust input wires for XOR visual
+            }
+            ctx.fill();
+            ctx.stroke();
+
+            // Label Gate
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText(currentGate, 420, 208);
+
+            // Draw Bulb (Output)
+            ctx.beginPath();
+            ctx.arc(680, 200, 30, 0, 2 * Math.PI);
+            ctx.fillStyle = output ? '#fbbf24' : '#e2e8f0'; // Amber vs Slate
+            ctx.fill();
+            ctx.strokeStyle = '#94a3b8';
+            ctx.stroke();
+            
+            // Bulb Glow
+            if (output) {
+                ctx.shadowBlur = 20;
+                ctx.shadowColor = "#fbbf24";
+            } else {
+                ctx.shadowBlur = 0;
+            }
+            
+            ctx.fillStyle = '#475569';
+            ctx.textAlign = 'center';
+            ctx.fillText(output ? "ON (1)" : "OFF (0)", 680, 260);
+            ctx.shadowBlur = 0; // reset
+        }
+
+        function drawSwitch(ctx, x, y, label, state) {
+            ctx.fillStyle = state ? '#dbeafe' : '#f1f5f9'; // bg
+            ctx.strokeStyle = state ? '#2563eb' : '#cbd5e1';
+            ctx.lineWidth = 2;
+            
+            // Box
+            ctx.beginPath();
+            ctx.roundRect(x, y, 80, 50, 8);
+            ctx.fill();
+            ctx.stroke();
+
+            // Text
+            ctx.fillStyle = '#334155';
+            ctx.textAlign = 'center';
+            ctx.fillText(state, x + 40, y + 32);
+            
+            // Label
+            ctx.fillStyle = '#64748b';
+            ctx.font = '14px Inter';
+            ctx.fillText(label, x + 40, y - 10);
+            ctx.font = 'bold 20px Inter'; // restore
+        }
+
+
+        // --- CHART INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial Render
+            renderCompanies('all');
+            updateRoadmap('middle');
+            initSimulator();
+
+            // 1. Industry Pie Chart
+            const ctxPie = document.getElementById('industryPieChart').getContext('2d');
+            new Chart(ctxPie, {
+                type: 'doughnut',
+                data: {
+                    labels: ['MNC R&D Centers', 'Design Services', 'Product Startups'],
+                    datasets: [{
+                        data: [55, 35, 10], // Simulated share
+                        backgroundColor: ['#2563eb', '#6366f1', '#10b981'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // 2. Talent Gap Chart
+            const ctxBar = document.getElementById('gapChart').getContext('2d');
+            new Chart(ctxBar, {
+                type: 'bar',
+                data: {
+                    labels: ['2023', '2024', '2025 (Est)', '2030 (Goal)'],
+                    datasets: [
+                        {
+                            label: 'Industry Demand',
+                            data: [80, 100, 150, 500],
+                            backgroundColor: '#2563eb',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Qualified Graduates',
+                            data: [40, 45, 60, 450], // Hopeful growth
+                            backgroundColor: '#94a3b8',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ',000 Engineers';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Engineers (Thousands)' }
+                        }
+                    }
+                }
+            });
+        });
+
+    </script>
+</body>
+</html>
