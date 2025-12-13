@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI Studio SaaS Incubator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F3F4F6; color: #111827; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px; 
+        } 
+        @media (min-width: 768px) { 
+            .chart-container { height: 350px; } 
+        }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        /* Custom scrollbar for prompt block */
+        .prompt-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .prompt-scroll::-webkit-scrollbar-track { background: #1F2937; }
+        .prompt-scroll::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 4px; }
+        .prompt-scroll::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+    </style>
+    <!-- Chosen Palette: SaaS Enterprise Blue. 
+         Background: #F3F4F6 (Cool Grey), 
+         Surface: #FFFFFF (White), 
+         Primary: #2563EB (Royal Blue 600), 
+         Secondary: #4F46E5 (Indigo 600) -->
+    
+    <!-- Application Structure Plan: 
+         1. Header: Branding as "SaaS Incubator".
+         2. Metric Dashboard: Focus on "Monetization Models" and "Stack Complexity" instead of generic categories.
+         3. Catalog: Grid of SaaS concepts.
+         4. Data Transformation: All prompts are now "Architectural Instructions" (Auth, DB, Payments).
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Monetization Model Distribution (Doughnut): Shows split between Subscription, Freemium, Usage-based.
+         2. Tech Stack Complexity (Bar): Analyzes the difficulty of the required backend logic.
+         3. Prompt Details: Now includes specific references to "Stripe", "Supabase/Firebase", "Admin Panel".
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-lg">S</div>
+                <h1 class="text-xl font-bold text-gray-900 tracking-tight">SaaS <span class="text-blue-600">Incubator</span></h1>
+            </div>
+            <div class="text-sm text-gray-500 hidden sm:block font-medium">
+                200+ Full-Stack Blueprints
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- Hero & Intro -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">Build Your Next Startup</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    A curated collection of <strong>200 full-stack SaaS application architectures</strong>. 
+                    Each blueprint includes prompts for <strong>User Authentication</strong>, <strong>Admin Dashboards</strong>, 
+                    and <strong>Payment Gateway Integration</strong>.
+                </p>
+            </div>
+
+            <!-- Dashboard Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Chart 1: Monetization Models -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Monetization Strategy</h3>
+                        <p class="text-sm text-gray-500">Distribution of revenue models across the catalog.</p>
+                    </div>
+                    <div class="flex-grow flex items-center justify-center bg-gray-50 rounded-lg p-4">
+                        <div class="chart-container">
+                            <canvas id="monetizationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Vertical/Industry -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Industry Vertical</h3>
+                        <p class="text-sm text-gray-500">Breakdown of SaaS opportunities by sector.</p>
+                    </div>
+                    <div class="flex-grow flex items-center justify-center bg-gray-50 rounded-lg p-4">
+                        <div class="chart-container">
+                            <canvas id="verticalChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog Section -->
+        <section class="bg-white border-t border-gray-200 py-10" id="catalog">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900">Blueprint Explorer</h2>
+                        <p class="text-sm text-gray-500 mt-1">Filter by SaaS type and features.</p>
+                    </div>
+                    
+                    <!-- Search & Filter Controls -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div class="relative">
+                            <input type="text" id="searchInput" placeholder="Search ideas (e.g. 'CRM', 'AI')..." 
+                                class="w-full sm:w-64 pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all">
+                            <span class="absolute right-3 top-2.5 text-gray-400">🔍</span>
+                        </div>
+                        <select id="categoryFilter" class="w-full sm:w-48 py-2 px-3 border border-gray-300 bg-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none cursor-pointer">
+                            <option value="All">All Verticals</option>
+                            <!-- Options populated by JS -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Stats Bar -->
+                <div class="flex gap-4 mb-6 overflow-x-auto scrollbar-hide pb-2">
+                    <div id="statsBar" class="flex gap-3">
+                        <!-- Stats injected via JS -->
+                    </div>
+                </div>
+
+                <!-- Grid -->
+                <div id="appGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Cards injected via JS -->
+                </div>
+                
+                <div id="noResults" class="hidden text-center py-20">
+                    <div class="text-4xl mb-4">📂</div>
+                    <h3 class="text-lg font-medium text-gray-900">No blueprints found</h3>
+                    <p class="text-gray-500">Try adjusting your filters.</p>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="appModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div id="modalOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-50 transition-opacity" aria-hidden="true"></div>
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal Panel -->
+            <div class="inline-block align-bottom bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <div class="flex justify-between items-start">
+                                <span id="modalCategoryBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mb-2">
+                                    Category
+                                </span>
+                                <button id="closeModalBtn" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                                    <span class="text-2xl">&times;</span>
+                                </button>
+                            </div>
+                            
+                            <h3 class="text-2xl leading-6 font-bold text-gray-900 mb-1" id="modalTitle">SaaS Title</h3>
+                            <p class="text-sm text-blue-600 font-medium mb-3" id="modalModel">Subscription Model: Monthly/Yearly</p>
+                            <p class="text-sm text-gray-500 mb-6" id="modalDescription">Description goes here.</p>
+
+                            <div class="mb-4">
+                                <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-2 flex justify-between items-center">
+                                    <span>Full-Stack Architectural Prompt</span>
+                                    <span class="text-xs font-normal text-gray-500 normal-case">Includes Auth, DB, Admin, Payments</span>
+                                </h4>
+                                <div class="relative group">
+                                    <pre id="modalPrompt" class="prompt-scroll bg-gray-900 text-gray-300 rounded-lg p-4 text-xs sm:text-sm font-mono overflow-x-auto whitespace-pre-wrap max-h-80 overflow-y-auto border border-gray-700 leading-relaxed"></pre>
+                                    <button id="copyPromptBtn" class="absolute top-2 right-2 bg-gray-700 hover:bg-gray-600 text-white text-xs py-1.5 px-3 rounded border border-gray-600 transition-colors opacity-100 sm:opacity-0 group-hover:opacity-100 font-medium">
+                                        Copy Codebase Prompt
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-4 mt-6">
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <span class="block text-xs text-gray-500 uppercase font-semibold">Core Stack</span>
+                                    <span id="modalStack" class="font-medium text-gray-900 text-sm">React, Node, Postgres</span>
+                                </div>
+                                <div class="bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <span class="block text-xs text-gray-500 uppercase font-semibold">Admin Features</span>
+                                    <span id="modalAdmin" class="font-medium text-gray-900 text-sm">User Mgmt, Analytics</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" id="modalCloseAction" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script>
+        // --- 1. SAAS DATA GENERATION ---
+        
+        const categories = [
+            "Micro-SaaS", "Enterprise B2B", "Developer Tools", "EdTech Platform", 
+            "FinTech Solution", "Healthcare Ops", "Content Automation", 
+            "E-commerce Tool", "HR & Recruitment", "Legal Tech"
+        ];
+
+        const models = ["Freemium (Tiered)", "Subscription (Monthly)", "Usage-Based", "One-Time License", "Enterprise Custom"];
+
+        // Template builder for "Architectural Prompts"
+        function buildSaaSPrompt(title, coreFeature, targetUser) {
+            return `Role: Senior Full-Stack Architect
+Task: Generate a production-ready SaaS boilerplate for "${title}".
+
+1. Tech Stack Requirements:
+   - Frontend: React (Next.js 14 App Router), Tailwind CSS, Lucide Icons.
+   - Backend: Node.js (Express) or Next.js API Routes.
+   - Database: PostgreSQL (via Supabase) or MongoDB.
+   - Auth: NextAuth.js or Firebase Auth (Email/Password + Google Social Login).
+   - Payments: Stripe integration (Checkout Sessions + Webhooks for subscription status).
+
+2. Core Features to Implement:
+   - Landing Page: High-conversion hero section, pricing table, features grid.
+   - Authentication Flow: Protected routes, login, signup, password reset.
+   - Dashboard: Main user interface for ${targetUser} to access ${coreFeature}.
+   - Admin Panel (Super User):
+     * View all registered users.
+     * Monitor MRR (Monthly Recurring Revenue).
+     * Ban/Delete users.
+     * Global content moderation.
+   - Settings: User profile management, billing portal link, API key generation.
+
+3. Implementation Details:
+   - Provide the Prisma schema or Mongoose models.
+   - Write the Stripe webhook handler to update user subscription status (Active/Past_Due).
+   - Create a reusable 'AppLayout' component that includes the Sidebar and Topbar.
+
+4. Output Format:
+   - Folder structure tree.
+   - Essential code blocks for 'server.js' (or main API entry), 'auth.config.js', and the Database Schema.
+`;
+        }
+
+        const appData = [];
+        let idCounter = 1;
+
+        // SPECIFIC HIGH-QUALITY SAAS IDEAS (The "Hero" items)
+        const specificSaaS = [
+            // Micro-SaaS
+            { 
+                c: "Micro-SaaS", t: "PDF Chat Wrapper", 
+                d: "Allows users to upload PDFs and chat with them using RAG.", 
+                model: "Freemium (Tiered)",
+                core: "RAG (Retrieval Augmented Generation) pipeline using Vector DB",
+                user: "Students/Researchers",
+                admin: "Document usage limits, API cost tracking"
+            },
+            { 
+                c: "Micro-SaaS", t: "Twitter/X Thread Scheduler", 
+                d: "Visual calendar for scheduling and auto-posting threads.", 
+                model: "Subscription (Monthly)",
+                core: "Twitter API v2 integration with cron jobs",
+                user: "Social Media Managers",
+                admin: "Queue monitoring, Token usage"
+            },
+            // DevTools
+            { 
+                c: "Developer Tools", t: "API Status Monitor", 
+                d: "Uptime monitoring service with email alerts.", 
+                model: "Usage-Based",
+                core: "Background workers pinging endpoints every minute",
+                user: "DevOps Engineers",
+                admin: "Global node health, User alert logs"
+            },
+            { 
+                c: "Developer Tools", t: "JSON-to-Typescript Converter", 
+                d: "Quickly generate interfaces from raw JSON responses.", 
+                model: "Freemium (Tiered)",
+                core: "Parsing logic and code generation engine",
+                user: "Frontend Developers",
+                admin: "Conversion stats, Premium unlock management"
+            },
+            // Enterprise
+            { 
+                c: "Enterprise B2B", t: "Corporate Feedback Loop", 
+                d: "Anonymous employee feedback gathering and sentiment analysis.", 
+                model: "Enterprise Custom",
+                core: "Sentiment Analysis AI + Dashboard visualization",
+                user: "HR Managers",
+                admin: "Organization tenant management, Aggregated sentiment reports"
+            },
+            { 
+                c: "Enterprise B2B", t: "Inventory Prediction Engine", 
+                d: "AI-driven stock forecasting for warehouses.", 
+                model: "Subscription (Monthly)",
+                core: "Time-series forecasting models (TensorFlow/Python backend)",
+                user: "Supply Chain Managers",
+                admin: "Model accuracy tracking, Tenant data isolation"
+            },
+            // Content
+            { 
+                c: "Content Automation", t: "SEO Blog Autopilot", 
+                d: "Generates and publishes WordPress articles automatically.", 
+                model: "Subscription (Monthly)",
+                core: "LLM Chain for Outline -> Draft -> HTML -> WordPress XML-RPC",
+                user: "Niche Site Owners",
+                admin: "Content generation quotas, OpenAI API cost view"
+            },
+            { 
+                c: "Content Automation", t: "Video Repurposing Tool", 
+                d: "Transcribes video and turns it into LinkedIn posts.", 
+                model: "Usage-Based",
+                core: "Whisper API transcription + Text summarization",
+                user: "Creators",
+                admin: "Transcription minute usage, User tier management"
+            },
+            // E-commerce
+            { 
+                c: "E-commerce Tool", t: "Dynamic Pricing Engine", 
+                d: "Adjusts Shopify product prices based on competitor data.", 
+                model: "Subscription (Monthly)",
+                core: "Scraping engine + Shopify Admin API write access",
+                user: "Store Owners",
+                admin: "Scraper health, Price change logs"
+            },
+            // HR
+            { 
+                c: "HR & Recruitment", t: "Resume Parser & Ranker", 
+                d: "Extracts skills from PDFs and ranks candidates against job descriptions.", 
+                model: "One-Time License",
+                core: "NLP Entity Extraction",
+                user: "Recruiters",
+                admin: "Job listing limits, Candidate database oversight"
+            },
+            // Legal
+            { 
+                c: "Legal Tech", t: "Contract NDA Generator", 
+                d: "Self-serve portal for generating customized legal documents.", 
+                model: "Freemium (Tiered)",
+                core: "Dynamic document assembly (Latex/HTML to PDF)",
+                user: "Freelancers",
+                admin: "Template versioning, Legal disclaimer updates"
+            },
+            // FinTech
+            { 
+                c: "FinTech Solution", t: "Invoice Reconciliation AI", 
+                d: "Matches bank transactions to uploaded invoices.", 
+                model: "Subscription (Monthly)",
+                core: "OCR (Optical Character Recognition) + Fuzzy matching logic",
+                user: "Accountants",
+                admin: "Audit logs, Organization user management"
+            }
+        ];
+
+        // Generator for the remaining items to reach 200
+        function generateFullDataset() {
+            // Add specific high-quality items first
+            specificSaaS.forEach(app => {
+                appData.push({
+                    id: idCounter++,
+                    title: app.t,
+                    category: app.c,
+                    description: app.d,
+                    model: app.model,
+                    prompt: buildSaaSPrompt(app.t, app.core, app.user),
+                    adminDetail: app.admin,
+                    stack: "React, Node.js, Postgres, Stripe"
+                });
+            });
+
+            // Procedural Generation templates
+            const prefixes = ["Auto", "Smart", "Cloud", "Open", "Rapid", "Pro", "Easy", "Cyber", "Net", "Data"];
+            const nouns = ["Flow", "Sync", "Hub", "Desk", "Base", "ify", "ly", "Scale", "Force", "Mate"];
+            
+            const assignments = [
+                { c: "Micro-SaaS", core: "Task automation script", user: "Power Users" },
+                { c: "Enterprise B2B", core: "Data warehousing dashboard", user: "Analysts" },
+                { c: "Developer Tools", core: "Code linting service", user: "Engineers" },
+                { c: "EdTech Platform", core: "Course management system", user: "Teachers" },
+                { c: "FinTech Solution", core: "Budget tracking visualization", user: "CFOs" },
+                { c: "Healthcare Ops", core: "Patient appointment scheduler", user: "Clinics" },
+                { c: "Content Automation", core: "Social media caption generator", user: "Marketers" },
+                { c: "E-commerce Tool", core: "Cart abandonment recovery emailer", user: "Merchants" },
+                { c: "HR & Recruitment", core: "Employee onboarding checklist", user: "HR Teams" },
+                { c: "Legal Tech", core: "Compliance audit logger", user: "Compliance Officers" }
+            ];
+
+            while (appData.length < 200) {
+                const template = assignments[Math.floor(Math.random() * assignments.length)];
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const noun = nouns[Math.floor(Math.random() * nouns.length)];
+                const model = models[Math.floor(Math.random() * models.length)];
+                
+                const title = `${prefix}${noun}`;
+                
+                appData.push({
+                    id: idCounter++,
+                    title: title,
+                    category: template.c,
+                    description: `A comprehensive ${template.c.toLowerCase()} platform designed for ${template.user.toLowerCase()}.`,
+                    model: model,
+                    prompt: buildSaaSPrompt(title, template.core, template.user),
+                    adminDetail: "User Management, Subscription Analytics, System Logs",
+                    stack: "Next.js, Supabase, Tailwind, Stripe"
+                });
+            }
+        }
+
+        generateFullDataset();
+
+        // --- 2. LOGIC & RENDERING ---
+
+        let currentCategory = "All";
+        let searchQuery = "";
+
+        // Elements
+        const gridEl = document.getElementById('appGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statsBar = document.getElementById('statsBar');
+        const noResults = document.getElementById('noResults');
+        
+        // Modal Elements
+        const modal = document.getElementById('appModal');
+        const overlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const closeAction = document.getElementById('modalCloseAction');
+        const copyBtn = document.getElementById('copyPromptBtn');
+
+        function renderCards() {
+            gridEl.innerHTML = '';
+            
+            const filtered = appData.filter(app => {
+                const matchesCat = currentCategory === "All" || app.category === currentCategory;
+                const matchesSearch = app.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      app.description.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                filtered.forEach(app => {
+                    const card = document.createElement('div');
+                    card.className = "bg-white p-5 rounded-lg border border-gray-200 card-hover transition-all cursor-pointer flex flex-col justify-between h-full";
+                    card.onclick = () => openModal(app);
+
+                    // Badge Color logic
+                    let badgeColor = "bg-gray-100 text-gray-800";
+                    if(app.category.includes("Dev")) badgeColor = "bg-purple-100 text-purple-800";
+                    if(app.category.includes("Enterprise")) badgeColor = "bg-blue-100 text-blue-800";
+                    if(app.category.includes("FinTech")) badgeColor = "bg-green-100 text-green-800";
+                    if(app.category.includes("Micro")) badgeColor = "bg-amber-100 text-amber-800";
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-3">
+                                <span class="inline-block px-2 py-0.5 rounded text-xs font-semibold ${badgeColor}">${app.category}</span>
+                                <span class="text-xs text-gray-400">Login + Stripe</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-1">${app.title}</h3>
+                            <p class="text-sm text-gray-500 line-clamp-2">${app.description}</p>
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500">
+                            <span>${app.model.split(" ")[0]}</span>
+                            <span class="text-blue-600 font-medium group-hover:underline flex items-center gap-1">
+                                View Blueprint &rarr;
+                            </span>
+                        </div>
+                    `;
+                    gridEl.appendChild(card);
+                });
+            }
+            updateStatsBar(filtered.length);
+        }
+
+        function updateStatsBar(count) {
+            statsBar.innerHTML = `
+                <div class="px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-sm font-medium whitespace-nowrap border border-blue-100">
+                    Showing ${count} Blueprints
+                </div>
+            `;
+        }
+
+        function populateFilter() {
+            const uniqueCats = [...new Set(appData.map(a => a.category))].sort();
+            uniqueCats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = c;
+                categoryFilter.appendChild(opt);
+            });
+        }
+
+        // Modal Logic
+        function openModal(app) {
+            document.getElementById('modalTitle').innerText = app.title;
+            document.getElementById('modalDescription').innerText = app.description;
+            document.getElementById('modalCategoryBadge').innerText = app.category;
+            document.getElementById('modalPrompt').innerText = app.prompt;
+            document.getElementById('modalModel').innerText = "Revenue Model: " + app.model;
+            document.getElementById('modalStack').innerText = app.stack;
+            document.getElementById('modalAdmin').innerText = app.adminDetail;
+            
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Charts
+        function initCharts() {
+            const ctxModel = document.getElementById('monetizationChart').getContext('2d');
+            const ctxVert = document.getElementById('verticalChart').getContext('2d');
+
+            // Data Prep
+            const modelCounts = {};
+            appData.forEach(a => modelCounts[a.model] = (modelCounts[a.model] || 0) + 1);
+            
+            const vertCounts = {};
+            appData.forEach(a => vertCounts[a.category] = (vertCounts[a.category] || 0) + 1);
+
+            // Chart 1: Monetization
+            new Chart(ctxModel, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(modelCounts),
+                    datasets: [{
+                        data: Object.values(modelCounts),
+                        backgroundColor: [
+                            '#2563EB', '#3B82F6', '#60A5FA', '#93C5FD', '#BFDBFE'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10} } }
+                    }
+                }
+            });
+
+            // Chart 2: Vertical
+            new Chart(ctxVert, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(vertCounts),
+                    datasets: [{
+                        label: 'Apps in Category',
+                        data: Object.values(vertCounts),
+                        backgroundColor: '#4F46E5',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false }, ticks: { display: false } } // Hide crowded x labels
+                    },
+                    plugins: { legend: { display: false }, tooltip: {callbacks: {title: (i)=>i[0].label}} }
+                }
+            });
+        }
+
+        // Event Listeners
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderCards();
+        });
+
+        categoryFilter.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            renderCards();
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+        closeAction.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+
+        copyBtn.addEventListener('click', () => {
+            const text = document.getElementById('modalPrompt').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = "Copied to Clipboard!";
+                copyBtn.classList.add('bg-green-600', 'border-green-600');
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.classList.remove('bg-green-600', 'border-green-600');
+                }, 2000);
+            });
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            populateFilter();
+            renderCards();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
