@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google AI Studio SaaS & Web3 Incubator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 300px; 
+            max-height: 400px; 
+        } 
+        @media (min-width: 768px) { 
+            .chart-container { height: 350px; } 
+        }
+        .card-hover:hover { transform: translateY(-3px); box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1); }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        
+        .prompt-scroll::-webkit-scrollbar { width: 8px; height: 8px; }
+        .prompt-scroll::-webkit-scrollbar-track { background: #1E293B; }
+        .prompt-scroll::-webkit-scrollbar-thumb { background: #475569; border-radius: 4px; }
+        .prompt-scroll::-webkit-scrollbar-thumb:hover { background: #64748B; }
+
+        /* Badge Gradients */
+        .badge-saas { background: linear-gradient(135deg, #DBEAFE 0%, #EFF6FF 100%); color: #1E40AF; border: 1px solid #BFDBFE; }
+        .badge-web3 { background: linear-gradient(135deg, #F3E8FF 0%, #FAF5FF 100%); color: #6B21A8; border: 1px solid #E9D5FF; }
+    </style>
+    <!-- Chosen Palette: Dual Tech Theme. 
+         SaaS: Blue/Slate.
+         Web3: Indigo/Purple.
+         Background: Slate-50.
+    -->
+
+    <!-- Application Structure Plan:
+         1. Updated Header: Reflects the addition of Blockchain/Web3.
+         2. Tech Toggle: Allows users to switch views between Traditional SaaS and Blockchain DApps.
+         3. Expanded Data Logic: 
+            - SaaS items generate standard React/Node prompts.
+            - Blockchain items generate Solidity/Wagmi/IPFS prompts.
+         4. Dashboard: Updated to show distribution of "Centralized vs Decentralized" apps.
+    -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Navigation / Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="relative w-8 h-8 flex items-center justify-center">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-lg transform rotate-3"></div>
+                    <div class="relative text-white font-bold text-lg">B</div>
+                </div>
+                <h1 class="text-xl font-bold text-gray-900 tracking-tight">Builder <span class="text-indigo-600">Hub</span></h1>
+            </div>
+            <div class="hidden md:flex items-center gap-6 text-sm font-medium text-gray-500">
+                <span>300+ Architectures</span>
+                <span class="w-px h-4 bg-gray-300"></span>
+                <span>SaaS & Blockchain</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- Hero & Intro -->
+        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">The Complete Startup Almanac</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    Explore a massive database of <strong>300+ application architectures</strong>. 
+                    Now featuring a dedicated <strong>Blockchain & Web3</strong> sector with smart contract blueprints, 
+                    alongside our classic full-stack SaaS collection.
+                </p>
+            </div>
+
+            <!-- Global Stats Dashboard -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-10">
+                <!-- Chart 1: Tech Stack Distribution -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="mb-4 flex justify-between items-end">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-800">Technology Landscape</h3>
+                            <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Web2 vs Web3 Distribution</p>
+                        </div>
+                    </div>
+                    <div class="flex-grow flex items-center justify-center bg-gray-50 rounded-lg p-2">
+                        <div class="chart-container">
+                            <canvas id="techChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Industries -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex flex-col">
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-800">Industry Verticals</h3>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide font-semibold mt-1">Sectors Coverage</p>
+                    </div>
+                    <div class="flex-grow flex items-center justify-center bg-gray-50 rounded-lg p-2">
+                        <div class="chart-container">
+                            <canvas id="industryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Controls Area -->
+            <div class="bg-white p-4 rounded-xl border border-gray-200 shadow-sm sticky top-20 z-30 mb-8">
+                <div class="flex flex-col md:flex-row gap-4 justify-between items-center">
+                    
+                    <!-- Tech Filter (Main Toggle) -->
+                    <div class="flex p-1 bg-gray-100 rounded-lg w-full md:w-auto">
+                        <button class="flex-1 md:w-32 py-2 px-4 rounded-md text-sm font-semibold shadow-sm bg-white text-gray-900 transition-all filter-btn" data-filter="All">
+                            All Apps
+                        </button>
+                        <button class="flex-1 md:w-32 py-2 px-4 rounded-md text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all filter-btn" data-filter="SaaS">
+                            SaaS
+                        </button>
+                        <button class="flex-1 md:w-32 py-2 px-4 rounded-md text-sm font-semibold text-gray-500 hover:text-gray-900 transition-all filter-btn" data-filter="Blockchain">
+                            Web3
+                        </button>
+                    </div>
+
+                    <!-- Search & Category -->
+                    <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div class="relative w-full sm:w-64">
+                            <input type="text" id="searchInput" placeholder="Search keywords (e.g., 'DeFi', 'CRM')..." 
+                                class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all text-sm">
+                            <span class="absolute left-3 top-2.5 text-gray-400 text-sm">🔍</span>
+                        </div>
+                        <select id="categoryFilter" class="w-full sm:w-48 py-2 px-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none cursor-pointer text-sm">
+                            <option value="All">All Industries</option>
+                            <!-- Populated by JS -->
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="flex justify-between items-center mb-4 px-1">
+                <div id="statsBar" class="text-sm font-medium text-gray-500">
+                    Loading database...
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div id="appGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-20">
+                <!-- Cards injected via JS -->
+            </div>
+            
+            <div id="noResults" class="hidden text-center py-20 bg-white rounded-xl border border-dashed border-gray-300">
+                <div class="text-5xl mb-4 opacity-50">🔭</div>
+                <h3 class="text-lg font-medium text-gray-900">No blueprints found</h3>
+                <p class="text-gray-500">Try adjusting your filters or search query.</p>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- Modal -->
+    <div id="appModal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <!-- Backdrop -->
+        <div id="modalOverlay" class="fixed inset-0 bg-slate-900 bg-opacity-60 transition-opacity backdrop-blur-sm"></div>
+
+        <div class="fixed inset-0 z-10 overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <!-- Panel -->
+                <div class="relative transform overflow-hidden rounded-2xl bg-white text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-3xl border border-gray-100">
+                    
+                    <!-- Modal Header -->
+                    <div class="bg-gray-50 px-6 py-4 border-b border-gray-100 flex justify-between items-center">
+                        <div>
+                            <span id="modalTypeBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2">
+                                Type
+                            </span>
+                            <h3 class="text-2xl font-bold text-gray-900" id="modalTitle">App Title</h3>
+                        </div>
+                        <button id="closeModalBtn" class="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-full hover:bg-gray-100">
+                            <span class="text-2xl font-light">&times;</span>
+                        </button>
+                    </div>
+
+                    <!-- Modal Body -->
+                    <div class="px-6 py-6">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                            <div class="md:col-span-2">
+                                <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Description</h4>
+                                <p class="text-gray-700 leading-relaxed mb-4" id="modalDescription">Description goes here.</p>
+                                
+                                <h4 class="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-2">Use Case & User</h4>
+                                <p class="text-sm text-gray-600 mb-4" id="modalUserCase">User info.</p>
+                            </div>
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-100 h-fit">
+                                <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Tech Stack</h4>
+                                <ul class="space-y-2 text-sm text-gray-700 font-medium" id="modalStackList">
+                                    <!-- List items via JS -->
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Prompt Section -->
+                        <div class="relative">
+                            <div class="flex justify-between items-end mb-2">
+                                <h4 class="text-sm font-bold text-gray-900 uppercase flex items-center gap-2">
+                                    <span>🤖 Architecture Prompt</span>
+                                </h4>
+                                <span class="text-xs text-gray-400 italic">Ready for Gemini / ChatGPT</span>
+                            </div>
+                            <div class="relative group">
+                                <pre id="modalPrompt" class="prompt-scroll bg-slate-900 text-slate-300 rounded-xl p-5 text-xs sm:text-sm font-mono overflow-x-auto whitespace-pre-wrap max-h-64 border border-slate-800 shadow-inner"></pre>
+                                <button id="copyPromptBtn" class="absolute top-3 right-3 bg-white/10 hover:bg-white/20 text-white text-xs py-1.5 px-3 rounded-md backdrop-blur-md border border-white/10 transition-all font-medium">
+                                    Copy System Prompt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Footer -->
+                    <div class="bg-gray-50 px-6 py-4 flex flex-row-reverse">
+                        <button type="button" id="modalCloseAction" class="w-full sm:w-auto inline-flex justify-center rounded-lg border border-transparent px-5 py-2.5 bg-gray-900 text-sm font-semibold text-white hover:bg-gray-800 focus:outline-none transition-colors shadow-lg shadow-gray-900/20">
+                            Close Blueprint
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data & Scripts -->
+    <script>
+        // --- 1. DATA GENERATION ENGINE ---
+        
+        // --- PROMPT TEMPLATES ---
+        function buildSaaSPrompt(title, coreFeature, targetUser) {
+            return `Role: Senior Full-Stack Architect
+Task: Generate a production-ready SaaS boilerplate for "${title}".
+
+1. Tech Stack Requirements (Web2):
+   - Frontend: Next.js 14 (App Router), Tailwind CSS, Shadcn UI.
+   - Backend: Node.js (Express) or Serverless Functions.
+   - Database: PostgreSQL (Prisma ORM) via Supabase.
+   - Auth: NextAuth.js (Email + Socials).
+   - Payments: Stripe (Subscription Mode).
+
+2. Core Features:
+   - Landing Page: Value prop, pricing tiers, feature breakdown.
+   - App Dashboard: The main interface for ${targetUser}.
+   - Feature Implementation: ${coreFeature}.
+   - Admin Panel: User table, Revenue charts, Ban functionality.
+
+3. Output:
+   - File structure tree.
+   - Schema.prisma file.
+   - API route handlers for the core feature.
+   - Stripe webhook handler.`;
+        }
+
+        function buildBlockchainPrompt(title, coreFeature, chain) {
+            return `Role: Web3 Solution Architect
+Task: Generate a decentralized application (DApp) architecture for "${title}".
+
+1. Tech Stack Requirements (Web3):
+   - Frontend: Next.js 14, RainbowKit (Wallet Connect), Wagmi (Hooks).
+   - Smart Contracts: Solidity (Hardhat/Foundry environment).
+   - Chain: ${chain} (or compatible L2 like Arbitrum/Polygon).
+   - Storage: IPFS (via Pinata) for decentralized assets.
+   - Indexing: The Graph (subgraph) for querying chain data.
+
+2. Smart Contract Logic:
+   - Develop a contract that handles: ${coreFeature}.
+   - Implement AccessControl (Ownable).
+   - Ensure gas optimization and ReentrancyGuard.
+
+3. Core Features:
+   - Connect Wallet Button (Top right).
+   - Dashboard: Read data from contract, Write transactions (with loading states).
+   - Event Listeners: Update UI on contract events.
+
+4. Output:
+   - Solidity Contract code (well-commented).
+   - Deployment script (deploy.js).
+   - Frontend hook example (useContractWrite).`;
+        }
+
+        const appData = [];
+        let idCounter = 1;
+
+        // --- SAAS HERO ITEMS (Existing Context) ---
+        const saasHeroes = [
+            { t: "PDF Chat AI", c: "Micro-SaaS", d: "RAG pipeline for talking to documents.", stack: "SaaS", promptInfo: "Vector DB + OpenAI API" },
+            { t: "Twitter Scheduler", c: "Social Media", d: "Visual thread planner and auto-poster.", stack: "SaaS", promptInfo: "Twitter API v2" },
+            { t: "Inventory Forecaster", c: "Enterprise B2B", d: "Predictive stock analytics for warehouses.", stack: "SaaS", promptInfo: "TensorFlow + Python Backend" },
+            { t: "Feedback Loop", c: "HR Tech", d: "Anonymous employee sentiment analysis.", stack: "SaaS", promptInfo: "Sentiment Analysis API" },
+            { t: "Dynamic Pricing", c: "E-commerce", d: "Competitor price scraper and adjuster.", stack: "SaaS", promptInfo: "Scraping + Shopify API" },
+            { t: "Course Builder", c: "EdTech", d: "Video hosting and quiz platform.", stack: "SaaS", promptInfo: "Video Streaming + LMS" }
+        ];
+
+        // --- BLOCKCHAIN HERO ITEMS (New Context - 100+ Goal) ---
+        const blockchainHeroes = [
+            // DeFi
+            { t: "Yield Aggregator", c: "DeFi", d: "Auto-compounding vault for stablecoins.", chain: "Arbitrum" },
+            { t: "DEX Swap Interface", c: "DeFi", d: "Token swap UI using 0x API or Uniswap SDK.", chain: "Ethereum" },
+            { t: "Staking Dashboard", c: "DeFi", d: "Stake tokens to earn rewards/governance power.", chain: "Polygon" },
+            { t: "Flash Loan Arbitrage", c: "DeFi", d: "Bot dashboard to spot price diffs.", chain: "Ethereum" },
+            { t: "Crypto Index Fund", c: "DeFi", d: "Basket of tokens rebalanced via smart contract.", chain: "Optimism" },
+            // NFT & Gaming
+            { t: "NFT Marketplace", c: "NFT & Gaming", d: "Mint, buy, and sell ERC-721 assets.", chain: "Polygon" },
+            { t: "Fractional Real Estate", c: "Real Estate", d: "Tokenized property ownership platform.", chain: "Ethereum" },
+            { t: "Play-to-Earn RPG", c: "NFT & Gaming", d: "Web3 game inventory manager and battling.", chain: "Immutable X" },
+            { t: "Generative Art Minter", c: "NFT & Gaming", d: "Algorithmic art generation on-chain.", chain: "Ethereum" },
+            { t: "Music Royalty DAO", c: "Media", d: "Stream-to-earn platform for artists.", chain: "Base" },
+            // Supply Chain & Identity
+            { t: "Supply Chain Tracker", c: "Logistics", d: "QR code provenance tracking on blockchain.", chain: "VeChain/Eth" },
+            { t: "Fake Product Detector", c: "Logistics", d: "Verify authenticity of luxury goods.", chain: "Polygon" },
+            { t: "Decentralized Identity (DID)", c: "Identity", d: "Self-sovereign identity passport.", chain: "Optimism" },
+            { t: "Voting DAO", c: "Governance", d: "Token-weighted voting system.", chain: "Arbitrum" },
+            { t: "Academic Credential Verifier", c: "Identity", d: "University degrees issued as SBTs.", chain: "Polygon" },
+            // Utilities
+            { t: "Secure File Share", c: "Utilities", d: "Encrypted file sharing via IPFS.", chain: "Filecoin/Eth" },
+            { t: "Crypto Crowdfunding", c: "Finance", d: "Kickstarter but with smart contracts.", chain: "Ethereum" },
+            { t: "Will & Testament Contract", c: "Legal", d: "Dead man's switch for crypto assets.", chain: "Ethereum" },
+            { t: "Ticket Resale Preventer", c: "Events", d: "NFT ticketing with royalty enforcement.", chain: "Polygon" },
+            { t: "Carbon Credit Exchange", c: "Green Tech", d: "Marketplace for tokenized carbon offsets.", chain: "Celo" }
+        ];
+
+        // --- GENERATION LOGIC ---
+        function generateDataset() {
+            // 1. Add SaaS Heroes (approx 6)
+            saasHeroes.forEach(h => {
+                appData.push({
+                    id: idCounter++,
+                    title: h.t,
+                    category: h.c,
+                    description: h.d,
+                    type: "SaaS",
+                    prompt: buildSaaSPrompt(h.t, h.promptInfo, "End Users"),
+                    stackList: ["Next.js", "Node.js", "Postgres", "Stripe"]
+                });
+            });
+
+            // 2. Procedural SaaS (Fill to ~180)
+            const saasCats = ["Micro-SaaS", "Enterprise B2B", "DevTools", "EdTech", "FinTech", "HealthTech", "LegalTech"];
+            for (let i = 0; i < 174; i++) {
+                const cat = saasCats[Math.floor(Math.random() * saasCats.length)];
+                appData.push({
+                    id: idCounter++,
+                    title: `${cat} Solution ${i+1}`,
+                    category: cat,
+                    description: `Automated ${cat.toLowerCase()} platform with subscription billing.`,
+                    type: "SaaS",
+                    prompt: buildSaaSPrompt(`${cat} App ${i}`, "Automation Logic", "Professionals"),
+                    stackList: ["Next.js", "Supabase", "Tailwind", "Stripe"]
+                });
+            }
+
+            // 3. Add Blockchain Heroes (20 items)
+            blockchainHeroes.forEach(h => {
+                appData.push({
+                    id: idCounter++,
+                    title: h.t,
+                    category: h.c, // Mapping to industry
+                    description: h.d,
+                    type: "Blockchain",
+                    prompt: buildBlockchainPrompt(h.t, h.d, h.chain),
+                    stackList: ["Solidity", "Wagmi", "Next.js", h.chain]
+                });
+            });
+
+            // 4. Procedural Blockchain (Fill 100 more items to reach ~300 total)
+            const chainCats = ["DeFi", "NFT & Gaming", "DAO & Governance", "Infrastructure", "Identity", "Logistics"];
+            const chainTypes = ["Ethereum", "Polygon", "Arbitrum", "Solana", "Base"];
+            
+            const prefixes = ["Decentralized", "Crypto", "Chain", "Block", "Smart", "Open", "Meta", "Trust"];
+            const nouns = ["Swap", "Vault", "Bridge", "Verify", "Market", "Mint", "DAO", "Link"];
+
+            for (let i = 0; i < 100; i++) {
+                const cat = chainCats[Math.floor(Math.random() * chainCats.length)];
+                const chain = chainTypes[Math.floor(Math.random() * chainTypes.length)];
+                const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+                const noun = nouns[Math.floor(Math.random() * nouns.length)];
+                
+                appData.push({
+                    id: idCounter++,
+                    title: `${prefix} ${noun} ${i+1}`,
+                    category: cat,
+                    description: `Web3 application for ${cat} on the ${chain} network.`,
+                    type: "Blockchain",
+                    prompt: buildBlockchainPrompt(`${prefix} ${noun}`, `Smart contract logic for ${cat}`, chain),
+                    stackList: ["Solidity", "Hardhat", "React", chain]
+                });
+            }
+        }
+
+        generateDataset();
+
+        // --- 2. LOGIC & RENDERING ---
+
+        let currentTechFilter = "All"; // All, SaaS, Blockchain
+        let currentCategory = "All";
+        let searchQuery = "";
+
+        // Elements
+        const gridEl = document.getElementById('appGrid');
+        const searchInput = document.getElementById('searchInput');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const statsBar = document.getElementById('statsBar');
+        const noResults = document.getElementById('noResults');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        
+        // Modal
+        const modal = document.getElementById('appModal');
+        const modalOverlay = document.getElementById('modalOverlay');
+        const closeBtn = document.getElementById('closeModalBtn');
+        const closeAction = document.getElementById('modalCloseAction');
+        const copyBtn = document.getElementById('copyPromptBtn');
+
+        function renderCards() {
+            gridEl.innerHTML = '';
+            
+            const filtered = appData.filter(app => {
+                const matchesTech = currentTechFilter === "All" || app.type === currentTechFilter;
+                const matchesCat = currentCategory === "All" || app.category === currentCategory;
+                const matchesSearch = app.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      app.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                                      app.type.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesTech && matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+                
+                // Sort: Heroes/Specifics first (optional, but dataset is mixed)
+                
+                filtered.forEach(app => {
+                    const card = document.createElement('div');
+                    // Add distinct border for types
+                    const borderClass = app.type === "Blockchain" ? "border-indigo-100 hover:border-indigo-300" : "border-blue-100 hover:border-blue-300";
+                    card.className = `bg-white p-5 rounded-xl border ${borderClass} card-hover transition-all cursor-pointer flex flex-col justify-between h-full shadow-sm`;
+                    card.onclick = () => openModal(app);
+
+                    // Badge Logic
+                    const badgeClass = app.type === "Blockchain" ? "badge-web3" : "badge-saas";
+                    const icon = app.type === "Blockchain" ? "🔗" : "☁️";
+
+                    card.innerHTML = `
+                        <div>
+                            <div class="flex justify-between items-start mb-4">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-bold ${badgeClass}">
+                                    ${icon} ${app.type}
+                                </span>
+                                <span class="text-xs font-medium text-gray-400 bg-gray-50 px-2 py-1 rounded">${app.category}</span>
+                            </div>
+                            <h3 class="text-lg font-bold text-gray-900 mb-2 leading-tight">${app.title}</h3>
+                            <p class="text-sm text-gray-500 line-clamp-2 leading-relaxed">${app.description}</p>
+                        </div>
+                        <div class="mt-5 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-gray-500 font-medium">
+                            <span class="flex items-center gap-1">
+                                <span class="w-2 h-2 rounded-full ${app.type === 'Blockchain' ? 'bg-indigo-500' : 'bg-blue-500'}"></span>
+                                ${app.type === 'Blockchain' ? 'Smart Contract' : 'Full Stack'}
+                            </span>
+                            <span class="${app.type === 'Blockchain' ? 'text-indigo-600' : 'text-blue-600'} hover:underline flex items-center gap-1">
+                                Get Blueprint &rarr;
+                            </span>
+                        </div>
+                    `;
+                    gridEl.appendChild(card);
+                });
+            }
+            updateStatsBar(filtered.length);
+        }
+
+        function updateStatsBar(count) {
+            let label = currentTechFilter === "All" ? "Total Apps" : currentTechFilter + " Apps";
+            statsBar.innerHTML = `Displaying <span class="font-bold text-gray-900">${count}</span> blueprints`;
+        }
+
+        function populateFilter() {
+            // Get unique categories based on current tech filter? Or just all? 
+            // Let's show all available categories in the dropdown
+            const uniqueCats = [...new Set(appData.map(a => a.category))].sort();
+            categoryFilter.innerHTML = '<option value="All">All Industries</option>';
+            uniqueCats.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = c;
+                categoryFilter.appendChild(opt);
+            });
+        }
+
+        // --- FILTER HANDLERS ---
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-gray-900', 'text-white');
+                    b.classList.add('bg-white', 'text-gray-500');
+                });
+                // Add active to clicked
+                btn.classList.remove('bg-white', 'text-gray-500');
+                btn.classList.add('bg-gray-900', 'text-white');
+                
+                currentTechFilter = btn.dataset.filter;
+                renderCards();
+                initCharts(); // Re-render charts to focus on selection? Or keep global? Let's keep global for context.
+            });
+        });
+
+        // Initialize First Button
+        filterBtns[0].click();
+
+
+        // --- MODAL LOGIC ---
+        function openModal(app) {
+            document.getElementById('modalTitle').innerText = app.title;
+            document.getElementById('modalDescription').innerText = app.description;
+            
+            // Type Badge
+            const badge = document.getElementById('modalTypeBadge');
+            badge.innerText = app.type;
+            badge.className = `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider mb-2 ${app.type === 'Blockchain' ? 'badge-web3' : 'badge-saas'}`;
+
+            document.getElementById('modalUserCase').innerText = `Target Audience: Developers, Startups, ${app.category} Professionals.`;
+            document.getElementById('modalPrompt').innerText = app.prompt;
+            
+            // Stack List
+            const list = document.getElementById('modalStackList');
+            list.innerHTML = '';
+            app.stackList.forEach(item => {
+                const li = document.createElement('li');
+                li.className = "flex items-center gap-2";
+                li.innerHTML = `<span class="text-green-500">✓</span> ${item}`;
+                list.appendChild(li);
+            });
+
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // --- CHARTS ---
+        let techChart, industryChart;
+
+        function initCharts() {
+            const ctxTech = document.getElementById('techChart').getContext('2d');
+            const ctxInd = document.getElementById('industryChart').getContext('2d');
+
+            // Destroy if exists to avoid glitch on resize/reload
+            if(techChart) techChart.destroy();
+            if(industryChart) industryChart.destroy();
+
+            // 1. Tech Distribution
+            const typeCounts = { "SaaS": 0, "Blockchain": 0 };
+            appData.forEach(a => typeCounts[a.type]++);
+
+            techChart = new Chart(ctxTech, {
+                type: 'doughnut',
+                data: {
+                    labels: ["Standard SaaS", "Blockchain / Web3"],
+                    datasets: [{
+                        data: [typeCounts["SaaS"], typeCounts["Blockchain"]],
+                        backgroundColor: ['#3B82F6', '#6366F1'], // Blue vs Indigo
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { boxWidth: 12, font: {size: 11, family: 'Inter'} } }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // 2. Top Industries (Limit to top 8 for readability)
+            const catCounts = {};
+            appData.forEach(a => catCounts[a.category] = (catCounts[a.category] || 0) + 1);
+            
+            // Sort and slice
+            const sortedCats = Object.entries(catCounts).sort((a,b) => b[1] - a[1]).slice(0, 8);
+            
+            industryChart = new Chart(ctxInd, {
+                type: 'bar',
+                data: {
+                    labels: sortedCats.map(x => x[0]),
+                    datasets: [{
+                        label: 'Applications',
+                        data: sortedCats.map(x => x[1]),
+                        backgroundColor: sortedCats.map((_, i) => i % 2 === 0 ? '#CBD5E1' : '#94A3B8'), // Alternating Greys
+                        borderRadius: 4,
+                        hoverBackgroundColor: '#0F172A'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true, grid: { display: false } },
+                        x: { grid: { display: false }, ticks: { font: {size: 10} } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // --- EVENT LISTENERS ---
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderCards();
+        });
+
+        categoryFilter.addEventListener('change', (e) => {
+            currentCategory = e.target.value;
+            renderCards();
+        });
+
+        closeBtn.addEventListener('click', closeModal);
+        closeAction.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', closeModal);
+
+        copyBtn.addEventListener('click', () => {
+            const text = document.getElementById('modalPrompt').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const originalText = copyBtn.innerText;
+                copyBtn.innerText = "Copied!";
+                copyBtn.classList.add('bg-green-500', 'text-white', 'border-transparent');
+                setTimeout(() => {
+                    copyBtn.innerText = originalText;
+                    copyBtn.classList.remove('bg-green-500', 'text-white', 'border-transparent');
+                }, 2000);
+            });
+        });
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            populateFilter();
+            renderCards();
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
