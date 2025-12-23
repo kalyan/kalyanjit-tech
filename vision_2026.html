@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vijay Sankalp: Assam Strategic Intelligence Dashboard</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Warm neutral light gray */
+            color: #1f2937;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Chart Container Styling - MANDATORY per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 100%; /* Adapts to grid column */
+            height: 300px;
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 1024px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Card Hover Effects */
+        .dashboard-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .dashboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Navigation Active State */
+        .nav-btn.active {
+            background-color: #ff9933; /* Saffron Accent */
+            color: white;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- Placeholder Comments Required by Prompt -->
+    <!-- Chosen Palette: "Saffron Strategy" - Warm Neutrals (#f3f4f6, #fff) with Strategic Saffron (#ff9933) and Growth Green (#10b981) accents. Professional, political, authoritative. -->
+    
+    <!-- Application Structure Plan: 
+         1. Header: Global context, user role (CM Office), and high-level date tracking.
+         2. KPI "Mission Control" Strip: Immediate visibility on Target Seats vs. Projected, Total Voters, and Key Risks.
+         3. Navigation Tabs: Logical separation of concerns:
+            - Overview: High-level seat projections and regional breakdowns.
+            - Demographics: Analysis of community voting patterns (Tea Tribes, etc.).
+            - Schemes Impact: Correlation between beneficiary data (Orunodoi) and votes.
+            - Battlegrounds: List of critical swing seats for tactical intervention.
+         4. Content Area: Dynamic grid layouts that change based on the active tab.
+         5. Footer: Data timestamps and confidentially notices.
+         
+         WHY: This structure mirrors a strategic "War Room". It moves from the "Big Picture" (Overview) to "Who Votes" (Demographics), to "Why They Vote" (Schemes), to "Where to Act" (Battlegrounds).
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Target vs Actual (Donut Chart): Goal: Inform. Viz: Chart.js Doughnut. Justification: Quick visual check of progress towards 126 seats.
+         2. Regional Dominance (Bar Chart): Goal: Compare. Viz: Chart.js Bar. Justification: Compares Upper vs Lower vs Barak performance clearly.
+         3. Community Support (Polar Area/Radar): Goal: Relationships. Viz: Chart.js Polar Area. Justification: Shows strength across different social groups (Tea Tribes, Ahoms).
+         4. Scheme Correlation (Scatter/Bubble): Goal: Analyze. Viz: Chart.js Bubble. Justification: Relates beneficiaries count to vote margin.
+         5. Battleground List (Interactive Table): Goal: Organize & Act. Viz: HTML Table with JS Filters. Justification: Text-heavy data needs sorting by margin/risk.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Top Navigation / Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Branding -->
+                <div class="flex items-center gap-3">
+                    <div class="bg-orange-500 text-white p-2 rounded-lg shadow-sm">
+                        <span class="text-xl font-bold">VS</span>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-800 tracking-tight">Vijay Sankalp 2026</h1>
+                        <p class="text-xs text-gray-500 uppercase tracking-wide">Strategic Intelligence Dashboard</p>
+                    </div>
+                </div>
+
+                <!-- Navigation Links -->
+                <nav class="hidden md:flex space-x-2">
+                    <button onclick="switchTab('overview')" id="nav-overview" class="nav-btn active px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-orange-50 transition-colors">Overview</button>
+                    <button onclick="switchTab('demographics')" id="nav-demographics" class="nav-btn px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-orange-50 transition-colors">Demographics</button>
+                    <button onclick="switchTab('schemes')" id="nav-schemes" class="nav-btn px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-orange-50 transition-colors">Beneficiaries</button>
+                    <button onclick="switchTab('battlegrounds')" id="nav-battlegrounds" class="nav-btn px-4 py-2 rounded-md text-sm text-gray-600 hover:bg-orange-50 transition-colors">Battlegrounds</button>
+                </nav>
+
+                <!-- User Profile / Status -->
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-sm font-medium text-gray-900">Dr. H.B. Sarma</p>
+                        <p class="text-xs text-green-600 font-semibold">Online • Secure</p>
+                    </div>
+                    <div class="h-8 w-8 bg-gray-200 rounded-full flex items-center justify-center border border-gray-300">
+                        <span class="text-xs font-bold text-gray-600">CM</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav -->
+        <div class="md:hidden flex justify-around border-t border-gray-100 bg-gray-50 p-2">
+            <button onclick="switchTab('overview')" class="text-xs font-medium text-gray-600 p-2">Overview</button>
+            <button onclick="switchTab('battlegrounds')" class="text-xs font-medium text-gray-600 p-2">Battlegrounds</button>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- KPI Strip (Always Visible) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- KPI 1 -->
+            <div class="dashboard-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 h-full w-1 bg-orange-500"></div>
+                <p class="text-sm text-gray-500 font-medium uppercase">Mission Target</p>
+                <div class="flex items-baseline gap-2 mt-2">
+                    <h2 class="text-3xl font-bold text-gray-900">100+</h2>
+                    <span class="text-xs text-gray-400">/ 126 Seats</span>
+                </div>
+                <div class="mt-4 w-full bg-gray-100 rounded-full h-1.5">
+                    <div class="bg-orange-500 h-1.5 rounded-full" style="width: 80%"></div>
+                </div>
+                <p class="text-xs text-orange-600 mt-2 font-medium">80% Probability</p>
+            </div>
+
+            <!-- KPI 2 -->
+            <div class="dashboard-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
+                <p class="text-sm text-gray-500 font-medium uppercase">Projected Wins</p>
+                <div class="flex items-baseline gap-2 mt-2">
+                    <h2 class="text-3xl font-bold text-gray-900" id="projected-seats-display">84</h2>
+                    <span class="text-sm text-green-500 font-medium">▲ 4</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Based on current polling avg</p>
+            </div>
+
+            <!-- KPI 3 -->
+            <div class="dashboard-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 h-full w-1 bg-red-500"></div>
+                <p class="text-sm text-gray-500 font-medium uppercase">Critical Swing Seats</p>
+                <div class="flex items-baseline gap-2 mt-2">
+                    <h2 class="text-3xl font-bold text-gray-900">18</h2>
+                    <span class="text-sm text-red-500 font-medium">Action Needed</span>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Margin < 3,000 votes</p>
+            </div>
+
+            <!-- KPI 4 -->
+            <div class="dashboard-card bg-white p-5 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <div class="absolute right-0 top-0 h-full w-1 bg-green-500"></div>
+                <p class="text-sm text-gray-500 font-medium uppercase">Beneficiary Reach</p>
+                <div class="flex items-baseline gap-2 mt-2">
+                    <h2 class="text-3xl font-bold text-gray-900">4.2M</h2>
+                    <span class="text-sm text-gray-500">Households</span>
+                </div>
+                <p class="text-xs text-green-600 mt-2 font-medium">Orunodoi & PMAY Impact</p>
+            </div>
+        </section>
+
+        <!-- VIEW: OVERVIEW -->
+        <div id="view-overview" class="view-section space-y-6 animate-fade-in">
+            <div class="bg-blue-50 border border-blue-100 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-blue-800 text-lg">Executive Summary</h3>
+                <p class="text-sm text-blue-700 mt-1 leading-relaxed">
+                    Current intelligence indicates a strong hold in <strong>Upper Assam</strong> and the <strong>North Bank</strong>. The alliance with UPPL is yielding positive dividends in Bodoland. However, <strong>Lower Assam</strong> remains highly competitive due to demographic consolidation. The "Mission 100" target requires flipping 12 specific constituencies in the Barak Valley and Central Assam belt.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart: Seat Share -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Projected Seat Share (126 Total)</h3>
+                    <p class="text-xs text-gray-400 mb-6">Current breakdown based on booth-level data.</p>
+                    <div class="chart-container">
+                        <canvas id="seatShareChart"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-3 gap-2 text-center text-sm">
+                        <div class="p-2 bg-orange-50 rounded border border-orange-100">
+                            <span class="block font-bold text-orange-600">BJP+</span>
+                            <span>84 Seats</span>
+                        </div>
+                        <div class="p-2 bg-blue-50 rounded border border-blue-100">
+                            <span class="block font-bold text-blue-600">INC+</span>
+                            <span>32 Seats</span>
+                        </div>
+                        <div class="p-2 bg-green-50 rounded border border-green-100">
+                            <span class="block font-bold text-green-600">Others</span>
+                            <span>10 Seats</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart: Regional Performance -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-gray-800">Regional Strength Analysis</h3>
+                        <select class="text-xs border-gray-300 border rounded p-1" onchange="updateRegionChart(this.value)">
+                            <option value="seats">By Seats Won</option>
+                            <option value="voteShare">By Vote Share %</option>
+                        </select>
+                    </div>
+                    <p class="text-xs text-gray-400 mb-6">Comparison across 5 key geopolitical zones.</p>
+                    <div class="chart-container">
+                        <canvas id="regionalChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Priority Task List -->
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                    <h3 class="font-bold text-gray-800">Strategic Priorities (Week 42)</h3>
+                    <button class="text-xs text-blue-600 hover:text-blue-800 font-medium">View All Tasks</button>
+                </div>
+                <div class="divide-y divide-gray-100">
+                    <div class="p-4 flex items-start gap-4 hover:bg-gray-50 transition-colors">
+                        <div class="h-2 w-2 mt-2 rounded-full bg-red-500 flex-shrink-0"></div>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-semibold text-gray-900">Consolidate Tea Tribe Leadership</h4>
+                            <p class="text-xs text-gray-500 mt-1">Resolve wage negotiation impact in Dibrugarh & Tinsukia belts.</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs bg-red-100 text-red-700 rounded font-medium">Urgent</span>
+                    </div>
+                    <div class="p-4 flex items-start gap-4 hover:bg-gray-50 transition-colors">
+                        <div class="h-2 w-2 mt-2 rounded-full bg-orange-500 flex-shrink-0"></div>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-semibold text-gray-900">Orunodoi Expansion Launch</h4>
+                            <p class="text-xs text-gray-500 mt-1">Finalize list for 200k new beneficiaries in swing constituencies.</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs bg-orange-100 text-orange-700 rounded font-medium">High</span>
+                    </div>
+                    <div class="p-4 flex items-start gap-4 hover:bg-gray-50 transition-colors">
+                        <div class="h-2 w-2 mt-2 rounded-full bg-blue-500 flex-shrink-0"></div>
+                        <div class="flex-grow">
+                            <h4 class="text-sm font-semibold text-gray-900">Barak Valley Infra Tour</h4>
+                            <p class="text-xs text-gray-500 mt-1">Schedule inauguration of mini-secretariat and bridges.</p>
+                        </div>
+                        <span class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded font-medium">Planned</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: DEMOGRAPHICS -->
+        <div id="view-demographics" class="view-section hidden space-y-6">
+            <div class="bg-orange-50 border border-orange-100 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-orange-800 text-lg">Community Insights</h3>
+                <p class="text-sm text-orange-700 mt-1">
+                    The electoral math relies on maximizing the <strong>indigenous vote consolidation</strong> while maintaining 65%+ support among the <strong>Tea Tribes</strong>. Tribal alliances (Bodo, Karbi) are secure. The challenge lies in Bengali Hindu pockets in Lower Assam where turnout management is key.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                 <!-- Chart: Demographics Radar -->
+                 <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Vote Share by Community</h3>
+                    <p class="text-xs text-gray-400 mb-6">Projected capture rate percentage.</p>
+                    <div class="chart-container">
+                        <canvas id="demoRadarChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Demographic Cards -->
+                <div class="space-y-4">
+                    <!-- Card 1 -->
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Tea Tribes</h4>
+                            <p class="text-xs text-gray-500">Approx. 17% of Electorate</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-2xl font-bold text-green-600">68%</span>
+                            <span class="text-xs text-gray-400">Projected Support</span>
+                        </div>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Indigenous Assamese</h4>
+                            <p class="text-xs text-gray-500">Brahmaputra Valley</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-2xl font-bold text-orange-500">72%</span>
+                            <span class="text-xs text-gray-400">Projected Support</span>
+                        </div>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm flex items-center justify-between">
+                        <div>
+                            <h4 class="font-bold text-gray-800">Bengali Hindus</h4>
+                            <p class="text-xs text-gray-500">Barak Valley & Lower Assam</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-2xl font-bold text-blue-500">85%</span>
+                            <span class="text-xs text-gray-400">Projected Support</span>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-4 rounded-lg border border-dashed border-gray-300">
+                        <h4 class="text-sm font-semibold text-gray-700">Strategy Note:</h4>
+                        <p class="text-xs text-gray-600 mt-1 italic">
+                            "Focus on saturation of scholarship schemes for Tea Tribe youth to counter opposition narratives on wage stagnation."
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: SCHEMES -->
+        <div id="view-schemes" class="view-section hidden space-y-6">
+            <div class="bg-green-50 border border-green-100 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-green-800 text-lg">Welfare-to-Vote Conversion</h3>
+                <p class="text-sm text-green-700 mt-1">
+                    Direct Benefit Transfer (DBT) remains the strongest lever. Analysis shows a <strong>0.82 correlation</strong> between "Orunodoi" household density and BJP+ vote share in rural constituencies. Infrastructure projects drive urban sentiment.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Chart: Scheme Penetration vs Vote Share -->
+                <div class="bg-white p-6 rounded-xl border border-gray-200 shadow-sm lg:col-span-2">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">Scheme Density vs. Projected Margin</h3>
+                    <p class="text-xs text-gray-400 mb-6">Bubble size = Total Voters in Constituency. X-Axis = Beneficiaries %. Y-Axis = Win Margin %.</p>
+                    <div class="chart-container">
+                        <canvas id="schemeBubbleChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Scheme Metrics -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm text-center">
+                    <div class="text-4xl mb-2">👩‍👧</div>
+                    <h4 class="font-bold text-gray-800">Orunodoi</h4>
+                    <p class="text-3xl font-bold text-pink-600 mt-2">2.6M+</p>
+                    <p class="text-xs text-gray-500">Primary Beneficiaries</p>
+                    <div class="mt-3 w-full bg-gray-100 h-1 rounded">
+                        <div class="bg-pink-500 h-1 rounded" style="width: 92%"></div>
+                    </div>
+                    <p class="text-xs text-right mt-1 text-gray-400">Target: 92%</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm text-center">
+                    <div class="text-4xl mb-2">🛣️</div>
+                    <h4 class="font-bold text-gray-800">Asom Mala</h4>
+                    <p class="text-3xl font-bold text-gray-800 mt-2">1,200km</p>
+                    <p class="text-xs text-gray-500">Roads Upgraded</p>
+                    <div class="mt-3 w-full bg-gray-100 h-1 rounded">
+                        <div class="bg-gray-600 h-1 rounded" style="width: 75%"></div>
+                    </div>
+                    <p class="text-xs text-right mt-1 text-gray-400">Target: 75%</p>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl border border-gray-200 shadow-sm text-center">
+                    <div class="text-4xl mb-2">🎓</div>
+                    <h4 class="font-bold text-gray-800">Youth Edu-Grant</h4>
+                    <p class="text-3xl font-bold text-blue-600 mt-2">450k</p>
+                    <p class="text-xs text-gray-500">Students Supported</p>
+                    <div class="mt-3 w-full bg-gray-100 h-1 rounded">
+                        <div class="bg-blue-500 h-1 rounded" style="width: 60%"></div>
+                    </div>
+                    <p class="text-xs text-right mt-1 text-gray-400">Target: 60%</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: BATTLEGROUNDS -->
+        <div id="view-battlegrounds" class="view-section hidden space-y-6">
+            <div class="bg-red-50 border border-red-100 rounded-lg p-4 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h3 class="font-bold text-red-800 text-lg">Critical Battlegrounds</h3>
+                    <p class="text-sm text-red-700 mt-1">
+                        18 constituencies identified as "Swing" with margins under 5%. Immediate deployment of booth management committees required.
+                    </p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="filterBattlegrounds('all')" class="px-3 py-1 bg-white border border-red-200 text-red-700 text-xs rounded hover:bg-red-50 font-medium">All</button>
+                    <button onclick="filterBattlegrounds('critical')" class="px-3 py-1 bg-red-600 border border-red-600 text-white text-xs rounded hover:bg-red-700 font-medium shadow-sm">Critical (<3%)</button>
+                    <button onclick="filterBattlegrounds('opportunity')" class="px-3 py-1 bg-white border border-red-200 text-red-700 text-xs rounded hover:bg-red-50 font-medium">Opportunities</button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Constituency</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Region</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Incumbent</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Projected Margin</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="battleground-table-body" class="bg-white divide-y divide-gray-200">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="bg-gray-800 text-white p-6 rounded-xl mt-6">
+                <h3 class="font-bold text-lg mb-2">Deployment Request</h3>
+                <p class="text-sm text-gray-300 mb-4">Authorize additional resources for selected battleground constituencies.</p>
+                <div class="flex gap-4">
+                    <button class="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors">Deploy Star Campaigners</button>
+                    <button class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded text-sm font-medium transition-colors">Increase Media Spend</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-auto">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row justify-between items-center gap-4">
+            <p class="text-xs text-gray-500">
+                © 2025 Campaign Management Office. CONFIDENTIAL. For Internal Use Only.
+            </p>
+            <div class="flex items-center gap-4">
+                <span class="text-xs text-gray-400">Last Data Update: 24 Dec 2025, 14:00 IST</span>
+                <div class="h-2 w-2 rounded-full bg-green-500 animate-pulse"></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA STORE ---
+        
+        // Constituency Data for Battlegrounds
+        const battlegroundData = [
+            { id: 1, name: "Jorhat", region: "Upper Assam", incumbent: "INC", margin: -1.2, status: "Critical", type: "critical" },
+            { id: 2, name: "Nagaon", region: "Central Assam", incumbent: "BJP", margin: 2.5, status: "Defend", type: "critical" },
+            { id: 3, name: "Karimganj North", region: "Barak Valley", incumbent: "INC", margin: -0.5, status: "Opportunity", type: "opportunity" },
+            { id: 4, name: "Sivasagar", region: "Upper Assam", incumbent: "IND", margin: -4.0, status: "Hard", type: "opportunity" },
+            { id: 5, name: "Goalpara East", region: "Lower Assam", incumbent: "INC", margin: -2.1, status: "Opportunity", type: "opportunity" },
+            { id: 6, name: "Tezpur", region: "North Bank", incumbent: "AGP", margin: 1.8, status: "Defend", type: "critical" },
+            { id: 7, name: "Silchar", region: "Barak Valley", incumbent: "BJP", margin: 5.2, status: "Safe", type: "safe" },
+            { id: 8, name: "Barpeta", region: "Lower Assam", incumbent: "INC", margin: -8.5, status: "Reach", type: "hard" },
+            { id: 9, name: "Dibrugarh", region: "Upper Assam", incumbent: "BJP", margin: 12.0, status: "Stronghold", type: "safe" },
+            { id: 10, name: "Mangaldoi", region: "North Bank", incumbent: "BJP", margin: 3.1, status: "Defend", type: "critical" }
+        ];
+
+        // --- CHART CONFIGURATIONS ---
+
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: { family: "'Inter', sans-serif", size: 11 }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(17, 24, 39, 0.9)',
+                    padding: 12,
+                    titleFont: { family: "'Inter', sans-serif", size: 13 },
+                    bodyFont: { family: "'Inter', sans-serif", size: 12 },
+                    cornerRadius: 8,
+                    displayColors: false
+                }
+            }
+        };
+
+        let seatChart, regionChart, radarChart, bubbleChart;
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', () => {
+            initSeatShareChart();
+            initRegionalChart();
+            initRadarChart();
+            initBubbleChart();
+            renderBattlegroundTable('all');
+        });
+
+        // 1. Seat Share Chart (Doughnut)
+        function initSeatShareChart() {
+            const ctx = document.getElementById('seatShareChart').getContext('2d');
+            seatChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['BJP+', 'INC+', 'AIUDF', 'Others'],
+                    datasets: [{
+                        data: [84, 28, 12, 2],
+                        backgroundColor: ['#f97316', '#3b82f6', '#10b981', '#6b7280'],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    cutout: '70%',
+                    plugins: {
+                        ...commonOptions.plugins,
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} Seats`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Regional Chart (Bar)
+        function initRegionalChart() {
+            const ctx = document.getElementById('regionalChart').getContext('2d');
+            regionChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Upper Assam', 'Lower Assam', 'North Bank', 'Hills', 'Barak Valley'],
+                    datasets: [
+                        {
+                            label: 'BJP+',
+                            data: [35, 12, 18, 4, 9],
+                            backgroundColor: '#f97316',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'INC+',
+                            data: [5, 18, 4, 1, 4],
+                            backgroundColor: '#3b82f6',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Others/AIUDF',
+                            data: [1, 15, 1, 0, 2],
+                            backgroundColor: '#10b981',
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { 
+                            beginAtZero: true,
+                            grid: { borderDash: [2, 2] }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 3. Radar Chart (Demographics)
+        function initRadarChart() {
+            const ctx = document.getElementById('demoRadarChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Tea Tribes', 'Indigenous Assamese', 'Bengali Hindus', 'Bodo', 'Muslims (Indigenous)', 'Muslims (Immigrant)'],
+                    datasets: [{
+                        label: 'Projected Vote Share %',
+                        data: [68, 72, 85, 80, 35, 5],
+                        backgroundColor: [
+                            'rgba(249, 115, 22, 0.6)', 
+                            'rgba(249, 115, 22, 0.8)', 
+                            'rgba(59, 130, 246, 0.6)', 
+                            'rgba(234, 179, 8, 0.6)', 
+                            'rgba(16, 185, 129, 0.6)',
+                            'rgba(107, 114, 128, 0.6)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        r: {
+                            ticks: { display: false },
+                            grid: { color: '#e5e7eb' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 4. Bubble Chart (Schemes)
+        function initBubbleChart() {
+            const ctx = document.getElementById('schemeBubbleChart').getContext('2d');
+            bubbleChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Constituency Correlation',
+                        data: [
+                            { x: 85, y: 15, r: 15 }, // High Scheme, High Win
+                            { x: 70, y: 5, r: 10 },
+                            { x: 40, y: -5, r: 12 }, // Low Scheme, Loss
+                            { x: 90, y: 20, r: 8 },
+                            { x: 55, y: -2, r: 14 },
+                            { x: 75, y: 8, r: 11 },
+                            { x: 30, y: -12, r: 16 },
+                            { x: 60, y: 1, r: 9 }
+                        ],
+                        backgroundColor: function(context) {
+                            const val = context.raw?.y;
+                            return val > 0 ? 'rgba(249, 115, 22, 0.7)' : 'rgba(59, 130, 246, 0.7)';
+                        }
+                    }]
+                },
+                options: {
+                    ...commonOptions,
+                    scales: {
+                        x: {
+                            title: { display: true, text: 'Orunodoi Penetration (%)' },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: { display: true, text: 'Projected Margin (%)' },
+                            grid: { borderDash: [2, 2] }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `Margin: ${ctx.raw.y}%, Scheme: ${ctx.raw.x}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- UI INTERACTION LOGIC ---
+
+        // Tab Switching
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('.view-section').forEach(el => {
+                el.classList.add('hidden');
+            });
+            // Show selected
+            document.getElementById(`view-${tabId}`).classList.remove('hidden');
+
+            // Update Nav Buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                btn.classList.remove('text-orange-600', 'bg-orange-50', 'font-semibold');
+                btn.classList.add('text-gray-600');
+            });
+            
+            const activeBtn = document.getElementById(`nav-${tabId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+        }
+
+        // Dynamic Chart Updates (Mock Data Toggle)
+        function updateRegionChart(metric) {
+            if (metric === 'voteShare') {
+                regionChart.data.datasets[0].data = [48, 32, 52, 45, 41]; // BJP %
+                regionChart.data.datasets[1].data = [20, 38, 30, 15, 35]; // INC %
+                regionChart.data.datasets[2].data = [5, 25, 5, 5, 15]; // Others %
+            } else {
+                regionChart.data.datasets[0].data = [35, 12, 18, 4, 9]; // Seats
+                regionChart.data.datasets[1].data = [5, 18, 4, 1, 4];
+                regionChart.data.datasets[2].data = [1, 15, 1, 0, 2];
+            }
+            regionChart.update();
+        }
+
+        // Battleground Filter Logic
+        function filterBattlegrounds(filterType) {
+            let filteredData = battlegroundData;
+            if (filterType === 'critical') {
+                filteredData = battlegroundData.filter(d => Math.abs(d.margin) < 3);
+            } else if (filterType === 'opportunity') {
+                filteredData = battlegroundData.filter(d => d.margin < 0 && d.margin > -5);
+            }
+            renderBattlegroundTable(filterType, filteredData);
+        }
+
+        // Render Table
+        function renderBattlegroundTable(filterType, data = battlegroundData) {
+            const tbody = document.getElementById('battleground-table-body');
+            tbody.innerHTML = '';
+
+            data.forEach(item => {
+                const marginColor = item.margin > 0 ? 'text-green-600' : 'text-red-600';
+                const marginSign = item.margin > 0 ? '+' : '';
+                
+                let badgeClass = 'bg-gray-100 text-gray-800';
+                if(item.status === 'Critical') badgeClass = 'bg-red-100 text-red-800';
+                if(item.status === 'Opportunity') badgeClass = 'bg-blue-100 text-blue-800';
+                if(item.status === 'Safe' || item.status === 'Stronghold') badgeClass = 'bg-green-100 text-green-800';
+
+                const row = `
+                    <tr class="hover:bg-gray-50 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${item.name}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.region}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.incumbent}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-bold ${marginColor}">${marginSign}${item.margin}%</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${badgeClass}">
+                                ${item.status}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <button class="text-orange-600 hover:text-orange-900">Analyze</button>
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+    </script>
+</body>
+</html>
