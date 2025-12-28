@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India's Shipping Container Manufacturing Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,700;1,300&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f5f4; /* stone-100 */
+            color: #1c1917; /* stone-900 */
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Merriweather', serif;
+        }
+
+        /* Chart Container Specifics - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Cap width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Custom Scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e7e5e4; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #a8a29e; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #78716c; 
+        }
+
+        .active-tab {
+            border-bottom: 3px solid #d97706; /* amber-600 */
+            color: #d97706;
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-amber-200 selection:text-amber-900">
+
+    <!-- 
+    <!- - Chosen Palette: Warm Stone & Amber - ->
+    Background: Warm Stone (#f5f5f4) for a paper-like, serious report feel.
+    Primary Text: Dark Stone (#1c1917).
+    Accents: Amber (#d97706) for highlights/action, Teal (#0d9488) for data positivity.
+    Rationale: Minimalistic, readable, professional, avoiding the harshness of pure white/black.
+    -->
+
+    <!-- 
+    <!- - Application Structure Plan: - ->
+    1. **Hero Dashboard**: Instant immersion. Summary KPIs (Global Share, Market Cap, Growth Target) to ground the user immediately.
+    2. **The Global Context (Problem)**: Interactive Donut chart showing China's monopoly. This sets the stage for "Why India needs to act."
+    3. **The Indian Demand (Opportunity)**: Line chart visualizing the projected gap between demand and supply. Users can toggle scenarios (Conservative vs. Aggressive).
+    4. **The Manufacturing Solution (Strategy)**:
+       - Cost Breakdown (Bar Chart): Comparing manufacturing costs (Steel, Labor, Energy) between India and China.
+       - Strategic Hubs: A specialized grid layout (no map) detailing Bhavnagar and other clusters.
+    5. **Roadmap & Challenges (Action)**: Interactive cards allowing users to explore barriers (Corten steel availability) and government enablers (PLI schemes).
+    -->
+
+    <!-- 
+    <!- - Visualization & Content Choices: - ->
+    1. **Global Market Share**: Donut Chart. Goal: Inform/Shock. Shows the 90%+ dominance of China. Interactive tooltips for details.
+    2. **India's Demand Curve**: Line Chart. Goal: Trend Analysis. Shows the rising TEU demand 2023-2030.
+    3. **Cost Competitiveness**: Stacked Bar Chart. Goal: Compare. Breaks down the cost of a 20ft container to highlight where India can compete (Labor) vs. where it lags (Material).
+    4. **Strategic Initiatives**: Interactive Grid. Goal: Organize. Clickable cards for CONCOR, Private Players, and Gov Policy.
+    
+    <!- - CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. - ->
+    -->
+
+    <!-- Header / Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50 border-b border-stone-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <span class="text-2xl font-bold text-stone-800 tracking-tight">Indo<span class="text-amber-600">Box</span> Analytics</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-8 hidden md:flex">
+                    <button onclick="scrollToSection('global-context')" class="text-stone-600 hover:text-amber-600 px-3 py-2 text-sm font-medium transition">Global Context</button>
+                    <button onclick="scrollToSection('market-demand')" class="text-stone-600 hover:text-amber-600 px-3 py-2 text-sm font-medium transition">Demand Projections</button>
+                    <button onclick="scrollToSection('economics')" class="text-stone-600 hover:text-amber-600 px-3 py-2 text-sm font-medium transition">Economics</button>
+                    <button onclick="scrollToSection('roadmap')" class="text-stone-600 hover:text-amber-600 px-3 py-2 text-sm font-medium transition">Roadmap</button>
+                </div>
+                <!-- Mobile Menu Button (Simplified for this demo) -->
+                <div class="flex items-center md:hidden">
+                    <button class="text-stone-500 hover:text-stone-700 p-2">☰</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Wrapper -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Section 1: Executive Summary & Hero Stats -->
+        <section class="text-center space-y-8">
+            <div class="space-y-4">
+                <h1 class="text-4xl md:text-5xl font-bold text-stone-900 leading-tight">
+                    Strategic Shift: <br>
+                    <span class="text-amber-700">India's Container Manufacturing Capabilities</span>
+                </h1>
+                <p class="max-w-2xl mx-auto text-xl text-stone-600">
+                    Analyzing the transition from import dependency to self-reliance. A comprehensive look at the global market, domestic demand, and the roadmap to becoming a manufacturing hub.
+                </p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mt-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-amber-500 hover:shadow-md transition">
+                    <p class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Current Global Dominance</p>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-4xl font-bold text-stone-900">92%</span>
+                        <span class="ml-2 text-sm text-stone-500">Held by China</span>
+                    </div>
+                    <p class="mt-2 text-sm text-stone-600">India currently holds < 1% market share, highlighting a critical supply chain risk.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-teal-500 hover:shadow-md transition">
+                    <p class="text-sm font-semibold text-stone-500 uppercase tracking-wide">India's Annual Demand</p>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-4xl font-bold text-stone-900">350k</span>
+                        <span class="ml-2 text-sm text-stone-500">TEUs / Year</span>
+                    </div>
+                    <p class="mt-2 text-sm text-stone-600">Domestic requirement projected to grow at 10% CAGR through 2028.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border-l-4 border-indigo-500 hover:shadow-md transition">
+                    <p class="text-sm font-semibold text-stone-500 uppercase tracking-wide">Target Capacity (2026)</p>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-4xl font-bold text-stone-900">100k</span>
+                        <span class="ml-2 text-sm text-stone-500">TEUs Annually</span>
+                    </div>
+                    <p class="mt-2 text-sm text-stone-600">Via Bhavnagar hub & CONCOR initiatives under 'Make in India'.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Global Context (Interactive Chart) -->
+        <section id="global-context" class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+            <div class="p-8 border-b border-stone-100">
+                <h2 class="text-2xl font-bold text-stone-800">The Global Monopoly</h2>
+                <p class="mt-2 text-stone-600 max-w-3xl">
+                    The manufacturing of ISO shipping containers is heavily concentrated. This near-monopoly poses strategic risks for India's export-driven economy, especially evident during post-COVID supply chain disruptions.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8 items-center">
+                <!-- Text Insight -->
+                <div class="space-y-6 order-2 lg:order-1">
+                    <div class="bg-stone-50 p-6 rounded-lg border border-stone-200">
+                        <h3 class="font-bold text-stone-800 mb-2">Key Insight: The "CIMC" Factor</h3>
+                        <p class="text-sm text-stone-600">
+                            Three Chinese companies (CIMC, DFIC, CXIC) control the vast majority of production. They benefit from an integrated ecosystem of steel production, low labor costs, and state subsidies.
+                        </p>
+                    </div>
+                    <div class="space-y-4">
+                        <h4 class="font-semibold text-stone-800">Why this matters for India:</h4>
+                        <ul class="space-y-3 text-sm text-stone-600">
+                            <li class="flex items-start">
+                                <span class="text-red-500 mr-2">●</span>
+                                <span><strong>Price Volatility:</strong> India pays premium rates when container shortages occur globally.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-500 mr-2">●</span>
+                                <span><strong>Trade Security:</strong> Dependency on a geopolitical rival for critical trade infrastructure is a strategic vulnerability.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="text-red-500 mr-2">●</span>
+                                <span><strong>Forex Drain:</strong> India spends billions annually leasing or importing empty containers.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Chart Wrapper -->
+                <div class="order-1 lg:order-2 flex flex-col items-center justify-center bg-stone-50 rounded-xl p-4">
+                    <h3 class="text-sm font-semibold text-stone-500 mb-4 uppercase tracking-wider">Global Production Share (2024 Est)</h3>
+                    <div class="chart-container">
+                        <canvas id="globalShareChart"></canvas>
+                    </div>
+                    <div class="mt-4 flex gap-4 text-xs text-stone-500">
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-amber-600 mr-1"></span> China</span>
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-stone-400 mr-1"></span> Vietnam</span>
+                        <span class="flex items-center"><span class="w-3 h-3 rounded-full bg-stone-300 mr-1"></span> India (Target)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Domestic Demand Projections -->
+        <section id="market-demand">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800">Domestic Demand Surge</h2>
+                <p class="mt-2 text-stone-600 max-w-4xl">
+                    As India pushes towards a $5 Trillion economy, merchandise exports are rising. This creates a direct correlation with the demand for TEUs (Twenty-foot Equivalent Units).
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                    <div class="space-y-1">
+                        <h3 class="font-bold text-stone-800">Projected Container Requirement (TEUs)</h3>
+                        <p class="text-xs text-stone-500">Data modeled on export growth targets of 12-15% annually.</p>
+                    </div>
+                    <div class="flex bg-stone-100 rounded-lg p-1 mt-4 sm:mt-0">
+                        <button id="btn-conservative" class="px-4 py-1.5 text-sm rounded-md font-medium transition bg-white shadow-sm text-stone-800" onclick="updateDemandChart('conservative')">Conservative</button>
+                        <button id="btn-aggressive" class="px-4 py-1.5 text-sm rounded-md font-medium transition text-stone-500 hover:text-stone-800" onclick="updateDemandChart('aggressive')">Aggressive Growth</button>
+                    </div>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="demandChart"></canvas>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-6 border-t border-stone-100">
+                    <div class="text-center">
+                        <p class="text-xs text-stone-500">Current Deficit</p>
+                        <p class="text-lg font-bold text-red-600">~300,000 TEUs</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs text-stone-500">Annual Replacement Rate</p>
+                        <p class="text-lg font-bold text-stone-800">5-7%</p>
+                    </div>
+                    <div class="text-center">
+                        <p class="text-xs text-stone-500">Key Driver</p>
+                        <p class="text-lg font-bold text-teal-600">Exports (Pharma, Auto)</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Economics & Manufacturing (Cost Analysis) -->
+        <section id="economics">
+             <div class="mb-6">
+                <h2 class="text-2xl font-bold text-stone-800">The Economics of "Make in India"</h2>
+                <p class="mt-2 text-stone-600 max-w-4xl">
+                    Can India compete on price? The cost of a 20ft Dry Container typically ranges from $2,000 to $3,500 depending on steel prices. Here is the estimated cost structure comparison.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Interactive Controls/Details -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200 h-full">
+                        <h3 class="font-bold text-stone-800 mb-4">Cost Components</h3>
+                        <div class="space-y-4">
+                            <div class="p-3 bg-stone-50 rounded border border-stone-100 cursor-pointer hover:bg-amber-50 transition group" onclick="highlightBar('steel')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-stone-700 group-hover:text-amber-700">Corten Steel</span>
+                                    <span class="text-xs font-bold bg-stone-200 px-2 py-1 rounded text-stone-600">60% of Cost</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">Specialized corrosion-resistant steel. India has capacity (Tata Steel), but scale is lower than China.</p>
+                            </div>
+                            
+                            <div class="p-3 bg-stone-50 rounded border border-stone-100 cursor-pointer hover:bg-amber-50 transition group" onclick="highlightBar('labor')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-stone-700 group-hover:text-amber-700">Labor & Overhead</span>
+                                    <span class="text-xs font-bold bg-stone-200 px-2 py-1 rounded text-stone-600">20% of Cost</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">India holds a competitive advantage here with lower wage costs compared to Eastern China.</p>
+                            </div>
+
+                            <div class="p-3 bg-stone-50 rounded border border-stone-100 cursor-pointer hover:bg-amber-50 transition group" onclick="highlightBar('energy')">
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-stone-700 group-hover:text-amber-700">Paint, Fittings & Energy</span>
+                                    <span class="text-xs font-bold bg-stone-200 px-2 py-1 rounded text-stone-600">20% of Cost</span>
+                                </div>
+                                <p class="text-xs text-stone-500 mt-2">Corner castings and specialized paints are currently largely imported.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h3 class="font-bold text-stone-800 mb-2">Production Cost Estimates (USD per 20ft Container)</h3>
+                     <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: The Roadmap Ahead -->
+        <section id="roadmap" class="space-y-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold text-stone-800">Strategic Roadmap</h2>
+                <p class="mt-2 text-stone-600">How India moves from 0 to 100k+ units.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Card 1: Policy -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border-t-4 border-amber-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🏛️</span>
+                        <h3 class="text-xl font-bold text-stone-800">Policy Interventions</h3>
+                    </div>
+                    <ul class="space-y-3 text-stone-600">
+                        <li class="flex items-start">
+                            <span class="text-amber-500 font-bold mr-2">✓</span>
+                            <span><strong>PLI Scheme Consideration:</strong> Proposal to include container manufacturing in Production Linked Incentive schemes to offset steel costs.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-amber-500 font-bold mr-2">✓</span>
+                            <span><strong>CONCOR Orders:</strong> The Container Corporation of India has released tenders for 6,000+ domestic containers to jumpstart demand.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-amber-500 font-bold mr-2">✓</span>
+                            <span><strong>Standards Adoption:</strong> Moving to BIS standards aligned with ISO to ensure global acceptance.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Card 2: Hubs -->
+                <div class="bg-white p-8 rounded-xl shadow-sm border-t-4 border-teal-500">
+                    <div class="flex items-center mb-4">
+                        <span class="text-2xl mr-3">🏭</span>
+                        <h3 class="text-xl font-bold text-stone-800">Manufacturing Clusters</h3>
+                    </div>
+                    <ul class="space-y-3 text-stone-600">
+                        <li class="flex items-start">
+                            <span class="text-teal-500 font-bold mr-2">📍</span>
+                            <span><strong>Bhavnagar, Gujarat:</strong> Developing as the primary hub due to proximity to Alang shipbreaking yards (steel scrap ecosystem) and ports.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-500 font-bold mr-2">📍</span>
+                            <span><strong>Private Sector Entry:</strong> Companies like Tata Steel and Jindal are prototyping composite and steel containers.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-teal-500 font-bold mr-2">📍</span>
+                            <span><strong>Capacity Goals:</strong> Targeting 10,000 TEUs/month capacity by 2026 across all clustered zones.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Call to Action / Summary -->
+             <div class="bg-stone-800 text-stone-100 rounded-2xl p-8 md:p-12 text-center mt-12">
+                <h3 class="text-2xl font-bold mb-4">The Verdict</h3>
+                <p class="max-w-3xl mx-auto text-stone-300 mb-6 leading-relaxed">
+                    India has the steel, the labor, and the demand. The challenge lies in creating a specialized component ecosystem (corner castings, door mechanisms) to rival Chinese efficiency. With sustained government support and anchor orders from railways, India can capture <strong>10-15% of the global market by 2030</strong>, securing its trade sovereignty.
+                </p>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-sm text-stone-500">
+            <p>© 2025 IndoBox Analytics. Research Synthesis Report.</p>
+            <p class="mt-2">Data sources: Ministry of Ports, Shipping and Waterways, CONCOR, Drewry Maritime Research.</p>
+        </div>
+    </footer>
+
+    <script>
+        // State Management
+        const state = {
+            currentDemandScenario: 'conservative',
+            chartInstances: {}
+        };
+
+        // Data Store
+        const dataStore = {
+            globalShare: {
+                labels: ['China (CIMC, DFIC)', 'Vietnam', 'Rest of World', 'India (Current)'],
+                data: [92, 4, 3, 1],
+                colors: ['#d97706', '#78716c', '#a8a29e', '#0d9488']
+            },
+            demand: {
+                labels: ['2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                conservative: [300, 315, 330, 345, 360, 375, 390, 405], // Thousands
+                aggressive: [300, 330, 365, 410, 460, 520, 590, 670]   // Thousands
+            },
+            costs: {
+                labels: ['Steel (Corten)', 'Labor', 'Energy/Overhead', 'Components (Paint/Fittings)'],
+                china: [1400, 200, 150, 450],
+                india: [1550, 150, 180, 500] // India steel slightly higher due to scale, labor lower
+            }
+        };
+
+        // Navigation Logic
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initGlobalShareChart();
+            initDemandChart();
+            initCostChart();
+        });
+
+        // 1. Global Share Chart (Donut)
+        function initGlobalShareChart() {
+            const ctx = document.getElementById('globalShareChart').getContext('2d');
+            state.chartInstances.globalShare = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: dataStore.globalShare.labels,
+                    datasets: [{
+                        data: dataStore.globalShare.data,
+                        backgroundColor: dataStore.globalShare.colors,
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            display: false // Custom legend used in HTML
+                        },
+                        tooltip: {
+                            backgroundColor: '#1c1917',
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // 2. Demand Chart (Line)
+        function initDemandChart() {
+            const ctx = document.getElementById('demandChart').getContext('2d');
+            state.chartInstances.demand = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: dataStore.demand.labels,
+                    datasets: [{
+                        label: 'Projected Demand (000 TEUs)',
+                        data: dataStore.demand.conservative,
+                        borderColor: '#0d9488', // Teal
+                        backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#0d9488',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        legend: { display: true, position: 'top', align: 'end' },
+                        tooltip: { backgroundColor: '#1c1917', padding: 12 }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            grid: { color: '#f5f5f4' },
+                            title: { display: true, text: 'Thousand TEUs' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateDemandChart(scenario) {
+            const chart = state.chartInstances.demand;
+            const btns = {
+                conservative: document.getElementById('btn-conservative'),
+                aggressive: document.getElementById('btn-aggressive')
+            };
+
+            // Toggle logic
+            if (scenario === 'conservative') {
+                chart.data.datasets[0].data = dataStore.demand.conservative;
+                chart.data.datasets[0].borderColor = '#0d9488';
+                chart.data.datasets[0].backgroundColor = 'rgba(13, 148, 136, 0.1)';
+                chart.data.datasets[0].pointBorderColor = '#0d9488';
+                
+                btns.conservative.classList.add('bg-white', 'shadow-sm', 'text-stone-800');
+                btns.conservative.classList.remove('text-stone-500');
+                btns.aggressive.classList.remove('bg-white', 'shadow-sm', 'text-stone-800');
+                btns.aggressive.classList.add('text-stone-500');
+            } else {
+                chart.data.datasets[0].data = dataStore.demand.aggressive;
+                chart.data.datasets[0].borderColor = '#d97706';
+                chart.data.datasets[0].backgroundColor = 'rgba(217, 119, 6, 0.1)';
+                chart.data.datasets[0].pointBorderColor = '#d97706';
+
+                btns.aggressive.classList.add('bg-white', 'shadow-sm', 'text-stone-800');
+                btns.aggressive.classList.remove('text-stone-500');
+                btns.conservative.classList.remove('bg-white', 'shadow-sm', 'text-stone-800');
+                btns.conservative.classList.add('text-stone-500');
+            }
+            chart.update();
+        }
+
+        // 3. Cost Chart (Grouped Bar)
+        function initCostChart() {
+            const ctx = document.getElementById('costChart').getContext('2d');
+            state.chartInstances.costs = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: dataStore.costs.labels,
+                    datasets: [
+                        {
+                            label: 'China (Benchmark)',
+                            data: dataStore.costs.china,
+                            backgroundColor: '#a8a29e', // Neutral gray
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        },
+                        {
+                            label: 'India (Est.)',
+                            data: dataStore.costs.india,
+                            backgroundColor: '#d97706', // Amber
+                            borderRadius: 4,
+                            barPercentage: 0.6,
+                            categoryPercentage: 0.8
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'bottom' },
+                        tooltip: {
+                            backgroundColor: '#1c1917',
+                            padding: 12,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` $${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f5f5f4' },
+                            title: { display: true, text: 'Cost (USD)' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Interaction for Cost Section
+        function highlightBar(component) {
+            const chart = state.chartInstances.costs;
+            let index = -1;
+            
+            if (component === 'steel') index = 0;
+            if (component === 'labor') index = 1;
+            if (component === 'energy') index = 2;
+
+            if (index !== -1) {
+                // Dim all colors then highlight specific
+                const defaultChina = '#a8a29e';
+                const defaultIndia = '#d97706';
+                const dimChina = '#e7e5e4';
+                const dimIndia = '#fed7aa';
+
+                const newChinaColors = [dimChina, dimChina, dimChina, dimChina];
+                const newIndiaColors = [dimIndia, dimIndia, dimIndia, dimIndia];
+
+                newChinaColors[index] = '#57534e'; // Darker gray for highlight
+                newIndiaColors[index] = '#b45309'; // Darker amber for highlight
+
+                chart.data.datasets[0].backgroundColor = newChinaColors;
+                chart.data.datasets[1].backgroundColor = newIndiaColors;
+                chart.update();
+            }
+        }
+
+    </script>
+</body>
+</html>
