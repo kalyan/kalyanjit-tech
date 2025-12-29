@@ -18,7 +18,7 @@
          2. The Studio (Interactive Simulation): The core interaction loop. Users set Aspect Ratio, Genre, and Fidelity to 'simulate' the AI's output logic. This makes the abstract tech concrete.
          3. Feature Modules: Detailed breakdown of the 6 key report sections, using interaction to reveal content progressively.
          4. Analytics Dashboard: Visualizes the technical specs (Formats, Genres, Performance) using Chart.js.
-         5. Use Case Spotlight: Specifically addresses the 'Assam Elections' prompt by showing a practical application scenario.
+         5. Use Case Spotlight: specifically addresses industry verticals and the 'Assam Elections' prompt.
     -->
 
     <!-- Visualization & Content Choices:
@@ -79,7 +79,7 @@
                     <a href="#studio" class="hover:text-amber-600 transition-colors">The Studio</a>
                     <a href="#features" class="hover:text-amber-600 transition-colors">Core Features</a>
                     <a href="#analytics" class="hover:text-amber-600 transition-colors">Tech Specs</a>
-                    <a href="#use-case" class="hover:text-amber-600 transition-colors">Case Study</a>
+                    <a href="#use-case" class="hover:text-amber-600 transition-colors">Industry Solutions</a>
                 </div>
                 <button onclick="scrollToTop()" class="bg-gray-900 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-800 transition">
                     Start Creating
@@ -365,67 +365,66 @@
         </div>
     </section>
 
-    <!-- CASE STUDY: ASSAM ELECTIONS (Addressing the specific prompt requirement) -->
-    <section id="use-case" class="py-16 bg-amber-900 text-amber-50 relative overflow-hidden">
-        <div class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
+    <!-- CASE STUDY SECTION: INDUSTRY SOLUTIONS -->
+    <section id="use-case" class="py-16 bg-gray-900 text-gray-50 relative overflow-hidden transition-colors duration-500">
+        <!-- Dynamic Background Pattern -->
+        <div id="caseStudyBg" class="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] transition-all duration-700"></div>
+        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center gap-12">
-                <div class="lg:w-1/2">
-                    <div class="inline-block px-3 py-1 bg-amber-800 rounded-full text-xs font-bold mb-4 border border-amber-700">CASE STUDY</div>
-                    <h2 class="text-3xl md:text-4xl font-serif font-bold mb-6">Campaign Storytelling: Assam Elections</h2>
-                    <p class="text-amber-200 mb-6 text-lg leading-relaxed">
-                        Political campaigns require rapid content creation across multiple regional narratives. StoryScene AI empowers campaign managers to visualize rallies, heritage spots, and constituent interactions before a single camera rolls.
+            
+            <div class="text-center mb-10">
+                <span class="text-amber-500 font-bold tracking-widest text-xs uppercase">Sector-Specific Logic</span>
+                <h2 class="text-3xl md:text-4xl font-serif font-bold mb-4 text-white">Industry Solutions</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">
+                    StoryScene AI adapts its generative engine to the unique constraints of your industry. Select a sector to see how the tool optimizes for specific storytelling needs.
+                </p>
+            </div>
+
+            <!-- Industry Selector Tabs -->
+            <div class="flex flex-wrap justify-center gap-2 mb-12">
+                <button onclick="loadCaseStudy('Corporate')" class="case-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 hover:text-white transition" data-case="Corporate">Corporate</button>
+                <button onclick="loadCaseStudy('Biography')" class="case-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 hover:text-white transition" data-case="Biography">Biographies</button>
+                <button onclick="loadCaseStudy('Engineering')" class="case-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 hover:text-white transition" data-case="Engineering">Engineering</button>
+                <button onclick="loadCaseStudy('Education')" class="case-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 hover:text-white transition" data-case="Education">Education</button>
+                <button onclick="loadCaseStudy('Assam')" class="case-btn px-5 py-2 rounded-full text-sm font-semibold bg-gray-800 text-gray-300 border border-gray-700 hover:bg-gray-700 hover:text-white transition" data-case="Assam">Campaigns</button>
+            </div>
+
+            <div class="flex flex-col lg:flex-row items-center gap-12" id="caseStudyContent">
+                <!-- Left: Content Description -->
+                <div class="lg:w-1/2 opacity-0 translate-x-[-20px] transition-all duration-500" id="caseTextContainer">
+                    <div id="caseBadge" class="inline-block px-3 py-1 bg-blue-800 rounded-full text-xs font-bold mb-4 border border-blue-600 text-blue-100">CORPORATE</div>
+                    <h3 id="caseTitle" class="text-3xl font-serif font-bold mb-6 text-white">Executive Communications</h3>
+                    <p id="caseDesc" class="text-gray-300 mb-6 text-lg leading-relaxed">
+                        Streamline CEO messages, product launches, and internal training. Maintain strict brand guidelines while visualizing abstract corporate concepts.
                     </p>
                     
-                    <div class="space-y-4">
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-amber-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">1</div>
-                            <div>
-                                <h4 class="font-bold text-white">Hyper-Local Visualization</h4>
-                                <p class="text-sm text-amber-200/80">Generate storyboards featuring local landmarks (e.g., Kaziranga, Kamakhya Temple) to ensure cultural resonance.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-amber-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">2</div>
-                            <div>
-                                <h4 class="font-bold text-white">Multilingual Narration Pre-viz</h4>
-                                <p class="text-sm text-amber-200/80">Use the AI Narration Suite to test campaign scripts in Assamese, Bengali, and Bodo before hiring voice actors.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start gap-3">
-                            <div class="w-6 h-6 rounded-full bg-amber-600 flex-shrink-0 flex items-center justify-center text-xs font-bold">3</div>
-                            <div>
-                                <h4 class="font-bold text-white">Rapid Response Content</h4>
-                                <p class="text-sm text-amber-200/80">Quickly visualize 9:16 vertical video concepts for social media reaction pieces during the election cycle.</p>
-                            </div>
-                        </div>
+                    <div class="space-y-4" id="caseFeatures">
+                        <!-- Features injected via JS -->
                     </div>
 
-                    <button onclick="activateAssamMode()" class="mt-8 px-6 py-3 bg-white text-amber-900 font-bold rounded hover:bg-amber-100 transition shadow-lg">
-                        Simulate Assam Campaign Project
+                    <button onclick="simulateCurrentCase()" id="simBtn" class="mt-8 px-6 py-3 bg-blue-600 text-white font-bold rounded hover:bg-blue-500 transition shadow-lg flex items-center gap-2">
+                        <span>🚀</span> Simulate Corporate Project
                     </button>
                 </div>
                 
-                <div class="lg:w-1/2 bg-white/10 backdrop-blur-sm p-6 rounded-xl border border-amber-500/30">
-                    <h3 class="text-lg font-bold text-white mb-4 border-b border-amber-500/30 pb-2">Generated Asset List</h3>
-                    <ul class="space-y-3 text-sm text-amber-100" id="campaignList">
-                        <li class="flex justify-between items-center">
-                            <span>Scene 01: Aerial View of Brahmaputra</span>
-                            <span class="text-xs bg-amber-800 px-2 py-1 rounded">Cinematic</span>
-                        </li>
-                        <li class="flex justify-between items-center">
-                            <span>Scene 02: Candidate Greeting Weavers</span>
-                            <span class="text-xs bg-amber-800 px-2 py-1 rounded">Documentary</span>
-                        </li>
-                        <li class="flex justify-between items-center">
-                            <span>Scene 03: Youth Rally in Guwahati</span>
-                            <span class="text-xs bg-amber-800 px-2 py-1 rounded">High Energy</span>
-                        </li>
-                        <li class="flex justify-between items-center">
-                            <span>Scene 04: Tea Garden Community Hall</span>
-                            <span class="text-xs bg-amber-800 px-2 py-1 rounded">Warm</span>
-                        </li>
+                <!-- Right: Visual Asset List -->
+                <div class="lg:w-1/2 bg-white/5 backdrop-blur-md p-6 rounded-xl border border-white/10 opacity-0 translate-x-[20px] transition-all duration-500" id="caseListContainer">
+                    <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-2">
+                        <h3 class="text-lg font-bold text-white">Generated Shot List</h3>
+                        <span class="text-xs text-gray-400 font-mono">ID: <span id="caseId">CORP-2025</span></span>
+                    </div>
+                    <ul class="space-y-3 text-sm text-gray-300" id="caseAssetList">
+                        <!-- Assets injected via JS -->
                     </ul>
+                    
+                    <!-- Visual Style Preview Box (Simulates an image) -->
+                    <div class="mt-6 h-32 w-full rounded-lg bg-gradient-to-r from-gray-800 to-gray-700 flex items-center justify-center relative overflow-hidden" id="caseVisualPreview">
+                        <div class="absolute inset-0 bg-black/20"></div>
+                        <div class="text-center z-10">
+                            <div class="text-xs uppercase tracking-widest text-gray-400 mb-1">Visual Style</div>
+                            <div class="font-serif italic text-lg text-white" id="caseStyleName">Clean & Modern</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -450,7 +449,7 @@
             ratio: '16:9',
             genre: 'Cinematic',
             fidelity: 2, // 1: Strict, 2: Balanced, 3: Creative
-            isCampaignMode: false
+            activeCase: 'Corporate'
         };
 
         // Data Models
@@ -461,15 +460,115 @@
             'Watercolor': { prompt: "Soft washes. Bleeding edges. Dreamy atmosphere.", val1: "Cold Press", label1: "PAPER", val2: "Wet-on-Wet", label2: "TECHNIQUE", color: "bg-blue-300", desc: "Organic textures, soft gradients, and storybook whimsy." },
             'Cyberpunk': { prompt: "Interior. Lab. Holographic interfaces glow blue.", val1: "1600", label1: "ISO", val2: "24mm Wide", label2: "LENS", color: "bg-cyan-500", desc: "Neon palettes, futuristic architecture, and high-tech grunge." },
             'Noir': { prompt: "Exterior. Alleyway. High contrast shadow and fog.", val1: "3200", label1: "ISO", val2: "50mm Prime", label2: "LENS", color: "bg-gray-100", desc: "Black and white aesthetics, stark lighting, and mystery." },
-            'Pixar': { prompt: "Interior. Toy Room. Soft lighting and vibrant colors.", val1: "400", label1: "ISO", val2: "85mm Portrait", label2: "LENS", color: "bg-orange-400", desc: "Soft shapes, subsurface scattering, and vibrant emotional appeal." }
+            'Pixar': { prompt: "Interior. Toy Room. Soft lighting and vibrant colors.", val1: "400", label1: "ISO", val2: "85mm Portrait", label2: "LENS", color: "bg-orange-400", desc: "Soft shapes, subsurface scattering, and vibrant emotional appeal." },
+            // Added special internal genres for case studies
+            'Blueprint': { prompt: "Technical Diagram. Exploded View. White lines on blue.", val1: "Vector", label1: "TYPE", val2: "CAD", label2: "SOURCE", color: "bg-blue-800", desc: "Precision engineering schematics." },
+            'Corporate': { prompt: "Int. Office. Soft lighting. Confident subject.", val1: "400", label1: "ISO", val2: "50mm", label2: "LENS", color: "bg-blue-200", desc: "Clean, high-key lighting for professional trust." }
         };
 
-        const assamCampaignData = [
-            "Ext. Kaziranga. Dawn mist over tall grass.",
-            "Int. Village Hall. Community discussion in progress.",
-            "Ext. Saraighat Bridge. Traffic flows at sunset.",
-            "Close up. Traditional Gamosa texture details."
-        ];
+        // INDUSTRY CASE STUDY DATA
+        const caseStudyData = {
+            'Corporate': {
+                title: "Brand & Corporate Films",
+                desc: "Streamline CEO messages, product launches, and internal training. Maintain strict brand guidelines while visualizing abstract corporate concepts.",
+                badge: "bg-blue-800 border-blue-600 text-blue-100",
+                features: [
+                    { title: "Brand Consistency Check", text: "AI enforces hex-code color palettes across all storyboards." },
+                    { title: "Abstract Concept Viz", text: "Turn 'synergy' or 'innovation' into concrete visual metaphors instantly." },
+                    { title: "Location Scouting", text: "Visualize office layouts and boardroom setups before renting space." }
+                ],
+                assets: [
+                    { name: "Scene 01: CEO Address", tag: "High Key" },
+                    { name: "Scene 02: Product Macro Shot", tag: "Detailed" },
+                    { name: "Scene 03: Global Network Map", tag: "Motion GFX" },
+                    { name: "Scene 04: Customer Success", tag: "Lifestyle" }
+                ],
+                styleName: "Clean Professional",
+                simPrompt: "Int. Boardroom. Day. CEO gestures to a holographic chart.",
+                simGenre: "Corporate",
+                btnColor: "bg-blue-600 hover:bg-blue-500"
+            },
+            'Biography': {
+                title: "Biopics & Documentaries",
+                desc: "Bring history to life. Blend archival footage references with recreated scenes. Perfect for pitch decks requiring period-accurate costumes and settings.",
+                badge: "bg-amber-900 border-amber-700 text-amber-100",
+                features: [
+                    { title: "Period Accuracy Engine", text: "Automatic verification of cars, fashion, and architecture by decade." },
+                    { title: "Archival Blending", text: "Seamlessly transition between B&W photo references and color storyboards." },
+                    { title: "Mood Lighting", text: "Specialized 'Rembrandt' lighting presets for dramatic interviews." }
+                ],
+                assets: [
+                    { name: "Scene 01: Childhood Home (1950s)", tag: "Vintage" },
+                    { name: "Scene 02: The Discovery", tag: "Dramatic" },
+                    { name: "Scene 03: Conflict in the Lab", tag: "Noir" },
+                    { name: "Scene 04: Legacy Montage", tag: "Cinematic" }
+                ],
+                styleName: "Period Drama",
+                simPrompt: "Ext. 1920s Paris Street. Rain. Vintage cars pass under gaslamps.",
+                simGenre: "Noir",
+                btnColor: "bg-amber-700 hover:bg-amber-600"
+            },
+            'Engineering': {
+                title: "Engineering & Industrial",
+                desc: "Visualize complex machinery, safety protocols, and large-scale infrastructure projects. Switch between realistic renders and schematic blueprints.",
+                badge: "bg-cyan-900 border-cyan-700 text-cyan-100",
+                features: [
+                    { title: "Exploded Views", text: "Generate technical breakdowns of machinery components." },
+                    { title: "Safety Protocol Sim", text: "Visualize hazmat scenarios without putting crews in danger." },
+                    { title: "CAD Integration", text: "Import rough blockouts to generate photorealistic texture overlays." }
+                ],
+                assets: [
+                    { name: "Scene 01: Factory Floor Wide", tag: "Wide" },
+                    { name: "Scene 02: Gear Mechanism", tag: "Blueprint" },
+                    { name: "Scene 03: Safety Gear Check", tag: "Instructional" },
+                    { name: "Scene 04: Completed Pipeline", tag: "Aerial" }
+                ],
+                styleName: "Technical Precision",
+                simPrompt: "Schematic. Turbine Engine. Exploded view showing airflow.",
+                simGenre: "Blueprint",
+                btnColor: "bg-cyan-700 hover:bg-cyan-600"
+            },
+            'Education': {
+                title: "Educational & E-Learning",
+                desc: "Create engaging visual content for schools and training platforms. Simplify complex topics with illustration and clear visual metaphors.",
+                badge: "bg-emerald-800 border-emerald-600 text-emerald-100",
+                features: [
+                    { title: "Visual Metaphor Gen", text: "Automatically translate text concepts into visual learning aids." },
+                    { title: "Character Diversity", text: "Ensure representation across all student avatars instantly." },
+                    { title: "Animation Ready", text: "Export assets optimized for motion graphics and explanation videos." }
+                ],
+                assets: [
+                    { name: "Scene 01: The Solar System", tag: "3D" },
+                    { name: "Scene 02: Cell Division", tag: "Microscope" },
+                    { name: "Scene 03: Historical Figure", tag: "Illustrated" },
+                    { name: "Scene 04: Math Concept", tag: "Abstract" }
+                ],
+                styleName: "Engaging & Bright",
+                simPrompt: "Illustration. Photosynthesis process. Bright colors and clear labels.",
+                simGenre: "Pixar",
+                btnColor: "bg-emerald-600 hover:bg-emerald-500"
+            },
+            'Assam': {
+                title: "Campaign Storytelling",
+                desc: "Political campaigns require rapid content creation across multiple regional narratives. Visualize rallies and heritage spots instantly.",
+                badge: "bg-orange-800 border-orange-600 text-orange-100",
+                features: [
+                    { title: "Hyper-Local Vis", text: "Generate storyboards featuring local landmarks (e.g., Kaziranga)." },
+                    { title: "Multilingual TTS", text: "Test scripts in Assamese, Bengali, and Bodo before hiring talent." },
+                    { title: "Rapid Response", text: "Visualize 9:16 vertical video concepts for social media reaction pieces." }
+                ],
+                assets: [
+                    { name: "Scene 01: Aerial Brahmaputra", tag: "Cinematic" },
+                    { name: "Scene 02: Candidate Greeting", tag: "Docu" },
+                    { name: "Scene 03: Youth Rally", tag: "Energy" },
+                    { name: "Scene 04: Tea Garden Hall", tag: "Warm" }
+                ],
+                styleName: "Regional Heritage",
+                simPrompt: "Ext. Kaziranga. Dawn mist over tall grass. Rhino silhouette.",
+                simGenre: "Cinematic",
+                btnColor: "bg-orange-700 hover:bg-orange-600"
+            }
+        };
 
         // Interaction Functions
         function setRatio(ratio) {
@@ -519,6 +618,7 @@
             
             if (genre === 'Comic') { shape1 = 'rounded-none transform rotate-3'; shape2 = 'rounded-none transform -rotate-3'; }
             if (genre === 'Oil' || genre === 'Watercolor') { shape1 = 'rounded-[30%] blur-2xl'; shape2 = 'rounded-[40%] blur-xl'; }
+            if (genre === 'Blueprint') { shape1 = 'rounded-none border-2 border-dashed border-white/50'; shape2 = 'rounded-none border-2 border-white/50'; }
 
             viz.innerHTML = `
                 <div class="w-12 h-12 ${shape1} ${data.color} blur-xl animate-pulse"></div>
@@ -537,30 +637,126 @@
             document.getElementById('fidelityText').className = `mt-3 text-xs font-medium ${val == 3 ? 'text-purple-600' : 'text-amber-700'}`;
         }
 
-        function activateAssamMode() {
-            state.isCampaignMode = true;
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Function to load a specific case study
+        function loadCaseStudy(key) {
+            state.activeCase = key;
+            const data = caseStudyData[key];
+            
+            // Animate Out
+            const textContainer = document.getElementById('caseTextContainer');
+            const listContainer = document.getElementById('caseListContainer');
+            textContainer.style.opacity = '0';
+            listContainer.style.opacity = '0';
+            textContainer.style.transform = 'translateX(-20px)';
+            listContainer.style.transform = 'translateX(20px)';
+
+            // Update Tabs
+            document.querySelectorAll('.case-btn').forEach(btn => {
+                if(btn.dataset.case === key) {
+                    btn.classList.add('bg-white', 'text-gray-900', 'border-white');
+                    btn.classList.remove('bg-gray-800', 'text-gray-300', 'border-gray-700');
+                } else {
+                    btn.classList.remove('bg-white', 'text-gray-900', 'border-white');
+                    btn.classList.add('bg-gray-800', 'text-gray-300', 'border-gray-700');
+                }
+            });
+
+            setTimeout(() => {
+                // Update Content
+                document.getElementById('caseBadge').className = `inline-block px-3 py-1 rounded-full text-xs font-bold mb-4 border ${data.badge}`;
+                document.getElementById('caseBadge').innerText = data.title.toUpperCase();
+                document.getElementById('caseTitle').innerText = data.title;
+                document.getElementById('caseDesc').innerText = data.desc;
+                document.getElementById('caseId').innerText = key.toUpperCase().substring(0,4) + '-2025';
+                document.getElementById('caseStyleName').innerText = data.styleName;
+                
+                // Update Button
+                const btn = document.getElementById('simBtn');
+                btn.className = `mt-8 px-6 py-3 text-white font-bold rounded shadow-lg flex items-center gap-2 transition ${data.btnColor}`;
+                btn.innerHTML = `<span>🚀</span> Simulate ${key} Project`;
+
+                // Update Features
+                const featContainer = document.getElementById('caseFeatures');
+                featContainer.innerHTML = data.features.map((f, i) => `
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-white/10 flex-shrink-0 flex items-center justify-center text-xs font-bold border border-white/20">${i+1}</div>
+                        <div>
+                            <h4 class="font-bold text-white text-sm">${f.title}</h4>
+                            <p class="text-xs text-gray-400">${f.text}</p>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Update Asset List
+                const listContainerEl = document.getElementById('caseAssetList');
+                listContainerEl.innerHTML = data.assets.map(a => `
+                    <li class="flex justify-between items-center bg-white/5 p-2 rounded hover:bg-white/10 transition">
+                        <span>${a.name}</span>
+                        <span class="text-[10px] bg-white/20 px-2 py-0.5 rounded text-white">${a.tag}</span>
+                    </li>
+                `).join('');
+
+                // Animate In
+                textContainer.style.opacity = '1';
+                listContainer.style.opacity = '1';
+                textContainer.style.transform = 'translateX(0)';
+                listContainer.style.transform = 'translateX(0)';
+            }, 500);
+        }
+
+        function simulateCurrentCase() {
+            const data = caseStudyData[state.activeCase];
             
             // Scroll to studio
             document.getElementById('studio').scrollIntoView({behavior: 'smooth'});
             
-            // Set Genre to Cinematic
-            document.getElementById('genreSelect').value = 'Cinematic';
-            setGenre('Cinematic');
+            // 1. Force the Genre specific to the case
+            let targetGenre = data.simGenre;
             
-            // Override prompt text
-            const randomPrompt = assamCampaignData[Math.floor(Math.random() * assamCampaignData.length)];
-            document.getElementById('scenePrompt').innerText = `"${randomPrompt}"`;
+            const select = document.getElementById('genreSelect');
+            if (select.querySelector(`option[value="${targetGenre}"]`)) {
+                select.value = targetGenre;
+                setGenre(targetGenre);
+            } else {
+                // If it's a special genre like "Blueprint" not in dropdown, we manually trigger the visual update
+                select.value = "Cinematic"; 
+                // Manually inject data
+                const customData = genreData[targetGenre];
+                if(customData) {
+                    document.getElementById('scenePrompt').innerText = `"${data.simPrompt}"`;
+                    document.getElementById('metaIso').innerText = customData.val1;
+                    document.getElementById('metaLabel1').innerText = customData.label1;
+                    document.getElementById('metaLens').innerText = customData.val2;
+                    document.getElementById('metaLabel2').innerText = customData.label2;
+                    document.getElementById('genreDesc').innerText = customData.desc;
+                    
+                    // Visuals
+                     const viz = document.getElementById('visualElements');
+                     viz.innerHTML = `
+                        <div class="w-full h-full absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/graphy.png')]"></div>
+                        <div class="w-16 h-16 border-2 border-white/50 rounded-none ${customData.color} blur-sm animate-pulse"></div>
+                    `;
+                }
+            }
             
-            alert("Project 'Assam Campaign 2026' Loaded into Studio. \n\nFeatures Active:\n- Regional Asset Library\n- Multilingual TTS\n- Documentary Style Preset");
-        }
+            // Override prompt text if setGenre didn't catch it
+            setTimeout(() => {
+                 document.getElementById('scenePrompt').innerText = `"${data.simPrompt}"`;
+            }, 100);
 
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            alert(`Loading ${data.title} Module...\n\n- Applied Preset: ${data.styleName}\n- Loaded Asset List: ${data.assets.length} items`);
         }
 
         // Chart Initialization
         document.addEventListener('DOMContentLoaded', () => {
             
+            // Initialize with Corporate Case Study
+            loadCaseStudy('Corporate');
+
             // 1. Genre Radar Chart
             const ctxGenre = document.getElementById('genreChart').getContext('2d');
             new Chart(ctxGenre, {
