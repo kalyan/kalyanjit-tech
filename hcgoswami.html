@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Pandit: Cinematic Research Dashboard</title>
+    
+    <!-- TAILWIND CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- CHART.JS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- FONTS -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Courier+Prime&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <!-- CSS STYLING -->
+    <style>
+        /* Base Theme */
+        body {
+            background-color: #f5f2eb; /* Warm Antique White */
+            color: #292524; /* Stone 800 */
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Typography Classes */
+        .font-cinematic { font-family: 'Cinzel', serif; }
+        .font-prose { font-family: 'Cormorant Garamond', serif; }
+        .font-script { font-family: 'Courier Prime', monospace; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #e7e5e4; }
+        ::-webkit-scrollbar-thumb { background: #a8a29e; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #78716c; }
+
+        /* SCENE CARD INTERACTIONS */
+        .scene-item {
+            transition: all 0.2s ease-in-out;
+            border-left: 3px solid transparent;
+        }
+        .scene-item:hover {
+            background-color: #ffffff;
+            border-left-color: #d97706; /* Amber 600 */
+            transform: translateX(4px);
+        }
+        .scene-item.active {
+            background-color: #fff;
+            border-left-color: #b45309; /* Amber 700 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* SCRIPT FORMATTING */
+        .script-page {
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: relative;
+            line-height: 1.2;
+        }
+        .script-slug { font-weight: bold; text-transform: uppercase; margin-bottom: 1rem; }
+        .script-action { margin-bottom: 1rem; }
+        .script-character { text-align: center; width: 60%; margin: 0 auto; font-weight: bold; margin-top: 1rem; }
+        .script-parenthetical { text-align: center; width: 50%; margin: 0 auto; font-size: 0.9em; }
+        .script-dialogue { text-align: center; width: 70%; margin: 0 auto; margin-bottom: 1rem; }
+
+        /* CRITICAL CHART CONTAINERS */
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            height: 250px; /* Fixed height for stability */
+            margin-bottom: 1rem;
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+
+    <!-- 
+    Placeholder Comments:
+    <!-- Chosen Palette: "Antique Archive" - Warm beige/paper backgrounds (#f5f2eb), dark stone text (#292524), and amber/sepia accents (#d97706) to evoke history and manuscripts. -->
+    <!-- Application Structure Plan: 
+         1. Header: Meta-info about the film project.
+         2. Split Layout: 
+            - Left Sidebar: Scrollable list of the 30 Scenes (The "Step Outline").
+            - Right Main Area: 
+              a. Analytics Dashboard (Top): Visualizing the emotional arc and location distribution.
+              b. Script/Scene Detail (Bottom): The actual content reader with navigation controls.
+         3. Logic: Selecting a scene updates the script view and highlights the list item. Charts provide a macro view of the narrative.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Line Chart ("Narrative Tension"): Maps the intensity (1-10) of the 30 scenes to show the dramatic structure (Rising action, Climax, Resolution).
+         2. Doughnut Chart ("Setting Distribution"): Shows the split between Village, Calcutta, and Exploration scenes.
+         3. Text Render: Screenplay format for immersion.
+         CONFIRMATION: NO SVG graphics used. NO Mermaid JS used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="bg-stone-900 text-stone-100 px-6 py-4 flex justify-between items-center shadow-md z-10 shrink-0">
+        <div>
+            <div class="text-xs uppercase tracking-widest text-amber-500 font-bold mb-1">Film Project Database</div>
+            <h1 class="font-cinematic text-2xl md:text-3xl leading-none">The Pandit</h1>
+        </div>
+        <div class="text-right hidden sm:block">
+            <div class="text-sm text-stone-400">Master Scene List</div>
+            <div class="text-xs text-stone-500">30 Key Beats • 1872-1928</div>
+        </div>
+    </header>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="flex-1 flex overflow-hidden">
+        
+        <!-- LEFT SIDEBAR: SCENE LIST -->
+        <aside class="w-full md:w-1/3 lg:w-1/4 bg-stone-100 border-r border-stone-200 flex flex-col h-full">
+            
+            <!-- Filters -->
+            <div class="p-4 border-b border-stone-200 bg-stone-50">
+                <h3 class="font-cinematic text-stone-800 mb-3 font-bold">Scene Selector</h3>
+                <div class="flex gap-2 text-xs overflow-x-auto pb-1" id="act-filters">
+                    <button class="px-3 py-1 bg-stone-800 text-white rounded hover:bg-stone-700 transition" onclick="filterScenes('all')">All</button>
+                    <button class="px-3 py-1 bg-stone-200 text-stone-700 rounded hover:bg-stone-300 transition" onclick="filterScenes('Act I')">Act I</button>
+                    <button class="px-3 py-1 bg-stone-200 text-stone-700 rounded hover:bg-stone-300 transition" onclick="filterScenes('Act II')">Act II</button>
+                    <button class="px-3 py-1 bg-stone-200 text-stone-700 rounded hover:bg-stone-300 transition" onclick="filterScenes('Act III')">Act III</button>
+                    <button class="px-3 py-1 bg-stone-200 text-stone-700 rounded hover:bg-stone-300 transition" onclick="filterScenes('Act IV')">Act IV</button>
+                </div>
+            </div>
+
+            <!-- List Container -->
+            <div id="scene-list-container" class="flex-1 overflow-y-auto p-2 space-y-1">
+                <!-- Scenes injected by JS -->
+            </div>
+        </aside>
+
+        <!-- RIGHT MAIN AREA -->
+        <main class="flex-1 flex flex-col h-full overflow-y-auto bg-stone-50 relative">
+            
+            <!-- ANALYTICS DASHBOARD (Top Panel) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 p-6 border-b border-stone-200 bg-white shrink-0">
+                
+                <!-- Narrative Arc Chart -->
+                <div class="lg:col-span-2">
+                    <h4 class="text-xs font-bold uppercase text-stone-500 mb-2 tracking-wide">Dramatic Arc (Intensity)</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="arcChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Location Chart -->
+                <div>
+                    <h4 class="text-xs font-bold uppercase text-stone-500 mb-2 tracking-wide">Scene Settings</h4>
+                    <div class="chart-wrapper">
+                        <canvas id="locChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SCRIPT VIEWER (Bottom Panel) -->
+            <div class="flex-1 p-4 md:p-8 flex flex-col items-center bg-stone-50 relative">
+                
+                <!-- Controls -->
+                <div class="w-full max-w-4xl flex justify-between items-center mb-4">
+                    <button id="prev-btn" class="px-4 py-2 text-sm font-semibold bg-white border border-stone-300 rounded shadow-sm hover:bg-stone-100 disabled:opacity-50">← Previous</button>
+                    <span id="current-scene-indicator" class="text-xs font-mono text-stone-500 uppercase">Scene 1 of 30</span>
+                    <button id="next-btn" class="px-4 py-2 text-sm font-semibold bg-white border border-stone-300 rounded shadow-sm hover:bg-stone-100 disabled:opacity-50">Next →</button>
+                </div>
+
+                <!-- The Script Page -->
+                <div class="w-full max-w-4xl script-page p-8 md:p-12 border border-stone-200 shadow-lg min-h-[500px]">
+                    
+                    <!-- Metadata Header inside Script -->
+                    <div class="flex justify-between border-b-2 border-stone-900 pb-2 mb-8 font-script text-xs md:text-sm">
+                        <span id="script-act">ACT I</span>
+                        <span id="script-year">1872</span>
+                    </div>
+
+                    <!-- Script Content -->
+                    <div id="script-body" class="font-script text-sm md:text-base text-stone-800">
+                        <!-- Content Injected Here -->
+                    </div>
+
+                </div>
+
+                <!-- Context Footer -->
+                <div class="w-full max-w-4xl mt-6 p-4 bg-amber-50 border border-amber-100 rounded text-stone-700">
+                    <h5 class="text-xs font-bold uppercase text-amber-700 mb-1">Director's Note</h5>
+                    <p id="director-note" class="text-sm font-prose italic">Loading context...</p>
+                </div>
+
+            </div>
+            
+            <footer class="p-4 text-center text-xs text-stone-400 bg-stone-100 border-t border-stone-200">
+                Author: Kalyanjit Hatibaruah | Copyrights Flugelsoft Labs
+            </footer>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // --- 1. DATA: THE 30 SCENES ---
+        const scenes = [
+            // ACT I
+            { id: 1, act: "Act I", year: 1872, title: "The Roots", loc: "EXT. GAURANG SATRA - DAWN", 
+              intensity: 2, type: "Village",
+              script: `<div class="script-slug">EXT. GAURANG SATRA - DAWN</div><div class="script-action">Mist rises off the thatched roofs. The deep, resonant chanting of KIRTAN fills the air.</div><div class="script-action">Inside the main house, a child is born.</div><div class="script-character">NARRATOR (V.O.)</div><div class="script-dialogue">Before he was a scholar, he was a sound. A prayer echoing in the mist.</div>`,
+              note: "Establish the atmosphere. The tradition is ancient, heavy, and beautiful." },
+            
+            { id: 2, act: "Act I", year: 1878, title: "The Leaf", loc: "INT. FATHER'S STUDY - NIGHT", 
+              intensity: 3, type: "Village",
+              script: `<div class="script-slug">INT. FATHER'S STUDY - NIGHT</div><div class="script-action">Oil lamp flickers. Young Hem Chandra (6) touches a Sanchi Pat (bark manuscript) for the first time.</div><div class="script-character">FATHER</div><div class="script-dialogue">Paper burns, Hem. These leaves... these hold the soul.</div>`,
+              note: "The tactile connection to history. Foreshadows his life's work." },
+
+            { id: 3, act: "Act I", year: 1880, title: "The Conflict", loc: "INT. VILLAGE PATHSALA - DAY", 
+              intensity: 4, type: "Village",
+              script: `<div class="script-slug">INT. VILLAGE PATHSALA - DAY</div><div class="script-action">Hem Chandra corrects a peer's Sanskrit pronunciation perfectly.</div><div class="script-action">Later, he struggles to write 'A-B-C-D' on his slate.</div><div class="script-character">TEACHER</div><div class="script-dialogue">The old tongue comes easy to you. The new one fights back.</div>`,
+              note: "The duality of his existence: Eastern wisdom vs. Western education." },
+
+            { id: 4, act: "Act I", year: 1885, title: "Preservation", loc: "EXT. RIVER BANK - DAY", 
+              intensity: 5, type: "Village",
+              script: `<div class="script-slug">EXT. RIVER BANK - DAY</div><div class="script-action">Flood waters recede. Hem finds a pile of wet manuscripts in a damaged Namghar.</div><div class="script-action">He gently separates a wet leaf, trying to dry it on a rock.</div>`,
+              note: "His first independent act of saving history." },
+
+            { id: 5, act: "Act I", year: 1888, title: "The Departure", loc: "EXT. STEAMER GHAT - DAY", 
+              intensity: 6, type: "Village",
+              script: `<div class="script-slug">EXT. STEAMER GHAT - DAY</div><div class="script-action">The steamer whistle screams. Hem Chandra steps onto the gangplank.</div><div class="script-action">He clutches a copy of the Kirtan. He looks back at the village one last time.</div>`,
+              note: "The Call to Adventure. Leaving the known world." },
+
+            // ACT II
+            { id: 6, act: "Act II", year: 1888, title: "Shock City", loc: "EXT. HOWRAH STATION - DAY", 
+              intensity: 7, type: "Calcutta",
+              script: `<div class="script-slug">EXT. HOWRAH STATION - DAY</div><div class="script-action">Steam, noise, trams. Victorian architecture towers over him.</div><div class="script-action">Hem Chandra adjusts his dhoti, looking small against the Empire.</div>`,
+              note: "Contrast. The sheer scale of Calcutta vs. Assam." },
+
+            { id: 7, act: "Act II", year: 1889, title: "The Trinity", loc: "INT. MESS HOUSE - NIGHT", 
+              intensity: 8, type: "Calcutta",
+              script: `<div class="script-slug">INT. MESS HOUSE (67 MIRZAPUR ST) - NIGHT</div><div class="script-action">Tea cups rattle. Goswami sits with LAKSHMINATH BEZBAROA and CHANDRAKUMAR AGARWALA.</div><div class="script-character">BEZBAROA</div><div class="script-dialogue">They say our language is dead.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">Then we must be the resurrection.</div>`,
+              note: "The Inciting Incident of the Jonaki Era." },
+
+            { id: 8, act: "Act II", year: 1889, title: "Ink & Revolution", loc: "INT. PRINTING PRESS - DAY", 
+              intensity: 7, type: "Calcutta",
+              script: `<div class="script-slug">INT. PRINTING PRESS - DAY</div><div class="script-action">The rhythmic CLACK-CLACK of the press. The first cover of 'JONAKI' is pressed.</div><div class="script-action">Goswami smells the fresh ink. It smells like gunpowder.</div>`,
+              note: "Action. The idea becomes physical reality." },
+
+            { id: 9, act: "Act II", year: 1890, title: "The Letter", loc: "INT. HOSTEL ROOM - NIGHT", 
+              intensity: 6, type: "Calcutta",
+              script: `<div class="script-slug">INT. HOSTEL ROOM - RAINY NIGHT</div><div class="script-action">Rain lashes the window. Goswami writes furiously.</div><div class="script-character">GOSWAMI (V.O.)</div><div class="script-dialogue">"Priyatama..."</div><div class="script-action">He counts the syllables. 14 lines. The first Assamese sonnet.</div>`,
+              note: "Personal/Romantic beat. Showing his literary innovation." },
+
+            { id: 10, act: "Act II", year: 1891, title: "The Debate", loc: "EXT. COFFEE HOUSE - DAY", 
+              intensity: 8, type: "Calcutta",
+              script: `<div class="script-slug">EXT. COFFEE HOUSE - DAY</div><div class="script-action">Goswami stands his ground against a group of intellectuals.</div><div class="script-character">INTELLECTUAL</div><div class="script-dialogue">It is merely a dialect, boy.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">I will bring you proof. I will bring you history written on bark when your paper was still pulp.</div>`,
+              note: "The Vow. This sets up the Act III quest." },
+
+            { id: 11, act: "Act II", year: 1894, title: "The Choice", loc: "EXT. COLLEGE STREET - DAY", 
+              intensity: 5, type: "Calcutta",
+              script: `<div class="script-slug">EXT. COLLEGE STREET - DAY</div><div class="script-action">Graduation. Friends talk of law practices and money.</div><div class="script-action">Goswami stares at the Asiatic Society building. He chooses history over wealth.</div>`,
+              note: "Character definition." },
+
+            // ACT III
+            { id: 12, act: "Act III", year: 1897, title: "The Uniform", loc: "INT. BRITISH OFFICE - DAY", 
+              intensity: 4, type: "Exploration",
+              script: `<div class="script-slug">INT. BRITISH OFFICE - GUWAHATI</div><div class="script-action">Goswami buttons the high-collar tunic of the Extra Assistant Commissioner.</div><div class="script-action">He looks in the mirror. He looks trapped.</div>`,
+              note: "The Compromise. Using the system to defeat the system." },
+
+            { id: 13, act: "Act III", year: 1900, title: "The Detour", loc: "EXT. JUNGLE - DAY", 
+              intensity: 7, type: "Exploration",
+              script: `<div class="script-slug">EXT. JUNGLE - DAY</div><div class="script-action">Goswami rides an elephant.</div><div class="script-character">MAHOUT</div><div class="script-dialogue">The tax collection route is that way, Huzoor.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">The treasure is this way.</div>`,
+              note: "The 'Indiana Jones' moment." },
+
+            { id: 14, act: "Act III", year: 1905, title: "Trust", loc: "INT. VILLAGER'S HUT - DAY", 
+              intensity: 6, type: "Exploration",
+              script: `<div class="script-slug">INT. VILLAGER'S HUT - DAY</div><div class="script-action">An elder clutches a wooden box, suspicious.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">I am not the Magistrate here. I am a son of the Satra.</div><div class="script-action">He recites a verse perfectly. The Elder unlocks the box.</div>`,
+              note: "Using his roots to gain access." },
+
+            { id: 15, act: "Act III", year: 1910, title: "The Attic", loc: "INT. DUSTY ATTIC - DAY", 
+              intensity: 9, type: "Exploration",
+              script: `<div class="script-slug">INT. DUSTY ATTIC - DAY</div><div class="script-action">Sunbeams hit dust motes. Goswami lifts a bundle. 'KATHA GITA'.</div><div class="script-action">He reads. It is prose. 16th Century prose.</div>`,
+              note: "The Discovery. The turning point of the film." },
+
+            { id: 16, act: "Act III", year: 1912, title: "Vindication", loc: "INT. STUDY - NIGHT", 
+              intensity: 10, type: "Exploration",
+              script: `<div class="script-slug">INT. STUDY - NIGHT</div><div class="script-action">Books open everywhere. Goswami trembles.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">Bhattadeva wrote prose before Hooker... before the Elizabethans had mastered it.</div><div class="script-action">He weeps softly. He has the proof.</div>`,
+              note: "Midpoint Climax. High emotional release." },
+
+            { id: 17, act: "Act III", year: 1913, title: "The Demand", loc: "EXT. SHILLONG CLUB - DAY", 
+              intensity: 8, type: "Exploration",
+              script: `<div class="script-slug">EXT. SHILLONG CLUB - DAY</div><div class="script-action">Garden party. Goswami corners the Chief Commissioner.</div><div class="script-character">COMMISSIONER</div><div class="script-dialogue">This is hardly the place, Goswami.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">History does not wait for tea, Sir. I need the grant for preservation.</div>`,
+              note: "Boldness. Risking his career." },
+
+            { id: 18, act: "Act III", year: 1914, title: "The Weight", loc: "INT. HOME LIBRARY - NIGHT", 
+              intensity: 5, type: "Exploration",
+              script: `<div class="script-slug">INT. HOME LIBRARY - NIGHT</div><div class="script-action">He stares at the unfinished notes of Hemchandra Barua's dictionary.</div><div class="script-action">It is a mountain of chaos. He picks up a pen.</div>`,
+              note: "The burden of the 'Hemkosh'." },
+
+            { id: 19, act: "Act III", year: 1915, title: "The Anchor", loc: "INT. PRESS - DAY", 
+              intensity: 9, type: "Exploration",
+              script: `<div class="script-slug">INT. PRESS - DAY</div><div class="script-action">The HEMKOSH is bound. Heavy. Solid.</div><div class="script-action">Goswami runs his hand over the gold lettering. The language now has a constitution.</div>`,
+              note: "Achievement unlocked." },
+
+            { id: 20, act: "Act III", year: 1916, title: "The Bulldozer", loc: "EXT. RUINS - DAY", 
+              intensity: 8, type: "Exploration",
+              script: `<div class="script-slug">EXT. ARCHAEOLOGICAL SITE - DAY</div><div class="script-action">A British engineer orders a demolition for a road.</div><div class="script-action">Goswami stands in the path. Immovable.</div>`,
+              note: "Protector of heritage." },
+
+            // ACT IV
+            { id: 21, act: "Act IV", year: 1920, title: "The Speech", loc: "INT. TEZPUR HALL - DAY", 
+              intensity: 10, type: "Village",
+              script: `<div class="script-slug">INT. TEZPUR HALL - DAY</div><div class="script-action">Goswami at the podium. Assam Sahitya Sabha.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">Our literature is not poor. It was merely a king in exile.</div><div class="script-action">Thunderous applause.</div>`,
+              note: "The climax of his public life." },
+
+            { id: 22, act: "Act IV", year: 1922, title: "The Evidence", loc: "INT. CALCUTTA UNIV - DAY", 
+              intensity: 9, type: "Calcutta",
+              script: `<div class="script-slug">INT. CALCUTTA UNIVERSITY - DAY</div><div class="script-action">Meeting Ashutosh Mukherjee. Goswami slams a stack of manuscripts on the table.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">Read, Sir. And then tell me we don't deserve a Master's course.</div>`,
+              note: "The final battle won." },
+
+            { id: 23, act: "Act IV", year: 1924, title: "Transfer", loc: "INT. COTTON COLLEGE - DAY", 
+              intensity: 6, type: "Calcutta",
+              script: `<div class="script-slug">INT. COTTON COLLEGE - DAY</div><div class="script-action">Professor Goswami hands a manuscript to a young student.</div><div class="script-character">STUDENT</div><div class="script-dialogue">It is fragile, Sir.</div><div class="script-character">GOSWAMI</div><div class="script-dialogue">It is strong. It survived 400 years. You are the fragile one.</div>`,
+              note: "Passing the torch." },
+
+            { id: 24, act: "Act IV", year: 1927, title: "The Cough", loc: "INT. HOME - NIGHT", 
+              intensity: 4, type: "Village",
+              script: `<div class="script-slug">INT. HOME - NIGHT</div><div class="script-action">He coughs blood into a handkerchief. He hides it.</div><div class="script-action">He continues writing 'Asamiya Sahityar Chaneki'.</div>`,
+              note: "Sacrifice. Working until the end." },
+
+            { id: 25, act: "Act IV", year: 1928, title: "Bedridden", loc: "INT. BEDROOM - DAY", 
+              intensity: 3, type: "Village",
+              script: `<div class="script-slug">INT. BEDROOM - DAY</div><div class="script-action">He asks for the Katha Gita. He touches the cover, eyes closed.</div>`,
+              note: "Full circle to the discovery." },
+
+            { id: 26, act: "Act IV", year: 1928, title: "The Dream", loc: "INT. DREAM - DAY", 
+              intensity: 5, type: "Village",
+              script: `<div class="script-slug">INT. DREAM SEQUENCE</div><div class="script-action">He is back on the river boat. The water is made of letters.</div><div class="script-action">On the shore, Bezbaroa and Agarwala wave to him.</div>`,
+              note: "Surreal imagery." },
+
+            { id: 27, act: "Act IV", year: 1928, title: "The Light", loc: "INT. BEDROOM - DUSK", 
+              intensity: 2, type: "Village",
+              script: `<div class="script-slug">INT. BEDROOM - DUSK</div><div class="script-character">GOSWAMI (Whisper)</div><div class="script-dialogue">The lamp is lit... don't let the wind...</div><div class="script-action">Silence.</div>`,
+              note: "Death scene." },
+
+            { id: 28, act: "Act IV", year: 1928, title: "The Procession", loc: "EXT. GUWAHATI - DAY", 
+              intensity: 7, type: "Village",
+              script: `<div class="script-slug">EXT. GUWAHATI STREETS - DAY</div><div class="script-action">Thousands walk in silence. No dialogue. Just the sound of feet on earth.</div>`,
+              note: "Impact. The scale of loss." },
+
+            { id: 29, act: "Act IV", year: 1928, title: "The Fire", loc: "EXT. BRAHMAPUTRA - SUNSET", 
+              intensity: 8, type: "Village",
+              script: `<div class="script-slug">EXT. BRAHMAPUTRA - SUNSET</div><div class="script-action">The pyre is lit. Smoke rises against a red sun.</div>`,
+              note: "Visual grandeur." },
+
+            { id: 30, act: "Act IV", year: 2025, title: "Legacy", loc: "INT. MODERN LIBRARY - DAY", 
+              intensity: 5, type: "Calcutta",
+              script: `<div class="script-slug">INT. MODERN LIBRARY - DAY</div><div class="script-action">A student opens a pristine copy of HEMKOSH.</div><div class="script-action">Definition of 'Jonaki': Firefly. Light in darkness.</div><div class="script-action">FADE OUT.</div>`,
+              note: "The work lives on." }
+        ];
+
+        // --- 2. GLOBAL STATE ---
+        let currentIndex = 0;
+        let arcChartInstance = null;
+        let locChartInstance = null;
+
+        // --- 3. DOM ELEMENTS ---
+        const sceneListEl = document.getElementById('scene-list-container');
+        const scriptBody = document.getElementById('script-body');
+        const scriptAct = document.getElementById('script-act');
+        const scriptYear = document.getElementById('script-year');
+        const directorNote = document.getElementById('director-note');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const indicator = document.getElementById('current-scene-indicator');
+
+        // --- 4. INITIALIZATION ---
+        window.onload = function() {
+            renderList('all');
+            initCharts();
+            loadScene(0); // Load first scene
+        };
+
+        // --- 5. FUNCTIONS ---
+
+        function renderList(filterAct) {
+            sceneListEl.innerHTML = '';
+            scenes.forEach((scene, index) => {
+                if (filterAct !== 'all' && scene.act !== filterAct) return;
+
+                const div = document.createElement('div');
+                div.className = `scene-item p-3 cursor-pointer bg-white border border-stone-200 rounded-sm mb-2`;
+                div.setAttribute('data-index', index);
+                div.onclick = () => loadScene(index);
+                
+                div.innerHTML = `
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-[10px] font-bold text-stone-500 uppercase tracking-wider">${scene.act} • SCENE ${scene.id}</span>
+                        <span class="text-[10px] px-1.5 py-0.5 bg-stone-100 text-stone-600 rounded">${scene.year}</span>
+                    </div>
+                    <div class="font-bold text-sm text-stone-800">${scene.title}</div>
+                `;
+                sceneListEl.appendChild(div);
+            });
+        }
+
+        function filterScenes(act) {
+            renderList(act);
+            // Highlight active button style
+            const buttons = document.querySelectorAll('#act-filters button');
+            buttons.forEach(btn => {
+                if(btn.textContent.includes(act === 'all' ? 'All' : act)) {
+                    btn.classList.remove('bg-stone-200', 'text-stone-700');
+                    btn.classList.add('bg-stone-800', 'text-white');
+                } else {
+                    btn.classList.add('bg-stone-200', 'text-stone-700');
+                    btn.classList.remove('bg-stone-800', 'text-white');
+                }
+            });
+        }
+
+        function loadScene(index) {
+            currentIndex = index;
+            const scene = scenes[index];
+
+            // 1. Update Script View
+            scriptBody.innerHTML = scene.script;
+            scriptAct.textContent = `${scene.act} | SCENE ${scene.id}`;
+            scriptYear.textContent = scene.year;
+            directorNote.textContent = scene.note;
+            indicator.textContent = `Scene ${scene.id} of 30`;
+
+            // 2. Update Navigation Buttons
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === scenes.length - 1;
+
+            // 3. Highlight List Item
+            document.querySelectorAll('.scene-item').forEach(el => el.classList.remove('active'));
+            const activeItem = document.querySelector(`.scene-item[data-index="${index}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+                activeItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+
+        // Navigation Event Listeners
+        prevBtn.onclick = () => { if(currentIndex > 0) loadScene(currentIndex - 1); };
+        nextBtn.onclick = () => { if(currentIndex < scenes.length - 1) loadScene(currentIndex + 1); };
+
+        // --- 6. CHART CONFIGURATION ---
+        function initCharts() {
+            // Data Prep
+            const labels = scenes.map(s => `Sc ${s.id}`);
+            const intensityData = scenes.map(s => s.intensity);
+            
+            // Location Breakdown
+            const locCounts = { "Village": 0, "Calcutta": 0, "Exploration": 0 };
+            scenes.forEach(s => { if(locCounts[s.type] !== undefined) locCounts[s.type]++; });
+
+            // 1. ARC CHART (Line)
+            const ctxArc = document.getElementById('arcChart').getContext('2d');
+            arcChartInstance = new Chart(ctxArc, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Narrative Intensity',
+                        data: intensityData,
+                        borderColor: '#b45309', // Amber 700
+                        backgroundColor: 'rgba(180, 83, 9, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointRadius: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { display: false, min: 0, max: 12 },
+                        x: { display: false }
+                    }
+                }
+            });
+
+            // 2. LOCATION CHART (Doughnut)
+            const ctxLoc = document.getElementById('locChart').getContext('2d');
+            locChartInstance = new Chart(ctxLoc, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(locCounts),
+                    datasets: [{
+                        data: Object.values(locCounts),
+                        backgroundColor: [
+                            '#57534e', // Village (Stone 600)
+                            '#d97706', // Calcutta (Amber 600)
+                            '#78350f'  // Exploration (Amber 900)
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
