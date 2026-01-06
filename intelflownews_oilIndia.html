@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oil India Ltd. | Intelflow AI Strategic Integration Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fcfbf9; /* Warm neutral background */
+            color: #1f2937;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af; 
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 2rem;
+            height: 2px;
+            background-color: #e5e7eb;
+            transform: translateY(-50%);
+            z-index: 0;
+        }
+        
+        /* Interactive Card States */
+        .interactive-card {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #e5e7eb;
+        }
+        .active-tab {
+            border-bottom: 2px solid #ea580c; /* Orange-600 */
+            color: #ea580c;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Corporate - #fcfbf9 (Background), #ea580c (Oil India Orange Accent), #1f2937 (Dark Slate Text), #f3f4f6 (Light Gray UI elements) -->
+    <!-- Application Structure Plan: The app is designed as a Strategic Proposal Dashboard. It uses a Tabbed Navigation system to separate the three distinct use cases (Executive, Operations, CSR). A 'Hero' dashboard summarizes the value proposition. The structure prioritizes 'Show, Don't Tell' by using interactive simulations (e.g., simulating a newsletter generation) to explain the technical process. -->
+    <!-- Visualization & Content Choices: 
+        1. ROI Analysis -> Goal: Inform/Compare -> Bar Chart -> Interaction: Hover for values -> Justification: Clearly shows time saved by automation.
+        2. Relevance Scoring -> Goal: Relationships -> Radar Chart -> Interaction: None -> Justification: Shows multi-dimensional improvement in data quality.
+        3. Newsletter Flow -> Goal: Change/Process -> HTML/CSS Animation -> Interaction: Button trigger -> Justification: Demystifies the 'AI' process for stakeholders.
+        4. Curated Feed -> Goal: Inform -> Dynamic HTML List -> Interaction: Filtering -> Justification: Mimics the actual user experience of the tool.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-[#fcfbf9] min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-gray-100 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center gap-3">
+                    <div class="h-8 w-8 bg-orange-600 rounded flex items-center justify-center text-white font-bold text-lg shadow-sm">O</div>
+                    <div>
+                        <h1 class="text-xl font-bold text-gray-900 tracking-tight">Oil India Limited</h1>
+                        <p class="text-xs text-gray-500 font-medium">Strategic Digital Transformation Report</p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-2 text-sm text-gray-600">
+                    <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                    <span>System Status: <span class="font-semibold text-gray-900">Online</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-8 -mb-px overflow-x-auto" id="mainNav">
+                <button onclick="switchTab('dashboard')" class="active-tab whitespace-nowrap py-4 px-1 font-medium text-sm transition-colors hover:text-orange-600">
+                    Executive Summary
+                </button>
+                <button onclick="switchTab('executive')" class="whitespace-nowrap py-4 px-1 font-medium text-sm text-gray-500 transition-colors hover:text-orange-600">
+                    Executive Intelligence
+                </button>
+                <button onclick="switchTab('newsletter')" class="whitespace-nowrap py-4 px-1 font-medium text-sm text-gray-500 transition-colors hover:text-orange-600">
+                    Automated Newsletters
+                </button>
+                <button onclick="switchTab('csr')" class="whitespace-nowrap py-4 px-1 font-medium text-sm text-gray-500 transition-colors hover:text-orange-600">
+                    CSR & Education
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- DASHBOARD VIEW -->
+        <section id="dashboard" class="fade-in space-y-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <h2 class="text-3xl font-bold text-gray-900 mb-4">Leveraging AI for Strategic Advantage</h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    This report analyzes how Oil India Limited (OIL) can integrate <strong>Intelflow AI</strong> to transition from information overload to curated strategic intelligence. The proposal covers three key impact areas: Executive Decision Support, Internal Communication Efficiency, and CSR Community Engagement.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- KPI Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="text-orange-600 text-4xl mb-2">&#9889;</div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Decision Velocity</h3>
+                    <p class="text-gray-500 text-sm mb-4">Reduction in time spent manually filtering global energy news.</p>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-gray-900">85%</span>
+                        <span class="text-sm text-green-600 font-medium mb-1">Time Saved</span>
+                    </div>
+                </div>
+
+                <!-- KPI Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="text-blue-600 text-4xl mb-2">&#128200;</div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Competitive Signal</h3>
+                    <p class="text-gray-500 text-sm mb-4">Increase in relevant competitor insights vs. generic noise.</p>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-gray-900">3.5x</span>
+                        <span class="text-sm text-green-600 font-medium mb-1">Improvement</span>
+                    </div>
+                </div>
+
+                <!-- KPI Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                    <div class="text-green-600 text-4xl mb-2">&#127891;</div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">CSR Reach</h3>
+                    <p class="text-gray-500 text-sm mb-4">Automated delivery of educational content to township schools.</p>
+                    <div class="flex items-end gap-2">
+                        <span class="text-3xl font-bold text-gray-900">5,000+</span>
+                        <span class="text-sm text-green-600 font-medium mb-1">Students/Mo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Efficiency Analysis: Manual vs. AI Curation</h3>
+                    <div class="chart-container">
+                        <canvas id="efficiencyChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center">Data projected based on current comms team allocation vs Intelflow automation.</p>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Strategic Relevance Score</h3>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-4 text-center">Score breakdown across key strategic vectors.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- EXECUTIVE INTELLIGENCE VIEW -->
+        <section id="executive" class="hidden fade-in space-y-6">
+            <div class="bg-white p-6 rounded-xl border-l-4 border-orange-600 shadow-sm">
+                <h3 class="text-xl font-bold text-gray-900">The Problem</h3>
+                <p class="text-gray-600 mt-2">Top management is flooded with general news. They need specific, actionable intelligence on competition (ONGC, global majors), regulatory shifts, and upstream technology.</p>
+                <h3 class="text-xl font-bold text-gray-900 mt-4">The Solution</h3>
+                <p class="text-gray-600 mt-2">A personalized "Executive Briefing" dashboard that filters 10,000+ daily sources down to the top 5 critical updates.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Sidebar Controls -->
+                <div class="lg:col-span-3 space-y-4">
+                    <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-100">
+                        <h4 class="font-semibold text-gray-900 mb-4 text-sm uppercase tracking-wide">Intelligence Feed</h4>
+                        <div class="space-y-2">
+                            <button onclick="filterExecutiveNews('upstream')" id="btn-upstream" class="w-full text-left px-4 py-2 rounded-md text-sm font-medium bg-orange-50 text-orange-700 border border-orange-100">
+                                Upstream & Exploration
+                            </button>
+                            <button onclick="filterExecutiveNews('green')" id="btn-green" class="w-full text-left px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50">
+                                Green Hydrogen & Renewables
+                            </button>
+                            <button onclick="filterExecutiveNews('competitor')" id="btn-competitor" class="w-full text-left px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50">
+                                Competitor Moves (ONGC/Global)
+                            </button>
+                            <button onclick="filterExecutiveNews('geopolitics')" id="btn-geopolitics" class="w-full text-left px-4 py-2 rounded-md text-sm font-medium text-gray-600 hover:bg-gray-50">
+                                Geopolitics & Supply Chain
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- News Feed Mockup -->
+                <div class="lg:col-span-9">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-2xl font-bold text-gray-900" id="feedTitle">Upstream & Exploration Briefing</h2>
+                        <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">Live Simulation</span>
+                    </div>
+                    <div id="newsFeedContent" class="space-y-4">
+                        <!-- Dynamic Content loads here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AUTOMATED NEWSLETTERS VIEW -->
+        <section id="newsletter" class="hidden fade-in space-y-8">
+             <div class="bg-white p-6 rounded-xl border-l-4 border-blue-600 shadow-sm">
+                <h3 class="text-xl font-bold text-gray-900">The Problem</h3>
+                <p class="text-gray-600 mt-2">Compiling internal newsletters is manual, time-consuming, and often results in outdated information by the time it reaches mailboxes.</p>
+                <h3 class="text-xl font-bold text-gray-900 mt-4">The Solution</h3>
+                <p class="text-gray-600 mt-2">An automated pipeline where Intelflow scans sources, summarizes key articles, drafts the HTML email, and sends it to the Comms team for final one-click approval.</p>
+            </div>
+
+            <!-- Workflow Visualizer -->
+            <div class="bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+                <h3 class="text-lg font-bold text-gray-900 mb-8 text-center">Automated Curation Workflow Simulation</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 relative">
+                    <!-- Step 1 -->
+                    <div id="step1" class="relative z-10 p-6 bg-gray-50 border border-gray-200 rounded-lg text-center transition-all duration-300">
+                        <div class="text-3xl mb-3">&#127760;</div>
+                        <h4 class="font-bold text-gray-800">Global Scan</h4>
+                        <p class="text-xs text-gray-500 mt-2">Scanning 5,000+ Energy Sources</p>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div id="step2" class="relative z-10 p-6 bg-gray-50 border border-gray-200 rounded-lg text-center transition-all duration-300 opacity-50">
+                        <div class="text-3xl mb-3">&#9881;</div>
+                        <h4 class="font-bold text-gray-800">AI Filter</h4>
+                        <p class="text-xs text-gray-500 mt-2">Filtering for "Oil India" relevance</p>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div id="step3" class="relative z-10 p-6 bg-gray-50 border border-gray-200 rounded-lg text-center transition-all duration-300 opacity-50">
+                        <div class="text-3xl mb-3">&#9997;</div>
+                        <h4 class="font-bold text-gray-800">Summarization</h4>
+                        <p class="text-xs text-gray-500 mt-2">Generating Executive Summaries</p>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div id="step4" class="relative z-10 p-6 bg-gray-50 border border-gray-200 rounded-lg text-center transition-all duration-300 opacity-50">
+                        <div class="text-3xl mb-3">&#128231;</div>
+                        <h4 class="font-bold text-gray-800">Delivery</h4>
+                        <p class="text-xs text-gray-500 mt-2">Draft sent to Corporate Comms</p>
+                    </div>
+                </div>
+
+                <div class="mt-8 text-center">
+                    <button onclick="runSimulation()" id="simButton" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow transition-colors">
+                        Run Generation Process
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Preview -->
+            <div id="emailPreview" class="hidden mt-6 border border-gray-200 rounded-xl overflow-hidden shadow-lg mx-auto max-w-2xl bg-white">
+                <div class="bg-gray-100 px-4 py-3 border-b border-gray-200 flex justify-between items-center">
+                    <span class="text-xs font-mono text-gray-500">Subject: OIL Daily Strategy Brief - <span id="currentDate"></span></span>
+                    <div class="flex space-x-1">
+                        <div class="w-3 h-3 rounded-full bg-red-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-400"></div>
+                    </div>
+                </div>
+                <div class="p-8 space-y-4">
+                    <h1 class="text-xl font-serif font-bold text-gray-900 border-b pb-2 mb-4">Oil India Limited <span class="text-orange-600">Daily Intel</span></h1>
+                    <div class="space-y-4">
+                        <div class="bg-orange-50 p-4 rounded border-l-4 border-orange-500">
+                            <h4 class="font-bold text-sm uppercase text-orange-800 mb-1">Top Priority</h4>
+                            <p class="text-sm font-semibold text-gray-900">Crude Prices Volatility Analysis</p>
+                            <p class="text-xs text-gray-600 mt-1">Global benchmarks shifted 2.3% overnight due to supply chain constraints in the Red Sea. Impact assessment suggests holding current inventory levels.</p>
+                        </div>
+                        <div class="p-3 hover:bg-gray-50 rounded">
+                            <p class="text-sm font-semibold text-gray-900">Competitor Watch: ONGC Deepwater Push</p>
+                            <p class="text-xs text-gray-600 mt-1">ONGC announces new technology partnership for KG basin. Relevant for OIL's upcoming tender specs.</p>
+                        </div>
+                         <div class="p-3 hover:bg-gray-50 rounded">
+                            <p class="text-sm font-semibold text-gray-900">Regulatory Update: Green Hydrogen Mandate</p>
+                            <p class="text-xs text-gray-600 mt-1">Ministry of Petroleum & Natural Gas drafts new guidelines for PSU adoption of green hydrogen blending.</p>
+                        </div>
+                    </div>
+                    <div class="mt-6 pt-4 border-t text-center">
+                        <span class="inline-block px-4 py-2 bg-green-600 text-white text-xs font-bold rounded cursor-pointer hover:bg-green-700">Approve & Send to 2,000 Employees</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CSR & EDUCATION VIEW -->
+        <section id="csr" class="hidden fade-in space-y-6">
+            <div class="bg-white p-6 rounded-xl border-l-4 border-green-600 shadow-sm">
+                <h3 class="text-xl font-bold text-gray-900">The Problem</h3>
+                <p class="text-gray-600 mt-2">OIL supports numerous schools and townships in Assam and the Northeast. Providing high-quality, up-to-date educational content to students and employee families is a logistical challenge.</p>
+                <h3 class="text-xl font-bold text-gray-900 mt-4">The Solution</h3>
+                <p class="text-gray-600 mt-2">A dedicated "Knowledge Portal" feed. Intelflow curates global science, technology, and environmental news, simplifying it for students and delivering it to schools and employee apps.</p>
+            </div>
+
+            <div class="flex justify-between items-center mt-6">
+                <h2 class="text-2xl font-bold text-gray-900">Education & Science Feed</h2>
+                <div class="flex space-x-2">
+                    <select id="csrFilter" onchange="filterCSR()" class="bg-white border border-gray-300 text-gray-700 py-2 px-4 pr-8 rounded leading-tight focus:outline-none focus:border-orange-500">
+                        <option value="all">All Topics</option>
+                        <option value="science">Science & Space</option>
+                        <option value="environment">Environment & Climate</option>
+                        <option value="tech">Future Tech</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="csrGrid">
+                <!-- CSR Cards populated by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <p class="text-sm text-gray-400">Generated for Oil India Limited Strategy Division.</p>
+            <p class="text-xs text-gray-300 mt-2">Powered by Intelflow Intelligence Engine Simulation</p>
+        </div>
+    </footer>
+
+    <script>
+        // State Management
+        let currentTab = 'dashboard';
+        const currentDate = new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
+        // Data Stores
+        const executiveData = {
+            upstream: [
+                { title: "Seismic Survey AI Advancements", source: "Energy Tech Daily", summary: "New algorithms reduce seismic data processing time by 40%, potentially accelerating exploration in the Northeast blocks.", tag: "Technology" },
+                { title: "Global Rig Count Update", source: "Baker Hughes Report", summary: "International rig count stable. Asia-Pacific shows slight uptick in offshore demand, impacting day rates.", tag: "Market Data" },
+                { title: "Enhanced Oil Recovery (EOR) Success", source: "Petro Engineering", summary: "Pilot project in similar geology to Assam basin shows 15% output increase using polymer flooding.", tag: "Operations" }
+            ],
+            green: [
+                { title: "National Green Hydrogen Mission Update", source: "Govt. Notification", summary: "New subsidies announced for PSUs establishing electrolyzer manufacturing units.", tag: "Policy" },
+                { title: "Biogas Integration in Refineries", source: "Clean Energy Wire", summary: "Case study: How European majors are integrating compressed biogas into existing infrastructure.", tag: "Sustainability" },
+                { title: "Carbon Capture (CCUS) Viability", source: "Climate Tech", summary: "Cost of carbon capture for upstream facilities drops below $50/ton in latest pilot.", tag: "Innovation" }
+            ],
+            competitor: [
+                { title: "ONGC's KG Basin Strategy", source: "Financial Press", summary: "ONGC announces aggressive $2B investment plan for deepwater assets in FY25.", tag: "Competitor" },
+                { title: "Private Sector Expansion", source: "Market Watch", summary: "Private players bidding aggressively for marginal fields in upcoming auction rounds.", tag: "Market Share" }
+            ],
+            geopolitics: [
+                { title: "Red Sea Logistics Impact", source: "Global Trade Review", summary: "Tanker insurance premiums rise 15%; projected impact on landed crude cost for Indian refineries.", tag: "Supply Chain" },
+                { title: "OPEC+ Meeting Outcomes", source: "Energy Pol", summary: "Production cuts extended through Q3. Expect crude price floor to remain firm at $75.", tag: "Macro" }
+            ]
+        };
+
+        const csrData = [
+            { category: 'science', title: 'James Webb Telescope: New Discoveries', desc: 'Explanation for students: How infrared light helps us see the oldest stars in the universe.', age: 'Ages 12-16' },
+            { category: 'environment', title: 'What is a Carbon Footprint?', desc: 'Interactive guide for families on how to reduce household energy consumption.', age: 'Family' },
+            { category: 'tech', title: 'Coding for the Future', desc: 'Free resources curated for Oil India township schools to start Python coding clubs.', age: 'Ages 10+' },
+            { category: 'science', title: 'The Chemistry of Oil', desc: 'Educational video series explaining how hydrocarbons are formed over millions of years.', age: 'Ages 14+' },
+            { category: 'environment', title: 'Local Flora of Assam', desc: 'Spotlight on biodiversity in the Northeast and how we protect it.', age: 'Community' },
+            { category: 'tech', title: 'AI in Everyday Life', desc: 'Simple breakdown of how Artificial Intelligence works, demystifying the tech for seniors.', age: 'All Ages' }
+        ];
+
+        // Chart Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('currentDate').innerText = currentDate;
+            initCharts();
+            filterExecutiveNews('upstream'); // Load initial data
+            renderCSRCards('all');
+        });
+
+        // Navigation Logic
+        function switchTab(tabId) {
+            // Hide all sections
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.add('hidden'));
+            // Show target
+            document.getElementById(tabId).classList.remove('hidden');
+            
+            // Update Nav Styling
+            document.querySelectorAll('#mainNav button').forEach(btn => {
+                btn.classList.remove('active-tab', 'text-orange-600');
+                btn.classList.add('text-gray-500');
+            });
+            const activeBtn = Array.from(document.querySelectorAll('#mainNav button')).find(b => b.getAttribute('onclick').includes(tabId));
+            if(activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-gray-500');
+            }
+        }
+
+        // Executive News Logic
+        function filterExecutiveNews(category) {
+            const feed = document.getElementById('newsFeedContent');
+            const title = document.getElementById('feedTitle');
+            const data = executiveData[category];
+            
+            // Update UI State
+            document.querySelectorAll('[id^="btn-"]').forEach(btn => {
+                btn.classList.remove('bg-orange-50', 'text-orange-700', 'border-orange-100');
+                btn.classList.add('text-gray-600');
+            });
+            const activeBtn = document.getElementById(`btn-${category}`);
+            activeBtn.classList.add('bg-orange-50', 'text-orange-700', 'border-orange-100');
+            activeBtn.classList.remove('text-gray-600');
+
+            // Set Title
+            const titles = {
+                'upstream': 'Upstream & Exploration Briefing',
+                'green': 'Renewables & Sustainability',
+                'competitor': 'Competitor Intelligence',
+                'geopolitics': 'Geopolitics & Supply Chain'
+            };
+            title.innerText = titles[category];
+
+            // Render Items
+            feed.innerHTML = '';
+            data.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = `bg-white p-5 rounded-lg border border-gray-100 shadow-sm interactive-card fade-in`;
+                el.style.animationDelay = `${index * 100}ms`;
+                el.innerHTML = `
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="inline-block px-2 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded">${item.tag}</span>
+                        <span class="text-xs text-gray-400">${item.source}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">${item.title}</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed">${item.summary}</p>
+                    <div class="mt-4 flex gap-3 text-sm text-orange-600 font-medium cursor-pointer hover:underline">
+                        <span>Read Full Brief &rarr;</span>
+                        <span class="text-gray-300">|</span>
+                        <span>Share with Team</span>
+                    </div>
+                `;
+                feed.appendChild(el);
+            });
+        }
+
+        // Newsletter Simulation Logic
+        function runSimulation() {
+            const steps = ['step1', 'step2', 'step3', 'step4'];
+            const btn = document.getElementById('simButton');
+            const preview = document.getElementById('emailPreview');
+            
+            // Reset
+            steps.forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('opacity-50');
+                el.classList.remove('bg-green-50', 'border-green-200', 'shadow-md');
+                el.querySelector('h4').classList.remove('text-green-700');
+            });
+            preview.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerText = "Processing...";
+            btn.classList.add('opacity-75');
+
+            // Sequence
+            let delay = 0;
+            steps.forEach((id, index) => {
+                setTimeout(() => {
+                    const el = document.getElementById(id);
+                    el.classList.remove('opacity-50');
+                    el.classList.add('bg-green-50', 'border-green-200', 'shadow-md');
+                    el.querySelector('h4').classList.add('text-green-700');
+                    
+                    if (index === 3) {
+                        btn.innerText = "Generation Complete";
+                        btn.classList.remove('bg-blue-600', 'hover:bg-blue-700');
+                        btn.classList.add('bg-green-600');
+                        setTimeout(() => {
+                            preview.classList.remove('hidden');
+                            preview.classList.add('fade-in');
+                            btn.disabled = false;
+                            btn.innerText = "Run Generation Process";
+                            btn.classList.remove('bg-green-600', 'opacity-75');
+                            btn.classList.add('bg-blue-600');
+                        }, 500);
+                    }
+                }, delay);
+                delay += 800; // 800ms per step
+            });
+        }
+
+        // CSR Rendering Logic
+        function renderCSRCards(filter) {
+            const grid = document.getElementById('csrGrid');
+            grid.innerHTML = '';
+            
+            const items = filter === 'all' ? csrData : csrData.filter(i => i.category === filter);
+            
+            items.forEach((item, index) => {
+                const el = document.createElement('div');
+                el.className = 'bg-white p-6 rounded-xl border border-gray-100 shadow-sm interactive-card fade-in flex flex-col h-full';
+                el.style.animationDelay = `${index * 50}ms`;
+                
+                let icon = '';
+                if(item.category === 'science') icon = '&#129514;'; // Test tube
+                if(item.category === 'environment') icon = '&#127793;'; // Plant
+                if(item.category === 'tech') icon = '&#128187;'; // Laptop
+
+                el.innerHTML = `
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-xl text-green-600">${icon}</div>
+                        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">${item.age}</span>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2">${item.title}</h3>
+                    <p class="text-sm text-gray-600 mb-4 flex-grow">${item.desc}</p>
+                    <button class="w-full mt-auto py-2 text-sm font-medium text-green-700 bg-green-50 rounded hover:bg-green-100 transition-colors">
+                        Add to Newsletter
+                    </button>
+                `;
+                grid.appendChild(el);
+            });
+        }
+
+        function filterCSR() {
+            const val = document.getElementById('csrFilter').value;
+            renderCSRCards(val);
+        }
+
+        // Charts Configuration
+        function initCharts() {
+            // Efficiency Chart
+            const ctx1 = document.getElementById('efficiencyChart').getContext('2d');
+            new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Sourcing', 'Filtering', 'Summarizing', 'Formatting'],
+                    datasets: [
+                        {
+                            label: 'Manual Process (Hours/Week)',
+                            data: [15, 20, 10, 5],
+                            backgroundColor: '#e5e7eb',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Intelflow AI (Hours/Week)',
+                            data: [0.5, 0.5, 0.5, 1], // Drastic reduction
+                            backgroundColor: '#ea580c', // Orange-600
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.raw + ' hrs';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, title: { display: true, text: 'Hours Spent' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Radar Chart
+            const ctx2 = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'radar',
+                data: {
+                    labels: ['Data Breadth', 'Relevance', 'Speed', 'Competitor Detail', 'Cost Efficiency'],
+                    datasets: [{
+                        label: 'Current Status',
+                        data: [40, 50, 30, 40, 60],
+                        fill: true,
+                        backgroundColor: 'rgba(156, 163, 175, 0.2)',
+                        borderColor: '#9ca3af',
+                        pointBackgroundColor: '#9ca3af',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#9ca3af'
+                    }, {
+                        label: 'With Intelflow',
+                        data: [90, 95, 95, 85, 90],
+                        fill: true,
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)',
+                        borderColor: '#ea580c',
+                        pointBackgroundColor: '#ea580c',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#ea580c'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 3 }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { display: false },
+                            suggestedMin: 0,
+                            suggestedMax: 100
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>
