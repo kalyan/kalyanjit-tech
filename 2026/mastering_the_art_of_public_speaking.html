@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Speaker's Command Center | Reference Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Warm Neutrals & Deep Authority -->
+    <!-- Colors: Background: Stone-50 (#fafaf9), Surface: White (#ffffff), Text: Slate-800 (#1e293b), Accent: Terracotta/Orange-600 (#ea580c), Secondary: Slate-500 -->
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ea580c', // Terracotta
+                        secondary: '#475569', // Slate
+                        bgMain: '#fafaf9', // Stone 50
+                        surface: '#ffffff',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9;
+            color: #1e293b;
+        }
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        /* Navigation Active State */
+        .nav-item.active {
+            background-color: #ea580c;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Stage Map Styles */
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: 100px 100px; /* Back, Front */
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .stage-zone {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-align: center;
+            padding: 5px;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+        .stage-zone:hover {
+            transform: translateY(-2px);
+            border-color: #ea580c;
+            background-color: #fff7ed;
+        }
+        .stage-zone.active-zone {
+            background-color: #ea580c;
+            color: white;
+            border-style: solid;
+        }
+
+        /* Chart Container Styling - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Card Hover Effects */
+        .info-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .info-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Dynamic Text Highlight */
+        .highlight-text {
+            background-color: #fed7aa;
+            padding: 0 4px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Application Structure Plan: 
+         The app uses a dashboard layout with a sticky sidebar (desktop) or top bar (mobile) for navigation.
+         Content is divided into 4 Pillars: 
+         1. 'Home/Overview': Introduction and core philosophy.
+         2. 'The Stage' (Space): Interactive grid to teach spatial anchoring.
+         3. 'The Body' (Visual): Checklist and Bar chart on non-verbal impact.
+         4. 'The Voice' (Vocal): Radar chart simulator for tone settings.
+         5. 'The Flow' (Structure): Line chart on attention spans.
+         Rationale: Public speaking is a multi-modal skill. Separating it into Space, Body, Voice, and Structure allows the user to focus on one aspect at a time.
+    -->
+
+    <!-- Header / Nav -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-serif font-bold text-gray-900">The Speaker's Command Center</span>
+                </div>
+                <!-- Desktop Nav -->
+                <nav class="hidden md:flex space-x-4">
+                    <button onclick="navigateTo('overview')" class="nav-item active px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-overview">Overview</button>
+                    <button onclick="navigateTo('space')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-space">The Stage</button>
+                    <button onclick="navigateTo('body')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-body">The Body</button>
+                    <button onclick="navigateTo('voice')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-voice">The Voice</button>
+                    <button onclick="navigateTo('structure')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-structure">Structure</button>
+                </nav>
+                <!-- Mobile Menu Button -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-gray-900 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Nav Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-gray-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <button onclick="navigateTo('overview')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Overview</button>
+                <button onclick="navigateTo('space')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">The Stage</button>
+                <button onclick="navigateTo('body')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">The Body</button>
+                <button onclick="navigateTo('voice')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">The Voice</button>
+                <button onclick="navigateTo('structure')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Structure</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        
+        <!-- SECTION 1: OVERVIEW -->
+        <section id="overview" class="section-content animate-fade-in">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl font-serif font-bold text-gray-900 mb-4">Mastering the Art of Public Speaking</h1>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    Great speakers aren't just born; they are made through preparation, deliberate practice, and an understanding of human psychology. This dashboard breaks down the complex art of influence into four manageable pillars.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('space')">
+                    <div class="text-primary text-3xl mb-3">⛆</div>
+                    <h3 class="text-lg font-bold mb-2">Spatial Anchoring</h3>
+                    <p class="text-sm text-gray-500">How to own the room and use movement to mark time and emotion.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('body')">
+                    <div class="text-primary text-3xl mb-3">☺</div>
+                    <h3 class="text-lg font-bold mb-2">Non-Verbal</h3>
+                    <p class="text-sm text-gray-500">The 55% of communication that happens before you speak a word.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('voice')">
+                    <div class="text-primary text-3xl mb-3">♫</div>
+                    <h3 class="text-lg font-bold mb-2">Vocal Variety</h3>
+                    <p class="text-sm text-gray-500">Mastering pitch, pace, pause, and power to keep engagement.</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('structure')">
+                    <div class="text-primary text-3xl mb-3">⚡</div>
+                    <h3 class="text-lg font-bold mb-2">The Hook</h3>
+                    <p class="text-sm text-gray-500">Structuring content to match the audience's attention curve.</p>
+                </div>
+            </div>
+
+            <div class="bg-stone-100 rounded-xl p-8">
+                <h2 class="text-2xl font-serif font-bold mb-4">The Mehrabian Myth vs. Reality</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="mb-4 text-gray-700">
+                            While often misquoted, Albert Mehrabian's research highlights a crucial truth about communicating <span class="font-semibold italic">feelings and attitudes</span>: the audience trusts what they see more than what they hear.
+                        </p>
+                        <ul class="space-y-3">
+                            <li class="flex items-center">
+                                <span class="w-24 font-bold text-gray-900">55%</span>
+                                <span class="text-gray-600">Body Language (Visual)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-24 font-bold text-gray-900">38%</span>
+                                <span class="text-gray-600">Tone of Voice (Vocal)</span>
+                            </li>
+                            <li class="flex items-center">
+                                <span class="w-24 font-bold text-gray-900">7%</span>
+                                <span class="text-gray-600">Spoken Words (Verbal)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg shadow-inner">
+                         <!-- Visualization & Content Choices: 
+                             Goal: Visualize the weighting of communication components.
+                             Viz: Doughnut Chart.
+                             Justification: Classic representation of parts-to-whole relationships.
+                         -->
+                        <div class="chart-container">
+                            <canvas id="communicationChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: THE STAGE (SPACE) -->
+        <section id="space" class="section-content hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Stage as a Timeline</h2>
+                <p class="text-gray-600">Don't pace aimlessly. Use <strong>"Spatial Anchoring"</strong> to help the audience organize your ideas physically. Click on the stage zones below to learn their strategic purpose.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Interactive Stage Map -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-semibold mb-4 text-center">Interactive Stage Simulator</h3>
+                    <div class="text-xs text-center text-gray-400 mb-2">(Audience is here)</div>
+                    
+                    <!-- CSS Grid Stage -->
+                    <div class="stage-grid">
+                        <!-- Back Row -->
+                        <div class="stage-zone" data-zone="past" onclick="updateStageInfo('past')">
+                            Stage Left<br>(The Past)
+                        </div>
+                        <div class="stage-zone" data-zone="back-center" onclick="updateStageInfo('back-center')">
+                            Center Back<br>(Power/Entry)
+                        </div>
+                        <div class="stage-zone" data-zone="future" onclick="updateStageInfo('future')">
+                            Stage Right<br>(The Future)
+                        </div>
+                        
+                        <!-- Front Row -->
+                        <div class="stage-zone" data-zone="story" onclick="updateStageInfo('story')">
+                            Front Left<br>(Intimate Story)
+                        </div>
+                        <div class="stage-zone" data-zone="connection" onclick="updateStageInfo('connection')">
+                            Front Center<br>(The Connection)
+                        </div>
+                        <div class="stage-zone" data-zone="action" onclick="updateStageInfo('action')">
+                            Front Right<br>(Call to Action)
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-center mt-4">
+                        <div class="text-xs text-gray-400">Speaker's Perspective</div>
+                    </div>
+                </div>
+
+                <!-- Stage Info Panel -->
+                <div class="bg-stone-50 p-6 rounded-xl border border-stone-200 flex flex-col justify-center">
+                    <div id="stage-info-content">
+                        <h4 class="text-2xl font-bold text-primary mb-2" id="zone-title">Select a Zone</h4>
+                        <p class="text-gray-700 text-lg mb-4" id="zone-desc">Click on a zone on the stage map to understand its psychological impact on the audience.</p>
+                        <div class="bg-white p-4 rounded border border-gray-200">
+                            <h5 class="font-bold text-sm text-gray-500 uppercase tracking-wide mb-1">Best Use Case</h5>
+                            <p class="text-gray-900" id="zone-use">--</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Transition Theory -->
+            <div class="mt-12">
+                <h3 class="text-xl font-bold mb-4">The Triangle Method</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="p-4 border-l-4 border-primary bg-white">
+                        <div class="font-bold text-lg mb-1">1. State the Problem</div>
+                        <p class="text-sm text-gray-600">Start Center or slightly Left. Establish the status quo or the issue at hand. Ground yourself.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-gray-400 bg-white">
+                        <div class="font-bold text-lg mb-1">2. Tell the Story</div>
+                        <p class="text-sm text-gray-600">Move closer to the audience (Front Left or Center). Lower your voice. Make it personal.</p>
+                    </div>
+                    <div class="p-4 border-l-4 border-primary bg-white">
+                        <div class="font-bold text-lg mb-1">3. The Solution</div>
+                        <p class="text-sm text-gray-600">Move decisively to Stage Right (the audience's right). This represents the future, the solution, and the way forward.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: THE BODY (VISUAL) -->
+        <section id="body" class="section-content hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">Commanding with the Body</h2>
+                <p class="text-gray-600">Your body leaks the truth. If your words say "confident" but your body says "nervous," the audience believes the body.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                <!-- Checklist -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold mb-4 flex items-center">
+                        <span class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">!</span>
+                        Body Language Audit
+                    </h3>
+                    <div class="space-y-3" id="checklist-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Data Viz: High Power vs Low Power -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold mb-2">The Physiology of Confidence</h3>
+                    <p class="text-sm text-gray-500 mb-4">Impact of 2 minutes of "Power Posing" (Amy Cuddy Research)</p>
+                    
+                    <!-- Visualization & Content Choices:
+                        Goal: Compare hormone levels (Testosterone/Cortisol) for High vs Low power poses.
+                        Viz: Grouped Bar Chart.
+                        Interaction: None (static comparison), but vital for data-backed validity.
+                    -->
+                    <div class="chart-container">
+                        <canvas id="hormoneChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-500 italic text-center">
+                        *High Power poses increase dominance (testosterone) and lower stress (cortisol).
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-stone-800 text-white rounded-xl p-8">
+                <h3 class="text-xl font-bold mb-6 text-center">The Hand Gesture Dictionary</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
+                        <div class="text-3xl mb-2">👐</div>
+                        <div class="font-bold text-primary">Open Palms</div>
+                        <div class="text-xs text-stone-300 mt-1">Honesty, Openness</div>
+                    </div>
+                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
+                        <div class="text-3xl mb-2">🤏</div>
+                        <div class="font-bold text-primary">The Precision</div>
+                        <div class="text-xs text-stone-300 mt-1">Detail, Specificity</div>
+                    </div>
+                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
+                        <div class="text-3xl mb-2">👊</div>
+                        <div class="font-bold text-primary">The Fist</div>
+                        <div class="text-xs text-stone-300 mt-1">Determination (Use sparingly)</div>
+                    </div>
+                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
+                        <div class="text-3xl mb-2">🫳</div>
+                        <div class="font-bold text-primary">Palms Down</div>
+                        <div class="text-xs text-stone-300 mt-1">Authority, Calming</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: THE VOICE (VOCAL) -->
+        <section id="voice" class="section-content hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Vocal Variety Mixer</h2>
+                <p class="text-gray-600">Monotone kills attention. Adjust your vocal settings based on the emotion you want to convey. Use the controls below to see the ideal vocal profile.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Controls -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 col-span-1">
+                    <h3 class="font-bold text-lg mb-6">Select Speaking Mode</h3>
+                    <div class="space-y-4">
+                        <button onclick="updateVoiceChart('story')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="story">
+                            <div class="font-bold text-gray-800 group-hover:text-primary">📖 The Storyteller</div>
+                            <div class="text-xs text-gray-500">For emotional connection and narrative.</div>
+                        </button>
+                        <button onclick="updateVoiceChart('data')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="data">
+                            <div class="font-bold text-gray-800 group-hover:text-primary">📊 The Analyst</div>
+                            <div class="text-xs text-gray-500">For delivering complex facts and logic.</div>
+                        </button>
+                        <button onclick="updateVoiceChart('inspire')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="inspire">
+                            <div class="font-bold text-gray-800 group-hover:text-primary">🔥 The Motivator</div>
+                            <div class="text-xs text-gray-500">For calls to action and high energy.</div>
+                        </button>
+                        <button onclick="updateVoiceChart('calm')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="calm">
+                            <div class="font-bold text-gray-800 group-hover:text-primary">⚓ The Anchor</div>
+                            <div class="text-xs text-gray-500">For delivering bad news or reassurance.</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Radar Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 col-span-1 lg:col-span-2 flex flex-col items-center justify-center">
+                    <h3 class="font-bold text-lg mb-2 text-center w-full">Vocal Profile Visualizer</h3>
+                     <!-- Visualization & Content Choices:
+                         Goal: Show the balance of 4 vocal elements (Pitch, Pace, Volume, Pause) for different styles.
+                         Viz: Radar Chart.
+                         Interaction: Buttons update data.
+                         Justification: Radar charts are perfect for multivariate profile comparison.
+                     -->
+                    <div class="chart-container">
+                        <canvas id="voiceRadarChart"></canvas>
+                    </div>
+                    <div class="mt-4 grid grid-cols-4 gap-2 w-full text-center text-xs">
+                        <div>
+                            <span class="font-bold block">Pitch</span>
+                            High = Excitement<br>Low = Authority
+                        </div>
+                        <div>
+                            <span class="font-bold block">Pace</span>
+                            Fast = Urgency<br>Slow = Importance
+                        </div>
+                        <div>
+                            <span class="font-bold block">Volume</span>
+                            Loud = Power<br>Soft = Intimacy
+                        </div>
+                        <div>
+                            <span class="font-bold block">Pause</span>
+                            Long = Impact<br>Short = Momentum
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: STRUCTURE -->
+        <section id="structure" class="section-content hidden animate-fade-in">
+             <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Attention Architecture</h2>
+                <p class="text-gray-600">You don't have the audience's attention for the full time. You must earn it repeatedly. Structure your content to match the human attention span.</p>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
+                <h3 class="text-lg font-bold mb-4">The 10-Minute Rule & Attention Spikes</h3>
+                 <!-- Visualization & Content Choices:
+                     Goal: Visualize how attention drops over time and how "Soft Breaks" reset it.
+                     Viz: Line Chart.
+                     Interaction: None.
+                     Justification: Shows trends over time effectively.
+                 -->
+                <div class="chart-container">
+                    <canvas id="attentionChart"></canvas>
+                </div>
+                <div class="mt-4 bg-blue-50 p-4 rounded border border-blue-100 text-sm text-blue-800">
+                    <strong>Insight:</strong> Attention naturally decays. Every 10 minutes (or sooner), you must insert a "Soft Break" (video, story, demo, question) to reset the clock.
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-stone-50 p-6 rounded-xl">
+                    <h3 class="font-bold text-lg mb-4 text-primary">The PREP Framework</h3>
+                    <p class="text-sm text-gray-600 mb-4">Use this for impromptu speaking or short segments.</p>
+                    <ul class="space-y-4">
+                        <li class="flex">
+                            <span class="font-bold w-8 text-primary">P</span>
+                            <div>
+                                <span class="font-bold">Point:</span> State your main idea immediately.
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="font-bold w-8 text-primary">R</span>
+                            <div>
+                                <span class="font-bold">Reason:</span> Explain why this point is true/important.
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="font-bold w-8 text-primary">E</span>
+                            <div>
+                                <span class="font-bold">Example:</span> Give evidence, data, or a story.
+                            </div>
+                        </li>
+                        <li class="flex">
+                            <span class="font-bold w-8 text-primary">P</span>
+                            <div>
+                                <span class="font-bold">Point:</span> Restate the main idea.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-stone-50 p-6 rounded-xl">
+                    <h3 class="font-bold text-lg mb-4 text-primary">Pre-Speech Research Checklist</h3>
+                    <div class="space-y-2">
+                         <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
+                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
+                            <span class="text-sm">Who is in the room? (Demographics/Roles)</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
+                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
+                            <span class="text-sm">What do they already know? (Avoid boring/confusing)</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
+                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
+                            <span class="text-sm">What is their biggest pain point?</span>
+                        </label>
+                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
+                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
+                            <span class="text-sm">What is the ONE thing I want them to do?</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-gray-500 text-sm">
+            <p>© The Speaker's Command Center. Synthesized from expert communication research.</p>
+            <p class="mt-2 text-gray-400">Author - Kalyanjit Hatibaruah <span class="mx-2">•</span> Whatsapp +91-9864011106</p>
+        </div>
+    </footer>
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        // --- State Management ---
+        const state = {
+            currentSection: 'overview',
+            activeStageZone: null,
+            currentVoiceMode: 'story'
+        };
+
+        // --- Navigation Logic ---
+        function navigateTo(sectionId) {
+            // Update State
+            state.currentSection = sectionId;
+
+            // Hide all sections
+            document.querySelectorAll('.section-content').forEach(el => {
+                el.classList.add('hidden');
+            });
+
+            // Show target section
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            // Update Nav Styling
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active', 'text-gray-900');
+                el.classList.add('text-gray-600');
+            });
+
+            const activeNav = document.getElementById('nav-' + sectionId);
+            if(activeNav) {
+                activeNav.classList.add('active');
+                activeNav.classList.remove('text-gray-600');
+            }
+
+            // Mobile menu logic
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        // --- Mobile Menu Toggle ---
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        // --- Stage Interaction Logic ---
+        const stageData = {
+            'past': {
+                title: "Stage Left (The Past)",
+                desc: "In Western cultures, we read left-to-right. Standing here subconsciously indicates 'Before', 'The Problem', or 'The History'.",
+                use: "Start here when describing the issue or the 'bad old days'."
+            },
+            'future': {
+                title: "Stage Right (The Future)",
+                desc: "The destination. Moving here signals progress, 'The Solution', or 'Tomorrow'.",
+                use: "End your speech or key points here to leave the audience looking forward."
+            },
+            'back-center': {
+                title: "Center Back (Entry/Power)",
+                desc: "The position of formal authority, but low intimacy. Great for grand entrances or high-level overviews.",
+                use: "Opening statements, displaying slides, or asserting authority."
+            },
+            'connection': {
+                title: "Front Center (The Connection)",
+                desc: "The most powerful spot for connection. You are physically closest to the audience.",
+                use: "The climax of a story, a heartfelt plea, or the final call to action."
+            },
+            'story': {
+                title: "Front Left (Intimate Story)",
+                desc: "A casual, conversational zone. Breaking the formal barrier.",
+                use: "Telling a personal anecdote or vulnerable moment."
+            },
+            'action': {
+                title: "Front Right (The Challenge)",
+                desc: "Combining the 'Future' side with the intimacy of the 'Front'.",
+                use: "Challenging the audience directly: 'Will you join us?'"
+            }
+        };
+
+        function updateStageInfo(zone) {
+            // UI Highlight
+            document.querySelectorAll('.stage-zone').forEach(el => el.classList.remove('active-zone'));
+            document.querySelector(`[data-zone="${zone}"]`).classList.add('active-zone');
+
+            // Content Update
+            const data = stageData[zone];
+            document.getElementById('zone-title').textContent = data.title;
+            document.getElementById('zone-desc').textContent = data.desc;
+            document.getElementById('zone-use').textContent = data.use;
+        }
+
+        // --- Body Language Checklist ---
+        const checklistItems = [
+            { text: "Hands visible (not in pockets)", type: "positive" },
+            { text: "Feet shoulder-width apart", type: "positive" },
+            { text: "Fig-Leaf position (hands covering groin)", type: "negative" },
+            { text: "Eye contact (one person per thought)", type: "positive" },
+            { text: "Crossing arms (barrier)", type: "negative" },
+            { text: "Lean forward slightly", type: "positive" }
+        ];
+
+        const checklistContainer = document.getElementById('checklist-container');
+        checklistItems.forEach(item => {
+            const div = document.createElement('div');
+            div.className = `flex items-center justify-between p-3 rounded ${item.type === 'positive' ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'}`;
+            div.innerHTML = `
+                <span class="text-sm font-medium ${item.type === 'positive' ? 'text-green-800' : 'text-red-800'}">${item.text}</span>
+                <span class="text-xs font-bold uppercase ${item.type === 'positive' ? 'text-green-600' : 'text-red-600'}">${item.type === 'positive' ? 'DO' : 'AVOID'}</span>
+            `;
+            checklistContainer.appendChild(div);
+        });
+
+
+        // --- Chart.js Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Communication Doughnut Chart
+            const ctxComm = document.getElementById('communicationChart').getContext('2d');
+            new Chart(ctxComm, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Body Language (55%)', 'Tone (38%)', 'Words (7%)'],
+                    datasets: [{
+                        data: [55, 38, 7],
+                        backgroundColor: ['#ea580c', '#fdba74', '#94a3b8'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            // 2. Hormone Bar Chart
+            const ctxHormone = document.getElementById('hormoneChart').getContext('2d');
+            new Chart(ctxHormone, {
+                type: 'bar',
+                data: {
+                    labels: ['High Power Pose', 'Low Power Pose'],
+                    datasets: [
+                        {
+                            label: 'Testosterone Change (%)',
+                            data: [20, -10],
+                            backgroundColor: '#16a34a',
+                        },
+                        {
+                            label: 'Cortisol Change (%)',
+                            data: [-25, 15],
+                            backgroundColor: '#dc2626',
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: '% Change' }
+                        }
+                    }
+                }
+            });
+
+            // 3. Voice Radar Chart (Global variable to update later)
+            const ctxVoice = document.getElementById('voiceRadarChart').getContext('2d');
+            window.voiceChart = new Chart(ctxVoice, {
+                type: 'radar',
+                data: {
+                    labels: ['Pitch (Range)', 'Pace (Speed)', 'Volume (Loudness)', 'Pause (Frequency)'],
+                    datasets: [{
+                        label: 'Vocal Profile',
+                        data: [60, 60, 60, 60], // Default
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)',
+                        borderColor: '#ea580c',
+                        pointBackgroundColor: '#ea580c',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { display: true },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // Hide numbers for cleaner look
+                        }
+                    }
+                }
+            });
+            // Initial render
+            updateVoiceChart('story');
+
+            // 4. Attention Line Chart
+            const ctxAttn = document.getElementById('attentionChart').getContext('2d');
+            new Chart(ctxAttn, {
+                type: 'line',
+                data: {
+                    labels: ['0m', '5m', '10m (Break)', '15m', '20m (Break)', '25m', '30m'],
+                    datasets: [{
+                        label: 'Audience Attention Level',
+                        data: [100, 70, 40, 90, 60, 90, 50],
+                        borderColor: '#475569',
+                        backgroundColor: 'rgba(71, 85, 105, 0.1)',
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Attention %' }
+                        }
+                    },
+                    plugins: {
+                        annotation: {
+                            // Note: Annotations require plugin, simplifying for standard Chart.js
+                        }
+                    }
+                }
+            });
+        });
+
+        // --- Dynamic Voice Chart Update ---
+        const voiceProfiles = {
+            'story': { data: [80, 50, 40, 90], label: "High Pitch Variation, Slow Pace, Intimate Volume" }, // High pitch var, slow pace, soft vol, many pauses
+            'data': { data: [30, 60, 60, 40], label: "Steady Pitch, Moderate Pace, Clear Volume" }, // Flat pitch, med pace, med vol, few pauses
+            'inspire': { data: [70, 80, 90, 70], label: "Rising Pitch, Fast Pace, Loud Volume" }, // High pitch, fast, loud, strategic pauses
+            'calm': { data: [20, 30, 40, 80], label: "Low Pitch, Slow Pace, Low Volume" } // Low pitch, very slow, low vol, long pauses
+        };
+
+        function updateVoiceChart(mode) {
+            // Update Buttons
+            document.querySelectorAll('.voice-btn').forEach(btn => {
+                if(btn.dataset.mode === mode) {
+                    btn.classList.add('border-primary', 'bg-orange-50');
+                } else {
+                    btn.classList.remove('border-primary', 'bg-orange-50');
+                }
+            });
+
+            // Update Chart
+            const profile = voiceProfiles[mode];
+            window.voiceChart.data.datasets[0].data = profile.data;
+            window.voiceChart.update();
+        }
+
+    </script>
+</body>
+</html>
