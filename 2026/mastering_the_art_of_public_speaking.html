@@ -105,26 +105,64 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
-        /* Dynamic Text Highlight */
-        .highlight-text {
-            background-color: #fed7aa;
-            padding: 0 4px;
-            border-radius: 2px;
+        /* Posture Selector Styles */
+        .posture-btn {
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s;
+        }
+        .posture-btn:hover {
+            border-color: #fdba74;
+        }
+        .posture-btn.active {
+            border-color: #ea580c;
+            background-color: #fff7ed;
+        }
+
+        /* Box Breathing Animation */
+        .breathing-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ea580c;
+            opacity: 0.8;
+            animation: breathe 16s infinite ease-in-out;
+            margin: 0 auto;
+        }
+        
+        .breathing-text {
+            animation: breatheText 16s infinite;
+        }
+
+        @keyframes breathe {
+            0%, 25% { transform: scale(1); opacity: 0.4; } /* Inhale 4s */
+            25%, 50% { transform: scale(2.5); opacity: 1; } /* Hold 4s */
+            50%, 75% { transform: scale(2.5); opacity: 1; } /* Exhale 4s */
+            75%, 100% { transform: scale(1); opacity: 0.4; } /* Hold 4s */
+        }
+
+        @keyframes breatheText {
+            0%, 25% { content: "Inhale..."; }
+            25%, 50% { content: "Hold..."; }
+            50%, 75% { content: "Exhale..."; }
+            75%, 100% { content: "Hold..."; }
+        }
+
+        /* Proxemics Circles */
+        .prox-circle {
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding-top: 10px;
+            border: 2px dashed #cbd5e1;
         }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
-
-    <!-- Application Structure Plan: 
-         The app uses a dashboard layout with a sticky sidebar (desktop) or top bar (mobile) for navigation.
-         Content is divided into 4 Pillars: 
-         1. 'Home/Overview': Introduction and core philosophy.
-         2. 'The Stage' (Space): Interactive grid to teach spatial anchoring.
-         3. 'The Body' (Visual): Checklist and Bar chart on non-verbal impact.
-         4. 'The Voice' (Vocal): Radar chart simulator for tone settings.
-         5. 'The Flow' (Structure): Line chart on attention spans.
-         Rationale: Public speaking is a multi-modal skill. Separating it into Space, Body, Voice, and Structure allows the user to focus on one aspect at a time.
-    -->
 
     <!-- Header / Nav -->
     <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -134,12 +172,13 @@
                     <span class="text-2xl font-serif font-bold text-gray-900">The Speaker's Command Center</span>
                 </div>
                 <!-- Desktop Nav -->
-                <nav class="hidden md:flex space-x-4">
+                <nav class="hidden md:flex space-x-1">
                     <button onclick="navigateTo('overview')" class="nav-item active px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-overview">Overview</button>
                     <button onclick="navigateTo('space')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-space">The Stage</button>
                     <button onclick="navigateTo('body')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-body">The Body</button>
                     <button onclick="navigateTo('voice')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-voice">The Voice</button>
                     <button onclick="navigateTo('structure')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-structure">Structure</button>
+                    <button onclick="navigateTo('mindset')" class="nav-item text-gray-600 hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors" id="nav-mindset">Mindset</button>
                 </nav>
                 <!-- Mobile Menu Button -->
                 <div class="md:hidden flex items-center">
@@ -157,6 +196,7 @@
                 <button onclick="navigateTo('body')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">The Body</button>
                 <button onclick="navigateTo('voice')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">The Voice</button>
                 <button onclick="navigateTo('structure')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Structure</button>
+                <button onclick="navigateTo('mindset')" class="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">Mindset</button>
             </div>
         </div>
     </header>
@@ -169,30 +209,35 @@
             <div class="text-center mb-12">
                 <h1 class="text-4xl font-serif font-bold text-gray-900 mb-4">Mastering the Art of Public Speaking</h1>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-                    Great speakers aren't just born; they are made through preparation, deliberate practice, and an understanding of human psychology. This dashboard breaks down the complex art of influence into four manageable pillars.
+                    Great speakers aren't just born; they are made through preparation, deliberate practice, and an understanding of human psychology. This dashboard breaks down the complex art of influence into five manageable pillars.
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-12">
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('space')">
                     <div class="text-primary text-3xl mb-3">⛆</div>
                     <h3 class="text-lg font-bold mb-2">Spatial Anchoring</h3>
-                    <p class="text-sm text-gray-500">How to own the room and use movement to mark time and emotion.</p>
+                    <p class="text-sm text-gray-500">How to own the room and use movement.</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('body')">
                     <div class="text-primary text-3xl mb-3">☺</div>
                     <h3 class="text-lg font-bold mb-2">Non-Verbal</h3>
-                    <p class="text-sm text-gray-500">The 55% of communication that happens before you speak a word.</p>
+                    <p class="text-sm text-gray-500">The 55% of communication that happens visually.</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('voice')">
                     <div class="text-primary text-3xl mb-3">♫</div>
                     <h3 class="text-lg font-bold mb-2">Vocal Variety</h3>
-                    <p class="text-sm text-gray-500">Mastering pitch, pace, pause, and power to keep engagement.</p>
+                    <p class="text-sm text-gray-500">Mastering pitch, pace, pause, and power.</p>
                 </div>
                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('structure')">
                     <div class="text-primary text-3xl mb-3">⚡</div>
                     <h3 class="text-lg font-bold mb-2">The Hook</h3>
-                    <p class="text-sm text-gray-500">Structuring content to match the audience's attention curve.</p>
+                    <p class="text-sm text-gray-500">Structuring content for impact.</p>
+                </div>
+                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100 info-card cursor-pointer" onclick="navigateTo('mindset')">
+                    <div class="text-primary text-3xl mb-3">🧠</div>
+                    <h3 class="text-lg font-bold mb-2">The Mindset</h3>
+                    <p class="text-sm text-gray-500">Overcoming anxiety and stage fright.</p>
                 </div>
             </div>
 
@@ -219,11 +264,6 @@
                         </ul>
                     </div>
                     <div class="bg-white p-4 rounded-lg shadow-inner">
-                         <!-- Visualization & Content Choices: 
-                             Goal: Visualize the weighting of communication components.
-                             Viz: Doughnut Chart.
-                             Justification: Classic representation of parts-to-whole relationships.
-                         -->
                         <div class="chart-container">
                             <canvas id="communicationChart"></canvas>
                         </div>
@@ -232,20 +272,19 @@
             </div>
         </section>
 
-        <!-- SECTION 2: THE STAGE (SPACE) -->
+        <!-- SECTION 2: THE STAGE (SPACE) - EXPANDED -->
         <section id="space" class="section-content hidden animate-fade-in">
             <div class="mb-8">
                 <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Stage as a Timeline</h2>
-                <p class="text-gray-600">Don't pace aimlessly. Use <strong>"Spatial Anchoring"</strong> to help the audience organize your ideas physically. Click on the stage zones below to learn their strategic purpose.</p>
+                <p class="text-gray-600">Don't pace aimlessly. Use <strong>"Spatial Anchoring"</strong> to help the audience organize your ideas physically.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                 <!-- Interactive Stage Map -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <h3 class="text-lg font-semibold mb-4 text-center">Interactive Stage Simulator</h3>
                     <div class="text-xs text-center text-gray-400 mb-2">(Audience is here)</div>
                     
-                    <!-- CSS Grid Stage -->
                     <div class="stage-grid">
                         <!-- Back Row -->
                         <div class="stage-zone" data-zone="past" onclick="updateStageInfo('past')">
@@ -269,10 +308,6 @@
                             Front Right<br>(Call to Action)
                         </div>
                     </div>
-                    
-                    <div class="flex justify-center mt-4">
-                        <div class="text-xs text-gray-400">Speaker's Perspective</div>
-                    </div>
                 </div>
 
                 <!-- Stage Info Panel -->
@@ -288,21 +323,49 @@
                 </div>
             </div>
 
-            <!-- Transition Theory -->
-            <div class="mt-12">
-                <h3 class="text-xl font-bold mb-4">The Triangle Method</h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="p-4 border-l-4 border-primary bg-white">
-                        <div class="font-bold text-lg mb-1">1. State the Problem</div>
-                        <p class="text-sm text-gray-600">Start Center or slightly Left. Establish the status quo or the issue at hand. Ground yourself.</p>
+            <!-- NEW: PROXEMICS & INTIMACY GRADIENT -->
+            <div class="bg-white p-8 rounded-xl border border-gray-200 shadow-sm relative overflow-hidden">
+                <h3 class="text-xl font-bold mb-2">Proxemics: The Intimacy Gradient</h3>
+                <p class="text-gray-600 mb-6">How far you stand determines the emotional connection. Don't get stuck behind the podium (Public Zone).</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <!-- Visual Representation -->
+                    <div class="h-64 relative bg-stone-50 rounded-lg">
+                        <div class="absolute inset-0 flex items-center justify-center">
+                            <!-- Public Zone -->
+                            <div class="w-60 h-60 bg-red-100 rounded-full flex items-start justify-center pt-2 text-xs text-red-800 font-bold opacity-70">Public (>12ft)</div>
+                            <!-- Social Zone -->
+                            <div class="absolute w-40 h-40 bg-yellow-100 rounded-full flex items-start justify-center pt-2 text-xs text-yellow-800 font-bold opacity-80">Social (4-12ft)</div>
+                            <!-- Personal Zone -->
+                            <div class="absolute w-20 h-20 bg-green-100 rounded-full flex items-start justify-center pt-2 text-xs text-green-800 font-bold">Personal</div>
+                            <!-- Speaker -->
+                            <div class="absolute w-4 h-4 bg-black rounded-full border-2 border-white shadow"></div>
+                        </div>
                     </div>
-                    <div class="p-4 border-l-4 border-gray-400 bg-white">
-                        <div class="font-bold text-lg mb-1">2. Tell the Story</div>
-                        <p class="text-sm text-gray-600">Move closer to the audience (Front Left or Center). Lower your voice. Make it personal.</p>
-                    </div>
-                    <div class="p-4 border-l-4 border-primary bg-white">
-                        <div class="font-bold text-lg mb-1">3. The Solution</div>
-                        <p class="text-sm text-gray-600">Move decisively to Stage Right (the audience's right). This represents the future, the solution, and the way forward.</p>
+
+                    <!-- Explainer -->
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <span class="w-3 h-3 rounded-full bg-red-400 mt-1.5 mr-3 flex-shrink-0"></span>
+                            <div>
+                                <span class="font-bold block text-sm">The Public Zone (>12 ft)</span>
+                                <span class="text-sm text-gray-500">Formal. Safe. Good for facts, figures, and big gestures. Low emotional impact.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="w-3 h-3 rounded-full bg-yellow-400 mt-1.5 mr-3 flex-shrink-0"></span>
+                            <div>
+                                <span class="font-bold block text-sm">The Social Zone (4-12 ft)</span>
+                                <span class="text-sm text-gray-500">Conversational. The "Sweet Spot." Ideally where you spend 60% of your time.</span>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <span class="w-3 h-3 rounded-full bg-green-400 mt-1.5 mr-3 flex-shrink-0"></span>
+                            <div>
+                                <span class="font-bold block text-sm">The Personal Zone (1.5-4 ft)</span>
+                                <span class="text-sm text-gray-500">High Intensity. Use sparingly for whispers, secrets, or vulnerable stories. High risk, high reward.</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -315,91 +378,131 @@
                 <p class="text-gray-600">Your body leaks the truth. If your words say "confident" but your body says "nervous," the audience believes the body.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-                <!-- Checklist -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-bold mb-4 flex items-center">
-                        <span class="bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center text-xs mr-2">!</span>
-                        Body Language Audit
-                    </h3>
-                    <div class="space-y-3" id="checklist-container">
-                        <!-- Populated by JS -->
+            <!-- POSTURE SPECTRUM -->
+            <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
+                <h3 class="text-lg font-bold mb-6 text-center">The Posture Spectrum: What are you broadcasting?</h3>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Selector Buttons -->
+                    <div class="col-span-1 space-y-3">
+                        <button onclick="updatePosture('turtle')" class="posture-btn w-full p-4 rounded-lg flex items-center justify-between bg-gray-50 text-left group" id="btn-turtle">
+                            <div>
+                                <div class="font-bold text-gray-700 group-hover:text-primary">The Turtle</div>
+                                <div class="text-xs text-gray-500">The "Safe" Posture</div>
+                            </div>
+                            <span class="text-xl">🐢</span>
+                        </button>
+                        <button onclick="updatePosture('soldier')" class="posture-btn w-full p-4 rounded-lg flex items-center justify-between bg-gray-50 text-left group" id="btn-soldier">
+                            <div>
+                                <div class="font-bold text-gray-700 group-hover:text-primary">The Soldier</div>
+                                <div class="text-xs text-gray-500">The "Aggressive" Posture</div>
+                            </div>
+                            <span class="text-xl">⚔️</span>
+                        </button>
+                        <button onclick="updatePosture('leader')" class="posture-btn w-full p-4 rounded-lg flex items-center justify-between bg-gray-50 text-left group active" id="btn-leader">
+                            <div>
+                                <div class="font-bold text-gray-700 group-hover:text-primary">The Leader</div>
+                                <div class="text-xs text-gray-500">The "Open" Posture</div>
+                            </div>
+                            <span class="text-xl">👑</span>
+                        </button>
                     </div>
-                </div>
 
-                <!-- Data Viz: High Power vs Low Power -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <h3 class="text-lg font-bold mb-2">The Physiology of Confidence</h3>
-                    <p class="text-sm text-gray-500 mb-4">Impact of 2 minutes of "Power Posing" (Amy Cuddy Research)</p>
-                    
-                    <!-- Visualization & Content Choices:
-                        Goal: Compare hormone levels (Testosterone/Cortisol) for High vs Low power poses.
-                        Viz: Grouped Bar Chart.
-                        Interaction: None (static comparison), but vital for data-backed validity.
-                    -->
-                    <div class="chart-container">
-                        <canvas id="hormoneChart"></canvas>
-                    </div>
-                    <div class="mt-4 text-xs text-gray-500 italic text-center">
-                        *High Power poses increase dominance (testosterone) and lower stress (cortisol).
+                    <!-- Description Panel -->
+                    <div class="col-span-1 lg:col-span-2 bg-stone-50 rounded-lg p-6 border border-stone-100 flex flex-col justify-center">
+                        <div id="posture-content">
+                            <!-- Populated by JS -->
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-stone-800 text-white rounded-xl p-8">
-                <h3 class="text-xl font-bold mb-6 text-center">The Hand Gesture Dictionary</h3>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
-                        <div class="text-3xl mb-2">👐</div>
-                        <div class="font-bold text-primary">Open Palms</div>
-                        <div class="text-xs text-stone-300 mt-1">Honesty, Openness</div>
+            <!-- The Truth Plane & Eye Contact Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- The Truth Plane (Hands) -->
+                <div class="bg-stone-800 text-white rounded-xl p-8">
+                    <h3 class="text-xl font-bold mb-4 text-primary">The "Truth Plane" & Hands</h3>
+                    <p class="text-sm text-stone-300 mb-6">Where you rest your hands tells the audience how trustworthy you are. Keep gestures in "The Box" (between belt and sternum).</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="text-2xl mr-3">🚫</div>
+                            <div>
+                                <div class="font-bold text-white">The Fig Leaf</div>
+                                <div class="text-xs text-stone-400">Hands clasped in front of the groin. Signals insecurity.</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-2xl mr-3">🚫</div>
+                            <div>
+                                <div class="font-bold text-white">The T-Rex</div>
+                                <div class="text-xs text-stone-400">Elbows locked to ribs. Signals tension.</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-2xl mr-3">✅</div>
+                            <div>
+                                <div class="font-bold text-white">The Steeple</div>
+                                <div class="text-xs text-stone-400">Fingertips touching lightly. Signals intellect/precision.</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="text-2xl mr-3">✅</div>
+                            <div>
+                                <div class="font-bold text-white">Open Palms</div>
+                                <div class="text-xs text-stone-400">Showing palms at 45 degrees. Signals openness.</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
-                        <div class="text-3xl mb-2">🤏</div>
-                        <div class="font-bold text-primary">The Precision</div>
-                        <div class="text-xs text-stone-300 mt-1">Detail, Specificity</div>
-                    </div>
-                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
-                        <div class="text-3xl mb-2">👊</div>
-                        <div class="font-bold text-primary">The Fist</div>
-                        <div class="text-xs text-stone-300 mt-1">Determination (Use sparingly)</div>
-                    </div>
-                    <div class="text-center p-4 bg-stone-700 rounded hover:bg-stone-600 transition">
-                        <div class="text-3xl mb-2">🫳</div>
-                        <div class="font-bold text-primary">Palms Down</div>
-                        <div class="text-xs text-stone-300 mt-1">Authority, Calming</div>
+                </div>
+
+                <!-- Eye Contact Strategy -->
+                <div class="bg-white border border-gray-200 rounded-xl p-8">
+                    <h3 class="text-xl font-bold mb-4 text-primary">Eye Contact Strategy</h3>
+                    <div class="space-y-6">
+                        <div class="border-b border-gray-100 pb-4">
+                            <h4 class="font-bold text-gray-900 mb-1">The "Lighthouse" Method <span class="text-green-600 text-xs bg-green-100 px-2 py-1 rounded ml-2">RECOMMENDED</span></h4>
+                            <p class="text-sm text-gray-500">Hold eye contact with one person for <strong>3-5 seconds</strong> (or one complete thought), then smoothly move to another person in a different part of the room.</p>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-gray-900 mb-1">Pacifying Behaviors <span class="text-red-600 text-xs bg-red-100 px-2 py-1 rounded ml-2">STOP DOING</span></h4>
+                            <ul class="list-disc list-inside text-sm text-gray-500 mt-2 space-y-1">
+                                <li>Touching the neck (suprasternal notch)</li>
+                                <li>Adjusting clothing/jewelry constantly</li>
+                                <li>Rubbing hands together (self-soothing)</li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 4: THE VOICE (VOCAL) -->
+        <!-- SECTION 4: THE VOICE (VOCAL) - EXPANDED -->
         <section id="voice" class="section-content hidden animate-fade-in">
             <div class="mb-8">
                 <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Vocal Variety Mixer</h2>
-                <p class="text-gray-600">Monotone kills attention. Adjust your vocal settings based on the emotion you want to convey. Use the controls below to see the ideal vocal profile.</p>
+                <p class="text-gray-600">Monotone kills attention. Adjust your vocal settings based on the emotion you want to convey.</p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
                 <!-- Controls -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 col-span-1">
                     <h3 class="font-bold text-lg mb-6">Select Speaking Mode</h3>
                     <div class="space-y-4">
                         <button onclick="updateVoiceChart('story')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="story">
                             <div class="font-bold text-gray-800 group-hover:text-primary">📖 The Storyteller</div>
-                            <div class="text-xs text-gray-500">For emotional connection and narrative.</div>
+                            <div class="text-xs text-gray-500">For emotional connection.</div>
                         </button>
                         <button onclick="updateVoiceChart('data')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="data">
                             <div class="font-bold text-gray-800 group-hover:text-primary">📊 The Analyst</div>
-                            <div class="text-xs text-gray-500">For delivering complex facts and logic.</div>
+                            <div class="text-xs text-gray-500">For complex facts.</div>
                         </button>
                         <button onclick="updateVoiceChart('inspire')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="inspire">
                             <div class="font-bold text-gray-800 group-hover:text-primary">🔥 The Motivator</div>
-                            <div class="text-xs text-gray-500">For calls to action and high energy.</div>
+                            <div class="text-xs text-gray-500">For calls to action.</div>
                         </button>
                         <button onclick="updateVoiceChart('calm')" class="voice-btn w-full text-left p-4 rounded border hover:border-primary hover:bg-orange-50 transition group" data-mode="calm">
                             <div class="font-bold text-gray-800 group-hover:text-primary">⚓ The Anchor</div>
-                            <div class="text-xs text-gray-500">For delivering bad news or reassurance.</div>
+                            <div class="text-xs text-gray-500">For reassurance.</div>
                         </button>
                     </div>
                 </div>
@@ -407,111 +510,179 @@
                 <!-- Radar Chart -->
                 <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 col-span-1 lg:col-span-2 flex flex-col items-center justify-center">
                     <h3 class="font-bold text-lg mb-2 text-center w-full">Vocal Profile Visualizer</h3>
-                     <!-- Visualization & Content Choices:
-                         Goal: Show the balance of 4 vocal elements (Pitch, Pace, Volume, Pause) for different styles.
-                         Viz: Radar Chart.
-                         Interaction: Buttons update data.
-                         Justification: Radar charts are perfect for multivariate profile comparison.
-                     -->
                     <div class="chart-container">
                         <canvas id="voiceRadarChart"></canvas>
                     </div>
-                    <div class="mt-4 grid grid-cols-4 gap-2 w-full text-center text-xs">
-                        <div>
-                            <span class="font-bold block">Pitch</span>
-                            High = Excitement<br>Low = Authority
+                </div>
+            </div>
+
+            <!-- NEW: VOCAL GYM & SILENCE -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Vocal Gym -->
+                <div class="bg-orange-50 border border-orange-100 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">🏋️ Vocal Warmup Gym</h3>
+                    <p class="text-sm text-gray-600 mb-4">Do these 5 minutes before stage time.</p>
+                    <div class="space-y-3">
+                        <div class="bg-white p-3 rounded shadow-sm">
+                            <span class="font-bold text-primary block">Lip Trills (Brrrr)</span>
+                            <span class="text-xs text-gray-500">Relaxes the lips and engages the diaphragm.</span>
                         </div>
-                        <div>
-                            <span class="font-bold block">Pace</span>
-                            Fast = Urgency<br>Slow = Importance
+                        <div class="bg-white p-3 rounded shadow-sm">
+                            <span class="font-bold text-primary block">The "Hum"</span>
+                            <span class="text-xs text-gray-500">Hum low to high and back down. Warms up the cords gently.</span>
                         </div>
-                        <div>
-                            <span class="font-bold block">Volume</span>
-                            Loud = Power<br>Soft = Intimacy
+                        <div class="bg-white p-3 rounded shadow-sm">
+                            <span class="font-bold text-primary block">Tongue Twister</span>
+                            <span class="text-xs text-gray-500 italic">"Red Leather, Yellow Leather. Unique New York."</span>
                         </div>
-                        <div>
-                            <span class="font-bold block">Pause</span>
-                            Long = Impact<br>Short = Momentum
+                    </div>
+                </div>
+
+                <!-- Silence Strategy -->
+                <div class="bg-white border border-gray-200 p-6 rounded-xl">
+                    <h3 class="text-xl font-bold text-gray-900 mb-4">🤐 The Power of the Pause</h3>
+                    <p class="text-sm text-gray-600 mb-4">Silence is not empty; it is a tool. Replace "Um" and "Ah" with silence.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex">
+                            <div class="w-16 font-bold text-gray-800">1 Sec</div>
+                            <div class="text-sm text-gray-600">The "Comma" Pause. Separates list items.</div>
+                        </div>
+                        <div class="flex">
+                            <div class="w-16 font-bold text-gray-800">2 Sec</div>
+                            <div class="text-sm text-gray-600">The "Period" Pause. Signals the end of a thought.</div>
+                        </div>
+                        <div class="flex">
+                            <div class="w-16 font-bold text-gray-800">3-4 Sec</div>
+                            <div class="text-sm text-gray-600">The "Impact" Pause. Use after a profound statement to let it sink in.</div>
+                        </div>
+                        <div class="bg-stone-800 text-white p-3 rounded mt-2 text-center text-sm font-bold">
+                            "Music is the silence between the notes." - Debussy
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 5: STRUCTURE -->
+        <!-- SECTION 5: STRUCTURE - EXPANDED -->
         <section id="structure" class="section-content hidden animate-fade-in">
              <div class="mb-8">
                 <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Attention Architecture</h2>
-                <p class="text-gray-600">You don't have the audience's attention for the full time. You must earn it repeatedly. Structure your content to match the human attention span.</p>
+                <p class="text-gray-600">Structure your content to match the human attention span and emotional journey.</p>
             </div>
 
+            <!-- NEW: THE STORY SPARKLINE (Duarte) -->
             <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 mb-8">
-                <h3 class="text-lg font-bold mb-4">The 10-Minute Rule & Attention Spikes</h3>
-                 <!-- Visualization & Content Choices:
-                     Goal: Visualize how attention drops over time and how "Soft Breaks" reset it.
-                     Viz: Line Chart.
-                     Interaction: None.
-                     Justification: Shows trends over time effectively.
-                 -->
+                <h3 class="text-lg font-bold mb-2">The Storytelling Sparkline (The "Status Quo" vs. "New Bliss")</h3>
+                <p class="text-sm text-gray-500 mb-4">Great speeches oscillate between "What is" (The Problem) and "What could be" (The Solution). They don't stay flat.</p>
                 <div class="chart-container">
-                    <canvas id="attentionChart"></canvas>
-                </div>
-                <div class="mt-4 bg-blue-50 p-4 rounded border border-blue-100 text-sm text-blue-800">
-                    <strong>Insight:</strong> Attention naturally decays. Every 10 minutes (or sooner), you must insert a "Soft Break" (video, story, demo, question) to reset the clock.
+                    <canvas id="sparklineChart"></canvas>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-stone-50 p-6 rounded-xl">
-                    <h3 class="font-bold text-lg mb-4 text-primary">The PREP Framework</h3>
-                    <p class="text-sm text-gray-600 mb-4">Use this for impromptu speaking or short segments.</p>
-                    <ul class="space-y-4">
-                        <li class="flex">
-                            <span class="font-bold w-8 text-primary">P</span>
-                            <div>
-                                <span class="font-bold">Point:</span> State your main idea immediately.
-                            </div>
-                        </li>
-                        <li class="flex">
-                            <span class="font-bold w-8 text-primary">R</span>
-                            <div>
-                                <span class="font-bold">Reason:</span> Explain why this point is true/important.
-                            </div>
-                        </li>
-                        <li class="flex">
-                            <span class="font-bold w-8 text-primary">E</span>
-                            <div>
-                                <span class="font-bold">Example:</span> Give evidence, data, or a story.
-                            </div>
-                        </li>
-                        <li class="flex">
-                            <span class="font-bold w-8 text-primary">P</span>
-                            <div>
-                                <span class="font-bold">Point:</span> Restate the main idea.
-                            </div>
-                        </li>
-                    </ul>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <!-- Attention Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <h3 class="text-lg font-bold mb-4">The 10-Minute Rule</h3>
+                    <div class="chart-container" style="height: 200px;">
+                        <canvas id="attentionChart"></canvas>
+                    </div>
+                    <div class="mt-4 text-xs text-gray-500">
+                        Attention decays naturally. Insert stories, videos, or questions every 10 minutes to "reset" the clock.
+                    </div>
                 </div>
 
-                <div class="bg-stone-50 p-6 rounded-xl">
-                    <h3 class="font-bold text-lg mb-4 text-primary">Pre-Speech Research Checklist</h3>
-                    <div class="space-y-2">
-                         <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
-                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
-                            <span class="text-sm">Who is in the room? (Demographics/Roles)</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
-                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
-                            <span class="text-sm">What do they already know? (Avoid boring/confusing)</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
-                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
-                            <span class="text-sm">What is their biggest pain point?</span>
-                        </label>
-                        <label class="flex items-center space-x-3 p-2 bg-white rounded shadow-sm">
-                            <input type="checkbox" class="form-checkbox text-primary h-5 w-5">
-                            <span class="text-sm">What is the ONE thing I want them to do?</span>
-                        </label>
+                <!-- Hook Library -->
+                <div class="bg-stone-50 p-6 rounded-xl border border-stone-200">
+                    <h3 class="font-bold text-lg mb-4 text-primary">The Hook Library</h3>
+                    <p class="text-sm text-gray-600 mb-4">Never start with "Today I'm going to talk about..." Start with fire.</p>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-white rounded border-l-4 border-primary">
+                            <span class="font-bold block text-sm">The Provocative Question</span>
+                            <span class="text-xs text-gray-500">"What if I told you that 50% of this room is wrong?"</span>
+                        </div>
+                        <div class="p-3 bg-white rounded border-l-4 border-primary">
+                            <span class="font-bold block text-sm">The Shocking Statistic</span>
+                            <span class="text-xs text-gray-500">"Every second, the sun produces enough energy to power..."</span>
+                        </div>
+                        <div class="p-3 bg-white rounded border-l-4 border-primary">
+                            <span class="font-bold block text-sm">The "In Media Res" Story</span>
+                            <span class="text-xs text-gray-500">Start in the middle of the action. "I was standing on the edge of the cliff..."</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PREP Framework -->
+             <div class="bg-stone-800 text-white rounded-xl p-8">
+                <h3 class="font-bold text-xl mb-4 text-center">Impromptu Speaking: The Rule of Three (PREP)</h3>
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <div class="p-2">
+                        <div class="text-2xl font-bold text-primary">P</div>
+                        <div class="text-sm font-bold">Point</div>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl font-bold text-primary">R</div>
+                        <div class="text-sm font-bold">Reason</div>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl font-bold text-primary">E</div>
+                        <div class="text-sm font-bold">Example</div>
+                    </div>
+                    <div class="p-2">
+                        <div class="text-2xl font-bold text-primary">P</div>
+                        <div class="text-sm font-bold">Point</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- NEW SECTION: THE MINDSET -->
+        <section id="mindset" class="section-content hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-3xl font-serif font-bold text-gray-900 mb-2">The Mindset: Conquering Stage Fright</h2>
+                <p class="text-gray-600">Nervousness is not a bug; it's a feature. It's energy. The goal isn't to be calm; it's to be focused.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <!-- Box Breathing Tool -->
+                <div class="bg-stone-900 rounded-xl p-8 text-center shadow-lg">
+                    <h3 class="text-white font-bold text-xl mb-8">Box Breathing Visualizer</h3>
+                    <!-- CSS Animation Circle -->
+                    <div class="relative h-40 flex items-center justify-center">
+                        <div class="breathing-circle"></div>
+                    </div>
+                    <div class="mt-8 text-2xl font-bold text-white breathing-text" id="breath-instruction">Inhale...</div>
+                    <p class="text-stone-400 text-sm mt-4">4 Seconds In • 4 Seconds Hold • 4 Seconds Out • 4 Seconds Hold</p>
+                    <p class="text-stone-500 text-xs mt-2">Used by Navy SEALs to lower cortisol instantly.</p>
+                </div>
+
+                <!-- Re-framing Anxiety -->
+                <div class="space-y-6">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4">Physiological Re-framing</h3>
+                        <p class="text-sm text-gray-600 mb-4">Anxiety and Excitement are physically identical (racing heart, sweaty palms). The only difference is the narrative.</p>
+                        
+                        <div class="flex items-center justify-between bg-stone-50 p-3 rounded mb-2">
+                            <span class="text-red-500 font-bold">"I am nervous."</span>
+                            <span>➡️</span>
+                            <span class="text-green-600 font-bold">"I am excited!"</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-stone-50 p-3 rounded">
+                            <span class="text-red-500 font-bold">"They will judge me."</span>
+                            <span>➡️</span>
+                            <span class="text-green-600 font-bold">"I have a gift for them."</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-xl font-bold mb-2">Visualization Technique</h3>
+                        <p class="text-sm text-gray-600">Don't visualize the standing ovation. Visualize the <strong>process</strong> and the <strong>problems</strong>.</p>
+                        <ul class="list-disc list-inside text-sm text-gray-500 mt-2 space-y-2">
+                            <li>Visualize the tech failing and you remaining calm.</li>
+                            <li>Visualize walking onto the stage confidently.</li>
+                            <li>Visualize seeing a friendly face in the front row.</li>
+                        </ul>
                     </div>
                 </div>
             </div>
@@ -533,23 +704,20 @@
         const state = {
             currentSection: 'overview',
             activeStageZone: null,
-            currentVoiceMode: 'story'
+            currentVoiceMode: 'story',
+            currentPosture: 'leader'
         };
 
         // --- Navigation Logic ---
         function navigateTo(sectionId) {
-            // Update State
             state.currentSection = sectionId;
 
-            // Hide all sections
             document.querySelectorAll('.section-content').forEach(el => {
                 el.classList.add('hidden');
             });
 
-            // Show target section
             document.getElementById(sectionId).classList.remove('hidden');
 
-            // Update Nav Styling
             document.querySelectorAll('.nav-item').forEach(el => {
                 el.classList.remove('active', 'text-gray-900');
                 el.classList.add('text-gray-600');
@@ -561,11 +729,9 @@
                 activeNav.classList.remove('text-gray-600');
             }
 
-            // Mobile menu logic
             document.getElementById('mobile-menu').classList.add('hidden');
         }
 
-        // --- Mobile Menu Toggle ---
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('mobile-menu').classList.toggle('hidden');
         });
@@ -605,37 +771,66 @@
         };
 
         function updateStageInfo(zone) {
-            // UI Highlight
             document.querySelectorAll('.stage-zone').forEach(el => el.classList.remove('active-zone'));
             document.querySelector(`[data-zone="${zone}"]`).classList.add('active-zone');
 
-            // Content Update
             const data = stageData[zone];
             document.getElementById('zone-title').textContent = data.title;
             document.getElementById('zone-desc').textContent = data.desc;
             document.getElementById('zone-use').textContent = data.use;
         }
 
-        // --- Body Language Checklist ---
-        const checklistItems = [
-            { text: "Hands visible (not in pockets)", type: "positive" },
-            { text: "Feet shoulder-width apart", type: "positive" },
-            { text: "Fig-Leaf position (hands covering groin)", type: "negative" },
-            { text: "Eye contact (one person per thought)", type: "positive" },
-            { text: "Crossing arms (barrier)", type: "negative" },
-            { text: "Lean forward slightly", type: "positive" }
-        ];
+        // --- Posture Logic ---
+        const postureData = {
+            'turtle': {
+                title: "The Turtle (The Protector)",
+                traits: ["Shoulders rolled forward", "Chin tucked down", "Arms crossed or close to body", "Feet close together"],
+                signal: "I am threatened. I am not confident. Please don't hurt me.",
+                correction: "Roll shoulders back and down. Expose the throat/neck."
+            },
+            'soldier': {
+                title: "The Soldier (The Aggressor)",
+                traits: ["Chest puffed out unnaturally", "Chin tilted high up", "Rigid spine", "Locked knees"],
+                signal: "I am rigid. I am arrogant. I am disconnected from you.",
+                correction: "Soften the knees. Bring the chin parallel to floor. Relax the traps."
+            },
+            'leader': {
+                title: "The Leader (The Anchor)",
+                traits: ["Feet shoulder-width apart", "Weight on balls of feet", "Sternum open (string pulling head up)", "Hands in the 'Truth Plane'"],
+                signal: "I am safe. I am in control. I am open to connection.",
+                correction: "This is the goal. Maintain this 90% of the time."
+            }
+        };
 
-        const checklistContainer = document.getElementById('checklist-container');
-        checklistItems.forEach(item => {
-            const div = document.createElement('div');
-            div.className = `flex items-center justify-between p-3 rounded ${item.type === 'positive' ? 'bg-green-50 border border-green-100' : 'bg-red-50 border border-red-100'}`;
-            div.innerHTML = `
-                <span class="text-sm font-medium ${item.type === 'positive' ? 'text-green-800' : 'text-red-800'}">${item.text}</span>
-                <span class="text-xs font-bold uppercase ${item.type === 'positive' ? 'text-green-600' : 'text-red-600'}">${item.type === 'positive' ? 'DO' : 'AVOID'}</span>
+        function updatePosture(type) {
+            document.querySelectorAll('.posture-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-' + type).classList.add('active');
+
+            const data = postureData[type];
+            const contentDiv = document.getElementById('posture-content');
+            
+            let traitsHtml = data.traits.map(t => `<li class="flex items-center"><span class="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></span>${t}</li>`).join('');
+
+            contentDiv.innerHTML = `
+                <div class="animate-fade-in">
+                    <h4 class="text-2xl font-bold text-gray-900 mb-2">${data.title}</h4>
+                    <div class="mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider text-gray-500">Physical Cues</span>
+                        <ul class="text-sm text-gray-700 mt-2 space-y-1">
+                            ${traitsHtml}
+                        </ul>
+                    </div>
+                    <div class="bg-white p-4 rounded border-l-4 ${type === 'leader' ? 'border-green-500' : 'border-red-500'} shadow-sm">
+                        <div class="font-bold text-sm mb-1">Psychological Signal:</div>
+                        <p class="italic text-gray-800">"${data.signal}"</p>
+                    </div>
+                     ${type !== 'leader' ? `<div class="mt-4 text-xs text-primary font-bold">Correction: ${data.correction}</div>` : ''}
+                </div>
             `;
-            checklistContainer.appendChild(div);
-        });
+        }
+
+        // Initialize Posture
+        updatePosture('leader');
 
 
         // --- Chart.js Initialization ---
@@ -662,38 +857,7 @@
                 }
             });
 
-            // 2. Hormone Bar Chart
-            const ctxHormone = document.getElementById('hormoneChart').getContext('2d');
-            new Chart(ctxHormone, {
-                type: 'bar',
-                data: {
-                    labels: ['High Power Pose', 'Low Power Pose'],
-                    datasets: [
-                        {
-                            label: 'Testosterone Change (%)',
-                            data: [20, -10],
-                            backgroundColor: '#16a34a',
-                        },
-                        {
-                            label: 'Cortisol Change (%)',
-                            data: [-25, 15],
-                            backgroundColor: '#dc2626',
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            title: { display: true, text: '% Change' }
-                        }
-                    }
-                }
-            });
-
-            // 3. Voice Radar Chart (Global variable to update later)
+            // 2. Voice Radar Chart
             const ctxVoice = document.getElementById('voiceRadarChart').getContext('2d');
             window.voiceChart = new Chart(ctxVoice, {
                 type: 'radar',
@@ -721,10 +885,9 @@
                     }
                 }
             });
-            // Initial render
             updateVoiceChart('story');
 
-            // 4. Attention Line Chart
+            // 3. Attention Line Chart
             const ctxAttn = document.getElementById('attentionChart').getContext('2d');
             new Chart(ctxAttn, {
                 type: 'line',
@@ -748,11 +911,44 @@
                             max: 100,
                             title: { display: true, text: 'Attention %' }
                         }
+                    }
+                }
+            });
+
+            // 4. Sparkline Chart (New)
+            const ctxSpark = document.getElementById('sparklineChart').getContext('2d');
+            new Chart(ctxSpark, {
+                type: 'line',
+                data: {
+                    labels: ['Intro', 'Status Quo', 'Inciting Incident', 'New Bliss', 'Resistance', 'The Choice', 'Resolution'],
+                    datasets: [{
+                        label: 'Emotional Intensity (What Is vs What Could Be)',
+                        data: [50, 30, 80, 90, 40, 85, 95], // High = What Could Be, Low = What Is
+                        borderColor: '#ea580c',
+                        borderWidth: 3,
+                        backgroundColor: 'transparent',
+                        tension: 0.2,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#ea580c',
+                        stepped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            display: true,
+                            title: { display: true, text: 'Emotion / Hope' },
+                            ticks: { display: false }
+                        },
+                        x: {
+                            display: true
+                        }
                     },
                     plugins: {
-                        annotation: {
-                            // Note: Annotations require plugin, simplifying for standard Chart.js
-                        }
+                        legend: { display: false }
                     }
                 }
             });
@@ -760,14 +956,13 @@
 
         // --- Dynamic Voice Chart Update ---
         const voiceProfiles = {
-            'story': { data: [80, 50, 40, 90], label: "High Pitch Variation, Slow Pace, Intimate Volume" }, // High pitch var, slow pace, soft vol, many pauses
-            'data': { data: [30, 60, 60, 40], label: "Steady Pitch, Moderate Pace, Clear Volume" }, // Flat pitch, med pace, med vol, few pauses
-            'inspire': { data: [70, 80, 90, 70], label: "Rising Pitch, Fast Pace, Loud Volume" }, // High pitch, fast, loud, strategic pauses
-            'calm': { data: [20, 30, 40, 80], label: "Low Pitch, Slow Pace, Low Volume" } // Low pitch, very slow, low vol, long pauses
+            'story': { data: [80, 50, 40, 90], label: "High Pitch Variation, Slow Pace, Intimate Volume" },
+            'data': { data: [30, 60, 60, 40], label: "Steady Pitch, Moderate Pace, Clear Volume" },
+            'inspire': { data: [70, 80, 90, 70], label: "Rising Pitch, Fast Pace, Loud Volume" },
+            'calm': { data: [20, 30, 40, 80], label: "Low Pitch, Slow Pace, Low Volume" }
         };
 
         function updateVoiceChart(mode) {
-            // Update Buttons
             document.querySelectorAll('.voice-btn').forEach(btn => {
                 if(btn.dataset.mode === mode) {
                     btn.classList.add('border-primary', 'bg-orange-50');
@@ -776,7 +971,6 @@
                 }
             });
 
-            // Update Chart
             const profile = voiceProfiles[mode];
             window.voiceChart.data.datasets[0].data = profile.data;
             window.voiceChart.update();
