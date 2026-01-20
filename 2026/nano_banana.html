@@ -29,12 +29,12 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        /* Chart Container Utilities - MANDATORY */
+        /* Chart Container Utilities */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 600px;
-            height: 350px; /* Base height */
+            height: 350px; 
             max-height: 400px;
             margin-left: auto;
             margin-right: auto;
@@ -56,12 +56,11 @@
             font-weight: 600;
         }
 
-        .prompt-card {
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        .btn-action {
+            transition: all 0.2s;
         }
-        .prompt-card:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
 
         /* Custom Scrollbar */
@@ -107,6 +106,9 @@
             </button>
             <button onclick="navTo('medical')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="medical">
                 <span class="mr-2">🩺</span> Medical & Anatomy
+            </button>
+            <button onclick="navTo('photography')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="photography">
+                <span class="mr-2">🎥</span> Photography & Film
             </button>
             <button onclick="navTo('infographics')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="infographics">
                 <span class="mr-2">🧩</span> Infographics
@@ -182,6 +184,28 @@
                 { title: 'Diagnostic Imaging', keyword: 'MRI / X-Ray', desc: 'Greyscale, high contrast, internal view.', prompt: 'MRI scan, T2 weighted image, high contrast, radiologic imaging, greyscale, cross-section of brain, medical diagnosis' },
                 { title: 'Microscopic (SEM)', keyword: 'Electron Microscope', desc: 'For viruses, cells, and bacteria.', prompt: 'scanning electron microscope (SEM) image, high magnification, depth of field, colorized, macro details, scientific visualization' },
                 { title: 'Surgical Schematic', keyword: 'Vector Line Art', desc: 'Procedure steps without the blood.', prompt: 'surgical line art, black and white vector, technical manual style, surgical instruments, step-by-step procedure, minimal' }
+            ],
+            anatomy: [
+                { part: 'Skeletal System', desc: 'Bones, skull, ribs, joints', prompt: 'Human skeletal system, osteology, bone structure, white bone texture' },
+                { part: 'Muscular System', desc: 'Muscles, tendons, fibers', prompt: 'Human muscular system, myology, red muscle fibers, tendons, detailed anatomy' },
+                { part: 'Nervous System', desc: 'Brain, nerves, spinal cord', prompt: 'Human nervous system, neural network, brain and spinal cord, glowing synapses' },
+                { part: 'Circulatory System', desc: 'Heart, veins, arteries', prompt: 'Human circulatory system, heart anatomy, veins and arteries, blood vessels' },
+                { part: 'Respiratory System', desc: 'Lungs, trachea, bronchi', prompt: 'Human respiratory system, lungs, bronchi, trachea, air sacs' },
+                { part: 'Digestive System', desc: 'Stomach, intestines', prompt: 'Human digestive system, stomach, intestines, liver, internal organs' }
+            ],
+            photography: [
+                { type: 'Lens', name: 'Wide Angle (16mm)', prompt: '16mm wide angle lens, fisheye effect, barrel distortion, expansive view', usage: 'Architecture, Landscapes, Dynamic Action' },
+                { type: 'Lens', name: 'Portrait (85mm)', prompt: '85mm portrait lens, f/1.8, bokeh background, shallow depth of field', usage: 'Portraits, Product Photography' },
+                { type: 'Lens', name: 'Macro (100mm)', prompt: '100mm macro lens, extreme close-up, highly detailed texture', usage: 'Insects, Textures, Jewelry' },
+                { type: 'Film', name: 'Kodak Portra 400', prompt: 'Kodak Portra 400 film stock, fine grain, warm tones, analog photography', usage: 'Lifestyle, Nostalgic, Natural Skin Tones' },
+                { type: 'Film', name: 'Cinestill 800T', prompt: 'Cinestill 800T, halation effect, red halos around lights, night photography', usage: 'Cyberpunk, Night Scenes, Neon' },
+                { type: 'Angle', name: 'Dutch Angle', prompt: 'Dutch angle, tilted camera, dynamic composition, unease', usage: 'Horror, Action, Tension' },
+                { type: 'Angle', name: 'Low Angle (Hero)', prompt: 'low angle shot, looking up, imposing presence, worm\'s eye view', usage: 'Superheroes, Giants, Architecture' }
+            ],
+            infographics: [
+                { title: 'Statistical Layout', desc: 'Dashboards & Charts', prompt: 'infographic layout, flat vector design, bar charts and pie charts, minimalism, corporate color palette', style: 'digital illustration, cel shaded', renderer: 'Adobe Illustrator style' },
+                { title: 'Flowchart / Process', desc: 'Timelines & Logic', prompt: 'process map, flowchart infographic, connected nodes, isometric path, step-by-step guide', style: 'low poly, isometric render', renderer: 'Unreal Engine 5 render, 8k, ray tracing' },
+                { title: 'Scientific Poster', desc: 'Anatomy & Biology', prompt: 'scientific illustration, medical infographic, anatomy breakdown, detailed text labels', style: 'oil painting, thick texture', renderer: 'Pixar style, Disney animation style' }
             ]
         };
 
@@ -202,6 +226,7 @@
 
         function cycleTip() {
             const tipEl = document.getElementById('daily-tip');
+            if(!tipEl) return;
             let i = 0;
             setInterval(() => {
                 i = (i + 1) % dataStore.tips.length;
@@ -242,6 +267,7 @@
                 case 'art-styles': renderArtStyles(main); break;
                 case 'engineering': renderEngineering(main); break;
                 case 'medical': renderMedical(main); break;
+                case 'photography': renderPhotography(main); break;
                 case 'infographics': renderInfographics(main); break;
                 case 'builder': renderBuilder(main); break;
             }
@@ -282,7 +308,7 @@
                                 </li>
                                 <li class="flex items-start">
                                     <span class="bg-yellow-100 text-yellow-800 p-1 rounded mr-3 text-xs font-mono">3</span>
-                                    <span class="text-stone-600 text-sm">Use the Builder to concatenate parameters.</span>
+                                    <span class="text-stone-600 text-sm">Use the "Customize in Builder" buttons.</span>
                                 </li>
                             </ul>
                             <button onclick="navTo('art-styles')" class="mt-4 w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-2 px-4 rounded transition">
@@ -328,7 +354,6 @@
             `;
             container.innerHTML = content;
             populateStyleList();
-            // Default select first
             selectStyle(dataStore.styles[0].id);
         }
 
@@ -377,7 +402,11 @@
                             <span id="prompt-text-${id}">${style.prompt}</span>
                             <button onclick="copyText('prompt-text-${id}')" class="absolute top-2 right-2 bg-stone-700 hover:bg-stone-600 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Copy</button>
                         </div>
-                        <p class="text-xs text-stone-500">
+                        <button onclick="fillBuilderWithStyle('${style.id}')" class="w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-3 rounded-lg transition shadow-sm flex items-center justify-center gap-2">
+                            <span>Customize in Builder</span>
+                            <span class="text-lg">🛠️</span>
+                        </button>
+                        <p class="text-xs text-stone-500 text-center">
                             *Analysis: This style prioritizes <strong class="text-yellow-600">${getMaxAttribute(style.metrics)}</strong> over others.
                         </p>
                     </div>
@@ -421,22 +450,26 @@
                     <h3 class="font-bold text-stone-800 text-xl">Standard Engineering Views</h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         ${dataStore.engineering.map(item => `
-                            <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-blue-400 transition cursor-pointer" onclick="fillBuilderWithTech('${item.keyword}')">
-                                <div class="flex justify-between items-center mb-2">
-                                    <h4 class="font-bold text-stone-800">📐 ${item.title}</h4>
-                                    <span class="text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 font-mono">${item.keyword}</span>
+                            <div class="bg-white p-4 rounded-lg border border-stone-200 flex flex-col justify-between">
+                                <div>
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-bold text-stone-800">📐 ${item.title}</h4>
+                                        <span class="text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 font-mono">${item.keyword}</span>
+                                    </div>
+                                    <p class="text-sm text-stone-600 mb-3">${item.desc}</p>
+                                    <div class="bg-stone-50 p-2 rounded text-xs font-mono text-stone-500 truncate mb-3">
+                                        ${item.prompt}
+                                    </div>
                                 </div>
-                                <p class="text-sm text-stone-600 mb-3">${item.desc}</p>
-                                <div class="bg-stone-50 p-2 rounded text-xs font-mono text-stone-500 truncate">
-                                    ${item.prompt}
-                                </div>
+                                <button onclick="fillBuilderWithTech('${item.keyword}')" class="btn-action w-full bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold py-2 rounded text-sm transition">
+                                    Customize in Builder 🛠️
+                                </button>
                             </div>
                         `).join('')}
                     </div>
 
                     <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 mt-8">
                          <h3 class="font-bold text-stone-800 mb-4">Keyword Efficiency Analysis</h3>
-                         <p class="text-sm text-stone-500 mb-4">Which terms most effectively force the model into "Engineering Mode"?</p>
                          <div class="chart-container">
                             <canvas id="tech-bar-chart"></canvas>
                          </div>
@@ -455,40 +488,66 @@
                         <h2 class="text-3xl font-bold text-teal-800">Medical & Anatomical Drawing</h2>
                         <p class="text-stone-600">
                             Generating medical imagery is a balance between <strong>Accuracy</strong> and <strong>Aesthetics</strong>. 
-                            The AI often drifts towards "body horror" if not strictly controlled with clean, clinical keywords.
+                            Use specific anatomical terms and controlled styles to avoid "gore" filters and anatomical hallucinations.
                         </p>
                     </div>
 
-                    <!-- The Gore Scale Warning -->
-                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r shadow-sm">
-                        <div class="flex items-start">
-                            <span class="text-2xl mr-3">⚠️</span>
-                            <div>
-                                <h3 class="text-red-800 font-bold text-sm uppercase tracking-wide">The "Gore" Threshold</h3>
-                                <p class="text-sm text-red-700 mt-1">
-                                    Avoid keywords like "Hyper-realistic surgery" or "Open wound". These trigger content filters or generate disturbing images. 
-                                    Instead, use <span class="font-mono bg-white px-1 rounded border border-red-100">"Medical Illustration"</span>, <span class="font-mono bg-white px-1 rounded border border-red-100">"Schematic"</span>, or <span class="font-mono bg-white px-1 rounded border border-red-100">"Plastic model"</span>.
-                                </p>
+                    <!-- Builder Strategy Guide -->
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-teal-100">
+                        <h3 class="font-bold text-teal-900 mb-4 flex items-center gap-2">
+                            <span>🩺</span> How to Build Medical Prompts
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="font-bold text-stone-700 block mb-1">Subject</span>
+                                <span class="text-stone-500">Use Latin names (e.g., "Cor" vs Heart) for better precision.</span>
+                            </div>
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="font-bold text-stone-700 block mb-1">Style</span>
+                                <span class="text-stone-500">"Netter Style" for education, "Macro Photo" for texture.</span>
+                            </div>
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="font-bold text-stone-700 block mb-1">Lighting</span>
+                                <span class="text-stone-500">"Studio lighting" or "Subsurface scattering" for skin/tissue.</span>
+                            </div>
+                            <div class="bg-stone-50 p-3 rounded">
+                                <span class="font-bold text-stone-700 block mb-1">Material</span>
+                                <span class="text-stone-500">"Organic wet tissue", "Plastination", or "Translucent".</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Anatomy Systems Grid -->
+                    <div>
+                        <h3 class="font-bold text-stone-800 mb-4 text-xl">Anatomical Systems Library</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            ${dataStore.anatomy.map(part => `
+                                <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-teal-400 transition group">
+                                    <h4 class="font-bold text-teal-800 mb-1">${part.part}</h4>
+                                    <p class="text-xs text-stone-500 mb-3">${part.desc}</p>
+                                    <button onclick="fillBuilderWithAnatomy('${part.part}')" class="btn-action w-full bg-teal-50 hover:bg-teal-100 text-teal-700 text-xs font-bold py-2 rounded transition">
+                                        Build ${part.part} Prompt
+                                    </button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                         <!-- Left: Style Cards -->
                         <div class="space-y-4">
                             <h3 class="font-bold text-stone-700">Standard Modalities</h3>
                             ${dataStore.medical.map(item => `
-                                <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-teal-400 hover:shadow-md transition cursor-pointer group" onclick="fillBuilderWithMedical('${item.title}')">
+                                <div class="bg-white p-4 rounded-lg border border-stone-200 hover:shadow-md transition">
                                     <div class="flex justify-between items-center mb-2">
                                         <h4 class="font-bold text-stone-800 flex items-center gap-2">
-                                            <span class="bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded">Prompt Template</span>
                                             ${item.title}
                                         </h4>
                                     </div>
                                     <p class="text-sm text-stone-600 mb-3">${item.desc}</p>
-                                    <div class="bg-stone-50 group-hover:bg-teal-50 p-3 rounded text-xs font-mono text-stone-500 border border-stone-100 group-hover:border-teal-100 transition">
-                                        ${item.prompt}
-                                    </div>
+                                    <button onclick="fillBuilderWithMedical('${item.title}')" class="btn-action w-full bg-stone-100 hover:bg-stone-200 text-stone-700 font-bold py-2 rounded text-sm transition">
+                                        Use Template in Builder
+                                    </button>
                                 </div>
                             `).join('')}
                         </div>
@@ -497,7 +556,6 @@
                         <div class="space-y-4">
                             <h3 class="font-bold text-stone-700">Style Utility Analysis</h3>
                             <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 h-full">
-                                <p class="text-sm text-stone-500 mb-4">Comparison of styles for educational clarity vs. artistic impact.</p>
                                 <div class="chart-container" style="height: 300px;">
                                     <canvas id="medical-chart"></canvas>
                                 </div>
@@ -516,6 +574,107 @@
             initMedicalChart();
         }
 
+        // --- Section: Photography ---
+        function renderPhotography(container) {
+            const content = `
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="space-y-2 border-b border-stone-200 pb-4">
+                        <h2 class="text-3xl font-bold text-stone-900">Photography & Cinematography</h2>
+                        <p class="text-stone-600">
+                            Transform a generic image into a "Photograph" by specifying the virtual <strong>Lens</strong>, <strong>Film Stock</strong>, and <strong>Camera Angle</strong>. 
+                            Without these, AI defaults to a flat, boring middle-distance shot.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left: Virtual Camera Bag -->
+                        <div class="lg:col-span-2 space-y-6">
+                            
+                            <!-- Lenses -->
+                            <div>
+                                <h3 class="font-bold text-stone-800 mb-3 flex items-center">
+                                    <span class="bg-stone-200 text-stone-700 text-xs px-2 py-1 rounded mr-2">Step 1</span> Choose your Lens
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${dataStore.photography.filter(i => i.type === 'Lens').map(item => `
+                                        <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-yellow-400 cursor-pointer group transition" onclick="fillBuilderWithPhoto('${item.name}')">
+                                            <div class="flex justify-between">
+                                                <span class="font-bold text-stone-700">${item.name}</span>
+                                                <span class="text-xs text-stone-400 group-hover:text-yellow-600">Use 📸</span>
+                                            </div>
+                                            <p class="text-xs text-stone-500 mt-1">${item.usage}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Film Stocks -->
+                            <div>
+                                <h3 class="font-bold text-stone-800 mb-3 flex items-center">
+                                    <span class="bg-stone-200 text-stone-700 text-xs px-2 py-1 rounded mr-2">Step 2</span> Load Film Stock
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${dataStore.photography.filter(i => i.type === 'Film').map(item => `
+                                        <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-red-400 cursor-pointer group transition" onclick="fillBuilderWithPhoto('${item.name}')">
+                                            <div class="flex justify-between">
+                                                <span class="font-bold text-stone-700">${item.name}</span>
+                                                <span class="text-xs text-stone-400 group-hover:text-red-600">Use 🎞️</span>
+                                            </div>
+                                            <p class="text-xs text-stone-500 mt-1">${item.usage}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Angles -->
+                            <div>
+                                <h3 class="font-bold text-stone-800 mb-3 flex items-center">
+                                    <span class="bg-stone-200 text-stone-700 text-xs px-2 py-1 rounded mr-2">Step 3</span> Frame the Shot
+                                </h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    ${dataStore.photography.filter(i => i.type === 'Angle').map(item => `
+                                        <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-blue-400 cursor-pointer group transition" onclick="fillBuilderWithPhoto('${item.name}')">
+                                            <div class="flex justify-between">
+                                                <span class="font-bold text-stone-700">${item.name}</span>
+                                                <span class="text-xs text-stone-400 group-hover:text-blue-600">Use 📐</span>
+                                            </div>
+                                            <p class="text-xs text-stone-500 mt-1">${item.usage}</p>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Education & Chart -->
+                        <div class="space-y-6">
+                            <div class="bg-stone-900 text-stone-300 p-6 rounded-xl">
+                                <h3 class="text-yellow-400 font-bold mb-4">Depth of Field Guide</h3>
+                                <p class="text-sm mb-4">Understanding how Focal Length affects the background blur (Bokeh).</p>
+                                <div class="chart-container" style="height: 250px;">
+                                    <canvas id="photo-chart"></canvas>
+                                </div>
+                                <div class="mt-4 text-xs font-mono bg-stone-800 p-3 rounded text-stone-400">
+                                    Low f-stop (f/1.8) + High mm (85mm) = <span class="text-white">Maximum Blur</span>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-50 border border-yellow-200 p-6 rounded-xl">
+                                <h3 class="font-bold text-yellow-800 mb-2">Cinematic Lighting Cheat Sheet</h3>
+                                <ul class="text-sm text-yellow-900 space-y-2">
+                                    <li><strong>Rembrandt:</strong> Triangle of light on cheek. (Drama)</li>
+                                    <li><strong>Butterfly:</strong> Shadow under nose. (Glamour)</li>
+                                    <li><strong>Rim Light:</strong> Outline of light. (Separation)</li>
+                                    <li><strong>Silhouette:</strong> Backlit. (Mystery)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+            initPhotoChart();
+        }
+
         // --- Section: Infographics ---
         function renderInfographics(container) {
             const content = `
@@ -528,44 +687,26 @@
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <!-- Card 1 -->
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
-                            <div class="h-32 bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-4xl">📊</div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg">Statistical Layout</h3>
-                                <p class="text-sm text-stone-500 mt-1">For dashboards and charts.</p>
-                                <hr class="my-3 border-stone-100">
-                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
-                                    infographic layout, flat vector design, bar charts and pie charts, minimalism, corporate color palette, white background
-                                </p>
+                        ${dataStore.infographics.map((item, index) => `
+                            <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200 flex flex-col h-full">
+                                <div class="h-32 bg-gradient-to-br from-stone-100 to-stone-50 flex items-center justify-center text-4xl">
+                                    ${index === 0 ? '📊' : index === 1 ? '🗺️' : '🧬'}
+                                </div>
+                                <div class="p-4 flex-1 flex flex-col justify-between">
+                                    <div>
+                                        <h3 class="font-bold text-lg">${item.title}</h3>
+                                        <p class="text-sm text-stone-500 mt-1">${item.desc}</p>
+                                        <hr class="my-3 border-stone-100">
+                                        <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded mb-4">
+                                            ${item.prompt}
+                                        </p>
+                                    </div>
+                                    <button onclick="fillBuilderWithInfo('${item.title}')" class="btn-action w-full bg-yellow-50 hover:bg-yellow-100 text-yellow-800 font-bold py-2 rounded text-sm transition">
+                                        Customize in Builder 🛠️
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-
-                        <!-- Card 2 -->
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
-                            <div class="h-32 bg-gradient-to-br from-purple-100 to-indigo-50 flex items-center justify-center text-4xl">🗺️</div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg">Flowchart / Process</h3>
-                                <p class="text-sm text-stone-500 mt-1">For timelines and logic.</p>
-                                <hr class="my-3 border-stone-100">
-                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
-                                    process map, flowchart infographic, connected nodes, isometric path, step-by-step guide, numbered icons, vibrant colors
-                                </p>
-                            </div>
-                        </div>
-
-                        <!-- Card 3 -->
-                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
-                            <div class="h-32 bg-gradient-to-br from-orange-100 to-yellow-50 flex items-center justify-center text-4xl">🧬</div>
-                            <div class="p-4">
-                                <h3 class="font-bold text-lg">Scientific Poster</h3>
-                                <p class="text-sm text-stone-500 mt-1">For anatomy and biology.</p>
-                                <hr class="my-3 border-stone-100">
-                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
-                                    scientific illustration, medical infographic, anatomy breakdown, detailed text labels, clean white background, educational
-                                </p>
-                            </div>
-                        </div>
+                        `).join('')}
                     </div>
 
                     <!-- Interactive Slider Demo -->
@@ -616,11 +757,16 @@
                                     <select id="input-style" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
                                         <option value="">Select Style...</option>
                                         <option value="cinematic shot, 35mm lens">Cinematic Photo</option>
+                                        <option value="cyberpunk city, high contrast">Cyberpunk</option>
                                         <option value="oil painting, thick texture">Oil Painting</option>
                                         <option value="digital illustration, cel shaded">Digital Art</option>
                                         <option value="blueprint, white lines on blue">Blueprint</option>
                                         <option value="low poly, isometric render">Low Poly 3D</option>
                                         <option value="ukiyo-e woodblock print">Ukiyo-e Print</option>
+                                        <option value="medical illustration in the style of Frank H. Netter">Netter Medical</option>
+                                        <option value="flat vector design, minimalism">Flat Vector</option>
+                                        <option value="watercolor painting, wet-on-wet">Watercolor</option>
+                                        <option value="graphite sketch, rough lines">Pencil Sketch</option>
                                     </select>
                                 </div>
                                 <div>
@@ -632,6 +778,9 @@
                                         <option value="soft studio lighting">Studio (Clean)</option>
                                         <option value="bioluminescent glow">Bioluminescent</option>
                                         <option value="rembrandt lighting">Rembrandt (Dramatic)</option>
+                                        <option value="subsurface scattering">Subsurface (Skin)</option>
+                                        <option value="natural diffuse light">Natural (Soft)</option>
+                                        <option value="dramatic chiaroscuro">Chiaroscuro (Dark)</option>
                                     </select>
                                 </div>
                             </div>
@@ -660,6 +809,7 @@
                                         <option value="organic slime, wet biological texture">Organic / Biological</option>
                                         <option value="origami paper folded, papercraft">Papercraft</option>
                                         <option value="voxel art, lego bricks">Voxels / Lego</option>
+                                        <option value="white bone texture, calcified">Bone</option>
                                     </select>
                                 </div>
                             </div>
@@ -673,6 +823,7 @@
                                     <option value="Octane Render, physically based rendering">Octane (Product)</option>
                                     <option value="Pixar style, Disney animation style">Pixar / Disney</option>
                                     <option value="vintage polaroid, film grain, light leaks">Vintage Polaroid</option>
+                                    <option value="Adobe Illustrator style, vector graphics">Adobe Illustrator</option>
                                 </select>
                             </div>
                         </div>
@@ -719,7 +870,8 @@
             // Add listeners
             const inputs = ['input-subject', 'input-style', 'input-lighting', 'input-camera', 'input-material', 'input-renderer', 'input-negative'];
             inputs.forEach(id => {
-                document.getElementById(id).addEventListener('input', updateBuilderOutput);
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('input', updateBuilderOutput);
             });
             updateBuilderOutput();
         }
@@ -767,11 +919,13 @@
             document.getElementById('final-output').textContent = finalString;
         }
 
+        // --- Domain Specific Builders ---
         function fillBuilderWithTech(keyword) {
             navTo('builder');
             setTimeout(() => {
                 document.getElementById('input-subject').value = "Mechanical gear assembly";
                 document.getElementById('input-style').value = "blueprint, white lines on blue";
+                document.getElementById('input-camera').value = "isometric view, orthographic camera";
                 updateBuilderOutput();
             }, 100);
         }
@@ -782,13 +936,11 @@
 
             navTo('builder');
             setTimeout(() => {
-                // Pre-fill builder fields based on the selected medical style
                 document.getElementById('input-subject').value = "Human Heart Anatomy";
                 
-                // Parse the prompt to roughly fit our builder slots
                 if(title.includes('Netter')) {
-                    document.getElementById('input-style').value = "oil painting, thick texture"; 
-                    document.getElementById('input-renderer').value = "Pixar style, Disney animation style"; // Approximate
+                    document.getElementById('input-style').value = "medical illustration in the style of Frank H. Netter"; 
+                    document.getElementById('input-renderer').value = "Pixar style, Disney animation style"; 
                     document.getElementById('input-lighting').value = "soft studio lighting";
                 } else if (title.includes('MRI')) {
                     document.getElementById('input-style').value = "digital illustration, cel shaded";
@@ -798,15 +950,140 @@
                     document.getElementById('input-camera').value = "macro lens, f/2.8, extreme close-up";
                     document.getElementById('input-lighting').value = "bioluminescent glow";
                     document.getElementById('input-material').value = "organic slime, wet biological texture";
+                } else {
+                    document.getElementById('input-style').value = "flat vector design, minimalism";
                 }
-
-                const output = document.getElementById('final-output');
-                output.textContent = `${item.prompt} --ar 3:2`;
+                updateBuilderOutput();
                 
-                // Flash effect
+                // Visual feedback
+                const output = document.getElementById('final-output');
                 output.parentElement.classList.add('ring-2', 'ring-teal-400');
                 setTimeout(() => output.parentElement.classList.remove('ring-2', 'ring-teal-400'), 500);
 
+            }, 100);
+        }
+
+        function fillBuilderWithAnatomy(part) {
+            const item = dataStore.anatomy.find(i => i.part === part);
+            navTo('builder');
+            setTimeout(() => {
+                document.getElementById('input-subject').value = item.prompt;
+                document.getElementById('input-style').value = "medical illustration in the style of Frank H. Netter";
+                document.getElementById('input-lighting').value = "soft studio lighting";
+                
+                // Context specific texture
+                if(part.includes('Skeletal')) {
+                    document.getElementById('input-material').value = "white bone texture, calcified";
+                } else if(part.includes('Muscular')) {
+                    document.getElementById('input-material').value = "organic slime, wet biological texture"; // Approximating muscle
+                }
+                
+                updateBuilderOutput();
+            }, 100);
+        }
+
+        function fillBuilderWithInfo(title) {
+            const item = dataStore.infographics.find(i => i.title === title);
+            navTo('builder');
+            setTimeout(() => {
+                document.getElementById('input-subject').value = "Global Energy Consumption Statistics"; // Placeholder
+                document.getElementById('input-style').value = item.style;
+                document.getElementById('input-renderer').value = item.renderer;
+                document.getElementById('input-camera').value = "isometric view, orthographic camera";
+                updateBuilderOutput();
+            }, 100);
+        }
+
+        function fillBuilderWithStyle(styleId) {
+            const style = dataStore.styles.find(s => s.id === styleId);
+            if (!style) return;
+
+            navTo('builder');
+            setTimeout(() => {
+                document.getElementById('input-subject').value = "A portrait of a character"; // Generic starting subject
+                
+                // Map style ID to dropdown values
+                let styleValue = "";
+                let lightValue = "";
+                let renderValue = "";
+
+                switch(styleId) {
+                    case 'cyberpunk':
+                        styleValue = "cyberpunk city, high contrast";
+                        lightValue = "neon volumetric lighting";
+                        renderValue = "Unreal Engine 5 render, 8k, ray tracing";
+                        break;
+                    case 'oil':
+                        styleValue = "oil painting, thick texture";
+                        lightValue = "rembrandt lighting";
+                        break;
+                    case 'pencil':
+                        styleValue = "graphite sketch, rough lines";
+                        break;
+                    case '3d':
+                        styleValue = "3D render, octane render"; // Not in list, using closest or blank if needed, but 'low poly' is there. Let's map to existing or leave blank
+                        renderValue = "Octane Render, physically based rendering";
+                        break;
+                    case 'watercolor':
+                        styleValue = "watercolor painting, wet-on-wet";
+                        lightValue = "natural diffuse light";
+                        break;
+                }
+
+                if(styleValue) {
+                     // Try to set, if value exists in dropdown it works, otherwise blank.
+                     const option = document.querySelector(`#input-style option[value="${styleValue}"]`);
+                     if(option) document.getElementById('input-style').value = styleValue;
+                }
+                if(lightValue) {
+                     const option = document.querySelector(`#input-lighting option[value="${lightValue}"]`);
+                     if(option) document.getElementById('input-lighting').value = lightValue;
+                }
+                if(renderValue) {
+                     const option = document.querySelector(`#input-renderer option[value="${renderValue}"]`);
+                     if(option) document.getElementById('input-renderer').value = renderValue;
+                }
+
+                updateBuilderOutput();
+                
+                // Visual feedback
+                const output = document.getElementById('final-output');
+                output.parentElement.classList.add('ring-2', 'ring-yellow-400');
+                setTimeout(() => output.parentElement.classList.remove('ring-2', 'ring-yellow-400'), 500);
+            }, 100);
+        }
+
+        function fillBuilderWithPhoto(name) {
+            const item = dataStore.photography.find(i => i.name === name);
+            navTo('builder');
+            setTimeout(() => {
+                document.getElementById('input-subject').value = "Portrait of a wanderer";
+                document.getElementById('input-style').value = "cinematic shot, 35mm lens"; 
+                
+                // Intelligent slotting
+                if(item.type === 'Lens') {
+                     // Since we don't have separate Lens field in builder dropdowns exactly matching names, we might map to 'Camera'.
+                     // Actually prompts in dataStore have e.g. '16mm wide angle lens...'.
+                     // Let's see if we can match Camera & Lens dropdown values.
+                     // Camera dropdown values: "macro lens...", "wide angle lens...", "telephoto lens..."
+                     if(name.includes('Wide')) document.getElementById('input-camera').value = "wide angle lens, 16mm, fisheye";
+                     if(name.includes('Portrait')) document.getElementById('input-camera').value = "telephoto lens, 200mm, bokeh background"; // Closest
+                     if(name.includes('Macro')) document.getElementById('input-camera').value = "macro lens, f/2.8, extreme close-up";
+                } 
+                else if (item.type === 'Angle') {
+                     if(name.includes('Drone')) document.getElementById('input-camera').value = "drone shot, aerial view, top-down";
+                     // Others like Dutch Angle don't have direct mapping in dropdown, so we might append to subject or ignore for now as per simple logic
+                }
+                else if (item.type === 'Film') {
+                    document.getElementById('input-renderer').value = "vintage polaroid, film grain, light leaks"; // Closest approximation
+                }
+
+                updateBuilderOutput();
+                
+                // Visual feedback
+                const output = document.getElementById('final-output');
+                output.parentElement.classList.add('ring-2', 'ring-yellow-400');
+                setTimeout(() => output.parentElement.classList.remove('ring-2', 'ring-yellow-400'), 500);
             }, 100);
         }
 
@@ -945,6 +1222,47 @@
                     },
                     plugins: {
                         legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function initPhotoChart() {
+            const ctx = document.getElementById('photo-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['16mm', '35mm', '50mm', '85mm', '200mm'],
+                    datasets: [{
+                        label: 'Background Blur Intensity (Bokeh)',
+                        data: [10, 30, 50, 85, 95],
+                        borderColor: '#FDE047',
+                        backgroundColor: 'rgba(253, 224, 71, 0.2)',
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#FFF'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { display: false },
+                        x: { 
+                            grid: { color: '#44403C' },
+                            ticks: { color: '#A8A29E' }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                             backgroundColor: '#FFF',
+                             titleColor: '#000',
+                             bodyColor: '#000',
+                             callbacks: {
+                                 label: (context) => `Bokeh: ${context.parsed.y}%`
+                             }
+                        }
                     }
                 }
             });
