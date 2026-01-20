@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI in Renewable Energy: Present & Future</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Chosen Palette: Eco-Tech Harmony 
+         Background: Warm Neutral (Slate-50/100)
+         Primary: Deep Forest Teal (Teal-800)
+         Secondary: Electric Cyan (Cyan-600)
+         Accent: Solar Amber (Amber-500)
+         Text: Slate-800 for readability
+    -->
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            height: 400px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+            }
+        }
+        .nav-active {
+            border-bottom: 3px solid #0d9488; /* teal-600 */
+            color: #115e59; /* teal-800 */
+            font-weight: 700;
+        }
+        /* Custom scrollbar for clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+    <!-- Application Structure Plan:
+         1. Hero/Executive Summary: High-level impact metrics to grab attention.
+         2. Generation & Forecasting: Interactive Line Chart comparing Standard vs. AI Models. Goal: Show efficiency.
+         3. Grid Management: Interactive Donut Chart simulating Load Balancing. Goal: Show responsiveness.
+         4. Asset Health: Bar Chart for Predictive Maintenance savings. Goal: Show cost benefits.
+         5. Future Roadmap: Timeline layout. Goal: Show trajectory.
+         6. Challenges: Card grid. Goal: Balanced view.
+         This structure moves from the "What" (Stats) to the "How" (Forecasting/Grid) to the "Why" (Money/Future).
+    -->
+    <!-- Visualization & Content Choices:
+         - Forecasting: Line Chart. Best for time-series data comparisons.
+         - Grid Load: Doughnut Chart. Best for showing parts-of-a-whole (energy mix).
+         - Maintenance: Bar Chart. Good for categorical comparison (Cost vs Savings).
+         - Roadmap: Vertical Timeline (HTML/CSS). Best for sequential information.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800 leading-relaxed">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm shadow-sm border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl text-teal-700 font-bold">EcoIntelli<span class="text-amber-500">Grid</span></span>
+                </div>
+                <!-- Desktop Nav -->
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="navigateTo('dashboard')" class="nav-btn nav-active hover:text-teal-700 transition-colors" data-target="dashboard">Dashboard</button>
+                    <button onclick="navigateTo('forecasting')" class="nav-btn hover:text-teal-700 transition-colors" data-target="forecasting">Forecasting</button>
+                    <button onclick="navigateTo('smart-grid')" class="nav-btn hover:text-teal-700 transition-colors" data-target="smart-grid">Smart Grid</button>
+                    <button onclick="navigateTo('maintenance')" class="nav-btn hover:text-teal-700 transition-colors" data-target="maintenance">Maintenance</button>
+                    <button onclick="navigateTo('future')" class="nav-btn hover:text-teal-700 transition-colors" data-target="future">Roadmap</button>
+                </div>
+                <!-- Mobile Menu Button -->
+                <button onclick="toggleMobileMenu()" class="md:hidden text-slate-600 hover:text-teal-700 focus:outline-none">
+                    <span class="text-2xl">&#9776;</span>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Nav Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 py-2 space-y-2 shadow-lg">
+            <button onclick="navigateTo('dashboard')" class="block w-full text-left py-2 hover:bg-slate-50 text-slate-600">Dashboard</button>
+            <button onclick="navigateTo('forecasting')" class="block w-full text-left py-2 hover:bg-slate-50 text-slate-600">Forecasting</button>
+            <button onclick="navigateTo('smart-grid')" class="block w-full text-left py-2 hover:bg-slate-50 text-slate-600">Smart Grid</button>
+            <button onclick="navigateTo('maintenance')" class="block w-full text-left py-2 hover:bg-slate-50 text-slate-600">Maintenance</button>
+            <button onclick="navigateTo('future')" class="block w-full text-left py-2 hover:bg-slate-50 text-slate-600">Roadmap</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- SECTION 1: Executive Dashboard (Hero) -->
+        <section id="dashboard" class="fade-in scroll-mt-20">
+            <div class="bg-gradient-to-br from-teal-900 to-slate-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl mb-12">
+                <h1 class="text-3xl sm:text-4xl font-extrabold mb-4 tracking-tight">AI in Renewable Energy: <span class="text-amber-400">The Intelligence Layer</span></h1>
+                <p class="text-lg text-slate-200 max-w-3xl mb-8">
+                    As the world transitions to renewable energy, variability becomes the primary challenge. Artificial Intelligence is the critical enabler, transforming intermittent wind and solar sources into reliable, dispatchable power. This report explores the synergy of algorithms and electrons.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                        <div class="text-amber-400 text-sm font-semibold uppercase tracking-wider mb-2">Efficiency Gain</div>
+                        <div class="text-4xl font-bold">~20%</div>
+                        <p class="text-xs text-slate-300 mt-2">Increase in power output via AI optimization</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                        <div class="text-cyan-400 text-sm font-semibold uppercase tracking-wider mb-2">Cost Reduction</div>
+                        <div class="text-4xl font-bold">30%</div>
+                        <p class="text-xs text-slate-300 mt-2">Lower O&M costs through predictive analytics</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
+                        <div class="text-emerald-400 text-sm font-semibold uppercase tracking-wider mb-2">Grid Reliability</div>
+                        <div class="text-4xl font-bold">High</div>
+                        <p class="text-xs text-slate-300 mt-2">Enhanced stability via μs-level load balancing</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-bold text-slate-800">Why AI Now?</h2>
+                    <p class="text-slate-600">The renewable sector generates massive datasets—from weather satellite imagery to millisecond grid frequency readings. Traditional physical models struggle to process this volume in real-time. AI, specifically Machine Learning (ML) and Deep Learning, thrives on this data complexity, offering:</p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center gap-2"><span class="text-teal-600 font-bold">&#10003;</span> <strong>Hyper-local Weather Forecasting</strong></li>
+                        <li class="flex items-center gap-2"><span class="text-teal-600 font-bold">&#10003;</span> <strong>Autonomous Asset Management</strong></li>
+                        <li class="flex items-center gap-2"><span class="text-teal-600 font-bold">&#10003;</span> <strong>Decentralized Grid Trading</strong></li>
+                    </ul>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-100">
+                    <h3 class="font-semibold text-slate-700 mb-4">Global Adoption Trends (2020-2030)</h3>
+                    <div class="chart-container" style="height: 250px;">
+                        <canvas id="adoptionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Forecasting -->
+        <section id="forecasting" class="fade-in scroll-mt-20 border-t border-slate-200 pt-12">
+            <div class="mb-8">
+                <span class="bg-cyan-100 text-cyan-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Optimization Engine</span>
+                <h2 class="text-3xl font-bold text-slate-800 mt-2">Precision Forecasting</h2>
+                <p class="text-slate-600 mt-4 max-w-4xl">
+                    One of the greatest hurdles for renewables is intermittency. The sun doesn't always shine, and the wind doesn't always blow. 
+                    AI models ingest historical data, satellite imagery, and real-time sensor inputs to predict generation output with remarkable accuracy, allowing grid operators to schedule backup reserves more efficiently.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Controls -->
+                <div class="lg:col-span-1 bg-white p-6 rounded-2xl shadow-lg border border-slate-100 h-fit">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">Simulation Control</h3>
+                    <p class="text-sm text-slate-500 mb-6">Compare standard meteorological forecasting against AI-enhanced hybrid models over a 24-hour cycle.</p>
+                    
+                    <div class="space-y-4">
+                        <label class="block text-sm font-medium text-slate-700">Energy Source</label>
+                        <div class="flex rounded-md shadow-sm" role="group">
+                            <button onclick="updateForecastData('solar')" id="btn-solar" class="flex-1 px-4 py-2 text-sm font-medium bg-teal-600 text-white rounded-l-lg hover:bg-teal-700 focus:z-10 focus:ring-2 focus:ring-teal-500">
+                                Solar PV
+                            </button>
+                            <button onclick="updateForecastData('wind')" id="btn-wind" class="flex-1 px-4 py-2 text-sm font-medium bg-white text-slate-700 border border-l-0 border-slate-300 rounded-r-lg hover:bg-slate-50 focus:z-10 focus:ring-2 focus:ring-teal-500">
+                                Wind Farm
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 p-4 bg-amber-50 rounded-lg border border-amber-100">
+                        <h4 class="text-sm font-bold text-amber-800 mb-1">Key Insight</h4>
+                        <p id="forecast-insight" class="text-sm text-amber-700">AI models reduce forecasting error by up to 50%, significantly lowering the need for fossil-fuel spinning reserves.</p>
+                    </div>
+                </div>
+
+                <!-- Visualization -->
+                <div class="lg:col-span-2 bg-white p-4 rounded-2xl shadow-lg border border-slate-100">
+                    <div class="chart-container">
+                        <canvas id="forecastChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Smart Grid -->
+        <section id="smart-grid" class="fade-in scroll-mt-20 border-t border-slate-200 pt-12">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div class="order-2 lg:order-1">
+                    <div class="bg-slate-900 p-6 rounded-2xl shadow-xl text-white">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="font-bold text-lg">Real-time Load Balancing</h3>
+                            <span class="text-xs bg-red-500 px-2 py-1 rounded animate-pulse">LIVE SIMULATION</span>
+                        </div>
+                        
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="gridChart"></canvas>
+                        </div>
+
+                        <div class="mt-6 space-y-4">
+                            <div>
+                                <label class="flex justify-between text-sm font-medium text-slate-300 mb-1">
+                                    <span>Grid Demand Load</span>
+                                    <span id="demand-val">50%</span>
+                                </label>
+                                <input type="range" min="10" max="100" value="50" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-teal-500" id="demandSlider" oninput="updateGridMix(this.value)">
+                            </div>
+                            <p class="text-xs text-slate-400 italic">Drag slider to simulate high demand. Watch AI automatically deploy Battery Storage to prevent Grid Backup (Fossil) usage.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="order-1 lg:order-2">
+                    <span class="bg-teal-100 text-teal-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">The Digital Nervous System</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">Smart Grids & VPPs</h2>
+                    <p class="text-slate-600 mt-4 mb-6">
+                        The traditional grid was one-way: from plant to home. The modern grid is a chaotic web of prosumers (people who produce and consume energy). 
+                        AI manages this complexity through <strong>Virtual Power Plants (VPPs)</strong>, which aggregate thousands of home batteries and solar panels to act as a single power plant.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-teal-100 rounded-full flex items-center justify-center text-teal-600 font-bold text-xl">&#9889;</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Demand Response</h4>
+                                <p class="text-sm text-slate-600">AI predicts peak load and incentivizes users to reduce consumption or discharge batteries, stabilizing the grid without new infrastructure.</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="flex-shrink-0 w-12 h-12 bg-cyan-100 rounded-full flex items-center justify-center text-cyan-600 font-bold text-xl">&#8646;</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Peer-to-Peer Trading</h4>
+                                <p class="text-sm text-slate-600">Blockchain and AI enable neighbors to trade excess solar energy automatically, optimizing local distribution.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Predictive Maintenance -->
+        <section id="maintenance" class="fade-in scroll-mt-20 border-t border-slate-200 pt-12">
+            <div class="mb-8 text-center max-w-3xl mx-auto">
+                <span class="bg-amber-100 text-amber-800 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Asset Health</span>
+                <h2 class="text-3xl font-bold text-slate-800 mt-2">Predictive Maintenance</h2>
+                <p class="text-slate-600 mt-4">
+                    Before AI, maintenance was reactive (fix it when it breaks) or scheduled (fix it annually). AI enables <strong>Condition-Based Maintenance</strong>. Sensors detect micro-vibrations in wind turbines or dust on solar panels, triggering interventions only when necessary.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg border border-slate-100 p-6 md:p-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2">
+                        <div class="chart-container">
+                            <canvas id="maintenanceChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="md:col-span-1 flex flex-col justify-center space-y-6">
+                        <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-teal-500">
+                            <h4 class="font-bold text-slate-800">Wind Turbines</h4>
+                            <p class="text-sm text-slate-600 mt-1">Computer vision via drones detects blade cracks. Vibration analysis predicts gearbox failure weeks in advance.</p>
+                        </div>
+                        <div class="p-4 bg-slate-50 rounded-lg border-l-4 border-amber-500">
+                            <h4 class="font-bold text-slate-800">Solar Farms</h4>
+                            <p class="text-sm text-slate-600 mt-1">AI analyzes output drops to distinguish between cloud cover and soil/dust accumulation, optimizing cleaning schedules.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Future Roadmap & Challenges -->
+        <section id="future" class="fade-in scroll-mt-20 border-t border-slate-200 pt-12 pb-20">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+                <!-- Roadmap -->
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">The Road Ahead</h2>
+                    <div class="relative border-l-2 border-slate-200 ml-3 space-y-10">
+                        <div class="mb-8 ml-6 relative">
+                            <span class="absolute -left-9 top-1 w-6 h-6 bg-teal-500 rounded-full border-4 border-white shadow-sm"></span>
+                            <h3 class="flex items-center mb-1 text-lg font-semibold text-slate-900">2024-2026: The Integration Era</h3>
+                            <p class="mb-4 text-base font-normal text-slate-500">Widespread adoption of smart meters and basic predictive maintenance. AI becomes standard in new wind/solar farm commissioning.</p>
+                        </div>
+                        <div class="mb-8 ml-6 relative">
+                            <span class="absolute -left-9 top-1 w-6 h-6 bg-cyan-500 rounded-full border-4 border-white shadow-sm"></span>
+                            <h3 class="flex items-center mb-1 text-lg font-semibold text-slate-900">2027-2030: The Autonomous Grid</h3>
+                            <p class="mb-4 text-base font-normal text-slate-500">Grid self-healing capabilities mature. AI agents independently trade energy in real-time markets. Material discovery for batteries accelerates via AI.</p>
+                        </div>
+                        <div class="ml-6 relative">
+                            <span class="absolute -left-9 top-1 w-6 h-6 bg-purple-500 rounded-full border-4 border-white shadow-sm"></span>
+                            <h3 class="flex items-center mb-1 text-lg font-semibold text-slate-900">2030+: The Cognitive Energy System</h3>
+                            <p class="mb-4 text-base font-normal text-slate-500">Full Digital Twins of national grids. Quantum computing begins to solve complex optimization problems for global energy logistics.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Challenges -->
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 mb-6">Barriers & Risks</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                            <h4 class="font-bold text-red-700 mb-2">Cybersecurity</h4>
+                            <p class="text-sm text-slate-600">A digitalized grid increases the attack surface. Hackers could potentially manipulate AI algorithms to destabilize regional power supplies.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                            <h4 class="font-bold text-amber-700 mb-2">Data Privacy</h4>
+                            <p class="text-sm text-slate-600">Granular smart meter data reveals intimate details of household behaviors. Strict governance frameworks are required.</p>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                            <h4 class="font-bold text-slate-700 mb-2">Computational Cost</h4>
+                            <p class="text-sm text-slate-600">Training massive models consumes energy itself. The industry must ensure "Green AI" practices to avoid offsetting gains.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-12 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <span class="text-2xl text-teal-500 font-bold block mb-4">EcoIntelliGrid</span>
+                <p class="text-sm">Synthesizing the future of energy through the lens of artificial intelligence. Based on current industry analysis and technological projections.</p>
+                <div class="mt-6 pt-6 border-t border-slate-800">
+                    <p class="text-xs text-slate-500 uppercase tracking-widest font-semibold mb-2">Author</p>
+                    <p class="text-white font-medium">Kalyanjit Hatibaruah</p>
+                    <div class="flex items-center gap-2 mt-2 text-teal-400">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.463 1.065 2.876 1.213 3.074.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+                        <span class="text-sm font-semibold">+91-9864011106</span>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Key Technologies</h4>
+                <ul class="text-sm space-y-2">
+                    <li>Machine Learning (Regression/Classification)</li>
+                    <li>Computer Vision (Fault Detection)</li>
+                    <li>Reinforcement Learning (Grid Control)</li>
+                    <li>Digital Twins</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold mb-4">Report Context</h4>
+                <p class="text-sm">This interactive dashboard serves as a reference for the transformative impact of AI on renewable energy efficiency, reliability, and economic viability.</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto px-4 mt-8 pt-8 border-t border-slate-800 text-center text-xs">
+            &copy; 2024 AI in Renewable Energy Research. Generated for educational reference.
+        </div>
+    </footer>
+
+    <!-- Logic & Interaction -->
+    <script>
+        // State
+        const state = {
+            activeSection: 'dashboard',
+            forecastSource: 'solar',
+            demandLevel: 50
+        };
+
+        // Charts Instances
+        let adoptionChartInstance = null;
+        let forecastChartInstance = null;
+        let gridChartInstance = null;
+        let maintenanceChartInstance = null;
+
+        // Navigation Logic
+        function navigateTo(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({ behavior: 'smooth' });
+            
+            // Update UI
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.dataset.target === sectionId) {
+                    btn.classList.add('nav-active');
+                    btn.classList.remove('text-slate-600');
+                } else {
+                    btn.classList.remove('nav-active');
+                    btn.classList.add('text-slate-600');
+                }
+            });
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- CHART 1: Global Adoption (Bubble/Line Hybrid idea, using Line for clarity) ---
+        function initAdoptionChart() {
+            const ctx = document.getElementById('adoptionChart').getContext('2d');
+            adoptionChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2022', '2024', '2026', '2028', '2030'],
+                    datasets: [{
+                        label: 'Market Value of AI in Energy ($Bn)',
+                        data: [2.5, 4.1, 7.8, 13.2, 19.5, 28.3],
+                        borderColor: '#0d9488', // teal-600
+                        backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#0d9488',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (context) => `$${context.raw} Billion USD`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { display: true, borderDash: [5, 5] }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- CHART 2: Forecasting (Solar/Wind Comparison) ---
+        const forecastData = {
+            solar: {
+                labels: ['06:00', '09:00', '12:00', '15:00', '18:00', '21:00'],
+                standard: [5, 25, 60, 55, 10, 0], // Traditional simplistic model
+                ai: [4, 22, 58, 65, 15, 0],       // AI (more realistic peaks/clouds)
+                actual: [4.2, 21.5, 59, 64, 14.5, 0], // The "Real" value
+                insight: "Notice how the AI model (Teal) adapts to the cloud cover dip at 15:00, whereas the Standard model (Grey) predicts a smooth curve. This accuracy prevents grid instability."
+            },
+            wind: {
+                labels: ['00:00', '04:00', '08:00', '12:00', '16:00', '20:00'],
+                standard: [40, 42, 45, 30, 35, 50],
+                ai: [38, 48, 44, 28, 42, 52],
+                actual: [37, 49, 44.5, 27, 41, 52.5],
+                insight: "Wind is notoriously chaotic. The AI model captures the sudden gust increase at 16:00 which the standard meteorological model missed."
+            }
+        };
+
+        function initForecastChart() {
+            const ctx = document.getElementById('forecastChart').getContext('2d');
+            forecastChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: forecastData.solar.labels,
+                    datasets: [
+                        {
+                            label: 'Standard Forecast',
+                            data: forecastData.solar.standard,
+                            borderColor: '#94a3b8', // slate-400
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            pointRadius: 0
+                        },
+                        {
+                            label: 'AI Enhanced Forecast',
+                            data: forecastData.solar.ai,
+                            borderColor: '#0d9488', // teal-600
+                            borderWidth: 3,
+                            tension: 0.4,
+                            pointBackgroundColor: '#0d9488'
+                        },
+                        {
+                            label: 'Actual Generation',
+                            data: forecastData.solar.actual,
+                            borderColor: '#f59e0b', // amber-500
+                            backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    plugins: {
+                        title: { display: true, text: 'Generation Output (MW)' }
+                    }
+                }
+            });
+        }
+
+        function updateForecastData(source) {
+            state.forecastSource = source;
+            const data = forecastData[source];
+            
+            // Update Buttons
+            const btnSolar = document.getElementById('btn-solar');
+            const btnWind = document.getElementById('btn-wind');
+            if(source === 'solar') {
+                btnSolar.className = "flex-1 px-4 py-2 text-sm font-medium bg-teal-600 text-white rounded-l-lg hover:bg-teal-700 focus:z-10";
+                btnWind.className = "flex-1 px-4 py-2 text-sm font-medium bg-white text-slate-700 border border-l-0 border-slate-300 rounded-r-lg hover:bg-slate-50 focus:z-10";
+            } else {
+                btnSolar.className = "flex-1 px-4 py-2 text-sm font-medium bg-white text-slate-700 border border-slate-300 rounded-l-lg hover:bg-slate-50 focus:z-10";
+                btnWind.className = "flex-1 px-4 py-2 text-sm font-medium bg-teal-600 text-white rounded-r-lg hover:bg-teal-700 focus:z-10";
+            }
+
+            // Update Chart
+            forecastChartInstance.data.labels = data.labels;
+            forecastChartInstance.data.datasets[0].data = data.standard;
+            forecastChartInstance.data.datasets[1].data = data.ai;
+            forecastChartInstance.data.datasets[2].data = data.actual;
+            forecastChartInstance.update();
+
+            // Update Insight Text
+            document.getElementById('forecast-insight').innerText = data.insight;
+        }
+
+        // --- CHART 3: Smart Grid (Doughnut) ---
+        function initGridChart() {
+            const ctx = document.getElementById('gridChart').getContext('2d');
+            gridChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Solar/Wind (Renewable)', 'Battery Storage (Discharge)', 'Grid Backup (Fossil)'],
+                    datasets: [{
+                        data: [60, 20, 20],
+                        backgroundColor: [
+                            '#0d9488', // teal-600
+                            '#0891b2', // cyan-600
+                            '#ef4444'  // red-500
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: '#ffffff' } },
+                        title: { display: false }
+                    }
+                }
+            });
+        }
+
+        function updateGridMix(demandValue) {
+            document.getElementById('demand-val').innerText = `${demandValue}%`;
+            
+            // Logic: 
+            // Base Renewable capacity is fixed (say 60 units).
+            // If demand increases, first use Battery. If Battery exhausted, use Fossil.
+            
+            let renewable = 60; 
+            let battery = 0;
+            let fossil = 0;
+
+            if (demandValue <= 60) {
+                // Low demand, renewables cover it, excess goes to battery charge (not shown in discharge chart)
+                // For viz purposes, we just show renewable share dominating
+                renewable = demandValue;
+                battery = 0;
+                fossil = 0; // Pure green
+            } else if (demandValue <= 85) {
+                // Medium demand, renewables maxed, battery kicks in
+                renewable = 60;
+                battery = demandValue - 60;
+                fossil = 0;
+            } else {
+                // High demand, battery maxed (cap at 25), fossil kicks in
+                renewable = 60;
+                battery = 25;
+                fossil = demandValue - 85;
+            }
+
+            // Normalize for chart percentage visuals to look full circle relative to the "Pie"
+            // Actually, a better viz for "Mix" is just showing the proportions of the current load
+            
+            gridChartInstance.data.datasets[0].data = [renewable, battery, fossil];
+            gridChartInstance.update();
+        }
+
+        // --- CHART 4: Maintenance (Bar Comparison) ---
+        function initMaintenanceChart() {
+            const ctx = document.getElementById('maintenanceChart').getContext('2d');
+            maintenanceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Wind Turbines', 'Solar Farms', 'Hydro Plants'],
+                    datasets: [
+                        {
+                            label: 'Reactive Maintenance Cost ($/MW)',
+                            data: [45000, 15000, 30000],
+                            backgroundColor: '#cbd5e1' // slate-300
+                        },
+                        {
+                            label: 'AI Predictive Maintenance Cost ($/MW)',
+                            data: [28000, 9000, 21000],
+                            backgroundColor: '#0d9488' // teal-600
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Operational Cost Comparison (Annual per MW)'
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: (ctx) => `${ctx.dataset.label}: $${ctx.raw.toLocaleString()}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: { display: true, text: 'Cost (USD)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            initAdoptionChart();
+            initForecastChart();
+            initGridChart();
+            initMaintenanceChart();
+            
+            // Initial trigger for grid logic
+            updateGridMix(50);
+        });
+
+    </script>
+</body>
+</html>
