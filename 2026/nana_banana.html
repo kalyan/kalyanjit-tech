@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nano Banana: Interactive Prompt Reference</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Custom Font Import */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+
+        :root {
+            --bg-warm: #FEFDF5;
+            --text-main: #27272A;
+            --banana-accent: #FDE047;
+            --banana-dark: #EAB308;
+            --card-bg: #FFFFFF;
+            --border-subtle: #E7E5E4;
+        }
+
+        body {
+            background-color: var(--bg-warm);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Utilities - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            height: 350px; /* Base height */
+            max-height: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Interactive Element Transitions */
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #FEF08A; /* yellow-200 */
+            border-right: 4px solid var(--banana-dark);
+            font-weight: 600;
+        }
+
+        .prompt-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .prompt-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D6D3D1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #A8A29E;
+        }
+    </style>
+    <!-- Chosen Palette: Warm Banana (Cream #FEFDF5, Charcoal #27272A, Yellow #FDE047, Amber #EAB308) -->
+    <!-- Application Structure Plan: Dashboard Layout. 
+         Sidebar: Navigation (Dashboard, Art Styles, Engineering, Prompt Builder).
+         Main Content: Dynamic injection based on selection.
+         Why: Allows users to switch between learning modes (Theory via Dashboard, Reference via Styles, Action via Builder) without page reloads. 
+         Key Interactions: Chart filtering, Prompt concatenation tool, Clipboard copy. -->
+    <!-- Visualization & Content Choices:
+         1. Radar Chart (Chart.js): Visualizes abstract style attributes (Realism, Detail, Fantasy) to help users choose a style based on 'vibe'.
+         2. Bar Chart (Chart.js): Shows keyword frequency/importance for Technical Drawings.
+         3. Doughnut Chart (Chart.js): Explains the 'anatomy' of a perfect prompt.
+         4. NO SVG/Mermaid: All icons are Unicode or CSS shapes. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="h-screen overflow-hidden flex flex-col md:flex-row">
+
+    <!-- Mobile Header -->
+    <header class="md:hidden bg-white border-b border-stone-200 p-4 flex justify-between items-center z-50">
+        <h1 class="text-xl font-extrabold tracking-tight text-yellow-600">🍌 Nano Banana</h1>
+        <button id="menu-toggle" class="text-2xl p-1 focus:outline-none">☰</button>
+    </header>
+
+    <!-- Sidebar Navigation -->
+    <nav id="sidebar" class="bg-white border-r border-stone-200 w-full md:w-64 flex-shrink-0 flex flex-col h-full transform -translate-x-full md:translate-x-0 transition-transform duration-300 absolute md:relative z-40">
+        <div class="p-6 hidden md:block">
+            <h1 class="text-2xl font-extrabold tracking-tight text-yellow-600">🍌 Nano Banana</h1>
+            <p class="text-xs text-stone-500 mt-1 uppercase tracking-wider">Prompt Reference Suite</p>
+        </div>
+
+        <div class="flex-1 overflow-y-auto py-4 space-y-1">
+            <button onclick="navTo('dashboard')" class="nav-item w-full text-left px-6 py-3 text-stone-600 active" data-target="dashboard">
+                <span class="mr-2">📊</span> Overview
+            </button>
+            <button onclick="navTo('art-styles')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="art-styles">
+                <span class="mr-2">🎨</span> Art & Aesthetics
+            </button>
+            <button onclick="navTo('engineering')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="engineering">
+                <span class="mr-2">📐</span> Tech & Engineering
+            </button>
+            <button onclick="navTo('infographics')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="infographics">
+                <span class="mr-2">🧩</span> Infographics
+            </button>
+            <button onclick="navTo('builder')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="builder">
+                <span class="mr-2">🛠️</span> Prompt Builder
+            </button>
+        </div>
+
+        <div class="p-6 border-t border-stone-100">
+            <div class="bg-yellow-50 rounded-lg p-4 mb-4">
+                <p class="text-xs text-yellow-800 font-semibold mb-2">Pro Tip:</p>
+                <p class="text-xs text-yellow-700 italic" id="daily-tip">"Use negative prompts to remove unwanted artifacts."</p>
+            </div>
+            
+            <!-- Author Info -->
+            <div class="text-xs text-stone-500 space-y-1">
+                <p class="font-bold text-stone-700">Author</p>
+                <p>Kalyanjit Hatibaruah</p>
+                <p class="flex items-center gap-1">
+                    <span>📱</span> +91-9864011106
+                </p>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full overflow-y-auto relative p-4 md:p-8 scroll-smooth" id="main-content">
+        <!-- Content injected via JS -->
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- State Management ---
+        const state = {
+            currentView: 'dashboard',
+            promptBuilder: {
+                subject: '',
+                style: '',
+                lighting: '',
+                camera: '',
+                ar: '--ar 16:9'
+            }
+        };
+
+        // --- Data Store ---
+        const dataStore = {
+            tips: [
+                "Use '::' to separate distinct concepts in some models.",
+                "Lighting keywords like 'volumetric' add immense depth.",
+                "For technical drawings, 'orthographic' is a magic word.",
+                "Specify 'vector style' for clean, scalable-looking graphics."
+            ],
+            styles: [
+                { id: 'cyberpunk', name: 'Cyberpunk', icon: '🌆', desc: 'High contrast, neon, futuristic.', prompt: 'cyberpunk city, neon lights, rain-slicked streets, high contrast, futuristic architecture', metrics: [90, 20, 80, 70, 60] },
+                { id: 'oil', name: 'Oil Painting', icon: '🖼️', desc: 'Textured, classic, rich colors.', prompt: 'oil painting, thick impasto, visible brushstrokes, classical composition, dramatic lighting', metrics: [40, 90, 60, 30, 80] },
+                { id: 'pencil', name: 'Pencil Sketch', icon: '✏️', desc: 'Monochrome, detailed, rough.', prompt: 'graphite sketch, rough lines, shading, monochrome, sketchbook style', metrics: [80, 10, 20, 10, 40] },
+                { id: '3d', name: '3D Render', icon: '🧊', desc: 'Clean, glossy, isometric.', prompt: '3D render, blender cycles, octane render, isometric view, soft shadows, clay material', metrics: [70, 5, 50, 90, 20] },
+                { id: 'watercolor', name: 'Watercolor', icon: '💧', desc: 'Soft, bleeding edges, pastel.', prompt: 'watercolor painting, wet-on-wet, pastel colors, soft edges, dreamy atmosphere', metrics: [30, 60, 40, 20, 50] }
+            ],
+            engineering: [
+                { title: 'Blueprint', keyword: 'blueprint', desc: 'Standard architectural white-on-blue.', prompt: 'architectural blueprint, technical drawing, white lines on blue background, schematic, measurements' },
+                { title: 'Exploded View', keyword: 'exploded view', desc: 'Parts separated to show assembly.', prompt: 'exploded view diagram, mechanical parts, floating components, labeled, engineering schematic' },
+                { title: 'Cutaway', keyword: 'cutaway', desc: 'Showing internal structure.', prompt: 'cutaway cross-section, internal engine parts, technical illustration, detailed implementation' },
+                { title: 'Wireframe', keyword: 'wireframe', desc: '3D mesh structure.', prompt: 'wireframe model, polygon mesh, holographic, glowing edges, black background' }
+            ]
+        };
+
+        // --- Initialization ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView('dashboard');
+            setupMobileMenu();
+            cycleTip();
+        });
+
+        function setupMobileMenu() {
+            const btn = document.getElementById('menu-toggle');
+            const sidebar = document.getElementById('sidebar');
+            btn.addEventListener('click', () => {
+                sidebar.classList.toggle('-translate-x-full');
+            });
+        }
+
+        function cycleTip() {
+            const tipEl = document.getElementById('daily-tip');
+            let i = 0;
+            setInterval(() => {
+                i = (i + 1) % dataStore.tips.length;
+                tipEl.style.opacity = 0;
+                setTimeout(() => {
+                    tipEl.textContent = `"${dataStore.tips[i]}"`;
+                    tipEl.style.opacity = 1;
+                }, 500);
+            }, 8000);
+        }
+
+        // --- Navigation Logic ---
+        function navTo(viewId) {
+            state.currentView = viewId;
+            
+            // Update UI Sidebar
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('active');
+                if(el.dataset.target === viewId) el.classList.add('active');
+            });
+
+            // Mobile: Close sidebar on selection
+            if(window.innerWidth < 768) {
+                document.getElementById('sidebar').classList.add('-translate-x-full');
+            }
+
+            renderView(viewId);
+        }
+
+        // --- View Rendering Engine ---
+        function renderView(viewId) {
+            const main = document.getElementById('main-content');
+            main.innerHTML = ''; // Clear current content
+            main.scrollTop = 0;
+
+            switch(viewId) {
+                case 'dashboard':
+                    renderDashboard(main);
+                    break;
+                case 'art-styles':
+                    renderArtStyles(main);
+                    break;
+                case 'engineering':
+                    renderEngineering(main);
+                    break;
+                case 'infographics':
+                    renderInfographics(main);
+                    break;
+                case 'builder':
+                    renderBuilder(main);
+                    break;
+            }
+        }
+
+        // --- Section: Dashboard ---
+        function renderDashboard(container) {
+            const content = `
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-bold text-stone-800">Welcome to Nano Banana</h2>
+                        <p class="text-lg text-stone-600 max-w-2xl">
+                            Your comprehensive reference for generative AI imagery. Explore art styles, master technical diagrams, and build the perfect prompt structure.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Chart: Anatomy of a Prompt -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100">
+                            <h3 class="text-xl font-bold mb-4">Anatomy of a Perfect Prompt</h3>
+                            <p class="text-sm text-stone-500 mb-4">To achieve consistent results, balance your token usage across these categories.</p>
+                            <div class="chart-container">
+                                <canvas id="chart-anatomy"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Info Card -->
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 flex flex-col justify-center space-y-4">
+                            <h3 class="text-xl font-bold">Quick Start Guide</h3>
+                            <ul class="space-y-3">
+                                <li class="flex items-start">
+                                    <span class="bg-yellow-100 text-yellow-800 p-1 rounded mr-3 text-xs font-mono">1</span>
+                                    <span class="text-stone-600 text-sm">Select a category from the sidebar.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-yellow-100 text-yellow-800 p-1 rounded mr-3 text-xs font-mono">2</span>
+                                    <span class="text-stone-600 text-sm">Explore specific keywords and visual styles.</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <span class="bg-yellow-100 text-yellow-800 p-1 rounded mr-3 text-xs font-mono">3</span>
+                                    <span class="text-stone-600 text-sm">Use the Builder to concatenate parameters.</span>
+                                </li>
+                            </ul>
+                            <button onclick="navTo('art-styles')" class="mt-4 w-full bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold py-2 px-4 rounded transition">
+                                Start Exploring Styles
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+
+            // Init Chart
+            initAnatomyChart();
+        }
+
+        // --- Section: Art Styles ---
+        function renderArtStyles(container) {
+            const content = `
+                <div class="max-w-6xl mx-auto space-y-8">
+                    <div class="space-y-2 border-b border-stone-200 pb-4">
+                        <h2 class="text-3xl font-bold text-stone-800">Art Styles & Aesthetics</h2>
+                        <p class="text-stone-600">
+                            The "Style" component of a prompt dictates the rendering engine's approach to texture, lighting, and composition. 
+                            Compare the attributes below to find the right look.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Left: List -->
+                        <div class="lg:col-span-1 space-y-4">
+                            <h3 class="font-bold text-stone-700 uppercase tracking-wide text-sm">Style Library</h3>
+                            <div class="grid gap-3" id="style-list">
+                                <!-- Generated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Right: Detail & Chart -->
+                        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-stone-100 p-6 sticky top-4">
+                            <div id="style-detail-view">
+                                <p class="text-stone-400 italic text-center py-20">Select a style to view analysis.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+            populateStyleList();
+            // Default select first
+            selectStyle(dataStore.styles[0].id);
+        }
+
+        function populateStyleList() {
+            const list = document.getElementById('style-list');
+            dataStore.styles.forEach(style => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 bg-white border border-stone-200 rounded-lg hover:border-yellow-400 hover:bg-yellow-50 transition flex items-center group';
+                btn.onclick = () => selectStyle(style.id);
+                btn.innerHTML = `
+                    <span class="text-2xl mr-4 group-hover:scale-110 transition">${style.icon}</span>
+                    <div>
+                        <div class="font-bold text-stone-800">${style.name}</div>
+                        <div class="text-xs text-stone-500">${style.desc}</div>
+                    </div>
+                `;
+                list.appendChild(btn);
+            });
+        }
+
+        function selectStyle(id) {
+            const style = dataStore.styles.find(s => s.id === id);
+            const view = document.getElementById('style-detail-view');
+            
+            view.innerHTML = `
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-3xl font-bold flex items-center gap-3">
+                            <span>${style.icon}</span> ${style.name}
+                        </h3>
+                        <p class="text-stone-600 mt-2">${style.desc}</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                    <div>
+                        <h4 class="font-bold text-stone-700 mb-2 text-sm">Attribute Profile</h4>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="style-radar-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-center space-y-4">
+                        <h4 class="font-bold text-stone-700 text-sm">Core Prompt Structure</h4>
+                        <div class="bg-stone-900 text-stone-100 p-4 rounded-lg font-mono text-sm leading-relaxed relative group">
+                            <span id="prompt-text-${id}">${style.prompt}</span>
+                            <button onclick="copyText('prompt-text-${id}')" class="absolute top-2 right-2 bg-stone-700 hover:bg-stone-600 text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition">Copy</button>
+                        </div>
+                        <p class="text-xs text-stone-500">
+                            *Analysis: This style prioritizes <strong class="text-yellow-600">${getMaxAttribute(style.metrics)}</strong> over others.
+                        </p>
+                    </div>
+                </div>
+            `;
+
+            initStyleChart(style);
+        }
+
+        function getMaxAttribute(metrics) {
+            const labels = ['Realism', 'Texture', 'Detail', 'Tech-Feel', 'Abstract'];
+            const maxVal = Math.max(...metrics);
+            return labels[metrics.indexOf(maxVal)];
+        }
+
+        // --- Section: Engineering ---
+        function renderEngineering(container) {
+            const content = `
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="space-y-2 border-b border-stone-200 pb-4">
+                        <h2 class="text-3xl font-bold text-stone-800">Technical Drawing & Engineering</h2>
+                        <p class="text-stone-600">
+                            Generating accurate technical imagery requires precise terminology. Vague prompts lead to "hallucinated" mechanics. 
+                            Use these strict keywords to enforce perspective and structure.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                            <h3 class="text-blue-900 font-bold mb-2">DO's</h3>
+                            <ul class="list-disc list-inside text-blue-800 text-sm space-y-1">
+                                <li>Use "Orthographic projection" for flat views.</li>
+                                <li>Specify "White lines on blue background" for blueprints.</li>
+                                <li>Add "Labeled" or "Annotated" for text placeholders.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-red-50 p-6 rounded-xl border border-red-100">
+                            <h3 class="text-red-900 font-bold mb-2">DON'Ts</h3>
+                            <ul class="list-disc list-inside text-red-800 text-sm space-y-1">
+                                <li>Don't use "Photo realistic" (adds unwanted depth).</li>
+                                <li>Avoid "Cinematic lighting" (obscures details).</li>
+                                <li>Don't expect readable text (it will be gibberish).</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <h3 class="font-bold text-stone-800 text-xl">Standard Engineering Views</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        ${dataStore.engineering.map(item => `
+                            <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-blue-400 transition cursor-pointer" onclick="fillBuilderWithTech('${item.keyword}')">
+                                <div class="flex justify-between items-center mb-2">
+                                    <h4 class="font-bold text-stone-800">📐 ${item.title}</h4>
+                                    <span class="text-xs bg-stone-100 px-2 py-1 rounded text-stone-500 font-mono">${item.keyword}</span>
+                                </div>
+                                <p class="text-sm text-stone-600 mb-3">${item.desc}</p>
+                                <div class="bg-stone-50 p-2 rounded text-xs font-mono text-stone-500 truncate">
+                                    ${item.prompt}
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 mt-8">
+                         <h3 class="font-bold text-stone-800 mb-4">Keyword Efficiency Analysis</h3>
+                         <p class="text-sm text-stone-500 mb-4">Which terms most effectively force the model into "Engineering Mode"?</p>
+                         <div class="chart-container">
+                            <canvas id="tech-bar-chart"></canvas>
+                         </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+            initTechChart();
+        }
+
+        // --- Section: Infographics ---
+        function renderInfographics(container) {
+            const content = `
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="space-y-2 border-b border-stone-200 pb-4">
+                        <h2 class="text-3xl font-bold text-stone-800">Infographics & Data Viz</h2>
+                        <p class="text-stone-600">
+                            Creating generated infographics is about structure, not data accuracy. The AI generates the *layout*, you overlay the data later.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Card 1 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
+                            <div class="h-32 bg-gradient-to-br from-emerald-100 to-teal-50 flex items-center justify-center text-4xl">📊</div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg">Statistical Layout</h3>
+                                <p class="text-sm text-stone-500 mt-1">For dashboards and charts.</p>
+                                <hr class="my-3 border-stone-100">
+                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
+                                    infographic layout, flat vector design, bar charts and pie charts, minimalism, corporate color palette, white background
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
+                            <div class="h-32 bg-gradient-to-br from-purple-100 to-indigo-50 flex items-center justify-center text-4xl">🗺️</div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg">Flowchart / Process</h3>
+                                <p class="text-sm text-stone-500 mt-1">For timelines and logic.</p>
+                                <hr class="my-3 border-stone-100">
+                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
+                                    process map, flowchart infographic, connected nodes, isometric path, step-by-step guide, numbered icons, vibrant colors
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="bg-white rounded-lg shadow-sm overflow-hidden border border-stone-200">
+                            <div class="h-32 bg-gradient-to-br from-orange-100 to-yellow-50 flex items-center justify-center text-4xl">🧬</div>
+                            <div class="p-4">
+                                <h3 class="font-bold text-lg">Scientific Poster</h3>
+                                <p class="text-sm text-stone-500 mt-1">For anatomy and biology.</p>
+                                <hr class="my-3 border-stone-100">
+                                <p class="font-mono text-xs text-stone-600 bg-stone-50 p-2 rounded">
+                                    scientific illustration, medical infographic, anatomy breakdown, detailed text labels, clean white background, educational
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Slider Demo -->
+                    <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-8 text-center mt-8">
+                        <h3 class="text-2xl font-bold text-yellow-900 mb-2">Complexity Balance</h3>
+                        <p class="text-yellow-800 mb-6">Infographics get messy if the prompt is too complex. Keep stylization low.</p>
+                        
+                        <div class="flex items-center justify-center space-x-4">
+                            <span class="text-sm font-bold text-stone-500">Minimal</span>
+                            <div class="w-full max-w-md h-4 bg-yellow-200 rounded-full relative">
+                                <div class="absolute top-0 left-0 h-4 bg-yellow-500 rounded-full" style="width: 30%"></div>
+                                <div class="absolute -top-1 left-[30%] w-6 h-6 bg-white border-2 border-yellow-600 rounded-full cursor-pointer shadow-sm"></div>
+                            </div>
+                            <span class="text-sm font-bold text-stone-500">Cluttered</span>
+                        </div>
+                        <p class="text-xs text-stone-500 mt-4">Recommended setting: --s 50 (Low Stylization)</p>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+        }
+
+        // --- Section: Builder ---
+        function renderBuilder(container) {
+            const content = `
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="space-y-2">
+                        <h2 class="text-3xl font-bold text-stone-800">Prompt Builder</h2>
+                        <p class="text-stone-600">
+                            Construct a syntactically correct prompt by layering the core components.
+                        </p>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-yellow-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <!-- Inputs -->
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Subject (What?)</label>
+                                <input type="text" id="input-subject" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="e.g. A futuristic cyberpunk cat">
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Art Style (How?)</label>
+                                <select id="input-style" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none">
+                                    <option value="">Select Style...</option>
+                                    <option value="cinematic shot, 35mm lens">Cinematic Photo</option>
+                                    <option value="oil painting, thick texture">Oil Painting</option>
+                                    <option value="digital illustration, cel shaded">Digital Art</option>
+                                    <option value="blueprint, white lines on blue">Blueprint</option>
+                                    <option value="low poly, isometric render">Low Poly 3D</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Lighting (Atmosphere)</label>
+                                <select id="input-lighting" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none">
+                                    <option value="">Select Lighting...</option>
+                                    <option value="golden hour lighting">Golden Hour (Warm)</option>
+                                    <option value="neon volumetric lighting">Neon Cyberpunk</option>
+                                    <option value="soft studio lighting">Studio (Clean)</option>
+                                    <option value="natural diffuse light">Natural (Soft)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Aspect Ratio</label>
+                                <div class="flex space-x-2">
+                                    <button onclick="setAr('--ar 16:9')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold active-ar">16:9</button>
+                                    <button onclick="setAr('--ar 1:1')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold">1:1</button>
+                                    <button onclick="setAr('--ar 9:16')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold">9:16</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Output -->
+                        <div class="bg-stone-900 rounded-lg p-6 flex flex-col justify-between relative">
+                            <div>
+                                <h3 class="text-stone-400 text-xs uppercase tracking-wider font-bold mb-4">Final Prompt</h3>
+                                <p id="final-output" class="font-mono text-yellow-300 text-lg leading-relaxed break-words">
+                                    ...
+                                </p>
+                            </div>
+                            <button onclick="copyBuilderPrompt()" class="mt-4 w-full bg-stone-700 hover:bg-stone-600 text-white py-2 rounded font-bold transition">
+                                Copy to Clipboard
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+            
+            // Add listeners
+            ['input-subject', 'input-style', 'input-lighting'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateBuilderOutput);
+            });
+            updateBuilderOutput();
+        }
+
+        function setAr(val) {
+            state.promptBuilder.ar = val;
+            document.querySelectorAll('.ar-btn').forEach(btn => {
+                btn.classList.remove('bg-yellow-400', 'text-yellow-900', 'border-yellow-500');
+                if(btn.textContent === val.replace('--ar ', '')) {
+                    btn.classList.add('bg-yellow-400', 'text-yellow-900', 'border-yellow-500');
+                }
+            });
+            updateBuilderOutput();
+        }
+
+        function updateBuilderOutput() {
+            const subj = document.getElementById('input-subject').value || '[Subject]';
+            const style = document.getElementById('input-style').value;
+            const light = document.getElementById('input-lighting').value;
+            const ar = state.promptBuilder.ar;
+
+            const parts = [subj];
+            if(style) parts.push(style);
+            if(light) parts.push(light);
+            parts.push(ar);
+
+            document.getElementById('final-output').textContent = parts.join(', ');
+        }
+
+        function fillBuilderWithTech(keyword) {
+            navTo('builder');
+            setTimeout(() => {
+                document.getElementById('input-subject').value = "Mechanical gear assembly";
+                document.getElementById('input-style').value = "blueprint, white lines on blue";
+                updateBuilderOutput();
+            }, 100);
+        }
+
+        // --- Chart Functions ---
+
+        function initAnatomyChart() {
+            const ctx = document.getElementById('chart-anatomy').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Subject (Core)', 'Art Style', 'Lighting/Color', 'Parameters'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#EAB308', '#FDE047', '#D6D3D1', '#27272A'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function initStyleChart(styleData) {
+            const ctx = document.getElementById('style-radar-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Realism', 'Texture', 'Detail', 'Tech-Feel', 'Abstract'],
+                    datasets: [{
+                        label: styleData.name,
+                        data: styleData.metrics,
+                        fill: true,
+                        backgroundColor: 'rgba(234, 179, 8, 0.2)',
+                        borderColor: '#EAB308',
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#EAB308',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#EAB308'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: { borderWidth: 3 }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: { color: '#E5E7EB' },
+                            grid: { color: '#E5E7EB' },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: { display: false } // hide numbers for cleaner look
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function initTechChart() {
+            const ctx = document.getElementById('tech-bar-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Orthographic', 'Blueprint', 'Schematic', 'Diagram', 'Sketch'],
+                    datasets: [{
+                        label: 'Consistency Score (0-100)',
+                        data: [95, 88, 75, 60, 40],
+                        backgroundColor: [
+                            '#1E3A8A', // Strongest
+                            '#2563EB',
+                            '#60A5FA',
+                            '#93C5FD',
+                            '#DBEAFE'  // Weakest
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            grid: { color: '#F3F4F6' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: (ctx) => `Reliability: ${ctx.raw}%`
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // --- Utilities ---
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Copied to clipboard!');
+            });
+        }
+
+        function copyBuilderPrompt() {
+            const text = document.getElementById('final-output').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('Prompt copied!');
+            });
+        }
+
+    </script>
+</body>
+</html>
