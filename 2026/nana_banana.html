@@ -79,18 +79,6 @@
             background: #A8A29E;
         }
     </style>
-    <!-- Chosen Palette: Warm Banana (Cream #FEFDF5, Charcoal #27272A, Yellow #FDE047, Amber #EAB308) -->
-    <!-- Application Structure Plan: Dashboard Layout. 
-         Sidebar: Navigation (Dashboard, Art Styles, Engineering, Prompt Builder).
-         Main Content: Dynamic injection based on selection.
-         Why: Allows users to switch between learning modes (Theory via Dashboard, Reference via Styles, Action via Builder) without page reloads. 
-         Key Interactions: Chart filtering, Prompt concatenation tool, Clipboard copy. -->
-    <!-- Visualization & Content Choices:
-         1. Radar Chart (Chart.js): Visualizes abstract style attributes (Realism, Detail, Fantasy) to help users choose a style based on 'vibe'.
-         2. Bar Chart (Chart.js): Shows keyword frequency/importance for Technical Drawings.
-         3. Doughnut Chart (Chart.js): Explains the 'anatomy' of a perfect prompt.
-         4. NO SVG/Mermaid: All icons are Unicode or CSS shapes. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="h-screen overflow-hidden flex flex-col md:flex-row">
 
@@ -116,6 +104,9 @@
             </button>
             <button onclick="navTo('engineering')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="engineering">
                 <span class="mr-2">📐</span> Tech & Engineering
+            </button>
+            <button onclick="navTo('medical')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="medical">
+                <span class="mr-2">🩺</span> Medical & Anatomy
             </button>
             <button onclick="navTo('infographics')" class="nav-item w-full text-left px-6 py-3 text-stone-600" data-target="infographics">
                 <span class="mr-2">🧩</span> Infographics
@@ -157,6 +148,9 @@
                 style: '',
                 lighting: '',
                 camera: '',
+                material: '',
+                renderer: '',
+                negative: '',
                 ar: '--ar 16:9'
             }
         };
@@ -167,7 +161,8 @@
                 "Use '::' to separate distinct concepts in some models.",
                 "Lighting keywords like 'volumetric' add immense depth.",
                 "For technical drawings, 'orthographic' is a magic word.",
-                "Specify 'vector style' for clean, scalable-looking graphics."
+                "Specify 'vector style' for clean, scalable-looking graphics.",
+                "For medical art, use 'Frank H. Netter style' for clean anatomy."
             ],
             styles: [
                 { id: 'cyberpunk', name: 'Cyberpunk', icon: '🌆', desc: 'High contrast, neon, futuristic.', prompt: 'cyberpunk city, neon lights, rain-slicked streets, high contrast, futuristic architecture', metrics: [90, 20, 80, 70, 60] },
@@ -181,6 +176,12 @@
                 { title: 'Exploded View', keyword: 'exploded view', desc: 'Parts separated to show assembly.', prompt: 'exploded view diagram, mechanical parts, floating components, labeled, engineering schematic' },
                 { title: 'Cutaway', keyword: 'cutaway', desc: 'Showing internal structure.', prompt: 'cutaway cross-section, internal engine parts, technical illustration, detailed implementation' },
                 { title: 'Wireframe', keyword: 'wireframe', desc: '3D mesh structure.', prompt: 'wireframe model, polygon mesh, holographic, glowing edges, black background' }
+            ],
+            medical: [
+                { title: 'Classic Atlas', keyword: 'Netter Style', desc: 'The gold standard for education. Clean, painted, labeled.', prompt: 'medical illustration in the style of Frank H. Netter, watercolor and ink, labeled anatomical parts, clean white background, educational' },
+                { title: 'Diagnostic Imaging', keyword: 'MRI / X-Ray', desc: 'Greyscale, high contrast, internal view.', prompt: 'MRI scan, T2 weighted image, high contrast, radiologic imaging, greyscale, cross-section of brain, medical diagnosis' },
+                { title: 'Microscopic (SEM)', keyword: 'Electron Microscope', desc: 'For viruses, cells, and bacteria.', prompt: 'scanning electron microscope (SEM) image, high magnification, depth of field, colorized, macro details, scientific visualization' },
+                { title: 'Surgical Schematic', keyword: 'Vector Line Art', desc: 'Procedure steps without the blood.', prompt: 'surgical line art, black and white vector, technical manual style, surgical instruments, step-by-step procedure, minimal' }
             ]
         };
 
@@ -237,21 +238,12 @@
             main.scrollTop = 0;
 
             switch(viewId) {
-                case 'dashboard':
-                    renderDashboard(main);
-                    break;
-                case 'art-styles':
-                    renderArtStyles(main);
-                    break;
-                case 'engineering':
-                    renderEngineering(main);
-                    break;
-                case 'infographics':
-                    renderInfographics(main);
-                    break;
-                case 'builder':
-                    renderBuilder(main);
-                    break;
+                case 'dashboard': renderDashboard(main); break;
+                case 'art-styles': renderArtStyles(main); break;
+                case 'engineering': renderEngineering(main); break;
+                case 'medical': renderMedical(main); break;
+                case 'infographics': renderInfographics(main); break;
+                case 'builder': renderBuilder(main); break;
             }
         }
 
@@ -301,8 +293,6 @@
                 </div>
             `;
             container.innerHTML = content;
-
-            // Init Chart
             initAnatomyChart();
         }
 
@@ -344,6 +334,7 @@
 
         function populateStyleList() {
             const list = document.getElementById('style-list');
+            if(!list) return;
             dataStore.styles.forEach(style => {
                 const btn = document.createElement('button');
                 btn.className = 'w-full text-left p-4 bg-white border border-stone-200 rounded-lg hover:border-yellow-400 hover:bg-yellow-50 transition flex items-center group';
@@ -394,12 +385,6 @@
             `;
 
             initStyleChart(style);
-        }
-
-        function getMaxAttribute(metrics) {
-            const labels = ['Realism', 'Texture', 'Detail', 'Tech-Feel', 'Abstract'];
-            const maxVal = Math.max(...metrics);
-            return labels[metrics.indexOf(maxVal)];
         }
 
         // --- Section: Engineering ---
@@ -460,6 +445,75 @@
             `;
             container.innerHTML = content;
             initTechChart();
+        }
+
+        // --- Section: Medical ---
+        function renderMedical(container) {
+            const content = `
+                <div class="max-w-5xl mx-auto space-y-8">
+                    <div class="space-y-2 border-b border-stone-200 pb-4">
+                        <h2 class="text-3xl font-bold text-teal-800">Medical & Anatomical Drawing</h2>
+                        <p class="text-stone-600">
+                            Generating medical imagery is a balance between <strong>Accuracy</strong> and <strong>Aesthetics</strong>. 
+                            The AI often drifts towards "body horror" if not strictly controlled with clean, clinical keywords.
+                        </p>
+                    </div>
+
+                    <!-- The Gore Scale Warning -->
+                    <div class="bg-red-50 border-l-4 border-red-400 p-4 rounded-r shadow-sm">
+                        <div class="flex items-start">
+                            <span class="text-2xl mr-3">⚠️</span>
+                            <div>
+                                <h3 class="text-red-800 font-bold text-sm uppercase tracking-wide">The "Gore" Threshold</h3>
+                                <p class="text-sm text-red-700 mt-1">
+                                    Avoid keywords like "Hyper-realistic surgery" or "Open wound". These trigger content filters or generate disturbing images. 
+                                    Instead, use <span class="font-mono bg-white px-1 rounded border border-red-100">"Medical Illustration"</span>, <span class="font-mono bg-white px-1 rounded border border-red-100">"Schematic"</span>, or <span class="font-mono bg-white px-1 rounded border border-red-100">"Plastic model"</span>.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Left: Style Cards -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-stone-700">Standard Modalities</h3>
+                            ${dataStore.medical.map(item => `
+                                <div class="bg-white p-4 rounded-lg border border-stone-200 hover:border-teal-400 hover:shadow-md transition cursor-pointer group" onclick="fillBuilderWithMedical('${item.title}')">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <h4 class="font-bold text-stone-800 flex items-center gap-2">
+                                            <span class="bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded">Prompt Template</span>
+                                            ${item.title}
+                                        </h4>
+                                    </div>
+                                    <p class="text-sm text-stone-600 mb-3">${item.desc}</p>
+                                    <div class="bg-stone-50 group-hover:bg-teal-50 p-3 rounded text-xs font-mono text-stone-500 border border-stone-100 group-hover:border-teal-100 transition">
+                                        ${item.prompt}
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- Right: Analysis Chart -->
+                        <div class="space-y-4">
+                            <h3 class="font-bold text-stone-700">Style Utility Analysis</h3>
+                            <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 h-full">
+                                <p class="text-sm text-stone-500 mb-4">Comparison of styles for educational clarity vs. artistic impact.</p>
+                                <div class="chart-container" style="height: 300px;">
+                                    <canvas id="medical-chart"></canvas>
+                                </div>
+                                <div class="mt-6 p-4 bg-teal-50 rounded-lg">
+                                    <h4 class="text-teal-900 font-bold text-sm mb-2">💡 Quick Tip: Cross-Sections</h4>
+                                    <p class="text-xs text-teal-800">
+                                        To see inside an organ without gore, use the keyword <span class="font-bold">"Cutaway diagram"</span> or <span class="font-bold">"Cross-section view"</span> combined with <span class="font-bold">"3D render"</span>.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.innerHTML = content;
+            initMedicalChart();
         }
 
         // --- Section: Infographics ---
@@ -537,67 +591,125 @@
         // --- Section: Builder ---
         function renderBuilder(container) {
             const content = `
-                <div class="max-w-4xl mx-auto space-y-8">
+                <div class="max-w-5xl mx-auto space-y-8">
                     <div class="space-y-2">
-                        <h2 class="text-3xl font-bold text-stone-800">Prompt Builder</h2>
+                        <h2 class="text-3xl font-bold text-stone-800">Advanced Prompt Builder</h2>
                         <p class="text-stone-600">
-                            Construct a syntactically correct prompt by layering the core components.
+                            Construct a professional-grade prompt by layering dimensions, textures, and camera logic.
                         </p>
                     </div>
 
-                    <div class="bg-white p-6 rounded-xl shadow-lg border border-yellow-100 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-yellow-100 grid grid-cols-1 lg:grid-cols-12 gap-8">
                         
-                        <!-- Inputs -->
-                        <div class="space-y-4">
+                        <!-- Left Column: Core Components (7 cols) -->
+                        <div class="lg:col-span-7 space-y-5">
+                            <h3 class="font-bold text-stone-400 text-xs uppercase tracking-wider border-b border-stone-100 pb-2">Core Visuals</h3>
+                            
                             <div>
-                                <label class="block text-sm font-bold text-stone-700 mb-1">Subject (What?)</label>
-                                <input type="text" id="input-subject" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none" placeholder="e.g. A futuristic cyberpunk cat">
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Subject (The "Who")</label>
+                                <input type="text" id="input-subject" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none transition" placeholder="e.g. A futuristic cyberpunk cat">
                             </div>
 
-                            <div>
-                                <label class="block text-sm font-bold text-stone-700 mb-1">Art Style (How?)</label>
-                                <select id="input-style" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none">
-                                    <option value="">Select Style...</option>
-                                    <option value="cinematic shot, 35mm lens">Cinematic Photo</option>
-                                    <option value="oil painting, thick texture">Oil Painting</option>
-                                    <option value="digital illustration, cel shaded">Digital Art</option>
-                                    <option value="blueprint, white lines on blue">Blueprint</option>
-                                    <option value="low poly, isometric render">Low Poly 3D</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-stone-700 mb-1">Lighting (Atmosphere)</label>
-                                <select id="input-lighting" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none">
-                                    <option value="">Select Lighting...</option>
-                                    <option value="golden hour lighting">Golden Hour (Warm)</option>
-                                    <option value="neon volumetric lighting">Neon Cyberpunk</option>
-                                    <option value="soft studio lighting">Studio (Clean)</option>
-                                    <option value="natural diffuse light">Natural (Soft)</option>
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-bold text-stone-700 mb-1">Aspect Ratio</label>
-                                <div class="flex space-x-2">
-                                    <button onclick="setAr('--ar 16:9')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold active-ar">16:9</button>
-                                    <button onclick="setAr('--ar 1:1')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold">1:1</button>
-                                    <button onclick="setAr('--ar 9:16')" class="ar-btn flex-1 py-2 border rounded hover:bg-stone-50 text-xs font-bold">9:16</button>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-stone-700 mb-1">Art Style</label>
+                                    <select id="input-style" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
+                                        <option value="">Select Style...</option>
+                                        <option value="cinematic shot, 35mm lens">Cinematic Photo</option>
+                                        <option value="oil painting, thick texture">Oil Painting</option>
+                                        <option value="digital illustration, cel shaded">Digital Art</option>
+                                        <option value="blueprint, white lines on blue">Blueprint</option>
+                                        <option value="low poly, isometric render">Low Poly 3D</option>
+                                        <option value="ukiyo-e woodblock print">Ukiyo-e Print</option>
+                                    </select>
                                 </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-stone-700 mb-1">Lighting</label>
+                                    <select id="input-lighting" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
+                                        <option value="">Select Lighting...</option>
+                                        <option value="golden hour lighting">Golden Hour (Warm)</option>
+                                        <option value="neon volumetric lighting">Neon Cyberpunk</option>
+                                        <option value="soft studio lighting">Studio (Clean)</option>
+                                        <option value="bioluminescent glow">Bioluminescent</option>
+                                        <option value="rembrandt lighting">Rembrandt (Dramatic)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- New Unique Fields Row 1 -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-bold text-stone-700 mb-1">Camera & Lens <span class="text-yellow-600 text-xs">(Unique)</span></label>
+                                    <select id="input-camera" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
+                                        <option value="">Default View...</option>
+                                        <option value="macro lens, f/2.8, extreme close-up">Macro (Tiny Details)</option>
+                                        <option value="wide angle lens, 16mm, fisheye">Fisheye / Wide</option>
+                                        <option value="telephoto lens, 200mm, bokeh background">Telephoto (Portrait)</option>
+                                        <option value="isometric view, orthographic camera">Isometric (3D Game)</option>
+                                        <option value="drone shot, aerial view, top-down">Drone / Aerial</option>
+                                        <option value="GoPro footage, first-person view">GoPro / POV</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-bold text-stone-700 mb-1">Materiality <span class="text-yellow-600 text-xs">(Unique)</span></label>
+                                    <select id="input-material" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
+                                        <option value="">Default Texture...</option>
+                                        <option value="made of translucent glass and crystal">Glass & Crystal</option>
+                                        <option value="knitted wool texture, fabric">Knitted / Wool</option>
+                                        <option value="brushed aluminum, metallic surfaces">Brushed Metal</option>
+                                        <option value="organic slime, wet biological texture">Organic / Biological</option>
+                                        <option value="origami paper folded, papercraft">Papercraft</option>
+                                        <option value="voxel art, lego bricks">Voxels / Lego</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                             <!-- New Unique Fields Row 2 -->
+                            <div>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Renderer / Engine</label>
+                                <select id="input-renderer" class="w-full p-2 border border-stone-300 rounded focus:ring-2 focus:ring-yellow-400 outline-none bg-white">
+                                    <option value="">Select Engine...</option>
+                                    <option value="Unreal Engine 5 render, 8k, ray tracing">Unreal Engine 5 (Game)</option>
+                                    <option value="Octane Render, physically based rendering">Octane (Product)</option>
+                                    <option value="Pixar style, Disney animation style">Pixar / Disney</option>
+                                    <option value="vintage polaroid, film grain, light leaks">Vintage Polaroid</option>
+                                </select>
                             </div>
                         </div>
 
-                        <!-- Output -->
-                        <div class="bg-stone-900 rounded-lg p-6 flex flex-col justify-between relative">
+                        <!-- Right Column: Parameters & Output (5 cols) -->
+                        <div class="lg:col-span-5 space-y-5 flex flex-col">
+                            <h3 class="font-bold text-stone-400 text-xs uppercase tracking-wider border-b border-stone-100 pb-2">Technical Params</h3>
+
                             <div>
-                                <h3 class="text-stone-400 text-xs uppercase tracking-wider font-bold mb-4">Final Prompt</h3>
-                                <p id="final-output" class="font-mono text-yellow-300 text-lg leading-relaxed break-words">
-                                    ...
-                                </p>
+                                <label class="block text-sm font-bold text-stone-700 mb-1">Aspect Ratio</label>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button onclick="setAr('--ar 16:9')" class="ar-btn py-2 border rounded hover:bg-stone-50 text-xs font-bold active-ar bg-yellow-400 text-yellow-900 border-yellow-500">16:9</button>
+                                    <button onclick="setAr('--ar 1:1')" class="ar-btn py-2 border rounded hover:bg-stone-50 text-xs font-bold">1:1</button>
+                                    <button onclick="setAr('--ar 9:16')" class="ar-btn py-2 border rounded hover:bg-stone-50 text-xs font-bold">9:16</button>
+                                </div>
                             </div>
-                            <button onclick="copyBuilderPrompt()" class="mt-4 w-full bg-stone-700 hover:bg-stone-600 text-white py-2 rounded font-bold transition">
-                                Copy to Clipboard
-                            </button>
+
+                            <div>
+                                <label class="block text-sm font-bold text-red-800 mb-1">Negative Prompt (Avoid)</label>
+                                <input type="text" id="input-negative" class="w-full p-2 border border-red-200 bg-red-50 rounded focus:ring-2 focus:ring-red-400 outline-none placeholder-red-300 text-red-900" placeholder="e.g. blur, text, watermark, bad anatomy">
+                            </div>
+
+                            <div class="flex-1 bg-stone-900 rounded-lg p-6 flex flex-col justify-between relative mt-4 shadow-inner">
+                                <div>
+                                    <div class="flex justify-between items-center mb-4">
+                                        <h3 class="text-stone-400 text-xs uppercase tracking-wider font-bold">Final Prompt</h3>
+                                        <span class="text-xs text-stone-500 font-mono">Token Est: High</span>
+                                    </div>
+                                    <p id="final-output" class="font-mono text-yellow-300 text-sm md:text-base leading-relaxed break-words">
+                                        [Subject] --ar 16:9
+                                    </p>
+                                </div>
+                                <button onclick="copyBuilderPrompt()" class="mt-6 w-full bg-stone-700 hover:bg-stone-600 text-white py-3 rounded-lg font-bold transition flex items-center justify-center gap-2 group">
+                                    <span>Copy to Clipboard</span>
+                                    <span class="group-hover:translate-x-1 transition-transform">📋</span>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -605,12 +717,14 @@
             container.innerHTML = content;
             
             // Add listeners
-            ['input-subject', 'input-style', 'input-lighting'].forEach(id => {
+            const inputs = ['input-subject', 'input-style', 'input-lighting', 'input-camera', 'input-material', 'input-renderer', 'input-negative'];
+            inputs.forEach(id => {
                 document.getElementById(id).addEventListener('input', updateBuilderOutput);
             });
             updateBuilderOutput();
         }
 
+        // --- Helper: Update Builder Output ---
         function setAr(val) {
             state.promptBuilder.ar = val;
             document.querySelectorAll('.ar-btn').forEach(btn => {
@@ -626,14 +740,31 @@
             const subj = document.getElementById('input-subject').value || '[Subject]';
             const style = document.getElementById('input-style').value;
             const light = document.getElementById('input-lighting').value;
+            const cam = document.getElementById('input-camera').value;
+            const mat = document.getElementById('input-material').value;
+            const rend = document.getElementById('input-renderer').value;
+            const neg = document.getElementById('input-negative').value;
             const ar = state.promptBuilder.ar;
 
-            const parts = [subj];
+            // Smart concatenation
+            let parts = [subj];
+            
+            // Visuals
+            if(mat) parts.push(mat);
             if(style) parts.push(style);
+            
+            // Technicals
             if(light) parts.push(light);
-            parts.push(ar);
+            if(cam) parts.push(cam);
+            if(rend) parts.push(rend);
+            
+            // Parameters at the end
+            let finalString = parts.join(', ');
+            
+            if(neg) finalString += ` --no ${neg}`;
+            finalString += ` ${ar}`;
 
-            document.getElementById('final-output').textContent = parts.join(', ');
+            document.getElementById('final-output').textContent = finalString;
         }
 
         function fillBuilderWithTech(keyword) {
@@ -642,6 +773,40 @@
                 document.getElementById('input-subject').value = "Mechanical gear assembly";
                 document.getElementById('input-style').value = "blueprint, white lines on blue";
                 updateBuilderOutput();
+            }, 100);
+        }
+
+        function fillBuilderWithMedical(title) {
+            const item = dataStore.medical.find(i => i.title === title);
+            if(!item) return;
+
+            navTo('builder');
+            setTimeout(() => {
+                // Pre-fill builder fields based on the selected medical style
+                document.getElementById('input-subject').value = "Human Heart Anatomy";
+                
+                // Parse the prompt to roughly fit our builder slots
+                if(title.includes('Netter')) {
+                    document.getElementById('input-style').value = "oil painting, thick texture"; 
+                    document.getElementById('input-renderer').value = "Pixar style, Disney animation style"; // Approximate
+                    document.getElementById('input-lighting').value = "soft studio lighting";
+                } else if (title.includes('MRI')) {
+                    document.getElementById('input-style').value = "digital illustration, cel shaded";
+                    document.getElementById('input-camera').value = "macro lens, f/2.8, extreme close-up";
+                    document.getElementById('input-material').value = "made of translucent glass and crystal";
+                } else if (title.includes('Microscopic')) {
+                    document.getElementById('input-camera').value = "macro lens, f/2.8, extreme close-up";
+                    document.getElementById('input-lighting').value = "bioluminescent glow";
+                    document.getElementById('input-material').value = "organic slime, wet biological texture";
+                }
+
+                const output = document.getElementById('final-output');
+                output.textContent = `${item.prompt} --ar 3:2`;
+                
+                // Flash effect
+                output.parentElement.classList.add('ring-2', 'ring-teal-400');
+                setTimeout(() => output.parentElement.classList.remove('ring-2', 'ring-teal-400'), 500);
+
             }, 100);
         }
 
@@ -699,7 +864,7 @@
                             grid: { color: '#E5E7EB' },
                             suggestedMin: 0,
                             suggestedMax: 100,
-                            ticks: { display: false } // hide numbers for cleaner look
+                            ticks: { display: false }
                         }
                     },
                     plugins: {
@@ -750,6 +915,45 @@
                     }
                 }
             });
+        }
+
+        function initMedicalChart() {
+            const ctx = document.getElementById('medical-chart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Netter/Atlas', 'MRI/X-Ray', 'Photo-Realism', 'Vector Line'],
+                    datasets: [
+                        {
+                            label: 'Educational Clarity',
+                            data: [95, 60, 40, 85],
+                            backgroundColor: '#14B8A6' // Teal
+                        },
+                        {
+                            label: 'Visual "Wow" Factor',
+                            data: [60, 50, 90, 30],
+                            backgroundColor: '#FDE047' // Yellow
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { beginAtZero: true },
+                        x: { grid: { display: false } }
+                    },
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+        }
+
+        function getMaxAttribute(metrics) {
+            const labels = ['Realism', 'Texture', 'Detail', 'Tech-Feel', 'Abstract'];
+            const maxVal = Math.max(...metrics);
+            return labels[metrics.indexOf(maxVal)];
         }
 
         // --- Utilities ---
