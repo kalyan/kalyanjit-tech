@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twins: Strategic Management Overview</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Placeholder Comments for Requirements -->
+    <!-- Chosen Palette: "Corporate Strategy" - Slate (Backgrounds/Text), Indigo (Primary Actions), Emerald (Success/Growth), Zinc (Neutrals). Warm, professional, clean. -->
+    
+    <!-- Application Structure Plan: 
+         The app is designed as a linear learning journey (Scrollytelling) suitable for a lecture aid or self-paced study.
+         1. Hero Section: Definitions and the "Why" for management students.
+         2. The Mechanism: Interactive flow (Physical -> Digital -> Insight) to explain the tech without jargon.
+         3. Market Data (Dashboard): Quantitative context using Chart.js to show business opportunity.
+         4. Industry Deep Dive (Tabs): Qualitative exploration of specific sectors (ROI focus).
+         5. Tool Ecosystem (Filterable Grid): Practical knowledge of the vendor landscape.
+         6. Future Trends: Forward-looking analysis.
+         7. Student Lab (Interactive): Actionable assignments to apply learning immediately.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Market Growth Line Chart (Chart.js): Goal: Show explosive economic potential. Justification: Line charts best for trends.
+         2. Industry Adoption Bar Chart (Chart.js): Goal: Compare sector maturity. Justification: Bar charts allow easy comparison.
+         3. Process Flow (CSS/JS Grid): Goal: Explain the Digital Twin feedback loop. Interaction: Hover/Click to reveal step details. Method: Styled HTML (No SVG).
+         4. Assignment Checklist (JS State): Goal: Track student progress on tasks. Method: Simple DOM manipulation.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+
+        /* Chart Container Styling - Mandatory Requirement */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Specific sizing for different chart contexts */
+        .chart-container-lg {
+            height: 350px;
+            max-height: 400px;
+            max-width: 800px;
+        }
+        
+        .chart-container-sm {
+            height: 300px;
+            max-height: 350px;
+            max-width: 600px;
+        }
+
+        /* Utility for interactive cards */
+        .interactive-card {
+            transition: all 0.3s ease;
+        }
+        .interactive-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Tab Active State */
+        .tab-active {
+            border-bottom: 3px solid #4f46e5; /* Indigo 600 */
+            color: #4f46e5;
+            font-weight: 600;
+        }
+        .tab-inactive {
+            border-bottom: 3px solid transparent;
+            color: #64748b;
+        }
+        .tab-inactive:hover {
+            color: #334155;
+            border-bottom: 3px solid #cbd5e1;
+        }
+
+        /* Animated Pulse for emphasis */
+        @keyframes pulse-subtle {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+        .animate-pulse-subtle {
+            animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">♊</span>
+                    <span class="font-bold text-xl tracking-tight text-slate-900">Flugelsoft <span class="text-indigo-600">Labs</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#concept" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Concept</a>
+                    <a href="#market" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Market Data</a>
+                    <a href="#usecases" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Use Cases</a>
+                    <a href="#tools" class="text-slate-600 hover:text-indigo-600 font-medium transition-colors">Tools</a>
+                    <a href="#assignments" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium">Assignments</a>
+                </div>
+                <!-- Mobile menu button placeholder (simple implementation for this scope) -->
+                <div class="md:hidden text-slate-500">☰</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900 text-white pt-20 pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="inline-block px-3 py-1 bg-indigo-500/30 text-indigo-200 rounded-full text-sm font-semibold mb-4 border border-indigo-400/30">
+                        Management Module 101
+                    </div>
+                    <h1 class="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                        Bridging the <span class="text-indigo-400">Physical</span> & <span class="text-emerald-400">Digital</span> Worlds
+                    </h1>
+                    <p class="text-slate-300 text-lg mb-8 leading-relaxed">
+                        A Digital Twin is not just a 3D model. It is a dynamic, virtual representation of a physical object, process, or system that allows businesses to predict performance, optimize operations, and innovate faster.
+                    </p>
+                    <div class="flex space-x-4">
+                        <a href="#market" class="px-6 py-3 bg-white text-slate-900 rounded-lg font-bold hover:bg-indigo-50 transition-colors shadow-lg">
+                            View Market Impact
+                        </a>
+                        <a href="#assignments" class="px-6 py-3 border border-slate-500 text-white rounded-lg font-semibold hover:bg-white/10 transition-colors">
+                            Start Workshop
+                        </a>
+                    </div>
+                </div>
+                <div class="bg-white/5 rounded-2xl p-8 backdrop-blur-sm border border-white/10">
+                    <h3 class="text-xl font-semibold mb-4 text-indigo-200">Why MBAs Should Care</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-indigo-600/50 p-2 rounded-lg mr-4 text-xl">💰</span>
+                            <div>
+                                <strong class="block text-white">Cost Reduction</strong>
+                                <span class="text-slate-400 text-sm">Predictive maintenance saves millions in downtime.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-indigo-600/50 p-2 rounded-lg mr-4 text-xl">⚡</span>
+                            <div>
+                                <strong class="block text-white">Faster Time-to-Market</strong>
+                                <span class="text-slate-400 text-sm">Simulate prototypes without building physical models.</span>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-indigo-600/50 p-2 rounded-lg mr-4 text-xl">🔮</span>
+                            <div>
+                                <strong class="block text-white">Strategic Foresight</strong>
+                                <span class="text-slate-400 text-sm">Run "What-If" scenarios to test business strategies.</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Concept Section -->
+    <section id="concept" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold text-slate-900">The Feedback Loop Mechanism</h2>
+                <p class="mt-4 text-lg text-slate-600 max-w-2xl mx-auto">
+                    A Digital Twin isn't static. It breathes data. Understand the cycle of value creation below by hovering over the stages.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
+                <!-- Connecting Line (Desktop) -->
+                <div class="hidden md:block absolute top-1/2 left-0 w-full h-2 bg-slate-100 -z-10 -translate-y-1/2 rounded"></div>
+
+                <!-- Stage 1 -->
+                <div class="group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-4xl shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 border-4 border-white relative z-10">
+                        🏭
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">1. Physical Asset</h3>
+                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute w-full left-0 z-20 shadow-xl">
+                        <p class="text-sm text-slate-600">Real-world engines, buildings, or supply chains equipped with <strong>IoT Sensors</strong> that generate raw data.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 2 -->
+                <div class="group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-4xl shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 border-4 border-white relative z-10">
+                        📊
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">2. Digital Model</h3>
+                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute w-full left-0 z-20 shadow-xl">
+                        <p class="text-sm text-slate-600">The "Twin" in the cloud. It processes sensor data using <strong>AI & Analytics</strong> to mirror the real state in real-time.</p>
+                    </div>
+                </div>
+
+                <!-- Stage 3 -->
+                <div class="group cursor-pointer">
+                    <div class="w-24 h-24 mx-auto bg-slate-100 rounded-full flex items-center justify-center text-4xl shadow-sm group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 border-4 border-white relative z-10">
+                        💡
+                    </div>
+                    <h3 class="mt-6 text-xl font-bold text-slate-900 group-hover:text-indigo-600 transition-colors">3. Insight & Action</h3>
+                    <div class="mt-4 bg-slate-50 p-4 rounded-lg border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 absolute w-full left-0 z-20 shadow-xl">
+                        <p class="text-sm text-slate-600">The payoff. Predictions trigger actions (e.g., "Replace part X") which are applied back to the <strong>Physical Asset</strong>.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-32 text-center text-sm text-slate-400 italic">
+                *Hover over the icons to reveal the process details.
+            </div>
+        </div>
+    </section>
+
+    <!-- Market Data Section -->
+    <section id="market" class="py-20 bg-slate-50 border-y border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">The Business Case: Market Data</h2>
+                <p class="mt-2 text-slate-600">Why is this a boardroom topic? The growth metrics speak for themselves.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Market Growth Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Global Market Size Projection (USD Billions)</h3>
+                    <div class="chart-container chart-container-lg">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                    <div class="mt-4 flex items-center justify-between text-sm text-slate-500 bg-slate-50 p-3 rounded">
+                        <span><strong>CAGR:</strong> ~58% (2020-2026)</span>
+                        <span>Source: Industry Aggregates</span>
+                    </div>
+                </div>
+
+                <!-- Industry Adoption Chart -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Adoption Maturity by Sector</h3>
+                    <div class="chart-container chart-container-lg">
+                        <canvas id="adoptionChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-sm text-slate-600">
+                        Manufacturing leads the way due to Industry 4.0, but Healthcare and Smart Cities are the fastest-growing segments for new implementations.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Cases Section -->
+    <section id="usecases" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold text-slate-900">Real-World Application</h2>
+                <p class="mt-2 text-slate-600">Click a sector to explore specific Use Cases and ROI.</p>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="flex flex-wrap justify-center border-b border-slate-200 mb-8" id="useCaseTabs">
+                <button onclick="switchTab('manufacturing')" class="tab-btn px-6 py-4 text-sm font-medium transition-colors tab-active" data-tab="manufacturing">
+                    🏗️ Manufacturing
+                </button>
+                <button onclick="switchTab('healthcare')" class="tab-btn px-6 py-4 text-sm font-medium transition-colors tab-inactive" data-tab="healthcare">
+                    🏥 Healthcare
+                </button>
+                <button onclick="switchTab('cities')" class="tab-btn px-6 py-4 text-sm font-medium transition-colors tab-inactive" data-tab="cities">
+                    🏙️ Smart Cities
+                </button>
+                <button onclick="switchTab('retail')" class="tab-btn px-6 py-4 text-sm font-medium transition-colors tab-inactive" data-tab="retail">
+                    🛒 Supply Chain & Retail
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tabContent" class="bg-white min-h-[400px]">
+                <!-- Content injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Tools Section -->
+    <section id="tools" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12">
+                <div>
+                    <h2 class="text-3xl font-bold">Tools & Platforms</h2>
+                    <p class="mt-2 text-slate-400">The software ecosystem powering these twins.</p>
+                </div>
+                
+                <!-- Filter Controls -->
+                <div class="mt-6 md:mt-0 flex space-x-2 bg-slate-800 p-1 rounded-lg">
+                    <button onclick="filterTools('all')" class="px-4 py-2 text-sm rounded bg-indigo-600 text-white transition hover:bg-indigo-500" id="btn-all">All</button>
+                    <button onclick="filterTools('industrial')" class="px-4 py-2 text-sm rounded hover:bg-slate-700 text-slate-300 transition" id="btn-industrial">Industrial</button>
+                    <button onclick="filterTools('cloud')" class="px-4 py-2 text-sm rounded hover:bg-slate-700 text-slate-300 transition" id="btn-cloud">Cloud/IoT</button>
+                    <button onclick="filterTools('simulation')" class="px-4 py-2 text-sm rounded hover:bg-slate-700 text-slate-300 transition" id="btn-simulation">Simulation</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="toolsGrid">
+                <!-- Grid items generated by JS -->
+            </div>
+            
+            <div class="mt-12 p-6 bg-indigo-900/30 border border-indigo-500/30 rounded-xl">
+                <h4 class="font-bold text-indigo-400 mb-2">Future Trends Watch 🔭</h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                        Human Digital Twins (Personalized Medicine)
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                        Cognitive Twins (AI reasoning capabilities)
+                    </div>
+                    <div class="flex items-center">
+                        <span class="w-2 h-2 bg-emerald-400 rounded-full mr-2"></span>
+                        Industrial Metaverse Integration
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Assignments Section -->
+    <section id="assignments" class="py-20 bg-indigo-50">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <span class="text-indigo-600 font-bold tracking-wider uppercase text-sm">Student Workshop</span>
+                <h2 class="text-3xl font-bold text-slate-900 mt-2">Active Learning Assignments</h2>
+                <p class="text-slate-600 mt-4">Complete these tasks on your laptop now to solidify your understanding.</p>
+            </div>
+
+            <!-- Task 1 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-indigo-500"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-slate-900">Task 1: The "Tool Scout" Research</h3>
+                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded text-xs font-bold">15 Mins</span>
+                </div>
+                <p class="text-slate-600 mb-6">
+                    Pick one tool from the "Tools" section above. Find a real-world case study (PDF or video) related to that tool.
+                </p>
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-200 mb-4">
+                    <h4 class="font-semibold text-sm text-slate-800 mb-2">Answer these questions in your notes:</h4>
+                    <ul class="list-disc list-inside text-sm text-slate-600 space-y-2">
+                        <li>What was the specific problem the client faced?</li>
+                        <li>Which data points were collected (Sensors, inputs)?</li>
+                        <li>What was the quantified ROI (e.g., % efficiency gain, $ saved)?</li>
+                    </ul>
+                </div>
+                <div class="flex items-center">
+                    <input type="checkbox" id="task1" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer" onchange="updateProgress()">
+                    <label for="task1" class="ml-2 text-slate-700 font-medium cursor-pointer">I have found a case study and noted the ROI.</label>
+                </div>
+            </div>
+
+            <!-- Task 2 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-8 mb-8 relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-2 h-full bg-emerald-500"></div>
+                <div class="flex justify-between items-start mb-4">
+                    <h3 class="text-xl font-bold text-slate-900">Task 2: Conceptual University Twin</h3>
+                    <span class="bg-slate-100 text-slate-600 px-3 py-1 rounded text-xs font-bold">20 Mins</span>
+                </div>
+                <p class="text-slate-600 mb-6">
+                    Imagine you are hired to build a Digital Twin for <strong>this University Campus</strong>.
+                </p>
+                
+                <div class="space-y-4">
+                    <div class="p-3 bg-white border border-slate-200 rounded hover:border-indigo-300 transition-colors">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Step A: Choose Focus Area</label>
+                        <select class="w-full p-2 bg-slate-50 rounded border border-slate-200 text-sm">
+                            <option>Energy Efficiency (HVAC/Lights)</option>
+                            <option>Student Flow & Canteen Traffic</option>
+                            <option>Security & Access Control</option>
+                        </select>
+                    </div>
+                    <div class="p-3 bg-white border border-slate-200 rounded hover:border-indigo-300 transition-colors">
+                        <label class="block text-sm font-semibold text-slate-700 mb-1">Step B: Identify Data Sources (Draft 3 ideas)</label>
+                        <textarea class="w-full p-2 bg-slate-50 rounded border border-slate-200 text-sm h-20" placeholder="e.g., WiFi login density, Smart Thermostats..."></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex items-center">
+                    <input type="checkbox" id="task2" class="w-5 h-5 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer" onchange="updateProgress()">
+                    <label for="task2" class="ml-2 text-slate-700 font-medium cursor-pointer">I have defined the scope and data sources.</label>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 p-4 shadow-lg transform translate-y-full transition-transform duration-300 z-50" id="progressDock">
+                <div class="max-w-4xl mx-auto flex justify-between items-center">
+                    <div>
+                        <span class="text-sm font-bold text-slate-900">Workshop Progress</span>
+                        <div class="w-64 h-2 bg-slate-200 rounded-full mt-1 overflow-hidden">
+                            <div class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%" id="progressBar"></div>
+                        </div>
+                    </div>
+                    <span class="text-indigo-600 font-bold" id="progressText">0% Complete</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-8 md:mb-0 text-center md:text-left">
+                <span class="font-bold text-white text-lg">Flugelsoft <span class="text-indigo-500">Labs</span></span>
+                <p class="text-sm mt-1 text-slate-400">Management Curriculum Resource</p>
+                <div class="mt-4 text-sm text-slate-500 space-y-1">
+                    <p>Author: <span class="text-slate-300 font-medium">Kalyanjit Hatibaruah</span></p>
+                    <p class="flex items-center justify-center md:justify-start gap-2">
+                        <span class="bg-green-500/20 text-green-400 px-1.5 py-0.5 rounded text-xs font-semibold">Whatsapp</span> 
+                        <span class="text-slate-300 hover:text-white transition-colors cursor-pointer">+91-9864011106</span>
+                    </p>
+                </div>
+            </div>
+            <div class="text-sm text-slate-500">
+                &copy; 2024 Flugelsoft Labs. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data Definitions ---
+
+        const useCasesData = {
+            manufacturing: {
+                title: "Manufacturing & Industry 4.0",
+                icon: "🏭",
+                desc: "The birthplace of Digital Twins. Used for predictive maintenance, production line optimization, and product prototyping.",
+                metrics: [
+                    { label: "Downtime Reduction", value: "30%" },
+                    { label: "Throughput Increase", value: "15%" },
+                    { label: "Time-to-Market", value: "-40%" }
+                ],
+                example: "General Electric (GE) creates twins of jet engines to predict when fan blades need servicing before they fail."
+            },
+            healthcare: {
+                title: "Healthcare & Life Sciences",
+                icon: "❤️",
+                desc: "Creating virtual models of human organs or entire patients to simulate drug reactions and surgery outcomes.",
+                metrics: [
+                    { label: "Diagnosis Speed", value: "2x" },
+                    { label: "Drug Dev Costs", value: "-25%" },
+                    { label: "Surgery Risks", value: "Reduced" }
+                ],
+                example: "Philips HeartModel creates a 3D twin of a patient's heart to help surgeons plan complex procedures."
+            },
+            cities: {
+                title: "Smart Cities & Infrastructure",
+                icon: "🏙️",
+                desc: "Modeling traffic flow, energy grids, and emergency response systems to optimize urban living.",
+                metrics: [
+                    { label: "Traffic Congestion", value: "-20%" },
+                    { label: "Energy Savings", value: "15%" },
+                    { label: "Emergency Resp.", value: "+30%" }
+                ],
+                example: "Virtual Singapore: A dynamic 3D city model used for urban planning and flood simulations."
+            },
+            retail: {
+                title: "Supply Chain & Retail",
+                icon: "📦",
+                desc: "Tracking products from factory to shelf. Store twins optimize layout for customer flow.",
+                metrics: [
+                    { label: "Inventory Acc.", value: "99%" },
+                    { label: "Loss Reduction", value: "20%" },
+                    { label: "Logistics Cost", value: "-10%" }
+                ],
+                example: "Lowes uses twins of their stores to visualize sales data spatially and optimize stocking."
+            }
+        };
+
+        const toolsData = [
+            { name: "GE Predix", category: "industrial", desc: "Heavy industrial asset management.", tags: ["IoT", "Analytics"] },
+            { name: "Siemens MindSphere", category: "industrial", desc: "Industrial IoT as a service solution.", tags: ["Automation", "Cloud"] },
+            { name: "Azure Digital Twins", category: "cloud", desc: "Microsoft's PaaS offering to model environments.", tags: ["PaaS", "Integration"] },
+            { name: "AWS IoT TwinMaker", category: "cloud", desc: "Easily create twins of real-world systems.", tags: ["Cloud", "Dashboards"] },
+            { name: "NVIDIA Omniverse", category: "simulation", desc: "High-fidelity simulation & collaboration.", tags: ["3D", "Graphics"] },
+            { name: "Unity", category: "simulation", desc: "Real-time 3D engine used for visualization.", tags: ["VR/AR", "Interactive"] },
+            { name: "Matterport", category: "simulation", desc: "Spatial data capture for real estate.", tags: ["Scanning", "Buildings"] },
+            { name: "Ansys Twin Builder", category: "industrial", desc: "Physics-based simulation for engineering.", tags: ["Physics", "Engineering"] },
+            { name: "Bentley iTwin", category: "industrial", desc: "Infrastructure engineering twins.", tags: ["Construction", "Civil"] }
+        ];
+
+        // --- Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCharts();
+            renderTools('all');
+            switchTab('manufacturing'); // Default tab
+        });
+
+        // --- Chart Rendering (Chart.js) ---
+
+        function renderCharts() {
+            // Market Growth Chart
+            const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+            new Chart(ctxGrowth, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025', '2026'],
+                    datasets: [{
+                        label: 'Market Size (USD Billions)',
+                        data: [3.1, 6.5, 12.1, 19.5, 29.1, 38.2, 48.2],
+                        borderColor: '#4f46e5', // Indigo 600
+                        backgroundColor: 'rgba(79, 70, 229, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        fill: true,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#4f46e5',
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { borderDash: [2, 2] } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+            // Adoption Chart
+            const ctxAdoption = document.getElementById('adoptionChart').getContext('2d');
+            new Chart(ctxAdoption, {
+                type: 'bar',
+                data: {
+                    labels: ['Manufacturing', 'Energy', 'Automotive', 'Healthcare', 'Smart Cities', 'Retail'],
+                    datasets: [{
+                        label: 'Adoption Rate (%)',
+                        data: [75, 60, 55, 30, 25, 15],
+                        backgroundColor: [
+                            '#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff'
+                        ],
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, max: 100 }
+                    }
+                }
+            });
+        }
+
+        // --- Interactive Functions ---
+
+        // 1. Tab Switching for Use Cases
+        function switchTab(key) {
+            // Update Tab Styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                if(btn.dataset.tab === key) {
+                    btn.classList.remove('tab-inactive');
+                    btn.classList.add('tab-active');
+                } else {
+                    btn.classList.add('tab-inactive');
+                    btn.classList.remove('tab-active');
+                }
+            });
+
+            // Update Content with Fade Animation
+            const contentDiv = document.getElementById('tabContent');
+            const data = useCasesData[key];
+            
+            // Build HTML string
+            const html = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 p-8 animate-fade-in">
+                    <div class="flex flex-col justify-center">
+                        <div class="flex items-center mb-6">
+                            <span class="text-5xl mr-4">${data.icon}</span>
+                            <h3 class="text-2xl font-bold text-slate-800">${data.title}</h3>
+                        </div>
+                        <p class="text-lg text-slate-600 mb-8 leading-relaxed">${data.desc}</p>
+                        
+                        <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100">
+                            <h4 class="font-bold text-indigo-900 mb-2 text-sm uppercase tracking-wide">Typical ROI Metrics</h4>
+                            <div class="grid grid-cols-3 gap-4">
+                                ${data.metrics.map(m => `
+                                    <div class="text-center">
+                                        <div class="text-2xl font-bold text-indigo-600">${m.value}</div>
+                                        <div class="text-xs text-slate-500 font-medium">${m.label}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-slate-50 rounded-xl p-8 border border-slate-200 flex flex-col justify-center relative overflow-hidden group">
+                        <div class="absolute top-0 right-0 p-4 opacity-10 text-9xl select-none group-hover:scale-110 transition-transform">${data.icon}</div>
+                        <h4 class="text-lg font-bold text-slate-800 mb-4 relative z-10">Case In Point</h4>
+                        <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-indigo-500 relative z-10">
+                            <p class="text-slate-700 italic">"${data.example}"</p>
+                        </div>
+                        <div class="mt-8 relative z-10">
+                            <span class="text-sm font-bold text-slate-500 block mb-2">Key Application Areas:</span>
+                            <div class="flex flex-wrap gap-2">
+                                <span class="px-3 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">Simulation</span>
+                                <span class="px-3 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">Analytics</span>
+                                <span class="px-3 py-1 bg-slate-200 text-slate-700 rounded-full text-xs">Optimization</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            contentDiv.innerHTML = html;
+        }
+
+        // 2. Tool Filtering
+        function renderTools(category) {
+            const grid = document.getElementById('toolsGrid');
+            grid.innerHTML = '';
+            
+            // Update button styles
+            const buttons = ['all', 'industrial', 'cloud', 'simulation'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`btn-${btn}`);
+                if (btn === category) {
+                    el.classList.add('bg-indigo-600', 'text-white');
+                    el.classList.remove('text-slate-300', 'hover:bg-slate-700');
+                } else {
+                    el.classList.remove('bg-indigo-600', 'text-white');
+                    el.classList.add('text-slate-300', 'hover:bg-slate-700');
+                }
+            });
+
+            const filtered = category === 'all' 
+                ? toolsData 
+                : toolsData.filter(t => t.category === category);
+
+            filtered.forEach(tool => {
+                const card = document.createElement('div');
+                card.className = 'bg-slate-800 rounded-lg p-5 border border-slate-700 interactive-card';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <h4 class="font-bold text-lg text-white">${tool.name}</h4>
+                        <span class="text-xs font-mono text-indigo-400 border border-indigo-900 bg-indigo-900/50 px-2 py-0.5 rounded">${tool.category}</span>
+                    </div>
+                    <p class="text-slate-400 text-sm mt-2 mb-4 h-10">${tool.desc}</p>
+                    <div class="flex flex-wrap gap-2 mt-auto">
+                        ${tool.tags.map(tag => `<span class="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded">${tag}</span>`).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterTools(cat) {
+            renderTools(cat);
+        }
+
+        // 3. Assignment Progress Tracking
+        function updateProgress() {
+            const task1 = document.getElementById('task1').checked;
+            const task2 = document.getElementById('task2').checked;
+            
+            let percentage = 0;
+            if (task1) percentage += 50;
+            if (task2) percentage += 50;
+            
+            const dock = document.getElementById('progressDock');
+            const bar = document.getElementById('progressBar');
+            const text = document.getElementById('progressText');
+            
+            // Show dock if tasks started
+            if (percentage > 0) {
+                dock.classList.remove('translate-y-full');
+            }
+            
+            bar.style.width = percentage + '%';
+            text.innerText = percentage + '% Complete';
+            
+            if (percentage === 100) {
+                text.innerText = "🎉 Workshop Complete!";
+                text.classList.add('text-emerald-600');
+                text.classList.remove('text-indigo-600');
+                bar.classList.add('bg-emerald-500');
+                bar.classList.remove('bg-indigo-600');
+            }
+        }
+
+    </script>
+</body>
+</html>
