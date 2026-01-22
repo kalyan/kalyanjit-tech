@@ -18,17 +18,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <!-- Chosen Palette: Slate & Indigo (Academic, Tech-focused) -->
-    <!-- Application Structure Plan: A linear narrative "Chain" where each section represents a block of knowledge. 
-         1. Concept: Interactive hashing demo to explain the 'why' and 'how' (Immutability).
-         2. Stack: Tabbed interface to breakdown complex layers (L1, L2, DApps).
-         3. Careers: Quantitative view of the job market for students.
-         4. Future/Research: Radar chart for research domains.
-         Reasoning: Engineering students learn by doing (hashing demo) and analyzing data (charts). -->
-    <!-- Visualization & Content Choices: 
-         - Hashing Demo: Custom JS/DOM manipulation. Best way to visualize 'avalanche effect' of hashing without static images.
-         - Job Market: Chart.js Bar Chart. Clear comparison of roles.
-         - Industry Impact: Plotly Radar Chart. Shows multi-dimensional maturity of technology across sectors. 
-         - Tech Stack: Interactive Accordion. Handles dense technical info cleanly. -->
+    <!-- Application Structure Plan: Linear narrative with distinct "modules" for each learning outcome. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <script>
@@ -47,6 +37,22 @@
                             600: '#2563eb',
                             800: '#1e40af', // Deep Blue
                             900: '#0f172a', // Slate 900
+                        }
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
                     }
                 }
@@ -97,6 +103,51 @@
             transform: translateX(4px);
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
+
+        /* Diagrams CSS */
+        .node {
+            width: 12px;
+            height: 12px;
+            background-color: #cbd5e1;
+            border-radius: 50%;
+            position: relative;
+            z-index: 10;
+        }
+        .node.central {
+            width: 24px;
+            height: 24px;
+            background-color: #dc2626; /* Red */
+        }
+        .node.decentral {
+            background-color: #2563eb; /* Blue */
+        }
+        
+        /* Flip Card CSS */
+        .flip-card {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 0.75rem;
+        }
+        .flip-card-back {
+            transform: rotateY(180deg);
+        }
     </style>
 </head>
 <body class="antialiased">
@@ -109,11 +160,13 @@
                     <span class="text-2xl text-brand-600">⛓️</span>
                     <span class="font-bold text-xl tracking-tight text-slate-800">Chain<span class="text-brand-600">Learn</span></span>
                 </div>
-                <div class="hidden md:flex space-x-8">
-                    <button onclick="scrollToSection('intro')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="intro">Concept</button>
-                    <button onclick="scrollToSection('stack')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="stack">Tech Stack</button>
-                    <button onclick="scrollToSection('jobs')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="jobs">Careers</button>
-                    <button onclick="scrollToSection('future')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="future">Future & Research</button>
+                <div class="hidden md:flex space-x-6">
+                    <button onclick="scrollToSection('intro')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="intro">Concept</button>
+                    <button onclick="scrollToSection('fundamentals')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="fundamentals">Fundamentals</button>
+                    <button onclick="scrollToSection('stack')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="stack">Tech Stack</button>
+                    <button onclick="scrollToSection('usecases')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="usecases">Use Cases</button>
+                    <button onclick="scrollToSection('jobs')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="jobs">Careers</button>
+                    <button onclick="scrollToSection('future')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="future">Future</button>
                 </div>
                 <!-- Mobile menu button placeholder -->
                 <div class="md:hidden flex items-center">
@@ -127,7 +180,9 @@
         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                  <button onclick="scrollToSection('intro')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Concept</button>
+                 <button onclick="scrollToSection('fundamentals')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Fundamentals</button>
                  <button onclick="scrollToSection('stack')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Tech Stack</button>
+                 <button onclick="scrollToSection('usecases')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Use Cases</button>
                  <button onclick="scrollToSection('jobs')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Careers</button>
                  <button onclick="scrollToSection('future')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Future</button>
             </div>
@@ -196,6 +251,118 @@
             </div>
         </header>
 
+        <!-- SECTION: Blockchain Fundamentals -->
+        <section id="fundamentals" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">Blockchain Fundamentals</h2>
+                <p class="text-slate-600 mt-2">Core architecture and network typologies visually explained.</p>
+            </div>
+
+            <!-- Architecture Visuals -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Centralized Diagram -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+                    <h3 class="font-bold text-slate-800 mb-4">Legacy: Centralized Network</h3>
+                    <div class="relative w-64 h-48 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-center overflow-hidden">
+                        <!-- Central Server -->
+                        <div class="node central absolute z-20 shadow-lg"></div>
+                        <!-- Client Nodes -->
+                        <div class="node absolute top-8 left-10"></div>
+                        <div class="node absolute top-8 right-10"></div>
+                        <div class="node absolute bottom-8 left-10"></div>
+                        <div class="node absolute bottom-8 right-10"></div>
+                        <!-- Lines -->
+                        <div class="absolute w-full h-full">
+                            <div class="absolute top-1/2 left-1/2 w-24 h-0.5 bg-slate-300 origin-left transform -translate-y-1/2 -rotate-135"></div>
+                            <div class="absolute top-1/2 left-1/2 w-24 h-0.5 bg-slate-300 origin-left transform -translate-y-1/2 -rotate-45"></div>
+                            <div class="absolute top-1/2 left-1/2 w-24 h-0.5 bg-slate-300 origin-left transform -translate-y-1/2 rotate-45"></div>
+                            <div class="absolute top-1/2 left-1/2 w-24 h-0.5 bg-slate-300 origin-left transform -translate-y-1/2 rotate-135"></div>
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center max-w-xs">Single Point of Failure. If the central node (Red) fails, the entire network goes down.</p>
+                </div>
+
+                <!-- Decentralized Diagram -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col items-center">
+                    <h3 class="font-bold text-slate-800 mb-4">Future: Distributed Ledger</h3>
+                    <div class="relative w-64 h-48 bg-slate-50 rounded-lg border border-slate-100 flex items-center justify-center overflow-hidden">
+                        <!-- Nodes Mesh -->
+                        <div class="node decentral absolute top-10 left-12"></div>
+                        <div class="node decentral absolute top-10 right-12"></div>
+                        <div class="node decentral absolute bottom-10 left-12"></div>
+                        <div class="node decentral absolute bottom-10 right-12"></div>
+                        <div class="node decentral absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+                        
+                        <!-- Mesh Connections -->
+                        <div class="absolute top-12 left-14 w-40 h-0.5 bg-brand-200"></div> <!-- Top Horizontal -->
+                        <div class="absolute bottom-12 left-14 w-40 h-0.5 bg-brand-200"></div> <!-- Bottom Horizontal -->
+                        <div class="absolute top-12 left-14 w-0.5 h-24 bg-brand-200"></div> <!-- Left Vertical -->
+                        <div class="absolute top-12 right-14 w-0.5 h-24 bg-brand-200"></div> <!-- Right Vertical -->
+                        <!-- Cross -->
+                        <div class="absolute top-12 left-14 w-52 h-0.5 bg-brand-200 origin-left transform rotate-28"></div>
+                        <div class="absolute bottom-12 left-14 w-52 h-0.5 bg-brand-200 origin-left transform -rotate-28"></div>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-4 text-center max-w-xs">No Single Point of Failure. All nodes (Blue) maintain a copy of the ledger.</p>
+                </div>
+            </div>
+
+            <!-- Types of Blockchain Grid -->
+            <h3 class="font-bold text-xl text-slate-800 mb-6 px-4">Types of Blockchain Networks</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Public -->
+                <div class="bg-white p-5 rounded-lg border-t-4 border-green-500 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">🌍</div>
+                    <h4 class="font-bold text-lg mb-2">Public</h4>
+                    <span class="inline-block bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded mb-3">Permissionless</span>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                        <li>Anyone can join</li>
+                        <li>Fully transparent</li>
+                        <li>Slow speed</li>
+                        <li><strong>Ex:</strong> Bitcoin, Ethereum</li>
+                    </ul>
+                </div>
+                
+                <!-- Private -->
+                <div class="bg-white p-5 rounded-lg border-t-4 border-slate-500 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">🏢</div>
+                    <h4 class="font-bold text-lg mb-2">Private</h4>
+                    <span class="inline-block bg-slate-100 text-slate-800 text-xs px-2 py-0.5 rounded mb-3">Permissioned</span>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                        <li>Invite only</li>
+                        <li>Centralized control</li>
+                        <li>High speed</li>
+                        <li><strong>Ex:</strong> Hyperledger Fabric</li>
+                    </ul>
+                </div>
+
+                <!-- Consortium -->
+                <div class="bg-white p-5 rounded-lg border-t-4 border-indigo-500 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">🤝</div>
+                    <h4 class="font-bold text-lg mb-2">Consortium</h4>
+                    <span class="inline-block bg-indigo-100 text-indigo-800 text-xs px-2 py-0.5 rounded mb-3">Multi-Org</span>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                        <li>Group of banks/orgs</li>
+                        <li>Shared control</li>
+                        <li>Medium speed</li>
+                        <li><strong>Ex:</strong> R3 Corda</li>
+                    </ul>
+                </div>
+
+                <!-- Hybrid -->
+                <div class="bg-white p-5 rounded-lg border-t-4 border-purple-500 shadow-sm hover:shadow-md transition-shadow">
+                    <div class="text-3xl mb-3">🧬</div>
+                    <h4 class="font-bold text-lg mb-2">Hybrid</h4>
+                    <span class="inline-block bg-purple-100 text-purple-800 text-xs px-2 py-0.5 rounded mb-3">Mixed</span>
+                    <ul class="text-sm text-slate-600 space-y-2 list-disc pl-4">
+                        <li>Public & Private parts</li>
+                        <li>Selective privacy</li>
+                        <li>Flexible</li>
+                        <li><strong>Ex:</strong> Dragonchain</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
         <!-- Technology Stack Section -->
         <section id="stack" class="scroll-mt-24">
             <div class="mb-6">
@@ -228,6 +395,109 @@
                 <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-8 min-h-[400px]">
                     <div id="layer-details">
                         <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION: Industry Use Cases -->
+        <section id="usecases" class="scroll-mt-24">
+            <div class="mb-8 text-center">
+                <span class="text-brand-600 font-bold tracking-wider uppercase text-sm">Beyond Crypto</span>
+                <h2 class="text-3xl font-bold text-slate-900 mt-2">Real-World Industry Applications</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Supply Chain Card -->
+                <div class="flip-card h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front -->
+                        <div class="flip-card-front bg-white border border-slate-200 shadow-sm p-6 flex flex-col justify-center items-center group hover:border-brand-300 transition-colors">
+                            <div class="text-4xl mb-4 p-4 bg-orange-50 rounded-full group-hover:scale-110 transition-transform">📦</div>
+                            <h3 class="text-xl font-bold text-slate-800">Supply Chain & Logistics</h3>
+                            <p class="text-slate-500 text-sm mt-2 text-center">Click to see the transformation</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="flip-card-back bg-slate-800 text-white p-6 flex flex-col justify-center">
+                            <h4 class="font-bold text-orange-400 mb-2">The Solution: Provenance</h4>
+                            <div class="text-sm space-y-3">
+                                <p><strong class="text-slate-400">Problem:</strong> Counterfeit goods, opaque history, slow recalls.</p>
+                                <p><strong class="text-brand-400">Blockchain:</strong> Immutable record of every hop from factory to shelf.</p>
+                                <div class="bg-slate-700 p-2 rounded text-xs">
+                                    <span class="font-mono text-green-400">> Walmart uses it to track mangoes in 2.2 seconds (vs 7 days).</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Healthcare Card -->
+                <div class="flip-card h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front -->
+                        <div class="flip-card-front bg-white border border-slate-200 shadow-sm p-6 flex flex-col justify-center items-center group hover:border-brand-300 transition-colors">
+                            <div class="text-4xl mb-4 p-4 bg-red-50 rounded-full group-hover:scale-110 transition-transform">🏥</div>
+                            <h3 class="text-xl font-bold text-slate-800">Healthcare</h3>
+                            <p class="text-slate-500 text-sm mt-2 text-center">Click to see the transformation</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="flip-card-back bg-slate-800 text-white p-6 flex flex-col justify-center">
+                            <h4 class="font-bold text-red-400 mb-2">The Solution: Interoperability</h4>
+                            <div class="text-sm space-y-3">
+                                <p><strong class="text-slate-400">Problem:</strong> Data silos, fragmented patient history, privacy breaches.</p>
+                                <p><strong class="text-brand-400">Blockchain:</strong> Patient-controlled encrypted records accessible by any authorized doctor.</p>
+                                <div class="bg-slate-700 p-2 rounded text-xs">
+                                    <span class="font-mono text-green-400">> MediLedger tracks drug authenticity to stop fake meds.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finance Card -->
+                <div class="flip-card h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front -->
+                        <div class="flip-card-front bg-white border border-slate-200 shadow-sm p-6 flex flex-col justify-center items-center group hover:border-brand-300 transition-colors">
+                            <div class="text-4xl mb-4 p-4 bg-blue-50 rounded-full group-hover:scale-110 transition-transform">🏦</div>
+                            <h3 class="text-xl font-bold text-slate-800">Banking & Finance (DeFi)</h3>
+                            <p class="text-slate-500 text-sm mt-2 text-center">Click to see the transformation</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="flip-card-back bg-slate-800 text-white p-6 flex flex-col justify-center">
+                            <h4 class="font-bold text-blue-400 mb-2">The Solution: Settlement</h4>
+                            <div class="text-sm space-y-3">
+                                <p><strong class="text-slate-400">Problem:</strong> T+2 days settlement, high fees for cross-border remittance.</p>
+                                <p><strong class="text-brand-400">Blockchain:</strong> Instant (T+0) settlement, programmable money (Smart Contracts).</p>
+                                <div class="bg-slate-700 p-2 rounded text-xs">
+                                    <span class="font-mono text-green-400">> JP Morgan's Onyx moves $1B+ daily.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Voting Card -->
+                <div class="flip-card h-64" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-card-inner">
+                        <!-- Front -->
+                        <div class="flip-card-front bg-white border border-slate-200 shadow-sm p-6 flex flex-col justify-center items-center group hover:border-brand-300 transition-colors">
+                            <div class="text-4xl mb-4 p-4 bg-purple-50 rounded-full group-hover:scale-110 transition-transform">🗳️</div>
+                            <h3 class="text-xl font-bold text-slate-800">Governance & Voting</h3>
+                            <p class="text-slate-500 text-sm mt-2 text-center">Click to see the transformation</p>
+                        </div>
+                        <!-- Back -->
+                        <div class="flip-card-back bg-slate-800 text-white p-6 flex flex-col justify-center">
+                            <h4 class="font-bold text-purple-400 mb-2">The Solution: Trust</h4>
+                            <div class="text-sm space-y-3">
+                                <p><strong class="text-slate-400">Problem:</strong> Voter fraud allegations, expensive manual counting.</p>
+                                <p><strong class="text-brand-400">Blockchain:</strong> Transparent, tamper-proof ballot box verifiable by anyone.</p>
+                                <div class="bg-slate-700 p-2 rounded text-xs">
+                                    <span class="font-mono text-green-400">> Estonia allows i-Voting secured by blockchain technology.</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -280,7 +550,7 @@
         <!-- Industry Use & Future Section -->
         <section id="future" class="scroll-mt-24">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-bold text-slate-900">Industry Use & The Future Ahead</h2>
+                <h2 class="text-3xl font-bold text-slate-900">Research & The Future Ahead</h2>
                 <p class="text-slate-600 max-w-2xl mx-auto mt-2">Blockchain is moving from "Speculation" to "Utility". Here is where research and industry adoption are converging.</p>
             </div>
 
@@ -344,7 +614,7 @@
         <footer class="border-t border-slate-200 pt-8 pb-12 text-center text-slate-500 text-sm">
             <div class="space-y-2">
                 <p class="font-bold text-slate-700">Author: Kalyanjit Hatibaruah</p>
-                <p class="font-medium text-emerald-600">WhatsApp: +91-9864011106</p>
+                <p class="font-medium text-emerald-600">Whatsapp: +91-9864011106</p>
                 <p class="mt-4 text-xs text-slate-400">&copy; 2025 Flugelsoft Labs. Generated for Educational Purposes.</p>
             </div>
         </footer>
@@ -418,9 +688,10 @@
             }, 300);
         }
 
-        inputData.addEventListener('input', updateHash);
-        // Initial call
-        updateHash();
+        if(inputData) {
+            inputData.addEventListener('input', updateHash);
+            updateHash();
+        }
 
 
         // --- Module 2: Tech Stack Data & Logic ---
@@ -460,7 +731,7 @@
                 langs: ["Solidity", "Rust", "Typescript"]
             },
             'l3': {
-                title: "Layer 3: DApps & User Interface",
+                title: "Layer 3: Application (DApps) & UI",
                 color: "emerald",
                 desc: "The application layer where users interact. This includes DeFi apps, NFT marketplaces, and Wallets.",
                 items: [
@@ -501,7 +772,7 @@
                 </div>
             `;
         }
-        // Initial load
+        // Initial load for stack
         showLayer('l1');
 
 
