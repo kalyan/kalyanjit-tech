@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blockchain: The Trust Protocol</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts: Inter/JetBrains Mono for engineering feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Slate & Indigo (Academic, Tech-focused) -->
+    <!-- Application Structure Plan: A linear narrative "Chain" where each section represents a block of knowledge. 
+         1. Concept: Interactive hashing demo to explain the 'why' and 'how' (Immutability).
+         2. Stack: Tabbed interface to breakdown complex layers (L1, L2, DApps).
+         3. Careers: Quantitative view of the job market for students.
+         4. Future/Research: Radar chart for research domains.
+         Reasoning: Engineering students learn by doing (hashing demo) and analyzing data (charts). -->
+    <!-- Visualization & Content Choices: 
+         - Hashing Demo: Custom JS/DOM manipulation. Best way to visualize 'avalanche effect' of hashing without static images.
+         - Job Market: Chart.js Bar Chart. Clear comparison of roles.
+         - Industry Impact: Plotly Radar Chart. Shows multi-dimensional maturity of technology across sectors. 
+         - Tech Stack: Interactive Accordion. Handles dense technical info cleanly. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#3b82f6', // Bright Blue
+                            600: '#2563eb',
+                            800: '#1e40af', // Deep Blue
+                            900: '#0f172a', // Slate 900
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .hash-output {
+            transition: all 0.3s ease;
+        }
+        .hash-changed {
+            background-color: #fee2e2; /* Red 100 */
+            color: #991b1b; /* Red 800 */
+        }
+        .hash-valid {
+            background-color: #dcfce7; /* Green 100 */
+            color: #166534; /* Green 800 */
+        }
+        /* Chart Container Styling - Mandatory */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        .nav-active {
+            border-bottom: 2px solid #2563eb;
+            color: #2563eb;
+        }
+        .tech-layer {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .tech-layer:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 glass-panel w-full border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl text-brand-600">⛓️</span>
+                    <span class="font-bold text-xl tracking-tight text-slate-800">Chain<span class="text-brand-600">Learn</span></span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="scrollToSection('intro')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="intro">Concept</button>
+                    <button onclick="scrollToSection('stack')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="stack">Tech Stack</button>
+                    <button onclick="scrollToSection('jobs')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="jobs">Careers</button>
+                    <button onclick="scrollToSection('future')" class="nav-link text-slate-600 hover:text-brand-600 px-3 py-2 text-sm font-medium transition-colors" data-target="future">Future & Research</button>
+                </div>
+                <!-- Mobile menu button placeholder -->
+                <div class="md:hidden flex items-center">
+                     <button id="mobile-menu-btn" class="text-slate-600 hover:text-brand-600 focus:outline-none">
+                        <span class="text-2xl">☰</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-slate-200">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                 <button onclick="scrollToSection('intro')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Concept</button>
+                 <button onclick="scrollToSection('stack')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Tech Stack</button>
+                 <button onclick="scrollToSection('jobs')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Careers</button>
+                 <button onclick="scrollToSection('future')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Future</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Hero Section -->
+        <header id="intro" class="text-center space-y-6 pt-8 pb-12">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-brand-50 text-brand-600 text-sm font-semibold mb-2 border border-brand-100">
+                For Engineers & Research Scholars
+            </div>
+            <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight">
+                Understanding <span class="text-brand-600">Blockchain</span>
+            </h1>
+            <p class="max-w-3xl mx-auto text-lg md:text-xl text-slate-600">
+                Beyond the hype of cryptocurrencies lies a revolutionary distributed ledger technology. Explore the architecture, master the stack, and discover the research frontiers.
+            </p>
+            
+            <!-- Interactive Hashing Demo -->
+            <div class="mt-12 bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden text-left">
+                <div class="bg-slate-50 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-700 flex items-center gap-2">
+                        <span class="text-brand-600 text-xl">⚙️</span> Interactive Simulator: The Immutable Block
+                    </h3>
+                    <div class="text-xs text-slate-500 font-mono bg-slate-200 px-2 py-1 rounded">Protocol: Simulated SHA-256</div>
+                </div>
+                <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 mb-4">
+                            <strong>How it works:</strong> A blockchain is a chain of blocks. Each block contains data and the "digital fingerprint" (Hash) of the previous block. Try changing the 
+                            <span class="font-mono text-brand-600 bg-brand-50 px-1 rounded">Data</span> below and watch how the Hash changes instantly. This "Avalanche Effect" secures the network.
+                        </p>
+                        
+                        <div class="bg-slate-100 p-4 rounded-lg border border-slate-200">
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Block #</label>
+                            <input type="number" value="1024" class="w-full bg-white border border-slate-300 rounded px-3 py-2 font-mono text-slate-700 mb-3" disabled>
+                            
+                            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Data (Payload)</label>
+                            <textarea id="block-data" rows="3" class="w-full bg-white border border-slate-300 rounded px-3 py-2 font-mono text-slate-700 focus:ring-2 focus:ring-brand-500 focus:outline-none transition-shadow" placeholder="Enter transaction data...">Student A sends 50 Tokens to Student B</textarea>
+                            
+                            <label class="block text-xs font-bold text-slate-500 uppercase mt-3 mb-1">Previous Hash</label>
+                            <div class="font-mono text-xs text-slate-400 break-all">0000a456e7...b901</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-col justify-center space-y-4">
+                        <div class="text-center">
+                            <div class="text-3xl mb-2">⬇️</div>
+                            <div class="text-sm font-semibold text-slate-500">Passing through Hash Algorithm</div>
+                        </div>
+                        
+                        <div id="hash-container" class="hash-output p-6 rounded-xl border-2 border-brand-100 bg-brand-50 text-center">
+                            <label class="block text-xs font-bold text-brand-800 uppercase mb-2">Current Block Hash</label>
+                            <div id="block-hash" class="font-mono text-sm md:text-base font-bold text-brand-700 break-all">
+                                <!-- Hash generated by JS -->
+                            </div>
+                        </div>
+                        <div class="text-xs text-slate-400 text-center mt-2">
+                            *If this hash changes, the link to the next block breaks.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Technology Stack Section -->
+        <section id="stack" class="scroll-mt-24">
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-slate-900">The Blockchain Technology Stack</h2>
+                <p class="text-slate-600 mt-2">A layered architecture powering decentralized applications. Click on a layer to inspect the tools required.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Visual Stack (Left) -->
+                <div class="lg:col-span-1 space-y-3">
+                    <div onclick="showLayer('l0')" class="cursor-pointer tech-layer bg-slate-800 text-white p-4 rounded-lg border-l-4 border-slate-500 hover:bg-slate-700">
+                        <div class="font-bold text-lg">Layer 0: Infrastructure</div>
+                        <div class="text-xs text-slate-400">Network, Internet, Hardware</div>
+                    </div>
+                    <div onclick="showLayer('l1')" class="cursor-pointer tech-layer bg-brand-700 text-white p-4 rounded-lg border-l-4 border-brand-400 hover:bg-brand-600 shadow-lg relative z-10">
+                        <div class="font-bold text-lg">Layer 1: Protocol</div>
+                        <div class="text-xs text-brand-200">Consensus, Ledger (Bitcoin, Ethereum)</div>
+                    </div>
+                    <div onclick="showLayer('l2')" class="cursor-pointer tech-layer bg-indigo-600 text-white p-4 rounded-lg border-l-4 border-indigo-300 hover:bg-indigo-500 relative z-20">
+                        <div class="font-bold text-lg">Layer 2: Scaling</div>
+                        <div class="text-xs text-indigo-200">Rollups, Sidechains (Polygon, Arbitrum)</div>
+                    </div>
+                    <div onclick="showLayer('l3')" class="cursor-pointer tech-layer bg-emerald-600 text-white p-4 rounded-lg border-l-4 border-emerald-300 hover:bg-emerald-500 relative z-30">
+                        <div class="font-bold text-lg">Layer 3: Application (DApps)</div>
+                        <div class="text-xs text-emerald-200">UI, Wallets, Smart Contracts</div>
+                    </div>
+                </div>
+
+                <!-- Detail View (Right) -->
+                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-8 min-h-[400px]">
+                    <div id="layer-details">
+                        <!-- Content injected by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Job Opportunities Section -->
+        <section id="jobs" class="scroll-mt-24 bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Job Opportunities in the Industry</h2>
+                    <p class="text-slate-600 mb-6 text-justify">
+                        The demand for blockchain expertise has outpaced supply. For engineering students, this represents a prime career trajectory. Roles are not limited to coding; they span architecture, security auditing, and product management.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold mr-4">1</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Core Blockchain Developer</h4>
+                                <p class="text-xs text-slate-500">Protocol design (Go, Rust, C++)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="w-10 h-10 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold mr-4">2</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Smart Contract Engineer</h4>
+                                <p class="text-xs text-slate-500">Business logic (Solidity, Vyper)</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center p-3 bg-slate-50 rounded-lg border border-slate-100">
+                            <div class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 font-bold mr-4">3</div>
+                            <div>
+                                <h4 class="font-bold text-slate-800">Blockchain Architect</h4>
+                                <p class="text-xs text-slate-500">System design & Integration</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col justify-center">
+                    <h3 class="text-lg font-bold text-slate-700 mb-4 text-center">Market Demand & Skill Complexity</h3>
+                    <div class="chart-container">
+                        <canvas id="jobsChart"></canvas>
+                    </div>
+                    <p class="text-center text-xs text-slate-400 mt-2">Relative scale based on global tech hiring trends (2024-2025)</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industry Use & Future Section -->
+        <section id="future" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">Industry Use & The Future Ahead</h2>
+                <p class="text-slate-600 max-w-2xl mx-auto mt-2">Blockchain is moving from "Speculation" to "Utility". Here is where research and industry adoption are converging.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Plotly Chart for Industry Adoption -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                    <h3 class="font-bold text-slate-800 mb-2">Industry Adoption Radar</h3>
+                    <p class="text-xs text-slate-500 mb-4">Maturity of blockchain implementation across sectors.</p>
+                    <div class="chart-container">
+                        <div id="radarChart" style="width:100%; height:100%;"></div>
+                    </div>
+                </div>
+
+                <!-- Research Areas Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-indigo-50 p-6 rounded-xl border border-indigo-100 hover:shadow-md transition-shadow">
+                        <div class="text-3xl mb-3">⚡</div>
+                        <h4 class="font-bold text-indigo-900">Scalability</h4>
+                        <p class="text-sm text-indigo-700 mt-1">Research into Sharding and Zero-Knowledge Rollups to handle Visa-level transaction throughput.</p>
+                    </div>
+                    <div class="bg-emerald-50 p-6 rounded-xl border border-emerald-100 hover:shadow-md transition-shadow">
+                        <div class="text-3xl mb-3">🤝</div>
+                        <h4 class="font-bold text-emerald-900">Interoperability</h4>
+                        <p class="text-sm text-emerald-700 mt-1">Building bridges between isolated chains (e.g., Polkadot, Cosmos) for seamless data transfer.</p>
+                    </div>
+                    <div class="bg-amber-50 p-6 rounded-xl border border-amber-100 hover:shadow-md transition-shadow">
+                        <div class="text-3xl mb-3">🔐</div>
+                        <h4 class="font-bold text-amber-900">Privacy</h4>
+                        <p class="text-sm text-amber-700 mt-1">Implementing Zero-Knowledge Proofs (ZKPs) for verifying data without revealing the data itself.</p>
+                    </div>
+                    <div class="bg-rose-50 p-6 rounded-xl border border-rose-100 hover:shadow-md transition-shadow">
+                        <div class="text-3xl mb-3">🌿</div>
+                        <h4 class="font-bold text-rose-900">Sustainability</h4>
+                        <p class="text-sm text-rose-700 mt-1">Moving from Proof of Work (PoW) to Proof of Stake (PoS) and greener consensus mechanisms.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Future Trend Prediction -->
+             <div class="bg-slate-900 rounded-2xl p-8 text-center text-white relative overflow-hidden">
+                <div class="relative z-10">
+                    <h3 class="text-2xl font-bold mb-4">The Road Ahead: Web3</h3>
+                    <p class="max-w-2xl mx-auto text-slate-300 mb-8">
+                        The internet is evolving from read-only (Web1) to read-write (Web2) to read-write-own (Web3). 
+                        Blockchain is the backend of this new internet, returning data ownership to users.
+                    </p>
+                    <div class="inline-flex flex-wrap justify-center gap-4">
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm font-mono border border-slate-700">DeFi (Finance)</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm font-mono border border-slate-700">DeSci (Science)</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm font-mono border border-slate-700">NFTs (Digital Assets)</span>
+                        <span class="px-4 py-2 bg-slate-800 rounded-full text-sm font-mono border border-slate-700">DAOs (Governance)</span>
+                    </div>
+                </div>
+                <!-- Decorative background elements -->
+                <div class="absolute top-0 left-0 w-64 h-64 bg-brand-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+                <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-slate-200 pt-8 pb-12 text-center text-slate-500 text-sm">
+            <div class="space-y-2">
+                <p class="font-bold text-slate-700">Author: Kalyanjit Hatibaruah</p>
+                <p class="font-medium text-emerald-600">WhatsApp: +91-9864011106</p>
+                <p class="mt-4 text-xs text-slate-400">&copy; 2025 Flugelsoft Labs. Generated for Educational Purposes.</p>
+            </div>
+        </footer>
+
+    </main>
+
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            if (element) {
+                const headerOffset = 80;
+                const elementPosition = element.getBoundingClientRect().top;
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: "smooth"
+                });
+            }
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('nav-active');
+                if(link.getAttribute('data-target') === id) {
+                    link.classList.add('nav-active');
+                }
+            });
+            
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+
+        // --- Module 1: Interactive Hashing Logic ---
+        const inputData = document.getElementById('block-data');
+        const outputHash = document.getElementById('block-hash');
+        const hashContainer = document.getElementById('hash-container');
+
+        // Simple hash function for demonstration (Non-cryptographic, just for visual effect)
+        function simpleHash(str) {
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) {
+                const char = str.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            // Make it look like a hex string
+            const unsigned = hash >>> 0;
+            const hex = unsigned.toString(16).padStart(8, '0');
+            // Repeat to make it look longer like SHA-256
+            return `0000${hex}${hex}${hex}c4f...`; 
+        }
+
+        function updateHash() {
+            const val = inputData.value;
+            const hash = simpleHash(val);
+            outputHash.textContent = hash;
+            
+            // Visual feedback
+            hashContainer.classList.remove('hash-changed', 'bg-brand-50');
+            void hashContainer.offsetWidth; // trigger reflow
+            hashContainer.classList.add('hash-changed');
+            
+            setTimeout(() => {
+                hashContainer.classList.remove('hash-changed');
+                hashContainer.classList.add('bg-brand-50');
+            }, 300);
+        }
+
+        inputData.addEventListener('input', updateHash);
+        // Initial call
+        updateHash();
+
+
+        // --- Module 2: Tech Stack Data & Logic ---
+        const stackData = {
+            'l0': {
+                title: "Layer 0: Infrastructure & Networking",
+                color: "slate",
+                desc: "The foundational layer consisting of the internet, hardware, and connections that allow nodes to communicate.",
+                items: [
+                    { name: "P2P Internet", tag: "Protocol" },
+                    { name: "Mining Rigs / Validators", tag: "Hardware" },
+                    { name: "Fiber Optics", tag: "Network" }
+                ],
+                langs: ["C++", "Rust", "Go (for Node implementation)"]
+            },
+            'l1': {
+                title: "Layer 1: The Protocol (Blockchains)",
+                color: "blue",
+                desc: "The base blockchains themselves. They handle consensus (agreement on truth) and security.",
+                items: [
+                    { name: "Ethereum", tag: "Smart Contract Platform" },
+                    { name: "Bitcoin", tag: "Store of Value" },
+                    { name: "Solana", tag: "High Throughput" },
+                    { name: "Hyperledger Fabric", tag: "Enterprise" }
+                ],
+                langs: ["Go", "Rust", "C++", "Java"]
+            },
+            'l2': {
+                title: "Layer 2: Scaling Solutions",
+                color: "indigo",
+                desc: "Solutions built on top of L1 to reduce fees and increase speed (transactions per second).",
+                items: [
+                    { name: "Polygon", tag: "Sidechain" },
+                    { name: "Arbitrum", tag: "Optimistic Rollup" },
+                    { name: "Lightning Network", tag: "Payment Channel" }
+                ],
+                langs: ["Solidity", "Rust", "Typescript"]
+            },
+            'l3': {
+                title: "Layer 3: DApps & User Interface",
+                color: "emerald",
+                desc: "The application layer where users interact. This includes DeFi apps, NFT marketplaces, and Wallets.",
+                items: [
+                    { name: "Metamask", tag: "Wallet" },
+                    { name: "Uniswap", tag: "DeFi Exchange" },
+                    { name: "OpenSea", tag: "NFT Market" }
+                ],
+                langs: ["Solidity (Contracts)", "React.js/Next.js (Frontend)", "Web3.js / Ethers.js (Glue)"]
+            }
+        };
+
+        function showLayer(layerId) {
+            const data = stackData[layerId];
+            const container = document.getElementById('layer-details');
+            
+            let itemsHtml = data.items.map(item => 
+                `<span class="inline-block bg-${data.color}-50 text-${data.color}-700 px-3 py-1 rounded-full text-sm font-semibold border border-${data.color}-100 mr-2 mb-2">
+                    ${item.name} <span class="text-${data.color}-400 font-normal">| ${item.tag}</span>
+                </span>`
+            ).join('');
+
+            let langsHtml = data.langs.map(l => `<span class="font-mono text-sm text-slate-600 bg-slate-100 px-2 py-1 rounded mr-2 border border-slate-200">${l}</span>`).join('');
+
+            container.innerHTML = `
+                <div class="animate-fade-in">
+                    <h3 class="text-2xl font-bold text-${data.color}-600 mb-2">${data.title}</h3>
+                    <p class="text-slate-600 mb-6 text-lg">${data.desc}</p>
+                    
+                    <div class="mb-6">
+                        <h4 class="font-bold text-slate-800 uppercase text-xs tracking-wider mb-3">Key Technologies</h4>
+                        <div class="flex flex-wrap">${itemsHtml}</div>
+                    </div>
+
+                    <div>
+                        <h4 class="font-bold text-slate-800 uppercase text-xs tracking-wider mb-3">Primary Languages</h4>
+                        <div class="flex flex-wrap">${langsHtml}</div>
+                    </div>
+                </div>
+            `;
+        }
+        // Initial load
+        showLayer('l1');
+
+
+        // --- Module 3: Chart.js Job Data ---
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctx = document.getElementById('jobsChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Blockchain Dev', 'Solidity Eng.', 'Architect', 'Analyst', 'UX Designer'],
+                    datasets: [{
+                        label: 'Demand Score (0-100)',
+                        data: [95, 90, 85, 70, 65],
+                        backgroundColor: 'rgba(59, 130, 246, 0.7)', // Brand 500
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }, {
+                        label: 'Complexity Score (0-100)',
+                        data: [80, 85, 95, 60, 50],
+                        backgroundColor: 'rgba(99, 102, 241, 0.7)', // Indigo 500
+                        borderColor: 'rgb(99, 102, 241)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top' },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#1e293b',
+                            bodyColor: '#475569',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: '#f1f5f9' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+            // --- Module 4: Plotly Radar Chart ---
+            const radarData = [{
+                type: 'scatterpolar',
+                r: [80, 95, 60, 40, 70, 50],
+                theta: ['Supply Chain', 'Finance (DeFi)', 'Healthcare', 'Real Estate', 'Identity', 'Voting'],
+                fill: 'toself',
+                name: 'Adoption Level',
+                line: { color: '#4f46e5' }, // Indigo 600
+                fillcolor: 'rgba(79, 70, 229, 0.2)'
+            }];
+
+            const radarLayout = {
+                polar: {
+                    radialaxis: {
+                        visible: true,
+                        range: [0, 100],
+                        tickfont: { size: 10, color: '#94a3b8' } // Slate 400
+                    },
+                    angularaxis: {
+                        tickfont: { size: 12, color: '#475569', family: 'Inter' }
+                    }
+                },
+                margin: { t: 30, b: 30, l: 40, r: 40 },
+                showlegend: false,
+                paper_bgcolor: "rgba(0,0,0,0)",
+                font: { family: 'Inter' }
+            };
+
+            Plotly.newPlot('radarChart', radarData, radarLayout, {displayModeBar: false, responsive: true});
+        });
+
+    </script>
+</body>
+</html>
