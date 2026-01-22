@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI for Future Managers: Infographic</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            dark: '#0F172A', // Slate 900
+                            card: '#1E293B', // Slate 800
+                            neonBlue: '#06B6D4', // Cyan 500
+                            neonPurple: '#D946EF', // Fuchsia 500
+                            neonGreen: '#84CC16', // Lime 500
+                            neonPink: '#EC4899', // Pink 500
+                            text: '#F8FAFC', // Slate 50
+                            muted: '#94A3B8' // Slate 400
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0F172A;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+
+        /* Chart Container Rules - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 650px; /* Constraint to prevent wide stretching */
+            height: 400px;    /* Base height */
+            max-height: 450px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        @media (max-width: 768px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+        
+        .glass-panel {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+    <!-- 
+        Palette Used: "Cyber Vibrant"
+        Source: Custom selection based on high-contrast neon trends suitable for AI.
+        Hex Codes: #06B6D4, #D946EF, #84CC16, #EC4899 on Dark #0F172A
+    -->
+    <!-- 
+        Narrative Plan:
+        1. Intro: The Strategic Imperative (Hook).
+        2. Market Data: Growth & Adoption (Line/Bar Charts).
+        3. The Ecosystem: Tools categorization (Doughnut).
+        4. The Transformation: Skills Gap (Radar).
+        5. Future Trends: Timeline (HTML).
+        6. The Lab: Assignments for Students (Interactive Cards).
+        
+        NO SVG used. NO Mermaid JS used.
+    -->
+</head>
+<body class="bg-brand-dark text-brand-text font-sans antialiased selection:bg-brand-neonPurple selection:text-white">
+
+    <!-- Header / Hero Section -->
+    <header class="relative w-full py-20 overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=2500&auto=format&fit=crop')] bg-cover bg-center opacity-10"></div>
+        <div class="relative max-w-7xl mx-auto px-6 text-center">
+            <span class="inline-block py-1 px-3 rounded-full bg-brand-neonBlue/10 text-brand-neonBlue border border-brand-neonBlue/20 text-sm font-mono mb-6">MBA MODULE: TECH STRATEGY</span>
+            <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-brand-neonBlue via-brand-neonPurple to-brand-neonPink">
+                AI for Future Managers
+            </h1>
+            <p class="text-xl text-brand-muted max-w-2xl mx-auto leading-relaxed">
+                Navigating the shift from "Digital" to "Cognitive" Enterprise. A guide to tools, trends, and the new strategic landscape.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-24">
+
+        <!-- SECTION 1: The Strategic Imperative (Growth) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-3xl font-bold mb-4 border-l-4 border-brand-neonBlue pl-4">The Strategic Imperative</h2>
+                <p class="text-lg text-brand-muted mb-6">
+                    Artificial Intelligence is no longer just an IT concern; it is a core business driver. The projected market growth indicates a massive shift in capital allocation. Managers who fail to understand this trajectory risk strategic obsolescence.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="glass-panel p-4 rounded-xl">
+                        <div class="text-sm text-brand-muted">CAGR (2023-2030)</div>
+                        <div class="text-3xl font-bold text-brand-neonGreen">37.3%</div>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl">
+                        <div class="text-sm text-brand-muted">2030 Market Value</div>
+                        <div class="text-3xl font-bold text-brand-neonBlue">$1.8T+</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Chart Container -->
+            <div class="bg-brand-card rounded-2xl p-6 shadow-2xl border border-white/5">
+                <div class="chart-container">
+                    <canvas id="marketGrowthChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-brand-muted mt-4 font-mono">Source: Grand View Research / Bloomberg Intelligence Projections</p>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Adoption Landscape (Bar Chart) -->
+        <section>
+            <div class="text-center mb-12">
+                <h2 class="text-3xl font-bold mb-4">Adoption Velocity by Industry</h2>
+                <p class="text-brand-muted max-w-3xl mx-auto">
+                    Not all sectors move at the same speed. Financial Services and Tech lead the charge, leveraging high data density. Manufacturing and Retail are rapidly catching up through supply chain optimization.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Insight Card -->
+                <div class="lg:col-span-1 space-y-6">
+                    <div class="glass-panel p-6 rounded-xl border-l-4 border-brand-neonPurple">
+                        <h3 class="font-bold text-lg mb-2">High Adoption Zone</h3>
+                        <p class="text-sm text-brand-muted">Sectors with digitized workflows (Finance, Tech) are seeing immediate ROI from predictive analytics and LLMs.</p>
+                    </div>
+                    <div class="glass-panel p-6 rounded-xl border-l-4 border-brand-neonPink">
+                        <h3 class="font-bold text-lg mb-2">Growth Opportunity</h3>
+                        <p class="text-sm text-brand-muted">Healthcare and Education represent the highest potential for "Human-in-the-loop" AI applications over the next 5 years.</p>
+                    </div>
+                </div>
+
+                <!-- Chart -->
+                <div class="lg:col-span-2 bg-brand-card rounded-2xl p-6 shadow-2xl border border-white/5">
+                    <div class="chart-container">
+                        <canvas id="adoptionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: The Manager's Toolkit (Tools & Categories) -->
+        <section class="bg-brand-card rounded-3xl p-8 md:p-12 relative overflow-hidden">
+            <!-- Decorative background element -->
+            <div class="absolute top-0 right-0 w-64 h-64 bg-brand-neonBlue/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
+
+            <div class="relative z-10 mb-12">
+                <h2 class="text-3xl font-bold mb-4">The Modern AI Stack</h2>
+                <p class="text-brand-muted">
+                    The landscape has exploded beyond simple chatbots. Today's manager must curate a "stack" of tools for content, analysis, and automation.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Donut Chart -->
+                <div class="bg-brand-dark p-6 rounded-2xl border border-white/5">
+                    <h3 class="text-center font-bold mb-6 text-sm uppercase tracking-widest text-brand-muted">Tool Category Distribution</h3>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="toolsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tool Cards Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Text Gen -->
+                    <div class="p-4 rounded-lg bg-brand-dark border border-brand-neonBlue/30 hover:border-brand-neonBlue transition-colors">
+                        <div class="text-2xl mb-2">✍️</div>
+                        <h4 class="font-bold text-brand-neonBlue">Text & Strategy</h4>
+                        <ul class="text-sm text-brand-muted mt-2 space-y-1 list-disc list-inside">
+                            <li>ChatGPT (OpenAI)</li>
+                            <li>Claude (Anthropic)</li>
+                            <li>Jasper (Marketing)</li>
+                        </ul>
+                    </div>
+
+                    <!-- Visual -->
+                    <div class="p-4 rounded-lg bg-brand-dark border border-brand-neonPurple/30 hover:border-brand-neonPurple transition-colors">
+                        <div class="text-2xl mb-2">🎨</div>
+                        <h4 class="font-bold text-brand-neonPurple">Visual & Media</h4>
+                        <ul class="text-sm text-brand-muted mt-2 space-y-1 list-disc list-inside">
+                            <li>Midjourney</li>
+                            <li>Runway ML (Video)</li>
+                            <li>Canva Magic Studio</li>
+                        </ul>
+                    </div>
+
+                    <!-- Data -->
+                    <div class="p-4 rounded-lg bg-brand-dark border border-brand-neonGreen/30 hover:border-brand-neonGreen transition-colors">
+                        <div class="text-2xl mb-2">📊</div>
+                        <h4 class="font-bold text-brand-neonGreen">Data & Analysis</h4>
+                        <ul class="text-sm text-brand-muted mt-2 space-y-1 list-disc list-inside">
+                            <li>Tableau AI</li>
+                            <li>Julius AI</li>
+                            <li>Excel Copilot</li>
+                        </ul>
+                    </div>
+
+                    <!-- Automation -->
+                    <div class="p-4 rounded-lg bg-brand-dark border border-brand-neonPink/30 hover:border-brand-neonPink transition-colors">
+                        <div class="text-2xl mb-2">⚡</div>
+                        <h4 class="font-bold text-brand-neonPink">Automation</h4>
+                        <ul class="text-sm text-brand-muted mt-2 space-y-1 list-disc list-inside">
+                            <li>Zapier AI</li>
+                            <li>UiPath</li>
+                            <li>Microsoft Power Automate</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: The Skill Shift (Radar Chart) -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div class="order-2 lg:order-1 bg-brand-card rounded-2xl p-6 shadow-2xl border border-white/5">
+                <div class="chart-container">
+                    <canvas id="skillsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="order-1 lg:order-2">
+                <h2 class="text-3xl font-bold mb-4 border-l-4 border-brand-neonGreen pl-4">The "AI-Augmented" Manager</h2>
+                <p class="text-lg text-brand-muted mb-6">
+                    The core competency model for management is shifting. While fundamental leadership remains crucial, "Technical Intuition" and "Data Literacy" are becoming non-negotiable.
+                </p>
+                <div class="space-y-4">
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-3">📉</span>
+                        <div>
+                            <h4 class="font-bold text-white">Decreasing Emphasis</h4>
+                            <p class="text-sm text-brand-muted">Rote memorization, manual report generation, administrative scheduling.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-2xl mr-3">📈</span>
+                        <div>
+                            <h4 class="font-bold text-brand-neonGreen">Increasing Emphasis</h4>
+                            <p class="text-sm text-brand-muted">Prompt engineering, ethical oversight, system auditing, strategic synthesis.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Future Trends (HTML Timeline) -->
+        <section>
+            <h2 class="text-3xl font-bold mb-12 text-center">Future Horizon: What's Next?</h2>
+            
+            <div class="relative max-w-4xl mx-auto">
+                <!-- Vertical Line -->
+                <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gradient-to-b from-brand-neonBlue via-brand-neonPurple to-brand-neonPink rounded"></div>
+
+                <!-- Timeline Item 1 -->
+                <div class="relative flex items-center justify-between mb-12">
+                    <div class="w-5/12 text-right pr-8">
+                        <h3 class="text-xl font-bold text-brand-neonBlue">Present Day</h3>
+                        <p class="text-sm text-brand-muted mt-2">LLMs and Chatbots. Single-modal generation (text-to-text, text-to-image). Pilot programs in enterprise.</p>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-brand-dark border-4 border-brand-neonBlue rounded-full z-10"></div>
+                    <div class="w-5/12 pl-8"></div>
+                </div>
+
+                <!-- Timeline Item 2 -->
+                <div class="relative flex items-center justify-between mb-12">
+                    <div class="w-5/12 pr-8"></div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-brand-dark border-4 border-brand-neonPurple rounded-full z-10"></div>
+                    <div class="w-5/12 text-left pl-8">
+                        <h3 class="text-xl font-bold text-brand-neonPurple">Next 12-24 Months</h3>
+                        <p class="text-sm text-brand-muted mt-2"><strong>Agentic AI.</strong> Systems that don't just "talk" but "do". AI agents booking supply chains, negotiating invoices, and managing calendars autonomously.</p>
+                    </div>
+                </div>
+
+                <!-- Timeline Item 3 -->
+                <div class="relative flex items-center justify-between">
+                    <div class="w-5/12 text-right pr-8">
+                        <h3 class="text-xl font-bold text-brand-neonPink">3-5 Years</h3>
+                        <p class="text-sm text-brand-muted mt-2"><strong>Personalized Enterprise Models.</strong> Small, private models trained entirely on internal company data, running locally for maximum security and relevance.</p>
+                    </div>
+                    <div class="absolute left-1/2 transform -translate-x-1/2 w-8 h-8 bg-brand-dark border-4 border-brand-neonPink rounded-full z-10"></div>
+                    <div class="w-5/12 pl-8"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: THE LAB (Assignments) -->
+        <section class="bg-gradient-to-br from-brand-card to-brand-dark rounded-3xl p-8 md:p-12 border border-brand-neonBlue/20">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div>
+                    <h2 class="text-4xl font-bold text-white mb-2">The Management Lab</h2>
+                    <p class="text-brand-muted">Practical assignments to execute on your laptop right now.</p>
+                </div>
+                <div class="mt-4 md:mt-0 px-4 py-2 bg-brand-neonBlue/20 border border-brand-neonBlue rounded text-brand-neonBlue font-mono text-sm">
+                    STATUS: ACTIVE SESSION
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Assignment 1 -->
+                <div class="bg-brand-dark p-6 rounded-xl border-t-4 border-brand-neonBlue hover:shadow-[0_0_20px_rgba(6,182,212,0.3)] transition-all group">
+                    <div class="text-brand-neonBlue text-4xl mb-4 font-mono">01</div>
+                    <h3 class="text-xl font-bold mb-3">Prompt Engineering Challenge</h3>
+                    <p class="text-sm text-brand-muted mb-4">
+                        <strong>Context:</strong> A PR crisis.
+                        <br><br>
+                        <strong>Task:</strong> Use ChatGPT/Claude to draft a press release for a supply chain failure.
+                        <br><br>
+                        <strong>Constraint:</strong> You must use the "Persona - Context - Task - Tone" framework in your prompt.
+                    </p>
+                    <div class="w-full py-2 bg-brand-neonBlue/10 text-center rounded text-brand-neonBlue text-sm font-bold group-hover:bg-brand-neonBlue group-hover:text-brand-dark transition-colors cursor-default">
+                        Estimated Time: 10m
+                    </div>
+                </div>
+
+                <!-- Assignment 2 -->
+                <div class="bg-brand-dark p-6 rounded-xl border-t-4 border-brand-neonPurple hover:shadow-[0_0_20px_rgba(217,70,239,0.3)] transition-all group">
+                    <div class="text-brand-neonPurple text-4xl mb-4 font-mono">02</div>
+                    <h3 class="text-xl font-bold mb-3">Competitive Intelligence</h3>
+                    <p class="text-sm text-brand-muted mb-4">
+                        <strong>Context:</strong> Market entry strategy.
+                        <br><br>
+                        <strong>Task:</strong> Use Bing Chat or Perplexity AI to research 3 top competitors for a "Sustainable Coffee Subscription".
+                        <br><br>
+                        <strong>Output:</strong> Ask the AI to format the results as a Markdown table comparing Pricing, UVP, and Weaknesses.
+                    </p>
+                    <div class="w-full py-2 bg-brand-neonPurple/10 text-center rounded text-brand-neonPurple text-sm font-bold group-hover:bg-brand-neonPurple group-hover:text-brand-dark transition-colors cursor-default">
+                        Estimated Time: 15m
+                    </div>
+                </div>
+
+                <!-- Assignment 3 -->
+                <div class="bg-brand-dark p-6 rounded-xl border-t-4 border-brand-neonGreen hover:shadow-[0_0_20px_rgba(132,204,22,0.3)] transition-all group">
+                    <div class="text-brand-neonGreen text-4xl mb-4 font-mono">03</div>
+                    <h3 class="text-xl font-bold mb-3">Data to Strategy</h3>
+                    <p class="text-sm text-brand-muted mb-4">
+                        <strong>Context:</strong> Q3 Financial Review.
+                        <br><br>
+                        <strong>Task:</strong> Take a sample CSV of sales data (or paste mock data) into ChatGPT Advanced Data Analysis.
+                        <br><br>
+                        <strong>Goal:</strong> Ask for 3 visual trends and 1 strategic anomaly that a human might miss.
+                    </p>
+                    <div class="w-full py-2 bg-brand-neonGreen/10 text-center rounded text-brand-neonGreen text-sm font-bold group-hover:bg-brand-neonGreen group-hover:text-brand-dark transition-colors cursor-default">
+                        Estimated Time: 20m
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-card py-12 text-center border-t border-white/5">
+        <div class="max-w-7xl mx-auto px-6">
+            <h3 class="text-2xl font-bold text-white mb-4">"The best way to predict the future is to invent it."</h3>
+            <p class="text-brand-muted mb-8">AI is a tool. Strategy is the craft.</p>
+            
+            <!-- Author & Contact Info -->
+            <div class="mb-8 flex flex-col items-center justify-center space-y-2">
+                <div class="p-4 bg-brand-dark/50 rounded-xl border border-white/5 inline-block min-w-[300px]">
+                    <p class="text-brand-neonBlue font-bold text-xl mb-1">Kalyanjit Hatibaruah</p>
+                    <p class="text-brand-muted flex items-center justify-center gap-2">
+                        <span>WhatsApp:</span> 
+                        <span class="font-mono text-white font-bold tracking-wide">+91-9864011106</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="text-sm text-brand-muted opacity-60">
+                Copyright &copy; Flugelsoft Labs &bull; Management Education Series
+            </div>
+        </div>
+    </footer>
+
+    <!-- Chart.js Logic -->
+    <script>
+        // --- UTILITIES ---
+
+        // 1. Label Wrapping Helper (16 char limit)
+        function splitLabel(label) {
+            if (label.length <= 16) return label;
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = words[0];
+
+            for (let i = 1; i < words.length; i++) {
+                if ((currentLine + " " + words[i]).length <= 16) {
+                    currentLine += " " + words[i];
+                } else {
+                    lines.push(currentLine);
+                    currentLine = words[i];
+                }
+            }
+            lines.push(currentLine);
+            return lines;
+        }
+
+        // 2. Common Chart Defaults (Cyber Theme)
+        Chart.defaults.color = '#94A3B8';
+        Chart.defaults.font.family = 'Inter';
+        Chart.defaults.scale.grid.color = 'rgba(255, 255, 255, 0.05)';
+
+        const tooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            },
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#F8FAFC',
+            bodyColor: '#CBD5E1',
+            borderColor: 'rgba(6, 182, 212, 0.3)',
+            borderWidth: 1,
+            padding: 12,
+            cornerRadius: 8
+        };
+
+        // --- CHART 1: Market Growth (Line) ---
+        const ctxGrowth = document.getElementById('marketGrowthChart').getContext('2d');
+        const gradientGrowth = ctxGrowth.createLinearGradient(0, 0, 0, 400);
+        gradientGrowth.addColorStop(0, 'rgba(6, 182, 212, 0.5)'); // Neon Blue
+        gradientGrowth.addColorStop(1, 'rgba(6, 182, 212, 0)');
+
+        new Chart(ctxGrowth, {
+            type: 'line',
+            data: {
+                labels: ['2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                datasets: [{
+                    label: 'Global AI Market Size (USD Billions)',
+                    data: [150, 210, 310, 450, 680, 950, 1300, 1850],
+                    borderColor: '#06B6D4',
+                    backgroundColor: gradientGrowth,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0F172A',
+                    pointBorderColor: '#06B6D4',
+                    pointBorderWidth: 2,
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: true, position: 'top' },
+                    tooltip: tooltipConfig,
+                    title: { display: true, text: 'Exponential Growth Trajectory', color: '#F8FAFC', font: { size: 16 } }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    x: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: Adoption by Industry (Bar) ---
+        const industryLabelsRaw = [
+            "Financial Services", "Technology & Media", "Retail & Commerce", 
+            "Healthcare & Life Sci", "Manufacturing", "Legal & Prof Services", "Government"
+        ];
+        const industryLabels = industryLabelsRaw.map(splitLabel);
+
+        new Chart(document.getElementById('adoptionChart'), {
+            type: 'bar',
+            data: {
+                labels: industryLabels,
+                datasets: [{
+                    label: 'Adoption Rate (%)',
+                    data: [85, 92, 65, 58, 45, 40, 25],
+                    backgroundColor: [
+                        '#D946EF', '#D946EF', '#EC4899', '#EC4899', '#84CC16', '#84CC16', '#94A3B8'
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y', // Horizontal Bar
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    x: {
+                        max: 100,
+                        grid: { color: 'rgba(255,255,255,0.05)' }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // --- CHART 3: Tools Distribution (Doughnut) ---
+        const toolLabelsRaw = ["GenAI (Text/Code)", "Predictive Analytics", "Computer Vision", "RPA/Automation"];
+        const toolLabels = toolLabelsRaw.map(splitLabel);
+
+        new Chart(document.getElementById('toolsChart'), {
+            type: 'doughnut',
+            data: {
+                labels: toolLabels,
+                datasets: [{
+                    data: [45, 25, 15, 15],
+                    backgroundColor: ['#06B6D4', '#D946EF', '#84CC16', '#F59E0B'], // Blue, Purple, Green, Amber
+                    borderColor: '#1E293B',
+                    borderWidth: 2,
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '60%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { boxWidth: 12, padding: 20 } },
+                    tooltip: tooltipConfig
+                }
+            }
+        });
+
+        // --- CHART 4: Skills Radar (Radar) ---
+        const skillLabelsRaw = [
+            "Data Literacy", "Strategic Vision", "Prompt Engineering", 
+            "Emotional Intelligence", "Technical Coding", "Admin/Reporting"
+        ];
+        const skillLabels = skillLabelsRaw.map(splitLabel);
+
+        const ctxSkills = document.getElementById('skillsChart').getContext('2d');
+        
+        new Chart(ctxSkills, {
+            type: 'radar',
+            data: {
+                labels: skillLabels,
+                datasets: [{
+                    label: 'AI-Augmented Manager',
+                    data: [90, 85, 80, 95, 40, 20],
+                    fill: true,
+                    backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                    borderColor: '#06B6D4',
+                    pointBackgroundColor: '#06B6D4',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#06B6D4'
+                }, {
+                    label: 'Traditional Manager',
+                    data: [40, 60, 10, 70, 10, 90],
+                    fill: true,
+                    backgroundColor: 'rgba(148, 163, 184, 0.2)', // Slate
+                    borderColor: '#94A3B8',
+                    pointBackgroundColor: '#94A3B8',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#94A3B8',
+                    borderDash: [5, 5]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: tooltipConfig
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                        pointLabels: {
+                            color: '#F8FAFC',
+                            font: { size: 12 }
+                        },
+                        ticks: { display: false, backdropColor: 'transparent' }
+                    }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
