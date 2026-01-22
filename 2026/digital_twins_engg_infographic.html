@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Twins: The Engineering Frontier</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Palette & Chart Container Styles -->
+    <style>
+        /* Palette: Cyber Future 
+           Background: #0f172a (Slate 900)
+           Card Bg: #1e293b (Slate 800)
+           Text Main: #f1f5f9 (Slate 100)
+           Text Muted: #94a3b8 (Slate 400)
+           Accent Cyan: #06b6d4
+           Accent Purple: #8b5cf6
+           Accent Green: #84cc16
+        */
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+
+        h1, h2, h3, .mono-font {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Chart Container Strict Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Cap width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base mobile height */
+            max-height: 500px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px; /* Tablet/Desktop height */
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569; 
+        }
+
+        /* Diagram Connector Lines */
+        .connector-line {
+            width: 2px;
+            background-color: #475569;
+            height: 40px;
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .connector-line {
+                width: 40px;
+                height: 2px;
+                margin: auto 0;
+            }
+        }
+    </style>
+    
+    <!-- 
+    PALETTE SELECTION: Cyber Future (High Contrast Dark Mode)
+    NARRATIVE PLAN:
+    1. Header: Hook the audience (Engineering/Research).
+    2. Concept: HTML/CSS Diagram explaining the feedback loop.
+    3. Market: Line Chart showing exponential growth (CAGR).
+    4. Sectors: Doughnut chart showing adoption by industry.
+    5. Tools: Horizontal Bar chart ranking top platforms.
+    6. Trends: Radar chart comparing current vs. future tech maturity.
+    7. Assignments: Interactive-styled cards for practical tasks.
+    VISUALIZATION CHOICES:
+    - Market Growth -> Line Chart (Change over time).
+    - Sectors -> Doughnut (Composition).
+    - Players -> Bar Chart (Comparison).
+    - Tech Maturity -> Radar Chart (Multivariate Comparison).
+    -->
+</head>
+<body class="antialiased selection:bg-cyan-500 selection:text-white">
+
+    <!-- Header Section -->
+    <header class="w-full bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 border-b border-slate-700 p-8 sticky top-0 z-50 backdrop-blur-md bg-opacity-90">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 to-purple-500">
+                    DIGITAL TWINS
+                </h1>
+                <p class="text-slate-400 mt-2 text-lg">bridging_physical_and_virtual_worlds</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right">
+                <span class="inline-block px-3 py-1 rounded-full bg-slate-700 text-cyan-400 text-xs font-bold tracking-wider uppercase border border-slate-600">
+                    Module: Industry 4.0
+                </span>
+                <p class="text-sm text-slate-500 mt-1">Target: Engineering & Research</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-12 space-y-20">
+
+        <!-- SECTION 1: The Concept (Diagram) -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-white border-l-4 border-cyan-500 pl-4">01. The Architecture</h2>
+                <p class="mt-4 text-slate-300 leading-relaxed max-w-4xl">
+                    For researchers, a Digital Twin is more than just a 3D model. It is a live, dynamic representation of a physical system that updates in real-time to facilitate decision-making. It relies on a continuous data loop.
+                </p>
+            </div>
+
+            <!-- CSS Grid Process Diagram (Replacing Mermaid/SVG) -->
+            <div class="bg-slate-800 rounded-xl p-8 shadow-lg border border-slate-700">
+                <h3 class="text-xl font-semibold text-center text-purple-400 mb-8">The Data Lifecycle</h3>
+                
+                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                    <!-- Step 1 -->
+                    <div class="flex flex-col items-center w-full md:w-1/5 group cursor-pointer hover:-translate-y-1 transition-transform">
+                        <div class="w-16 h-16 rounded-full bg-slate-700 border-2 border-cyan-500 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(6,182,212,0.3)]">
+                            🏭
+                        </div>
+                        <h4 class="mt-4 font-bold text-white">Physical Asset</h4>
+                        <p class="text-xs text-center text-slate-400 mt-2">Engine, Building, City Grid</p>
+                    </div>
+
+                    <!-- Connector -->
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="text-cyan-500 text-xs font-mono mb-1">IoT/Sensors</span>
+                        <div class="connector-line"></div>
+                        <span class="text-slate-600 text-xl transform rotate-90 md:rotate-0">➤</span>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="flex flex-col items-center w-full md:w-1/5 group cursor-pointer hover:-translate-y-1 transition-transform">
+                        <div class="w-16 h-16 rounded-full bg-slate-700 border-2 border-purple-500 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                            📡
+                        </div>
+                        <h4 class="mt-4 font-bold text-white">Data Ingestion</h4>
+                        <p class="text-xs text-center text-slate-400 mt-2">Telemetry, Edge Computing</p>
+                    </div>
+
+                    <!-- Connector -->
+                    <div class="flex flex-col items-center justify-center">
+                        <span class="text-purple-500 text-xs font-mono mb-1">Processing</span>
+                        <div class="connector-line"></div>
+                        <span class="text-slate-600 text-xl transform rotate-90 md:rotate-0">➤</span>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="flex flex-col items-center w-full md:w-1/5 group cursor-pointer hover:-translate-y-1 transition-transform">
+                        <div class="w-16 h-16 rounded-full bg-slate-700 border-2 border-pink-500 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(236,72,153,0.3)]">
+                            🧠
+                        </div>
+                        <h4 class="mt-4 font-bold text-white">The Twin (Model)</h4>
+                        <p class="text-xs text-center text-slate-400 mt-2">Simulation, ML Prediction</p>
+                    </div>
+
+                     <!-- Connector -->
+                     <div class="flex flex-col items-center justify-center">
+                        <span class="text-pink-500 text-xs font-mono mb-1">Insights</span>
+                        <div class="connector-line"></div>
+                        <span class="text-slate-600 text-xl transform rotate-90 md:rotate-0">➤</span>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="flex flex-col items-center w-full md:w-1/5 group cursor-pointer hover:-translate-y-1 transition-transform">
+                        <div class="w-16 h-16 rounded-full bg-slate-700 border-2 border-green-500 flex items-center justify-center text-2xl shadow-[0_0_15px_rgba(132,204,22,0.3)]">
+                            ⚡
+                        </div>
+                        <h4 class="mt-4 font-bold text-white">Actionable Outcome</h4>
+                        <p class="text-xs text-center text-slate-400 mt-2">Maintenance, Optimization</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Market Growth (Chart.js Line) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h2 class="text-3xl font-bold text-white border-l-4 border-purple-500 pl-4">02. Market Velocity</h2>
+                <p class="mt-4 text-slate-300 leading-relaxed">
+                    The Global Digital Twin market is experiencing exponential growth, driven by the adoption of IoT and Cloud Computing. For research scholars, this curve represents a massive funding opportunity and demand for optimization algorithms.
+                </p>
+                <div class="mt-6 grid grid-cols-2 gap-4">
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <p class="text-slate-400 text-sm">2023 Value</p>
+                        <p class="text-2xl font-bold text-cyan-400">$10.1 Billion</p>
+                    </div>
+                    <div class="bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <p class="text-slate-400 text-sm">2030 Projection</p>
+                        <p class="text-2xl font-bold text-purple-400">$110.1 Billion</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-slate-800 rounded-xl p-6 shadow-lg border border-slate-700">
+                <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4">Market Size Projection (USD Billions)</h3>
+                <div class="chart-container">
+                    <canvas id="marketGrowthChart"></canvas>
+                </div>
+                <p class="text-xs text-center text-slate-500 mt-2 italic">Source: Grand View Research & Statista Estimates</p>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Use Cases & Sectors (Chart.js Doughnut) -->
+        <section>
+            <div class="mb-8 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-white inline-block border-b-4 border-pink-500 pb-2">03. Where is it used?</h2>
+                <p class="mt-4 text-slate-300">
+                    While Manufacturing (Industry 4.0) pioneered the tech, usage is shifting rapidly towards urban planning (Smart Cities) and personalized healthcare.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Chart Col -->
+                <div class="md:col-span-1 bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <h3 class="text-center font-bold text-slate-200 mb-4">Adoption by Industry</h3>
+                    <div class="chart-container" style="height: 300px;">
+                        <canvas id="sectorChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Details Col -->
+                <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Card 1 -->
+                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-2 border-cyan-500">
+                        <h4 class="font-bold text-cyan-400 text-lg flex items-center gap-2">
+                            <span>⚙️</span> Manufacturing
+                        </h4>
+                        <p class="text-sm text-slate-300 mt-2">
+                            <strong>Predictive Maintenance:</strong> Creating twins of jet engines (GE Aviation) to predict failure before it occurs, reducing downtime by 30%.
+                        </p>
+                    </div>
+                    <!-- Card 2 -->
+                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-2 border-purple-500">
+                        <h4 class="font-bold text-purple-400 text-lg flex items-center gap-2">
+                            <span>🏙️</span> Smart Cities
+                        </h4>
+                        <p class="text-sm text-slate-300 mt-2">
+                            <strong>Urban Planning:</strong> Singapore and Shanghai use massive twins to simulate traffic flow, flood disaster response, and energy consumption.
+                        </p>
+                    </div>
+                    <!-- Card 3 -->
+                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-2 border-pink-500">
+                        <h4 class="font-bold text-pink-400 text-lg flex items-center gap-2">
+                            <span>🏥</span> Healthcare
+                        </h4>
+                        <p class="text-sm text-slate-300 mt-2">
+                            <strong>The "Virtual Patient":</strong> Simulating drug reactions on a digital heart twin (Dassault Systèmes) before clinical trials.
+                        </p>
+                    </div>
+                    <!-- Card 4 -->
+                    <div class="bg-slate-800/50 p-6 rounded-lg border-l-2 border-green-500">
+                        <h4 class="font-bold text-green-400 text-lg flex items-center gap-2">
+                            <span>🚗</span> Automotive
+                        </h4>
+                        <p class="text-sm text-slate-300 mt-2">
+                            <strong>Autonomous Training:</strong> Tesla and Waymo use twins to train AI drivers in millions of virtual scenarios without risking physical cars.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: The Landscape (Players & Tools) -->
+        <section class="bg-slate-900 border border-slate-700 rounded-2xl p-8">
+            <h2 class="text-3xl font-bold text-white mb-6 border-l-4 border-green-500 pl-4">04. The Tech Stack & Major Players</h2>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Bar Chart: Market Presence -->
+                <div>
+                    <h3 class="text-xl font-semibold text-slate-200 mb-2">Leading Platform Providers</h3>
+                    <p class="text-sm text-slate-400 mb-4">Based on completeness of vision and ability to execute (Gartner/Forrester meta-analysis).</p>
+                    <div class="chart-container">
+                        <canvas id="playersChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Tech Stack Definition -->
+                <div class="space-y-6">
+                    <h3 class="text-xl font-semibold text-slate-200">Required Skillsets for Research</h3>
+                    <div class="space-y-4">
+                        <div class="flex group">
+                            <div class="flex-shrink-0 w-12 h-12 bg-slate-800 rounded flex items-center justify-center text-cyan-500 font-bold border border-slate-600">01</div>
+                            <div class="ml-4">
+                                <h4 class="text-white font-bold">Physics Simulation</h4>
+                                <p class="text-slate-400 text-sm">Ansys, MATLAB Simulink. Understanding finite element analysis (FEA).</p>
+                            </div>
+                        </div>
+                        <div class="flex group">
+                            <div class="flex-shrink-0 w-12 h-12 bg-slate-800 rounded flex items-center justify-center text-purple-500 font-bold border border-slate-600">02</div>
+                            <div class="ml-4">
+                                <h4 class="text-white font-bold">IoT & Cloud Integration</h4>
+                                <p class="text-slate-400 text-sm">Microsoft Azure Digital Twins, AWS IoT TwinMaker. Handling MQTT protocols and time-series databases.</p>
+                            </div>
+                        </div>
+                        <div class="flex group">
+                            <div class="flex-shrink-0 w-12 h-12 bg-slate-800 rounded flex items-center justify-center text-pink-500 font-bold border border-slate-600">03</div>
+                            <div class="ml-4">
+                                <h4 class="text-white font-bold">Visualization & 3D</h4>
+                                <p class="text-slate-400 text-sm">NVIDIA Omniverse (USD standard), Unity, Unreal Engine. Rendering complex data spatially.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Future Trends (Radar Chart) -->
+        <section>
+             <div class="flex flex-col md:flex-row gap-8 items-start">
+                <div class="md:w-1/3">
+                    <h2 class="text-3xl font-bold text-white border-l-4 border-orange-500 pl-4">05. Future Trajectory</h2>
+                    <p class="mt-4 text-slate-300">
+                        We are moving from "Component Twins" (a single motor) to "Process Twins" (a manufacturing line) and finally to "System Twins" (entire cities). The integration of Generative AI is the next frontier.
+                    </p>
+                    <div class="mt-6 bg-slate-800 p-4 rounded-lg border border-slate-700">
+                        <h4 class="text-orange-400 font-bold text-sm uppercase">Research Hotspot</h4>
+                        <p class="text-white mt-1 font-mono text-sm">"Cognitive Digital Twins"</p>
+                        <p class="text-slate-400 text-xs mt-2">Twins that don't just report data, but autonomously negotiate and solve problems using LLMs and Reinforcement Learning.</p>
+                    </div>
+                </div>
+                
+                <div class="md:w-2/3 bg-slate-800 rounded-xl p-6 border border-slate-700">
+                    <h3 class="text-center font-bold text-slate-200 mb-4">Technology Maturity Assessment</h3>
+                    <div class="chart-container">
+                        <canvas id="radarChart"></canvas>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- SECTION 6: Student Assignments -->
+        <section class="bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-10 border border-slate-600 shadow-2xl">
+            <div class="text-center mb-10">
+                <h2 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-green-400">
+                    Your Lab Assignments
+                </h2>
+                <p class="text-slate-400 mt-2">Practical application tasks to perform on your laptops.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Task 1 -->
+                <div class="bg-slate-900 p-6 rounded-xl border-t-4 border-cyan-500 hover:bg-slate-800 transition-colors">
+                    <div class="text-cyan-500 font-mono text-xs mb-2">BEGINNER • VISUALIZATION</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Build a 3D Asset Context</h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Use <strong>Unity</strong> or <strong>Three.js</strong> to import a simple 3D model (e.g., a fan). Script a rotation animation that changes speed based on a variable input.
+                    </p>
+                    <ul class="text-xs text-slate-400 list-disc list-inside space-y-1">
+                        <li>Download a free .obj model</li>
+                        <li>Create a slider UI</li>
+                        <li>Link slider value to rotation speed</li>
+                    </ul>
+                </div>
+
+                <!-- Task 2 -->
+                <div class="bg-slate-900 p-6 rounded-xl border-t-4 border-purple-500 hover:bg-slate-800 transition-colors">
+                    <div class="text-purple-500 font-mono text-xs mb-2">INTERMEDIATE • DATA</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Simulate IoT Data Stream</h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Write a Python script to generate synthetic JSON data (temperature, vibration, timestamp) representing a sensor, and push it to a local dashboard or MQTT broker.
+                    </p>
+                    <div class="bg-black rounded p-2 text-xs font-mono text-green-400 mt-2">
+                        { "sensor_id": "A1", "temp": 72.5 }
+                    </div>
+                </div>
+
+                <!-- Task 3 -->
+                <div class="bg-slate-900 p-6 rounded-xl border-t-4 border-green-500 hover:bg-slate-800 transition-colors">
+                    <div class="text-green-500 font-mono text-xs mb-2">ADVANCED • PLATFORM</div>
+                    <h3 class="text-xl font-bold text-white mb-3">Azure Digital Twins Explorer</h3>
+                    <p class="text-slate-300 text-sm mb-4">
+                        Create a free tier Azure account. Use the <strong>Azure Digital Twins Explorer</strong> to define a simple DTDL (Digital Twins Definition Language) model for a "Room" and a "Thermostat".
+                    </p>
+                    <a href="#" class="inline-block mt-2 text-green-400 text-sm hover:underline">Read MS Documentation &rarr;</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 text-sm border-t border-slate-800 pt-8 pb-12">
+            <div class="mb-6">
+                <p class="text-slate-300 font-bold text-lg mb-1">Author: Kalyanjit Hatibaruah</p>
+                <div class="flex items-center justify-center gap-2 text-cyan-500 font-mono">
+                    <span>WhatsApp:</span>
+                    <a href="https://wa.me/919864011106" class="hover:text-cyan-400 hover:underline">+91-9864011106</a>
+                </div>
+            </div>
+            <p>&copy; Flugelsoft Labs. All Rights Reserved.</p>
+            <p class="mt-2 text-xs opacity-50">No SVG or External Graphics were used in the creation of this page.</p>
+        </footer>
+
+    </main>
+
+    <!-- CHART LOGIC -->
+    <script>
+        // --- UTILITY: Wrap Labels for Chart.js (>16 chars) ---
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        // --- UTILITY: Tooltip Config for Multiline Support ---
+        const commonPlugins = {
+            legend: {
+                labels: { color: '#cbd5e1', font: { family: 'Inter' } }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(15, 23, 42, 0.9)',
+                titleColor: '#f1f5f9',
+                bodyColor: '#cbd5e1',
+                borderColor: '#334155',
+                borderWidth: 1,
+                callbacks: {
+                    title: function(tooltipItems) {
+                        const item = tooltipItems[0];
+                        let label = item.chart.data.labels[item.dataIndex];
+                        if (Array.isArray(label)) {
+                            return label.join(' ');
+                        } else {
+                            return label;
+                        }
+                    }
+                }
+            }
+        };
+
+        window.onload = function() {
+            // Chart 1: Market Growth (Line Chart)
+            const ctxGrowth = document.getElementById('marketGrowthChart').getContext('2d');
+            new Chart(ctxGrowth, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2022', '2024', '2026', '2028', '2030'],
+                    datasets: [{
+                        label: 'Market Size (USD Billions)',
+                        data: [3.1, 8.8, 16.5, 35.2, 70.4, 110.1],
+                        borderColor: '#06b6d4', // Cyan
+                        backgroundColor: 'rgba(6, 182, 212, 0.1)',
+                        borderWidth: 3,
+                        tension: 0.4,
+                        pointBackgroundColor: '#fff',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#94a3b8' }
+                        }
+                    },
+                    plugins: commonPlugins
+                }
+            });
+
+            // Chart 2: Sectors (Doughnut)
+            const ctxSector = document.getElementById('sectorChart').getContext('2d');
+            const sectorLabels = ['Manufacturing & Industry 4.0', 'Automotive & Transport', 'Energy & Utilities', 'Healthcare & Life Sciences', 'Residential & Commercial'];
+            const processedSectorLabels = sectorLabels.map(l => formatLabel(l, 16));
+
+            new Chart(ctxSector, {
+                type: 'doughnut',
+                data: {
+                    labels: processedSectorLabels,
+                    datasets: [{
+                        data: [35, 20, 15, 12, 18],
+                        backgroundColor: [
+                            '#06b6d4', // Cyan
+                            '#8b5cf6', // Purple
+                            '#ec4899', // Pink
+                            '#84cc16', // Green
+                            '#f59e0b'  // Orange
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        ...commonPlugins,
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#cbd5e1', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+
+            // Chart 3: Players (Horizontal Bar)
+            const ctxPlayers = document.getElementById('playersChart').getContext('2d');
+            const playerLabels = ['General Electric (Predix)', 'Siemens (MindSphere)', 'Microsoft (Azure Digital Twins)', 'NVIDIA (Omniverse)', 'Ansys (Twin Builder)'];
+            const processedPlayerLabels = playerLabels.map(l => formatLabel(l, 16));
+
+            new Chart(ctxPlayers, {
+                type: 'bar',
+                data: {
+                    labels: processedPlayerLabels,
+                    datasets: [{
+                        label: 'Market Presence Score (0-100)',
+                        data: [92, 88, 85, 82, 75],
+                        backgroundColor: '#8b5cf6',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            grid: { color: '#334155' },
+                            ticks: { color: '#94a3b8' }
+                        },
+                        y: {
+                            grid: { display: false },
+                            ticks: { color: '#cbd5e1' }
+                        }
+                    },
+                    plugins: commonPlugins
+                }
+            });
+
+            // Chart 4: Future Trends (Radar)
+            const ctxRadar = document.getElementById('radarChart').getContext('2d');
+            new Chart(ctxRadar, {
+                type: 'radar',
+                data: {
+                    labels: ['IoT Integration', 'AI/ML Analytics', 'Real-time Simulation', 'AR/VR Interface', 'Cybersecurity', 'Interoperability'],
+                    datasets: [{
+                        label: 'Current Maturity',
+                        data: [90, 60, 75, 50, 65, 40],
+                        fill: true,
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)',
+                        borderColor: '#06b6d4',
+                        pointBackgroundColor: '#06b6d4'
+                    }, {
+                        label: 'Required for 2030',
+                        data: [95, 95, 90, 85, 95, 90],
+                        fill: true,
+                        backgroundColor: 'rgba(236, 72, 153, 0.2)',
+                        borderColor: '#ec4899',
+                        pointBackgroundColor: '#ec4899'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#334155' },
+                            grid: { color: '#334155' },
+                            pointLabels: { color: '#cbd5e1', font: { size: 11 } },
+                            ticks: { backdropColor: 'transparent', color: '#94a3b8' }
+                        }
+                    },
+                    plugins: commonPlugins
+                }
+            });
+        };
+    </script>
+</body>
+</html>
