@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 & Blockchain Career Roadmap</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f8fafc; /* Slate 50 */
+            color: #1e293b; /* Slate 800 */
+        }
+
+        /* Chart Container Styling - Mandatory Requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constrain width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Base height */
+            max-height: 400px;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Material Design Card */
+        .card {
+            background-color: white;
+            border-radius: 1rem; /* rounded-xl */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Timeline Connector Lines for Non-SVG Diagram */
+        .timeline-connector {
+            width: 4px;
+            background-color: #e2e8f0;
+            flex-grow: 1;
+            margin: 0.5rem 0;
+            border-radius: 2px;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+    </style>
+    <!-- 
+        Palette: "Electric Future"
+        Primary (Indigo): #4F46E5
+        Secondary (Cyan): #06B6D4
+        Accent (Amber): #F59E0B
+        Text Dark: #1e293b
+        Text Light: #64748b
+    -->
+    <!-- 
+        Source Material Analysis Summary:
+        1. Context: High demand for blockchain skills vs low supply.
+        2. Narrative: Start with the market opportunity, move to specific roles, compare salaries, provide a learning path, and show industry application.
+        3. Visuals: Selected based on comparing categories (roles/salaries), showing processes (roadmap), and ranking (skills). 
+        4. No SVGs/Mermaid used. Canvas and HTML/CSS only.
+    -->
+    <!-- 
+        Chart Selection Justification:
+        1. Role Breakdown -> Donut Chart -> Best for showing parts of a whole (Tech vs Non-Tech).
+        2. Salary Comparison -> Grouped Bar Chart -> Best for side-by-side comparison of two distinct categories.
+        3. Industry Impact -> Radar Chart -> Best for multivariate comparison (Maturity vs Disruption vs Volume).
+        4. Tech Stack -> Horizontal Bar Chart -> Best for ranking items with longer labels (Language names).
+        5. Roadmap -> HTML/CSS Flow -> Best for sequential processes without using banned SVG/Mermaid.
+    -->
+</text>
+</head>
+<body class="antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-gradient-to-r from-indigo-600 to-cyan-500 text-white py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4 tracking-tight">
+                Engineering the Future: <br/><span class="text-yellow-300">Web3 & Blockchain</span>
+            </h1>
+            <p class="text-xl md:text-2xl opacity-90 max-w-3xl mx-auto">
+                A comprehensive guide to job opportunities, salary insights, and the technical roadmap for modern engineering students.
+            </p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12">
+
+        <!-- Section 1: Introduction & KPIs (Inform) -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-3xl font-bold text-slate-800 border-l-4 border-indigo-600 pl-4">The Web3 Paradigm Shift</h2>
+                <p class="mt-2 text-lg text-slate-600">
+                    We are transitioning from the read-write era of Web2 to the read-write-own era of Web3. For engineering students, this represents the largest shift in software architecture since the mobile revolution. The demand for decentralized architecture understanding is outpacing supply, creating a massive opportunity gap.
+                </p>
+            </div>
+
+            <!-- KPI Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="card border-t-4 border-indigo-500 text-center">
+                    <div class="text-5xl font-bold text-indigo-600 mb-2">300%</div>
+                    <p class="text-slate-500 font-medium uppercase tracking-wide">Growth in Dev Jobs</p>
+                    <p class="text-sm text-slate-400 mt-2">Year over Year (2023-2025)</p>
+                </div>
+                <div class="card border-t-4 border-cyan-500 text-center">
+                    <div class="text-5xl font-bold text-cyan-600 mb-2">$145k</div>
+                    <p class="text-slate-500 font-medium uppercase tracking-wide">Avg. Junior Base Salary</p>
+                    <p class="text-sm text-slate-400 mt-2">For Solidity Developers</p>
+                </div>
+                <div class="card border-t-4 border-amber-500 text-center">
+                    <div class="text-5xl font-bold text-amber-500 mb-2">92%</div>
+                    <p class="text-slate-500 font-medium uppercase tracking-wide">Remote Positions</p>
+                    <p class="text-sm text-slate-400 mt-2">Global Workforce Access</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Roles Composition (Compare) -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">The Ecosystem Landscape: Tech vs. Non-Tech</h2>
+                <p class="text-slate-600 mb-4 leading-relaxed">
+                    While engineering is the backbone, the ecosystem is diverse. "Tech" roles focus on protocol development, smart contracts, and auditing. However, a significant portion of the industry involves "Non-Tech" roles like community management, tokenomics design, and legal compliance, which often require technical literacy.
+                </p>
+                <div class="bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                    <h3 class="font-semibold text-indigo-800 mb-2">Key Takeaway</h3>
+                    <p class="text-sm text-indigo-700">
+                        Engineering students with "Soft Skills" (Communication, Economics) can pivot into high-level Product Management or Developer Relations roles, bridging the gap between code and community.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Visualization: Donut Chart -->
+            <div class="card">
+                <h3 class="text-lg font-semibold text-slate-700 mb-4 text-center">Industry Role Composition</h3>
+                <div class="chart-container">
+                    <canvas id="rolesChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Salary Comparison (Compare) -->
+        <section>
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">The Financial Incentive: Web2 vs. Web3</h2>
+                <p class="text-slate-600 leading-relaxed">
+                    Due to the scarcity of talent and the high stakes of managing immutable financial assets, Web3 roles command a significant premium over traditional web development roles. This gap is most pronounced at the Junior and Mid-Senior levels.
+                </p>
+            </div>
+
+            <!-- Visualization: Grouped Bar Chart -->
+            <div class="card">
+                <div class="chart-container" style="max-width: 800px;">
+                    <canvas id="salaryChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-slate-400 mt-4 italic">Source: Aggregated Industry Salary Reports 2024-2025 (Figures in USD)</p>
+            </div>
+        </section>
+
+        <!-- Section 4: The Engineering Roadmap (Process/Organize) -->
+        <!-- Implemented using structured HTML/CSS + Tailwind (No SVG/Mermaid) -->
+        <section class="bg-slate-800 rounded-2xl p-6 md:p-10 text-white">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold mb-3 text-white">The Student Roadmap</h2>
+                <p class="text-slate-300 max-w-2xl mx-auto">
+                    A step-by-step path from Computer Science fundamentals to building decentralized applications. Do not skip the basics.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
+                
+                <!-- Step 1 -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-slate-700 p-4 rounded-lg border-l-4 border-slate-500 h-full hover:bg-slate-600 transition">
+                        <div class="text-3xl mb-2">💻</div>
+                        <h3 class="font-bold text-lg mb-2">1. CS Fundamentals</h3>
+                        <p class="text-sm text-slate-300">Data Structures, Algorithms, Cryptography basics (Hashing, Public/Private Keys).</p>
+                    </div>
+                    <div class="hidden md:flex justify-center text-slate-500 text-2xl my-2">⬇</div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-cyan-900 p-4 rounded-lg border-l-4 border-cyan-500 h-full hover:bg-cyan-800 transition">
+                        <div class="text-3xl mb-2">🌐</div>
+                        <h3 class="font-bold text-lg mb-2">2. Web2 Mastery</h3>
+                        <p class="text-sm text-cyan-100">JavaScript/TypeScript, React.js, Node.js, API handling. You cannot build Web3 without Web2.</p>
+                    </div>
+                    <div class="hidden md:flex justify-center text-slate-500 text-2xl my-2">⬇</div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-indigo-900 p-4 rounded-lg border-l-4 border-indigo-500 h-full hover:bg-indigo-800 transition">
+                        <div class="text-3xl mb-2">⛓️</div>
+                        <h3 class="font-bold text-lg mb-2">3. Blockchain Core</h3>
+                        <p class="text-sm text-indigo-100">Consensus Mechanisms (PoS/PoW), EVM Architecture, Gas optimization, Wallets.</p>
+                    </div>
+                    <div class="hidden md:flex justify-center text-slate-500 text-2xl my-2">⬇</div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-purple-900 p-4 rounded-lg border-l-4 border-purple-500 h-full hover:bg-purple-800 transition">
+                        <div class="text-3xl mb-2">📜</div>
+                        <h3 class="font-bold text-lg mb-2">4. Smart Contracts</h3>
+                        <p class="text-sm text-purple-100">Solidity or Rust. Writing immutable code. Security patterns (Reentrancy checks).</p>
+                    </div>
+                    <div class="hidden md:flex justify-center text-slate-500 text-2xl my-2">⬇</div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="flex flex-col h-full">
+                    <div class="bg-emerald-900 p-4 rounded-lg border-l-4 border-emerald-500 h-full hover:bg-emerald-800 transition">
+                        <div class="text-3xl mb-2">🚀</div>
+                        <h3 class="font-bold text-lg mb-2">5. DApp Integration</h3>
+                        <p class="text-sm text-emerald-100">Connecting Frontend to Blockchain using Ethers.js, Viem, or Wagmi libraries.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 5: Tech Stack & Vibe Coding (Rank) -->
+        <section>
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-800">The Modern Toolkit: Languages & AI Accelerators</h2>
+                <p class="text-slate-600 mt-3 max-w-3xl mx-auto text-lg">
+                    The "Vibe Coding" era is here. While mastering core languages is non-negotiable, the ability to orchestrate AI agents (Cursor, Replit, Windsurf) is now a critical skill for 10x productivity.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                 <!-- Visualization: Horizontal Bar Chart (Languages) -->
+                 <div class="card h-full flex flex-col">
+                    <h3 class="text-lg font-semibold text-slate-700 mb-4 text-center">Core Language Demand</h3>
+                    <div class="chart-container flex-grow">
+                        <canvas id="techStackChart"></canvas>
+                    </div>
+                </div>
+    
+                 <!-- Visualization: Horizontal Bar Chart (AI Tools) -->
+                 <div class="card h-full flex flex-col">
+                    <h3 class="text-lg font-semibold text-slate-700 mb-4 text-center">Top "Vibe Coding" Tools</h3>
+                    <div class="chart-container flex-grow">
+                        <canvas id="vibeToolsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Tool Explainer Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:border-indigo-400 transition">
+                    <div class="text-2xl mb-2">✨</div>
+                    <strong class="text-indigo-700 block text-lg mb-2">Context-Aware IDEs</strong>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>Cursor & Windsurf:</strong> These aren't just autocomplete. They index your entire codebase, allowing you to "tab" through complex refactors. Essential for handling Web3 boilerplate.
+                    </p>
+                </div>
+                <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:border-cyan-400 transition">
+                     <div class="text-2xl mb-2">⚡</div>
+                     <strong class="text-cyan-700 block text-lg mb-2">Agentic Deployment</strong>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>Replit Agent & Bolt.new:</strong> Describe a full-stack DApp in natural language and watch it deploy. Great for hackathons and MVP testing.
+                    </p>
+                </div>
+                 <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200 hover:border-amber-400 transition">
+                     <div class="text-2xl mb-2">🎨</div>
+                     <strong class="text-amber-700 block text-lg mb-2">Generative UI</strong>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        <strong>v0.dev & Lovable:</strong> Generate React/Tailwind interfaces instantly. Focus on the smart contract logic while AI handles the frontend "vibes".
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 6: Industry Integration (Relationships) -->
+        <section>
+            <div class="mb-6 text-center max-w-3xl mx-auto">
+                <h2 class="text-2xl font-bold text-slate-800 mb-2">Beyond Finance: Industry Integration</h2>
+                <p class="text-slate-600">
+                    Blockchain is not just about cryptocurrency. It is a backend revolution affecting data integrity across sectors. The chart below visualizes the maturity and adoption levels across key industries.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="chart-container">
+                    <canvas id="industryRadarChart"></canvas>
+                </div>
+                <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4 text-center text-sm">
+                    <div class="p-2 bg-slate-50 rounded">
+                        <strong class="block text-indigo-600">DeFi</strong>
+                        Market Leaders & Banking
+                    </div>
+                    <div class="p-2 bg-slate-50 rounded">
+                        <strong class="block text-cyan-600">Supply Chain</strong>
+                        Provenance & Tracking
+                    </div>
+                    <div class="p-2 bg-slate-50 rounded">
+                        <strong class="block text-amber-600">Gaming</strong>
+                        Asset Ownership & NFTs
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-slate-500 py-10 border-t border-slate-200 mt-12">
+            <p class="mb-4 font-semibold text-slate-700 text-lg">Start Your Journey Today</p>
+            
+            <div class="bg-white border-l-4 border-indigo-500 shadow-md rounded-r-lg p-6 inline-block mx-auto mb-6 text-left hover:shadow-lg transition-shadow duration-300">
+                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold mb-1">Infographic Author</p>
+                <p class="text-2xl font-bold text-slate-800">Kalyanjit Hatibaruah</p>
+                <div class="flex items-center mt-2 text-indigo-600 font-medium">
+                    <span class="mr-2">Whatsapp:</span>
+                    <a href="https://wa.me/919864011106" class="hover:text-indigo-800 transition-colors underline decoration-2 underline-offset-2">+91-9864011106</a>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-400 block">Generated by Canvas Infographics &bull; No SVG &bull; No Mermaid</p>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript for Logic and Charts -->
+    <script>
+        // --- 1. Utility Functions ---
+
+        // Label Wrapping Logic (Split string if > 16 chars)
+        function formatLabels(labels) {
+            return labels.map(label => {
+                if (label.length > 16) {
+                    const words = label.split(' ');
+                    const lines = [];
+                    let currentLine = words[0];
+
+                    for (let i = 1; i < words.length; i++) {
+                        if ((currentLine + " " + words[i]).length < 16) {
+                            currentLine += " " + words[i];
+                        } else {
+                            lines.push(currentLine);
+                            currentLine = words[i];
+                        }
+                    }
+                    lines.push(currentLine);
+                    return lines;
+                }
+                return label;
+            });
+        }
+
+        // Shared Tooltip Configuration
+        const commonTooltipConfig = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // Global Chart Defaults
+        Chart.defaults.font.family = "'Outfit', sans-serif";
+        Chart.defaults.color = '#475569';
+        Chart.defaults.scale.grid.color = '#e2e8f0';
+
+        // --- 2. Chart Configurations ---
+
+        // CHART 1: Roles Distribution (Donut)
+        const ctxRoles = document.getElementById('rolesChart').getContext('2d');
+        const rolesLabels = formatLabels([
+            'Smart Contract Engineers', 
+            'Frontend Web3 Developers', 
+            'Protocol Researchers', 
+            'Community Managers', 
+            'Product Managers', 
+            'Security Auditors'
+        ]);
+
+        new Chart(ctxRoles, {
+            type: 'doughnut',
+            data: {
+                labels: rolesLabels,
+                datasets: [{
+                    data: [25, 30, 10, 15, 10, 10], // Percentage breakdown
+                    backgroundColor: [
+                        '#4F46E5', // Indigo 600
+                        '#06B6D4', // Cyan 500
+                        '#0EA5E9', // Sky 500
+                        '#F59E0B', // Amber 500
+                        '#8B5CF6', // Violet 500
+                        '#EC4899'  // Pink 500
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: { boxWidth: 15, padding: 15 }
+                    },
+                    tooltip: commonTooltipConfig
+                }
+            }
+        });
+
+        // CHART 2: Salary Comparison (Grouped Bar)
+        const ctxSalary = document.getElementById('salaryChart').getContext('2d');
+        const salaryLabels = formatLabels(['Junior Engineer', 'Mid-Level Engineer', 'Senior Engineer', 'Lead Architect']);
+
+        new Chart(ctxSalary, {
+            type: 'bar',
+            data: {
+                labels: salaryLabels,
+                datasets: [
+                    {
+                        label: 'Traditional Web2',
+                        data: [75000, 110000, 150000, 190000],
+                        backgroundColor: '#cbd5e1', // Slate 300
+                        borderRadius: 4
+                    },
+                    {
+                        label: 'Web3 & Blockchain',
+                        data: [110000, 155000, 210000, 280000],
+                        backgroundColor: '#4F46E5', // Indigo 600
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltipConfig,
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) { return '$' + value / 1000 + 'k'; }
+                        }
+                    }
+                }
+            }
+        });
+
+        // CHART 3: Tech Stack Ranking (Horizontal Bar)
+        const ctxTech = document.getElementById('techStackChart').getContext('2d');
+        const techLabels = formatLabels(['Solidity (EVM)', 'Rust (Solana/Near)', 'TypeScript (Frontend)', 'Go (Backend/Cosmos)', 'Python (Data/Vyper)']);
+
+        new Chart(ctxTech, {
+            type: 'bar', // Using bar with indexAxis: 'y' for horizontal
+            data: {
+                labels: techLabels,
+                datasets: [{
+                    label: 'Job Postings Demand Index (0-100)',
+                    data: [95, 80, 88, 65, 50],
+                    backgroundColor: [
+                        '#4F46E5', 
+                        '#F59E0B', 
+                        '#06B6D4', 
+                        '#10B981', 
+                        '#3B82F6'
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltipConfig,
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // CHART 3.5: Vibe Coding Tools (Horizontal Bar)
+        const ctxVibe = document.getElementById('vibeToolsChart').getContext('2d');
+        const vibeLabels = formatLabels(['Cursor (IDE)', 'GitHub Copilot', 'Replit Agent', 'Windsurf', 'v0 / Bolt']);
+
+        new Chart(ctxVibe, {
+            type: 'bar', 
+            data: {
+                labels: vibeLabels,
+                datasets: [{
+                    label: 'Productivity Boost Score',
+                    data: [98, 92, 85, 78, 70],
+                    backgroundColor: [
+                        '#6366f1', // Indigo 500 
+                        '#000000', // Black (GitHub)
+                        '#f97316', // Orange 500
+                        '#06b6d4', // Cyan 500
+                        '#a855f7'  // Purple 500
+                    ],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltipConfig,
+                    legend: { display: false }
+                },
+                scales: {
+                    x: { beginAtZero: true, max: 100 }
+                }
+            }
+        });
+
+        // CHART 4: Industry Integration (Radar)
+        const ctxRadar = document.getElementById('industryRadarChart').getContext('2d');
+        const radarLabels = formatLabels([
+            'Decentralized Finance', 
+            'Supply Chain & Logistics', 
+            'Healthcare Records', 
+            'Gaming & Metaverse', 
+            'Digital Identity'
+        ]);
+
+        new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: radarLabels,
+                datasets: [
+                    {
+                        label: 'Adoption Maturity',
+                        data: [90, 65, 40, 75, 55],
+                        fill: true,
+                        backgroundColor: 'rgba(79, 70, 229, 0.2)', // Indigo transparent
+                        borderColor: '#4F46E5',
+                        pointBackgroundColor: '#4F46E5',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#4F46E5'
+                    },
+                    {
+                        label: 'Hiring Volume',
+                        data: [85, 50, 30, 80, 45],
+                        fill: true,
+                        backgroundColor: 'rgba(6, 182, 212, 0.2)', // Cyan transparent
+                        borderColor: '#06B6D4',
+                        pointBackgroundColor: '#06B6D4',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#06B6D4'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltipConfig
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: '#e2e8f0' },
+                        grid: { color: '#e2e8f0' },
+                        pointLabels: {
+                            font: { size: 12, weight: '600' },
+                            color: '#334155'
+                        },
+                        suggestedMin: 0,
+                        suggestedMax: 100
+                    }
+                }
+            }
+        });
+
+    </script>
+    <!-- Confirming NO SVG or Mermaid used -->
+</body>
+</html>
