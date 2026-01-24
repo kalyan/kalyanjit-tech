@@ -160,9 +160,10 @@
                     <span class="text-2xl text-brand-600">⛓️</span>
                     <span class="font-bold text-xl tracking-tight text-slate-800">Chain<span class="text-brand-600">Learn</span></span>
                 </div>
-                <div class="hidden md:flex space-x-6">
+                <div class="hidden md:flex space-x-4">
                     <button onclick="scrollToSection('intro')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="intro">Concept</button>
                     <button onclick="scrollToSection('fundamentals')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="fundamentals">Fundamentals</button>
+                    <button onclick="scrollToSection('features')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="features">Features</button>
                     <button onclick="scrollToSection('stack')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="stack">Tech Stack</button>
                     <button onclick="scrollToSection('usecases')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="usecases">Use Cases</button>
                     <button onclick="scrollToSection('jobs')" class="nav-link text-slate-600 hover:text-brand-600 px-2 py-2 text-sm font-medium transition-colors" data-target="jobs">Careers</button>
@@ -181,6 +182,7 @@
             <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                  <button onclick="scrollToSection('intro')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Concept</button>
                  <button onclick="scrollToSection('fundamentals')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Fundamentals</button>
+                 <button onclick="scrollToSection('features')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Features</button>
                  <button onclick="scrollToSection('stack')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Tech Stack</button>
                  <button onclick="scrollToSection('usecases')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Use Cases</button>
                  <button onclick="scrollToSection('jobs')" class="block w-full text-left px-3 py-2 text-base font-medium text-slate-700 hover:bg-slate-50">Careers</button>
@@ -363,6 +365,64 @@
             </div>
         </section>
 
+        <!-- NEW SECTION: Main Features of Blockchain -->
+        <section id="features" class="scroll-mt-24">
+            <div class="text-center mb-10">
+                <h2 class="text-3xl font-bold text-slate-900">Key Features of Blockchain</h2>
+                <p class="text-slate-600 mt-2">The pillars that define trust in a trustless environment.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Feature 1: Decentralization -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+                        <span class="text-2xl">🌐</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Decentralization</h3>
+                    <p class="text-sm text-slate-600">The network operates on a peer-to-peer basis without a central governing authority, reducing single points of failure.</p>
+                </div>
+                <!-- Feature 2: Immutability -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                    <div class="w-12 h-12 bg-red-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-red-100 transition-colors">
+                        <span class="text-2xl">🔒</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Immutability</h3>
+                    <p class="text-sm text-slate-600">Once data is recorded and confirmed, it is cryptographically sealed. It cannot be altered or deleted retroactively.</p>
+                </div>
+                <!-- Feature 3: Transparency -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                    <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-100 transition-colors">
+                        <span class="text-2xl">🔍</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Transparency</h3>
+                    <p class="text-sm text-slate-600">In public blockchains, the ledger is open to viewing by any participant, ensuring auditability and trust.</p>
+                </div>
+                <!-- Feature 4: Security -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                     <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-indigo-100 transition-colors">
+                        <span class="text-2xl">🛡️</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Enhanced Security</h3>
+                    <p class="text-sm text-slate-600">Transactions are secured using advanced cryptographic techniques (Hashing, Digital Signatures) ensuring data integrity.</p>
+                </div>
+                <!-- Feature 5: Consensus -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                     <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-100 transition-colors">
+                        <span class="text-2xl">🤝</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Consensus Mechanisms</h3>
+                    <p class="text-sm text-slate-600">Protocols like PoW or PoS allow distributed nodes to agree on the validity of transactions without a middleman.</p>
+                </div>
+                 <!-- Feature 6: Distributed Ledger -->
+                <div class="group bg-white p-6 rounded-xl border border-slate-200 shadow-sm hover:shadow-md hover:border-brand-300 transition-all duration-300">
+                     <div class="w-12 h-12 bg-orange-50 rounded-lg flex items-center justify-center mb-4 group-hover:bg-orange-100 transition-colors">
+                        <span class="text-2xl">📒</span>
+                    </div>
+                    <h3 class="font-bold text-lg text-slate-800 mb-2">Distributed Ledger</h3>
+                    <p class="text-sm text-slate-600">The database is shared and synchronized across multiple participants (nodes) in different locations.</p>
+                </div>
+            </div>
+        </section>
+
         <!-- Technology Stack Section -->
         <section id="stack" class="scroll-mt-24">
             <div class="mb-6">
@@ -386,7 +446,7 @@
                         <div class="text-xs text-indigo-200">Rollups, Sidechains (Polygon, Arbitrum)</div>
                     </div>
                     <div onclick="showLayer('l3')" class="cursor-pointer tech-layer bg-emerald-600 text-white p-4 rounded-lg border-l-4 border-emerald-300 hover:bg-emerald-500 relative z-30">
-                        <div class="font-bold text-lg">Layer 3: Application (DApps)</div>
+                        <div class="font-bold text-lg">Layer 3: Application (DApps) & UI</div>
                         <div class="text-xs text-emerald-200">UI, Wallets, Smart Contracts</div>
                     </div>
                 </div>
