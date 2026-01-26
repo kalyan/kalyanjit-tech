@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Builder's Blueprint: Community, Dev & Growth</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 600px; 
+            margin-left: auto; 
+            margin-right: auto; 
+            height: 350px; 
+            max-height: 400px; 
+        }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .tab-active { border-bottom: 2px solid #2563EB; color: #2563EB; }
+        .tab-inactive { color: #6B7280; }
+        .tab-inactive:hover { color: #1F2937; }
+    </style>
+    <!-- Chosen Palette: Modern Tech Minimalist (Slate, Blue, Indigo) -->
+    <!-- Application Structure Plan: 
+         1. Hero: Overview of the blueprint.
+         2. Community Engine: Interactive timeline/funnel showing the steps to build a community (Discovery -> Onboarding -> Retention).
+         3. Network Selector: Comparative Data Dashboard using Chart.js to evaluate blockchains (Speed vs. Cost vs. Users).
+         4. Development Stack: A decision matrix for choosing the right tech for games/apps.
+         5. Idea Generator: An interactive card grid with startup ideas, filterable by category.
+         Reasoning: This structure follows the logical flow of a founder's journey: "How do I build it?" (Dev) -> "Where do I deploy?" (Network) -> "How do I grow?" (Community) -> "What do I build?" (Ideas).
+    -->
+    <!-- Visualization & Content Choices:
+         1. Community Funnel -> Goal: Process Flow -> Method: Interactive Accordion/Step List -> Interaction: Click to expand tactics -> Justification: Breaks down complex social strategies into actionable steps.
+         2. Network Comparison -> Goal: Compare -> Method: Radar & Bar Charts (Chart.js) -> Interaction: Toggle metrics (TPS, Gas, Users) -> Justification: Allows objective comparison of subjective choices.
+         3. Startup Ideas -> Goal: Inspire -> Method: Filterable Grid -> Interaction: Filter buttons & "Inspire Me" randomizer -> Justification: Encourages exploration of different verticals.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl font-bold text-indigo-600">Web3<span class="text-slate-900">Blueprint</span></span>
+                </div>
+                <div class="hidden sm:flex space-x-8 items-center">
+                    <button onclick="navigate('community')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-indigo-600 transition">Community Growth</button>
+                    <button onclick="navigate('networks')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-indigo-600 transition">Network Select</button>
+                    <button onclick="navigate('dev')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-slate-600 hover:text-indigo-600 transition">Dev Strategy</button>
+                    <button onclick="navigate('ideas')" class="nav-btn px-3 py-2 rounded-md text-sm font-medium text-indigo-600 bg-indigo-50 hover:bg-indigo-100 transition">Startup Ideas</button>
+                </div>
+                <!-- Mobile menu button stub -->
+                <div class="flex items-center sm:hidden">
+                    <button onclick="toggleMobileMenu()" class="text-slate-500 hover:text-slate-700 font-bold text-xl">☰</button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t border-slate-200">
+            <button onclick="navigate('community')" class="block w-full text-left px-4 py-2 text-slate-600">Community Growth</button>
+            <button onclick="navigate('networks')" class="block w-full text-left px-4 py-2 text-slate-600">Network Select</button>
+            <button onclick="navigate('dev')" class="block w-full text-left px-4 py-2 text-slate-600">Dev Strategy</button>
+            <button onclick="navigate('ideas')" class="block w-full text-left px-4 py-2 text-indigo-600 bg-indigo-50">Startup Ideas</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- SECTION 1: Community Growth Engine -->
+        <section id="community" class="scroll-mt-20">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">The Viral Community Engine</h2>
+                <p class="text-lg text-slate-600">
+                    Building a large crypto community quickly requires a "Funnel" approach. 
+                    Unlike Web2, Web3 users expect ownership and incentives. This section breaks down the 
+                    lifecycle of turning a passive observer into an active evangelist using the "A.R.O." model: 
+                    Awareness, Retention, Ownership.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Step 1: Awareness -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover transition-all duration-300">
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-2xl mb-4">📢</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">1. Awareness (The Hook)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Goal: Low-cost viral acquisition.</p>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start">
+                            <span class="mr-2 text-blue-500">●</span>
+                            <span><strong>Twitter/X Threads:</strong> Narratives drive crypto. Share "Building in Public" updates.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-blue-500">●</span>
+                            <span><strong>Galxe/QuestN:</strong> Create quest platforms where users follow socials for badges.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-blue-500">●</span>
+                            <span><strong>KOL Partnerships:</strong> Don't pay for shills; partner for content co-creation.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 2: Retention -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover transition-all duration-300">
+                    <div class="w-12 h-12 bg-indigo-100 rounded-full flex items-center justify-center text-2xl mb-4">💬</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">2. Retention (The Vibe)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Goal: Turn traffic into members.</p>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start">
+                            <span class="mr-2 text-indigo-500">●</span>
+                            <span><strong>Discord Architecture:</strong> Use "Token Gating" (Collab.land) to create exclusive tiers.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-indigo-500">●</span>
+                            <span><strong>Daily Rituals:</strong> GM/GN culture, daily polls, and AMA sessions are critical for sticking.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-indigo-500">●</span>
+                            <span><strong>Town Halls:</strong> Weekly voice chats with founders build immense trust.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Step 3: Ownership -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 card-hover transition-all duration-300">
+                    <div class="w-12 h-12 bg-emerald-100 rounded-full flex items-center justify-center text-2xl mb-4">💎</div>
+                    <h3 class="text-xl font-bold text-slate-900 mb-2">3. Ownership (The Lock)</h3>
+                    <p class="text-sm text-slate-500 mb-4">Goal: Users become marketers.</p>
+                    <ul class="space-y-3 text-slate-700">
+                        <li class="flex items-start">
+                            <span class="mr-2 text-emerald-500">●</span>
+                            <span><strong>Retroactive Airdrops:</strong> Reward early activity (on-chain) points that convert to tokens later.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-emerald-500">●</span>
+                            <span><strong>Governance:</strong> Let the community vote on small decisions (e.g., logo color) via Snapshot.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-2 text-emerald-500">●</span>
+                            <span><strong>Ambassador Program:</strong> Paid roles for top contributors to manage regional groups.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Network Selector (Data Viz) -->
+        <section id="networks" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-10 scroll-mt-20">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-2">Blockchain Network Comparison</h2>
+                    <p class="text-slate-600">
+                        Choosing the right chain defines your user base. Do you need the high-frequency speed of Solana for a game, 
+                        or the liquidity and security of an Ethereum L2 for DeFi? 
+                        Use the interactive chart below to compare key metrics: <strong>Speed (TPS)</strong>, <strong>Cost (Gas)</strong>, and <strong>User Base (Daily Active Wallets)</strong>.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 flex space-x-2 bg-slate-100 p-1 rounded-lg">
+                    <button onclick="updateChart('speed')" id="btn-speed" class="px-4 py-2 text-sm font-medium rounded-md shadow-sm bg-white text-indigo-600 transition">Speed (TPS)</button>
+                    <button onclick="updateChart('cost')" id="btn-cost" class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-indigo-600 transition">Cost (Low is Good)</button>
+                    <button onclick="updateChart('users')" id="btn-users" class="px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-indigo-600 transition">Users (Activity)</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                <!-- Chart Container -->
+                <div class="lg:col-span-2">
+                    <div class="chart-container">
+                        <canvas id="networkChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Selected Chain Details -->
+                <div id="chain-details" class="bg-slate-50 rounded-xl p-6 border border-slate-200 h-full flex flex-col justify-center">
+                    <h3 class="text-xl font-bold text-slate-900 mb-2 border-b pb-2">Analysis: <span id="detail-title" class="text-indigo-600">Solana</span></h3>
+                    <p id="detail-desc" class="text-slate-600 mb-4 text-sm leading-relaxed">
+                        Solana is the primary choice for high-frequency applications like games and order-book DEXs due to its massive throughput and negligible costs. It has a highly active, retail-focused community ("degens").
+                    </p>
+                    <div class="space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Best For:</span>
+                            <span id="detail-best" class="font-medium text-slate-900">Games, DePIN, Consumer Apps</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Dev Lang:</span>
+                            <span id="detail-lang" class="font-medium text-slate-900">Rust, TypeScript (Seahorse)</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-slate-500">Consensus:</span>
+                            <span id="detail-consensus" class="font-medium text-slate-900">PoH + PoS</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Development Strategy -->
+        <section id="dev" class="scroll-mt-20">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Building Games & Apps: The "Fun First" Rule</h2>
+                <p class="text-lg text-slate-600">
+                    The biggest mistake in Web3 gaming/apps is focusing on the token before the product. 
+                    Successful projects abstract the crypto away. Here is the recommended tech stack and methodology for rapid development.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- App Dev Path -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">📱</span>
+                        <h3 class="text-xl font-bold text-slate-900">For DApps (DeFi, Social)</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-indigo-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">Frontend: React/Next.js</h4>
+                            <p class="text-sm text-slate-500">Standard for web. Use 'wagmi' or 'ethers.js' hooks for wallet connection.</p>
+                        </div>
+                        <div class="border-l-4 border-indigo-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">Onboarding: Privy / Dynamic</h4>
+                            <p class="text-sm text-slate-500">Allow login via Email/Socials. Create embedded wallets. Critical for mass adoption.</p>
+                        </div>
+                        <div class="border-l-4 border-indigo-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">Data: The Graph</h4>
+                            <p class="text-sm text-slate-500">Don't query the blockchain directly for UI. Index data via subgraphs.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Game Dev Path -->
+                <div class="bg-white p-6 rounded-xl border border-slate-200">
+                    <div class="flex items-center mb-4">
+                        <span class="text-3xl mr-3">🎮</span>
+                        <h3 class="text-xl font-bold text-slate-900">For Games (GameFi)</h3>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-purple-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">Engine: Unity / Unreal</h4>
+                            <p class="text-sm text-slate-500">Build a real game first. Don't build browser-only clickers unless for casual users.</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">SDK: Thirdweb / Sequence</h4>
+                            <p class="text-sm text-slate-500">Drag-and-drop SDKs to integrate wallets and inventory management into Unity.</p>
+                        </div>
+                        <div class="border-l-4 border-purple-500 pl-4 py-1">
+                            <h4 class="font-bold text-slate-800">Economy: Dual Token Model (Careful)</h4>
+                            <p class="text-sm text-slate-500">One governance token, one utility token (infinite supply). *Warning: Hard to balance.*</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Idea Generator -->
+        <section id="ideas" class="bg-indigo-900 text-white rounded-2xl p-6 sm:p-10 scroll-mt-20">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold mb-2">Startup Idea Generator</h2>
+                    <p class="text-indigo-200 max-w-xl">
+                        Stuck? Explore curated startup concepts across different verticals. 
+                        Filter by category to find your niche in the Web3 world.
+                    </p>
+                </div>
+                <div class="mt-4 md:mt-0 flex gap-2 flex-wrap">
+                    <button onclick="filterIdeas('all')" class="idea-filter px-3 py-1 bg-indigo-700 hover:bg-indigo-600 rounded-full text-xs font-semibold tracking-wide uppercase transition active-filter">All</button>
+                    <button onclick="filterIdeas('DeFi')" class="idea-filter px-3 py-1 bg-indigo-800 hover:bg-indigo-600 rounded-full text-xs font-semibold tracking-wide uppercase transition">DeFi</button>
+                    <button onclick="filterIdeas('GameFi')" class="idea-filter px-3 py-1 bg-indigo-800 hover:bg-indigo-600 rounded-full text-xs font-semibold tracking-wide uppercase transition">GameFi</button>
+                    <button onclick="filterIdeas('Infra')" class="idea-filter px-3 py-1 bg-indigo-800 hover:bg-indigo-600 rounded-full text-xs font-semibold tracking-wide uppercase transition">Infra</button>
+                    <button onclick="filterIdeas('Social')" class="idea-filter px-3 py-1 bg-indigo-800 hover:bg-indigo-600 rounded-full text-xs font-semibold tracking-wide uppercase transition">Social</button>
+                </div>
+            </div>
+
+            <div id="ideas-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Ideas injected via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 mt-12 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center text-slate-500 text-sm">
+            <div class="mb-6">
+                <p class="text-lg font-bold text-slate-800">Author: Kalyanjit Hatibaruah</p>
+                <a href="https://wa.me/919864011106" target="_blank" class="inline-flex items-center mt-2 text-indigo-600 hover:text-indigo-800 transition font-medium">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                    WhatsApp: +91-9864011106
+                </a>
+            </div>
+            <p>&copy; 2025 Web3 Builder's Blueprint. Generated based on interactive report analysis.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- DATA STORE ---
+
+        // Network Data for Charts
+        const networkData = {
+            labels: ['Solana', 'Ethereum (L1)', 'Base (L2)', 'Arbitrum', 'Polygon', 'BSC'],
+            datasets: {
+                speed: {
+                    label: 'Transactions Per Second (TPS)',
+                    data: [65000, 15, 2000, 4000, 7000, 3000],
+                    description: 'Solana offers the highest theoretical throughput, essential for high-frequency trading and gaming.',
+                    color: '#10B981' // Emerald
+                },
+                cost: {
+                    label: 'Avg Cost per Tx ($)',
+                    data: [0.00025, 5.00, 0.05, 0.10, 0.01, 0.03],
+                    description: 'Lower bars are better. Solana and Polygon are cheapest. Ethereum L1 is expensive but offers max security.',
+                    color: '#F43F5E' // Rose
+                },
+                users: {
+                    label: 'Daily Active Wallets (Est. in K)',
+                    data: [800, 350, 150, 100, 400, 1000],
+                    description: 'BSC and Solana lead in raw daily active users due to retail focus. Base is growing rapidly via Coinbase.',
+                    color: '#3B82F6' // Blue
+                }
+            }
+        };
+
+        const chainDetails = {
+            'Solana': {
+                desc: 'Solana is the primary choice for high-frequency applications like games and order-book DEXs due to its massive throughput and negligible costs. It has a highly active, retail-focused community.',
+                best: 'Games, DePIN, Consumer Apps',
+                lang: 'Rust, TypeScript (Seahorse)',
+                consensus: 'PoH + PoS'
+            },
+            'Ethereum (L1)': {
+                desc: 'The settlement layer of the internet. Too slow and expensive for direct consumer apps/games, but essential for high-value DeFi protocols and storing governance assets.',
+                best: 'High-Value DeFi, DAO Treasuries',
+                lang: 'Solidity, Vyper',
+                consensus: 'PoS'
+            },
+            'Base (L2)': {
+                desc: 'Incubated by Coinbase. It offers easy onboarding for millions of Coinbase users. Excellent for consumer apps that want a "mainstream" feel without high gas fees.',
+                best: 'SocialFi, On-chain Media, Retail DeFi',
+                lang: 'Solidity',
+                consensus: 'Rollup'
+            },
+            'Arbitrum': {
+                desc: 'The leading optimistic rollup for DeFi liquidity. It inherits Ethereum security but with much lower costs. The home of "DeFi degens" and complex financial derivatives.',
+                best: 'Perp DEXs, Yield Farming',
+                lang: 'Solidity, Stylus (Rust/C++)',
+                consensus: 'Optimistic Rollup'
+            },
+            'Polygon': {
+                desc: 'A veteran sidechain/L2 ecosystem. Known for huge partnerships (Starbucks, Nike). Good for enterprise loyalty programs and mass-market NFTs.',
+                best: 'Loyalty Programs, Enterprise NFTs',
+                lang: 'Solidity',
+                consensus: 'PoS / zkEVM'
+            },
+            'BSC': {
+                desc: 'Binance Smart Chain. Massive user base in Asia and emerging markets. Highly centralized but extremely efficient for retail onboarding via Binance exchange.',
+                best: 'Memecoins, GameFi (Asia)',
+                lang: 'Solidity',
+                consensus: 'PoSA'
+            }
+        };
+
+        const startupIdeas = [
+            { title: "Decentralized Upwork", category: "Social", desc: "A gig marketplace where reputation is stored on-chain as Soulbound Tokens (SBTs), lowering platform fees.", difficulty: "Medium" },
+            { title: "Pokemon Go for Crypto", category: "GameFi", desc: "Move-to-Earn model where users find NFT artifacts in real-world locations. Uses AR + Solana/Polygon.", difficulty: "Hard" },
+            { title: "No-Code DAO Tooling", category: "Infra", desc: "A drag-and-drop interface for non-technical communities to launch tokens, voting portals, and treasuries on Base.", difficulty: "Medium" },
+            { title: "Tokenized Real Estate", category: "DeFi", desc: "Fractional ownership of rental properties. Rent is paid out daily in USDC to token holders.", difficulty: "Hard" },
+            { title: "Prediction Market for E-Sports", category: "GameFi", desc: "Bet on outcomes of League of Legends matches using smart contracts. High volume, young demographic.", difficulty: "Medium" },
+            { title: "Cross-Chain Identity", category: "Infra", desc: "One username/profile that works across Ethereum, Solana, and Bitcoin. Solves fragmentation.", difficulty: "Very Hard" },
+            { title: "Creator Royalty Exchange", category: "DeFi", desc: "Allow YouTubers to sell future ad revenue as tokens to fans for upfront capital.", difficulty: "Medium" },
+            { title: "Private ZK Voting", category: "Social", desc: "Governance tool using Zero Knowledge proofs so employees can vote on company issues anonymously but verifiably.", difficulty: "Hard" },
+            { title: "AI Agent Market", category: "Infra", desc: "Marketplace where users buy/rent autonomous AI agents trained for specific crypto trading strategies.", difficulty: "Hard" }
+        ];
+
+        // --- APPLICATION LOGIC ---
+
+        let networkChartInstance = null;
+
+        // Navigation
+        function navigate(sectionId) {
+            const section = document.getElementById(sectionId);
+            section.scrollIntoView({ behavior: 'smooth' });
+            
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // Chart Functionality
+        function initChart() {
+            const ctx = document.getElementById('networkChart').getContext('2d');
+            
+            // Initial Data: Speed
+            const config = {
+                type: 'bar',
+                data: {
+                    labels: networkData.labels,
+                    datasets: [{
+                        label: networkData.datasets.speed.label,
+                        data: networkData.datasets.speed.data,
+                        backgroundColor: networkData.datasets.speed.color,
+                        borderRadius: 6,
+                        barThickness: 30
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.parsed.y + (context.dataset.label.includes('Cost') ? ' USD' : '');
+                                }
+                            }
+                        }
+                    },
+                    onClick: (e, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const label = networkData.labels[index];
+                            updateChainDetails(label);
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            };
+
+            networkChartInstance = new Chart(ctx, config);
+        }
+
+        function updateChart(metric) {
+            // Update UI Buttons
+            document.querySelectorAll('#networks button').forEach(btn => {
+                btn.className = 'px-4 py-2 text-sm font-medium rounded-md text-slate-600 hover:text-indigo-600 transition';
+                btn.classList.remove('bg-white', 'shadow-sm');
+            });
+            const activeBtn = document.getElementById(`btn-${metric}`);
+            activeBtn.className = 'px-4 py-2 text-sm font-medium rounded-md shadow-sm bg-white text-indigo-600 transition';
+
+            // Update Chart Data
+            const dataset = networkData.datasets[metric];
+            networkChartInstance.data.datasets[0].label = dataset.label;
+            networkChartInstance.data.datasets[0].data = dataset.data;
+            networkChartInstance.data.datasets[0].backgroundColor = dataset.color;
+            networkChartInstance.update();
+        }
+
+        function updateChainDetails(chainName) {
+            const details = chainDetails[chainName];
+            if (!details) return;
+
+            const container = document.getElementById('chain-details');
+            
+            // Simple flash animation
+            container.classList.add('opacity-50');
+            setTimeout(() => container.classList.remove('opacity-50'), 200);
+
+            document.getElementById('detail-title').innerText = chainName;
+            document.getElementById('detail-desc').innerText = details.desc;
+            document.getElementById('detail-best').innerText = details.best;
+            document.getElementById('detail-lang').innerText = details.lang;
+            document.getElementById('detail-consensus').innerText = details.consensus;
+        }
+
+        // Idea Generator Logic
+        function renderIdeas(filter = 'all') {
+            const grid = document.getElementById('ideas-grid');
+            grid.innerHTML = '';
+
+            const filtered = filter === 'all' 
+                ? startupIdeas 
+                : startupIdeas.filter(idea => idea.category === filter);
+
+            filtered.forEach(idea => {
+                const card = document.createElement('div');
+                card.className = 'bg-white/10 border border-white/20 p-5 rounded-xl hover:bg-white/20 transition cursor-pointer backdrop-blur-sm';
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2 py-1 bg-indigo-500/30 text-indigo-100 text-xs rounded-md uppercase tracking-wider">${idea.category}</span>
+                        <span class="text-xs text-indigo-200">${idea.difficulty}</span>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">${idea.title}</h4>
+                    <p class="text-indigo-100 text-sm opacity-90">${idea.desc}</p>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterIdeas(category) {
+            // Update buttons
+            document.querySelectorAll('.idea-filter').forEach(btn => {
+                if(btn.textContent.toLowerCase() === category.toLowerCase() || (category === 'all' && btn.textContent === 'All')) {
+                    btn.classList.remove('bg-indigo-800');
+                    btn.classList.add('bg-indigo-600'); // Lighter/Active color
+                } else {
+                    btn.classList.add('bg-indigo-800');
+                    btn.classList.remove('bg-indigo-600');
+                }
+            });
+            renderIdeas(category);
+        }
+
+        // Initialization
+        window.addEventListener('load', () => {
+            initChart();
+            renderIdeas();
+        });
+
+    </script>
+</body>
+</html>
