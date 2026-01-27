@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Magic Digital Notebook: Blockchain</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Palette & Styles -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kids-teal': '#4ECDC4',
+                        'kids-red': '#FF6B6B',
+                        'kids-yellow': '#FFE66D',
+                        'kids-dark': '#1A535C',
+                        'kids-white': '#F7FFF7',
+                        'kids-blue': '#29B6F6'
+                    },
+                    fontFamily: {
+                        sans: ['Quicksand', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #F7FFF7;
+            color: #1A535C;
+        }
+        
+        /* Chart Container Strict Rules */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+            /* Mobile Height */
+            height: 300px; 
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+                max-width: 100%; /* Allow fill within grid */
+            }
+        }
+
+        /* Custom Block Visuals (CSS Only - No SVG) */
+        .block-box {
+            position: relative;
+        }
+        .block-box::after {
+            content: '';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            width: 20px;
+            height: 4px;
+            background-color: #1A535C;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+        .block-box:last-child::after {
+            display: none;
+        }
+        
+        /* Chain link connector for mobile vertical layout */
+        @media (max-width: 768px) {
+            .block-box::after {
+                right: 50%;
+                top: 100%;
+                width: 4px;
+                height: 20px;
+                transform: translateX(50%);
+            }
+        }
+    </style>
+
+    <!-- 
+    SOURCE MATERIAL ANALYSIS & PLAN:
+    Topic: Blockchain for Class 5 Students (Ages 10-11).
+    Tone: Fun, Educational, Simple, "Classroom Notebook" Analogy.
+    
+    Narrative Structure:
+    1. Hook: Imagine a notebook everyone shares.
+    2. Concept 1: What is a Block? (Ingredients).
+    3. Concept 2: The Chain (How they connect).
+    4. Concept 3: Decentralization (No teacher control).
+    5. Concept 4: Security (Why you can't cheat).
+    6. Real World: Video games & Art.
+    
+    Visualizations Selected (NO SVG):
+    1. "Ingredients of a Block" -> Doughnut Chart (Chart.js). Goal: Inform composition.
+    2. "Centralized vs Distributed" -> Radar Chart (Chart.js). Goal: Compare attributes.
+    3. "Hacker Difficulty Level" -> Bar Chart (Chart.js). Goal: Compare security.
+    4. "Kids Blockchain Uses" -> Pie Chart (Chart.js). Goal: Inform use cases.
+    5. "The Block Chain" -> HTML/CSS Flow Diagram. Goal: Organize process.
+    -->
+</head>
+<body class="font-sans antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-kids-teal text-white p-8 shadow-lg">
+        <div class="max-w-6xl mx-auto text-center">
+            <h1 class="text-4xl md:text-6xl font-bold mb-4">The Magic Digital Notebook</h1>
+            <p class="text-xl md:text-2xl font-semibold opacity-90">Understanding Blockchain (For Future Geniuses)</p>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto p-6 space-y-12">
+
+        <!-- Introduction: The Hook -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+            <div class="bg-white p-8 rounded-2xl shadow-md border-b-8 border-kids-red">
+                <h2 class="text-3xl font-bold text-kids-red mb-4">What is it?</h2>
+                <p class="text-lg leading-relaxed mb-4">
+                    Imagine you have a class notebook where everyone writes down who borrowed a pencil. But there's a rule: 
+                    <span class="font-bold text-kids-dark">Once you write something, you can NEVER erase it.</span>
+                </p>
+                <p class="text-lg leading-relaxed">
+                    And instead of the teacher keeping the notebook, 
+                    <span class="font-bold bg-kids-yellow px-2 py-1 rounded">every student has their own copy!</span>
+                    If someone tries to sneak in and change a page in their copy, everyone else's notebook proves them wrong. That is a Blockchain!
+                </p>
+            </div>
+            
+            <!-- HTML/CSS Visual: Centralized vs Decentralized -->
+            <div class="bg-white p-6 rounded-2xl shadow-md border-b-8 border-kids-blue flex flex-col justify-center items-center h-full">
+                <h3 class="text-2xl font-bold text-kids-blue mb-6">Normal vs. Blockchain</h3>
+                <div class="flex justify-around w-full mb-8">
+                    <div class="text-center">
+                        <div class="bg-gray-200 w-16 h-16 rounded-full flex items-center justify-center text-3xl mx-auto mb-2">🏦</div>
+                        <p class="font-bold">The Bank</p>
+                        <p class="text-xs text-gray-500">(Has all the control)</p>
+                    </div>
+                    <div class="flex items-center text-4xl text-gray-300">vs</div>
+                    <div class="text-center">
+                        <div class="flex justify-center -space-x-2">
+                            <div class="bg-kids-teal w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 border-white">💻</div>
+                            <div class="bg-kids-teal w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 border-white">💻</div>
+                            <div class="bg-kids-teal w-10 h-10 rounded-full flex items-center justify-center text-lg border-2 border-white">💻</div>
+                        </div>
+                        <p class="font-bold mt-2">Everyone</p>
+                        <p class="text-xs text-gray-500">(We share control)</p>
+                    </div>
+                </div>
+                <div class="w-full">
+                    <!-- Chart 1: Radar Chart Comparison -->
+                    <div class="chart-container">
+                        <canvas id="comparisonChart"></canvas>
+                    </div>
+                </div>
+                <p class="text-sm text-center text-gray-500 mt-4">
+                    Blockchain is slower but much safer and fairer because no single person is the boss!
+                </p>
+            </div>
+        </section>
+
+        <!-- Section 2: Inside a Block -->
+        <section class="bg-white rounded-2xl shadow-md overflow-hidden border-t-8 border-kids-yellow">
+            <div class="p-8">
+                <h2 class="text-3xl font-bold text-kids-dark mb-6 text-center">What is inside a "Block"?</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                    <div>
+                        <p class="text-lg mb-4">
+                            Think of a <strong>Block</strong> like a page in our magic notebook. It has three special ingredients. If you mess up any ingredient, the block breaks!
+                        </p>
+                        <ul class="space-y-4">
+                            <li class="flex items-start">
+                                <span class="bg-kids-blue text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 font-bold flex-shrink-0">1</span>
+                                <span><strong>The Data:</strong> Information like "Alice sent Bob 5 coins" or "Sam earned a Golden Sword".</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-kids-red text-white rounded-full w-8 h-8 flex items-center justify-center mr-3 font-bold flex-shrink-0">2</span>
+                                <span><strong>The Hash (Fingerprint):</strong> A unique code for this page. Like a fingerprint, no two are the same!</span>
+                            </li>
+                            <li class="flex items-start">
+                                <span class="bg-kids-yellow text-kids-dark rounded-full w-8 h-8 flex items-center justify-center mr-3 font-bold flex-shrink-0">3</span>
+                                <span><strong>Previous Hash:</strong> The fingerprint of the page BEFORE this one. This glues them together!</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                         <!-- Chart 2: Doughnut Chart -->
+                         <div class="chart-container">
+                            <canvas id="blockIngredientsChart"></canvas>
+                        </div>
+                        <p class="text-center text-sm font-semibold mt-2 text-kids-dark">The Recipe for a Perfect Block</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Chain Visualization (HTML/CSS Flow) -->
+        <section class="bg-kids-teal bg-opacity-10 p-8 rounded-2xl border-2 border-kids-teal">
+            <h2 class="text-3xl font-bold text-kids-dark mb-2 text-center">How the "Chain" Works</h2>
+            <p class="text-center text-lg mb-8 max-w-2xl mx-auto">
+                Each block holds the hand of the block before it. If a hacker tries to change Block 1, the connection to Block 2 snaps, and everyone notices!
+            </p>
+
+            <div class="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-4 overflow-x-auto py-4">
+                
+                <!-- Block 1 -->
+                <div class="block-box bg-white p-4 rounded-lg shadow-lg border-4 border-kids-blue w-48 text-center flex-shrink-0">
+                    <div class="font-bold text-kids-blue mb-2">BLOCK 1</div>
+                    <div class="text-xs text-left bg-gray-100 p-2 rounded mb-2">
+                        <div>Data: Hello World</div>
+                        <div class="text-kids-red">Hash: 1A2B</div>
+                    </div>
+                </div>
+
+                <!-- Block 2 -->
+                <div class="block-box bg-white p-4 rounded-lg shadow-lg border-4 border-kids-yellow w-48 text-center flex-shrink-0">
+                    <div class="font-bold text-kids-yellow text-shadow-sm mb-2" style="text-shadow: 1px 1px 0 #AAA;">BLOCK 2</div>
+                    <div class="text-xs text-left bg-gray-100 p-2 rounded mb-2">
+                        <div class="text-green-600 font-bold">Prev: 1A2B</div>
+                        <div>Data: Alice pays Bob</div>
+                        <div class="text-kids-red">Hash: 3C4D</div>
+                    </div>
+                </div>
+
+                <!-- Block 3 -->
+                <div class="block-box bg-white p-4 rounded-lg shadow-lg border-4 border-kids-red w-48 text-center flex-shrink-0">
+                    <div class="font-bold text-kids-red mb-2">BLOCK 3</div>
+                    <div class="text-xs text-left bg-gray-100 p-2 rounded mb-2">
+                        <div class="text-green-600 font-bold">Prev: 3C4D</div>
+                        <div>Data: New High Score</div>
+                        <div class="text-kids-red">Hash: 5E6F</div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="text-center mt-6 font-bold text-kids-dark animate-bounce">
+                👆 The green code links them forever!
+            </div>
+        </section>
+
+        <!-- Section 4: Security Analysis -->
+        <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <h3 class="text-2xl font-bold text-kids-red mb-4">Why is it Unhackable?</h3>
+                <p class="mb-4">
+                    In a normal computer, a hacker just needs to steal one password to change your grades. 
+                    In a Blockchain, they would have to hack <strong>thousands of computers</strong> at the exact same time!
+                </p>
+                <div class="bg-red-50 p-4 rounded-lg border-l-4 border-kids-red">
+                    <p class="font-bold text-kids-red">The 51% Rule:</p>
+                    <p class="text-sm">To cheat, a hacker needs to control more than half the computers in the world. That's almost impossible!</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-2xl shadow-md">
+                <!-- Chart 3: Bar Chart Difficulty -->
+                <div class="chart-container">
+                    <canvas id="hackerChart"></canvas>
+                </div>
+                <p class="text-center text-xs text-gray-400 mt-2">Effort required to cheat</p>
+            </div>
+        </section>
+
+        <!-- Section 5: Uses for Kids -->
+        <section class="bg-white rounded-2xl shadow-md p-8 border-b-8 border-kids-teal">
+            <h2 class="text-3xl font-bold text-kids-dark mb-6 text-center">Where will YOU use it?</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <!-- Chart 4: Pie Chart Uses -->
+                <div class="chart-container order-2 md:order-1">
+                    <canvas id="usesChart"></canvas>
+                </div>
+
+                <div class="order-1 md:order-2 space-y-6">
+                    <div class="flex items-center p-4 bg-blue-50 rounded-lg">
+                        <span class="text-3xl mr-4">🎮</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Video Games</h4>
+                            <p class="text-sm">Own your skins and swords forever. Even if the game shuts down, you keep your items!</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 bg-yellow-50 rounded-lg">
+                        <span class="text-3xl mr-4">🎨</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Digital Art (NFTs)</h4>
+                            <p class="text-sm">Artists can sign their digital paintings so everyone knows it's the original.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-4 bg-green-50 rounded-lg">
+                        <span class="text-3xl mr-4">🗳️</span>
+                        <div>
+                            <h4 class="font-bold text-lg">Voting</h4>
+                            <p class="text-sm">Vote for class president from your phone, and nobody can fake the count!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conclusion -->
+        <footer class="text-center py-12">
+            <h2 class="text-4xl font-bold text-kids-dark mb-4">The Future is Decentralized!</h2>
+            <p class="max-w-2xl mx-auto text-lg text-gray-600">
+                Blockchain is teaching computers how to trust each other, so we don't need middlemen. 
+                One day, it might run everything from your lunch money to your identity!
+            </p>
+            <div class="mt-8">
+                <span class="inline-block bg-kids-yellow text-kids-dark font-bold px-6 py-3 rounded-full shadow-lg transform transition hover:scale-105 cursor-default">
+                    Keep Learning! 🚀
+                </span>
+            </div>
+        </footer>
+
+    </main>
+
+    <!-- JavaScript for Charts -->
+    <script>
+        // --- UTILITY: Label Wrapping Function (16 chars) ---
+        function formatLabel(str, maxwidth) {
+            var sections = [];
+            var words = str.split(" ");
+            var temp = "";
+            words.forEach(function(item, index) {
+                if (temp.length > 0) {
+                    var concat = temp + ' ' + item;
+                    if (concat.length > maxwidth) {
+                        sections.push(temp);
+                        temp = "";
+                    } else {
+                        if (index == (words.length - 1)) {
+                            sections.push(concat);
+                            return;
+                        } else {
+                            temp = concat;
+                            return;
+                        }
+                    }
+                }
+                if (index == (words.length - 1)) {
+                    sections.push(item);
+                    return;
+                }
+                if (item.length < maxwidth) {
+                    temp = item;
+                } else {
+                    sections.push(item);
+                }
+            });
+            return sections;
+        }
+
+        // --- GLOBAL CHART DEFAULTS ---
+        Chart.defaults.font.family = "'Quicksand', sans-serif";
+        Chart.defaults.color = '#1A535C';
+        Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.05)';
+
+        const commonTooltip = {
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                }
+            }
+        };
+
+        // --- CHART 1: Comparison Radar Chart ---
+        const ctxComparison = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(ctxComparison, {
+            type: 'radar',
+            data: {
+                labels: ['Security', 'Fairness', 'Speed', 'Privacy', 'Cost to Run'],
+                datasets: [{
+                    label: 'Blockchain',
+                    data: [10, 10, 4, 9, 8],
+                    fill: true,
+                    backgroundColor: 'rgba(78, 205, 196, 0.4)', // kids-teal
+                    borderColor: '#4ECDC4',
+                    pointBackgroundColor: '#4ECDC4',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#4ECDC4'
+                }, {
+                    label: 'Normal Bank',
+                    data: [7, 4, 9, 5, 5],
+                    fill: true,
+                    backgroundColor: 'rgba(255, 107, 107, 0.4)', // kids-red
+                    borderColor: '#FF6B6B',
+                    pointBackgroundColor: '#FF6B6B',
+                    pointBorderColor: '#fff',
+                    pointHoverBackgroundColor: '#fff',
+                    pointHoverBorderColor: '#FF6B6B'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { position: 'bottom' }
+                },
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.1)' },
+                        grid: { color: 'rgba(0,0,0,0.1)' },
+                        pointLabels: { font: { size: 12, weight: 'bold' } },
+                        suggestedMin: 0,
+                        suggestedMax: 10
+                    }
+                }
+            }
+        });
+
+        // --- CHART 2: Block Ingredients Doughnut ---
+        const ctxIngredients = document.getElementById('blockIngredientsChart').getContext('2d');
+        new Chart(ctxIngredients, {
+            type: 'doughnut',
+            data: {
+                labels: formatLabel('Transaction Data (Who sent what)', 16).concat(formatLabel('Unique Fingerprint (Hash)', 16)).concat(formatLabel('Link to Previous Page', 16)),
+                datasets: [{
+                    data: [40, 30, 30],
+                    backgroundColor: [
+                        '#29B6F6', // kids-blue
+                        '#FF6B6B', // kids-red
+                        '#FFE66D'  // kids-yellow
+                    ],
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- CHART 3: Hacker Difficulty Bar ---
+        const ctxHacker = document.getElementById('hackerChart').getContext('2d');
+        new Chart(ctxHacker, {
+            type: 'bar',
+            data: {
+                labels: ['Stealing a Pencil', 'Hacking a Password', 'Hacking a Bank', 'Hacking Blockchain'],
+                datasets: [{
+                    label: 'Difficulty Level (0-100)',
+                    data: [5, 25, 60, 99],
+                    backgroundColor: [
+                        '#FFE66D',
+                        '#FF9F1C',
+                        '#FF6B6B',
+                        '#1A535C' // Highest difficulty - dark teal
+                    ],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal Bar for better readable labels
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { display: false }
+                },
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // --- CHART 4: Uses Pie Chart ---
+        const ctxUses = document.getElementById('usesChart').getContext('2d');
+        new Chart(ctxUses, {
+            type: 'pie',
+            data: {
+                labels: ['Video Games & Items', 'Digital Money', 'Digital Art (NFTs)', 'Voting & Identity'],
+                datasets: [{
+                    data: [35, 25, 25, 15],
+                    backgroundColor: [
+                        '#4ECDC4', // Teal (Games)
+                        '#FFD166', // Yellow (Money)
+                        '#EF476F', // Red (Art)
+                        '#118AB2'  // Blue (Voting)
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    tooltip: commonTooltip,
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+    </script>
+</body>
+</html>
