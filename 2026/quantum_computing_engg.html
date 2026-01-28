@@ -3,351 +3,396 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quantum Future: Career & Industry Explorer</title>
+    <title>Quantum Path Pro | Kalyanjit Hatibaruah</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Three.js for 3D Bloch Sphere -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-
-    <!-- Chosen Palette: Quantum Calm -->
+    <!-- Chosen Palette: Deep Quantum (Midnight Blue & Neon Indigo) -->
     <!-- Application Structure Plan: 
-         1. Hero Section: Immediate definition and hook.
-         2. Concept visualizer: Simple interactive bar chart to explain Superposition.
-         3. Industry Integration Dashboard: Grid layout for sector-specific QC applications.
-         4. Role Explorer: Tabbed interface (Tech vs Non-Tech) + Radar Chart for skills.
-         5. Student Roadmap: Vertical interactive accordion timeline.
-         6. Market Data: Charts showing growth and salary trends.
-         7. Footer: Credits and Contact information (Added Author: Kalyanjit Hatibaruah).
+         1. Hero: Scientific impact hook.
+         2. 3D Bloch Sphere: Interactive 3D simulation of a Qubit (Three.js).
+         3. Industry Matrix: Deep dive into sector integration.
+         4. Readiness Quiz: Interactive tool to find your career persona.
+         5. The "Big Map": Ecosystem players and where to apply.
+         6. Credits: Personalized footer for Kalyanjit Hatibaruah.
     -->
-
-    <!-- Visualization & Content Choices: 
-         - Qubit State: Bar Chart (Chart.js) for probability visualization.
-         - Industry: Interactive Cards for UX.
-         - Roles: Radar Chart (Chart.js) to show multi-skill balance.
-         - Market: Line/Bar charts (Chart.js) for quantitative growth.
-         - NO SVG used. NO Mermaid JS used.
-    -->
-    
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
+        :root {
+            --quantum-glow: #6366f1;
+            --bg-deep: #020617;
+        }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: #f8fafc;
             color: #0f172a;
+            overflow-x: hidden;
         }
-        
-        .chart-container {
-            position: relative;
+        .bloch-container {
             width: 100%;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 300px;
-            max-height: 400px;
+            height: 350px;
+            background: radial-gradient(circle at center, #1e293b 0%, #020617 100%);
+            border-radius: 24px;
+            position: relative;
+            cursor: move;
         }
-        @media (min-width: 768px) {
-            .chart-container { height: 350px; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
         }
-
-        .hidden-content { display: none; }
-        
-        .active-tab {
-            border-bottom: 2px solid #4f46e5;
-            color: #4f46e5;
-            font-weight: 600;
+        .gradient-text {
+            background: linear-gradient(135deg, #4f46e5 0%, #9333ea 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-
-        .timeline-line {
-            position: absolute;
-            left: 1rem;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background-color: #e2e8f0;
-            z-index: 0;
+        .btn-quantum {
+            background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-quantum:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+        }
+        .quiz-option:hover {
+            border-color: #6366f1;
+            background: #f5f3ff;
         }
     </style>
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 </head>
 <body class="flex flex-col min-h-screen">
 
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <span class="text-xl font-bold text-indigo-700 tracking-tight">QuantumPath</span>
-                    </div>
-                </div>
-                <div class="hidden sm:flex sm:space-x-8 items-center">
-                    <button onclick="scrollToSection('basics')" class="text-slate-500 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Basics</button>
-                    <button onclick="scrollToSection('industries')" class="text-slate-500 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Industries</button>
-                    <button onclick="scrollToSection('roles')" class="text-slate-500 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Roles</button>
-                    <button onclick="scrollToSection('roadmap')" class="text-slate-500 hover:text-indigo-600 px-3 py-2 text-sm font-medium">Roadmap</button>
-                </div>
-                <div class="flex items-center sm:hidden">
-                   <button class="text-slate-500 hover:text-indigo-600 font-bold">Menu</button>
-                </div>
+    <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">Q</div>
+                <span class="text-xl font-extrabold tracking-tight text-slate-900">QuantumPath <span class="text-indigo-600">Pro</span></span>
+            </div>
+            <div class="hidden md:flex gap-8 text-sm font-semibold text-slate-500">
+                <a href="#visualizer" class="hover:text-indigo-600 transition">3D Visualizer</a>
+                <a href="#industries" class="hover:text-indigo-600 transition">Industries</a>
+                <a href="#quiz" class="hover:text-indigo-600 transition">Career Quiz</a>
+                <a href="#roadmap" class="hover:text-indigo-600 transition">Roadmap</a>
             </div>
         </div>
     </nav>
 
     <main class="flex-grow">
         
-        <div class="bg-slate-900 text-white py-16 px-4 sm:px-6 lg:px-8">
-            <div class="max-w-4xl mx-auto text-center">
-                <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl mb-6">Explore the Quantum Frontier</h1>
-                <p class="text-xl text-slate-300 max-w-2xl mx-auto">Discover the future of computing, industry shifts, and your path to a career in Quantum Technology.</p>
-                <div class="mt-8 flex justify-center gap-4">
-                    <button onclick="scrollToSection('basics')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg">Learn Basics</button>
-                    <button onclick="scrollToSection('roadmap')" class="bg-slate-700 hover:bg-slate-600 text-white px-6 py-3 rounded-lg font-semibold transition shadow-lg">Get Roadmap</button>
+        <!-- Hero Section -->
+        <section class="pt-20 pb-32 px-6 bg-slate-50 relative overflow-hidden">
+            <div class="max-w-5xl mx-auto text-center relative z-10">
+                <span class="px-4 py-1.5 rounded-full bg-indigo-100 text-indigo-700 text-xs font-bold uppercase tracking-widest mb-6 inline-block">The Next Industrial Revolution</span>
+                <h1 class="text-5xl md:text-7xl font-extrabold text-slate-900 leading-tight mb-8">
+                    Master the <span class="gradient-text">Quantum Shift</span>
+                </h1>
+                <p class="text-xl text-slate-600 max-w-2xl mx-auto mb-12 leading-relaxed">
+                    Engineering is evolving. From drug discovery to unbreakable encryption, learn how Quantum Computing is rewriting the rules of reality.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <button onclick="scrollToSection('visualizer')" class="btn-quantum text-white px-8 py-4 rounded-2xl font-bold shadow-xl">Launch 3D Visualizer</button>
+                    <button onclick="scrollToSection('quiz')" class="bg-white text-slate-900 border border-slate-200 px-8 py-4 rounded-2xl font-bold shadow-sm hover:bg-slate-50 transition">Take Career Quiz</button>
                 </div>
             </div>
-        </div>
-
-        <section id="basics" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900">Quantum Fundamentals</h2>
-                <p class="mt-4 text-lg text-slate-600">The shift from Bits to Qubits changes everything about how we process complexity.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
-                    <h3 class="text-xl font-bold text-slate-800 mb-4">Classical vs. Quantum</h3>
-                    <div class="space-y-6">
-                        <div>
-                            <span class="block text-sm font-semibold text-slate-500 uppercase">Classical Bit</span>
-                            <div class="flex items-center mt-2">
-                                <div class="h-8 w-8 rounded-full bg-slate-300 flex items-center justify-center font-mono font-bold mr-3">0</div>
-                                <span class="text-slate-600">OR</span>
-                                <div class="h-8 w-8 rounded-full bg-slate-800 flex items-center justify-center font-mono font-bold text-white ml-3">1</div>
-                            </div>
-                        </div>
-                        <div class="border-t border-slate-100 pt-6">
-                            <span class="block text-sm font-semibold text-indigo-500 uppercase">Qubit (Superposition)</span>
-                            <div class="flex items-center mt-2">
-                                <div class="h-8 w-8 rounded-full bg-gradient-to-r from-slate-300 to-indigo-600 flex items-center justify-center font-mono font-bold text-white animate-pulse">?</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex flex-col">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
-                        <div class="flex justify-between items-center mb-4">
-                            <h4 class="font-bold text-slate-700">Measurement Simulation</h4>
-                            <button onclick="measureQubit()" class="text-xs bg-indigo-100 text-indigo-700 px-3 py-1 rounded hover:bg-indigo-200 transition">Measure</button>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="qubitChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <!-- Decorative Background Element -->
+            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-200/20 blur-[120px] rounded-full -z-0"></div>
         </section>
 
-        <section id="industries" class="py-16 bg-slate-100">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-12">
-                    <h2 class="text-3xl font-bold text-slate-900">Industry Impact</h2>
-                    <p class="mt-4 text-lg text-slate-600">How different sectors are preparing for the quantum advantage.</p>
-                </div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div class="lg:col-span-1 space-y-3">
-                        <button onclick="showIndustry('pharma')" id="btn-pharma" class="industry-btn w-full text-left px-6 py-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:border-indigo-500 transition flex items-center justify-between group">
-                            <span class="font-semibold text-slate-700 group-hover:text-indigo-700">Pharmaceuticals</span>
-                            <span>&rarr;</span>
-                        </button>
-                        <button onclick="showIndustry('finance')" id="btn-finance" class="industry-btn w-full text-left px-6 py-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:border-indigo-500 transition flex items-center justify-between group">
-                            <span class="font-semibold text-slate-700 group-hover:text-indigo-700">Finance</span>
-                            <span>&rarr;</span>
-                        </button>
-                        <button onclick="showIndustry('cyber')" id="btn-cyber" class="industry-btn w-full text-left px-6 py-4 rounded-lg bg-white shadow-sm border border-slate-200 hover:border-indigo-500 transition flex items-center justify-between group">
-                            <span class="font-semibold text-slate-700 group-hover:text-indigo-700">Cybersecurity</span>
-                            <span>&rarr;</span>
-                        </button>
-                    </div>
-                    <div class="lg:col-span-2 bg-white rounded-xl shadow-lg border border-slate-200 p-8">
-                        <div id="industry-content">
-                            <div class="text-center text-slate-400 py-12">Select an industry to explore applications.</div>
+        <!-- 3D Visualizer Section -->
+        <section id="visualizer" class="py-24 max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div>
+                    <h2 class="text-3xl font-extrabold mb-6">Interactive 3D <span class="text-indigo-600">Bloch Sphere</span></h2>
+                    <p class="text-slate-600 mb-8 leading-relaxed">
+                        In classical computing, a bit is either 0 or 1. In Quantum, a qubit is a vector pointing anywhere on this sphere. This "Superposition" is what creates the massive parallel processing power.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">Hadamard Gate</h4>
+                            <p class="text-xs text-slate-500 mb-4">Creates a perfect 50/50 superposition.</p>
+                            <button onclick="applyGate('H')" class="w-full py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-indigo-600 transition">Apply Gate</button>
+                        </div>
+                        <div class="p-6 rounded-2xl bg-white border border-slate-200 shadow-sm">
+                            <h4 class="font-bold text-slate-800 mb-2">Pauli-X Gate</h4>
+                            <p class="text-xs text-slate-500 mb-4">The Quantum 'NOT' gate. Flips the qubit.</p>
+                            <button onclick="applyGate('X')" class="w-full py-2 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-indigo-600 transition">Apply Gate</button>
                         </div>
                     </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="roles" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-             <div class="text-center mb-12">
-                <h2 class="text-3xl font-bold text-slate-900">Job Opportunities</h2>
-                <p class="mt-4 text-lg text-slate-600">The ecosystem requires diverse talent across technical and business domains.</p>
-            </div>
-
-            <div class="flex flex-col md:flex-row gap-8">
-                <div class="w-full md:w-1/2">
-                    <div class="flex border-b border-slate-200 mb-6">
-                        <button onclick="switchRoleType('tech')" id="tab-tech" class="active-tab w-1/2 py-3 text-center transition">Tech Roles</button>
-                        <button onclick="switchRoleType('nontech')" id="tab-nontech" class="w-1/2 py-3 text-center transition text-slate-500">Non-Tech Roles</button>
-                    </div>
-                    <div id="role-list" class="space-y-4"></div>
-                </div>
-
-                <div class="w-full md:w-1/2 bg-slate-50 rounded-xl p-6 border border-slate-200">
-                    <h4 class="font-bold text-slate-700 mb-4 text-center" id="skill-desc">Skill Profile</h4>
-                    <div class="chart-container">
-                        <canvas id="skillsChart"></canvas>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="roadmap" class="py-16 bg-slate-900 text-white">
-            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold">Engineering Student Roadmap</h2>
-                    <p class="mt-4 text-slate-400">Step-by-step progression into the Quantum workforce.</p>
                 </div>
                 <div class="relative">
-                    <div class="timeline-line bg-indigo-900 ml-4 md:ml-0 md:left-1/2 md:-translate-x-1/2"></div>
-                    <div class="space-y-12">
-                        <div class="relative flex flex-col md:flex-row items-center cursor-pointer group" onclick="toggleStep('s1')">
-                            <div class="flex-1 md:text-right pr-0 md:pr-12 mb-4 md:mb-0"><h3 class="text-xl font-bold text-indigo-400">Phase 1: Math Foundations</h3></div>
-                            <div class="z-10 w-8 h-8 rounded-full bg-indigo-600 border-4 border-slate-900"></div>
-                            <div class="flex-1 pl-0 md:pl-12 mt-4 md:mt-0">
-                                <p class="text-slate-300 text-sm">Linear Algebra & Probability.</p>
-                                <div id="s1" class="hidden-content mt-3 bg-slate-800 p-4 rounded text-xs">Vector spaces, Eigenvalues, and Complex numbers are the language of QC.</div>
-                            </div>
-                        </div>
-                        <div class="relative flex flex-col md:flex-row items-center cursor-pointer group" onclick="toggleStep('s2')">
-                            <div class="flex-1 md:text-right pr-0 md:pr-12 mb-4 md:mb-0"><h3 class="text-xl font-bold text-indigo-400">Phase 2: Programming</h3></div>
-                            <div class="z-10 w-8 h-8 rounded-full bg-indigo-600 border-4 border-slate-900"></div>
-                            <div class="flex-1 pl-0 md:pl-12 mt-4 md:mt-0">
-                                <p class="text-slate-300 text-sm">Python & Frameworks.</p>
-                                <div id="s2" class="hidden-content mt-3 bg-slate-800 p-4 rounded text-xs">Master Python, then learn Qiskit or Cirq to simulate circuits.</div>
+                    <div id="bloch-sphere" class="bloch-container shadow-2xl overflow-hidden border border-slate-800"></div>
+                    <div class="absolute bottom-6 left-6 text-white text-[10px] uppercase tracking-widest font-bold opacity-50">Interactive 3D Space</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Industries Integration -->
+        <section id="industries" class="py-24 bg-slate-900 text-white">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+                    <div class="max-w-xl">
+                        <h2 class="text-4xl font-extrabold mb-4">Industry Disruption</h2>
+                        <p class="text-slate-400">Quantum is moving from theory to production. Here is how global leaders are integrating it today.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="switchIndustry('optimization')" class="ind-tab px-4 py-2 rounded-full border border-slate-700 text-sm hover:bg-indigo-600 transition">Optimization</button>
+                        <button onclick="switchIndustry('simulation')" class="ind-tab px-4 py-2 rounded-full border border-slate-700 text-sm hover:bg-indigo-600 transition">Simulation</button>
+                    </div>
+                </div>
+
+                <div id="industry-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Cards populated by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Career Quiz Section -->
+        <section id="quiz" class="py-24 max-w-4xl mx-auto px-6">
+            <div class="glass-card rounded-[32px] p-10 md:p-16 shadow-xl border border-white">
+                <div id="quiz-container">
+                    <h2 class="text-3xl font-extrabold text-center mb-4">Quantum <span class="text-indigo-600">Career Finder</span></h2>
+                    <p class="text-slate-500 text-center mb-12">Answer 3 questions to find your ideal role in the ecosystem.</p>
+                    
+                    <div id="quiz-content">
+                        <!-- Step 1 -->
+                        <div id="q1" class="quiz-step">
+                            <h4 class="text-xl font-bold mb-6">What excites you most about engineering?</h4>
+                            <div class="space-y-4">
+                                <button onclick="nextQuiz(1, 'hw')" class="quiz-option w-full text-left p-6 rounded-2xl border border-slate-200 transition font-semibold hover:shadow-md">Building physical systems & hardware</button>
+                                <button onclick="nextQuiz(1, 'sw')" class="quiz-option w-full text-left p-6 rounded-2xl border border-slate-200 transition font-semibold hover:shadow-md">Writing complex logic & algorithms</button>
+                                <button onclick="nextQuiz(1, 'biz')" class="quiz-option w-full text-left p-6 rounded-2xl border border-slate-200 transition font-semibold hover:shadow-md">Solving business problems & strategy</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
-    </main>
 
-    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-center md:text-left">
-                <div>
-                    <h3 class="text-white font-bold text-lg mb-2">QuantumPath Explorer</h3>
-                    <p class="text-sm">Empowering the next generation of Quantum Engineers.</p>
+        <!-- Roadmap & Resources -->
+        <section id="roadmap" class="py-24 bg-white">
+            <div class="max-w-7xl mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-extrabold mb-4">The Student Accelerator</h2>
+                    <p class="text-slate-500">Essential resources to go from Zero to Quantum-ready.</p>
                 </div>
-                <div class="bg-slate-900/50 p-6 rounded-xl border border-slate-800">
-                    <p class="text-white font-semibold mb-2">Author Details</p>
-                    <p class="text-indigo-400 font-bold text-lg">Kalyanjit Hatibaruah</p>
-                    <div class="mt-4 flex flex-col sm:flex-row justify-center md:justify-start gap-4 items-center">
-                        <div class="flex items-center gap-2">
-                            <span class="text-xs uppercase tracking-widest text-slate-500">Contact</span>
-                            <a href="https://wa.me/919864011106" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full text-sm font-bold transition flex items-center gap-2">
-                                WhatsApp: +91-9864011106
-                            </a>
-                        </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-6">01</div>
+                        <h4 class="text-xl font-bold mb-3">Math Essentials</h4>
+                        <ul class="text-sm text-slate-500 space-y-3 mb-8">
+                            <li>• Linear Algebra (Eigenvalues)</li>
+                            <li>• Complex Vector Spaces</li>
+                            <li>• Tensor Products</li>
+                        </ul>
+                        <a href="https://qiskit.org/textbook" target="_blank" class="text-indigo-600 font-bold text-sm hover:underline">Free Textbook &rarr;</a>
+                    </div>
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-6">02</div>
+                        <h4 class="text-xl font-bold mb-3">Software SDKs</h4>
+                        <ul class="text-sm text-slate-500 space-y-3 mb-8">
+                            <li>• IBM Qiskit (Python)</li>
+                            <li>• Google Cirq</li>
+                            <li>• Xanadu PennyLane (AI)</li>
+                        </ul>
+                        <a href="https://learn.microsoft.com/quantum" target="_blank" class="text-indigo-600 font-bold text-sm hover:underline">Microsoft Learn &rarr;</a>
+                    </div>
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100">
+                        <div class="w-12 h-12 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold mb-6">03</div>
+                        <h4 class="text-xl font-bold mb-3">Industry Certs</h4>
+                        <ul class="text-sm text-slate-500 space-y-3 mb-8">
+                            <li>• IBM Quantum Developer</li>
+                            <li>• MIT xPRO Quantum Tech</li>
+                            <li>• IEEE Quantum Education</li>
+                        </ul>
+                        <a href="https://quantum-computing.ibm.com/lab" target="_blank" class="text-indigo-600 font-bold text-sm hover:underline">Launch IBM Lab &rarr;</a>
                     </div>
                 </div>
             </div>
-            <div class="mt-12 pt-8 border-t border-slate-900 text-center text-xs">
-                &copy; 2023 Educational Resource. All data for demonstration.
+        </section>
+
+    </main>
+
+    <!-- Professional Footer -->
+    <footer class="bg-slate-950 text-white py-20 border-t border-slate-900">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="text-center lg:text-left">
+                    <h2 class="text-3xl font-extrabold mb-4">QuantumPath <span class="text-indigo-500">Explorer</span></h2>
+                    <p class="text-slate-500 mb-8 max-w-md">Bridging the gap between classical engineering and the future of computation.</p>
+                    <div class="flex justify-center lg:justify-start gap-4">
+                        <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer">In</div>
+                        <div class="w-10 h-10 rounded-full border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white transition cursor-pointer">X</div>
+                    </div>
+                </div>
+                
+                <div class="bg-indigo-600/5 rounded-[40px] p-10 border border-indigo-500/20 shadow-2xl">
+                    <div class="flex items-center gap-6 mb-8">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-3xl font-bold">KH</div>
+                        <div>
+                            <p class="text-indigo-400 text-xs font-bold uppercase tracking-widest mb-1">Lead Architect</p>
+                            <h4 class="text-2xl font-extrabold">Kalyanjit Hatibaruah</h4>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <a href="https://wa.me/919864011106" target="_blank" class="bg-green-600 hover:bg-green-700 text-white py-4 rounded-2xl font-bold text-center transition flex items-center justify-center gap-2">
+                            WhatsApp Contact
+                        </a>
+                        <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="bg-white text-slate-900 py-4 rounded-2xl font-bold text-center transition hover:bg-slate-100 flex items-center justify-center gap-2">
+                            LinkedIn Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-20 pt-8 border-t border-slate-900 text-center text-[10px] text-slate-600 tracking-[0.3em] uppercase">
+                &copy; 2026 | Dedicated to Quantum Literacy | Developed for Global Outreach
             </div>
         </div>
     </footer>
 
     <script>
-        const industryData = {
-            pharma: { title: "Pharmaceuticals", content: "Quantum simulation of molecules accelerates drug discovery by years.", keyApps: ["Protein Folding", "Molecular Mapping"] },
-            finance: { title: "Finance", content: "Optimization of portfolios and fraud detection using quantum speedup.", keyApps: ["Risk Analysis", "Monte Carlo"] },
-            cyber: { title: "Cybersecurity", content: "Securing the future with Post-Quantum Cryptography and QKD.", keyApps: ["Encryption", "QKD"] }
+        // --- 1. Three.js Bloch Sphere Logic ---
+        let scene, camera, renderer, sphere, arrow, targetRotation = { x: 0, z: 0 };
+        
+        function initBlochSphere() {
+            const container = document.getElementById('bloch-sphere');
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            container.appendChild(renderer.domElement);
+
+            // Sphere
+            const geometry = new THREE.SphereGeometry(2, 32, 32);
+            const material = new THREE.MeshBasicMaterial({ 
+                color: 0x4f46e5, 
+                wireframe: true, 
+                transparent: true, 
+                opacity: 0.3 
+            });
+            sphere = new THREE.Mesh(geometry, material);
+            scene.add(sphere);
+
+            // Axis Lines
+            const axisMaterial = new THREE.LineBasicMaterial({ color: 0x64748b, opacity: 0.5, transparent: true });
+            const pointsX = [new THREE.Vector3(-2.5,0,0), new THREE.Vector3(2.5,0,0)];
+            const pointsY = [new THREE.Vector3(0,-2.5,0), new THREE.Vector3(0,2.5,0)];
+            const pointsZ = [new THREE.Vector3(0,0,-2.5), new THREE.Vector3(0,0,2.5)];
+            
+            [pointsX, pointsY, pointsZ].forEach(pts => {
+                const g = new THREE.BufferGeometry().setFromPoints(pts);
+                scene.add(new THREE.Line(g, axisMaterial));
+            });
+
+            // State Vector (Arrow)
+            const arrowDir = new THREE.Vector3(0, 1, 0); // Points to |0>
+            const origin = new THREE.Vector3(0, 0, 0);
+            arrow = new THREE.ArrowHelper(arrowDir, origin, 2.2, 0xffffff, 0.4, 0.2);
+            scene.add(arrow);
+
+            camera.position.z = 5;
+            camera.position.y = 1;
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            // Smoothly rotate arrow to target
+            arrow.rotation.x += (targetRotation.x - arrow.rotation.x) * 0.1;
+            arrow.rotation.z += (targetRotation.z - arrow.rotation.z) * 0.1;
+            renderer.render(scene, camera);
+        }
+
+        function applyGate(type) {
+            if (type === 'X') {
+                targetRotation.x = targetRotation.x === Math.PI ? 0 : Math.PI;
+            } else if (type === 'H') {
+                targetRotation.x = Math.PI / 2;
+                targetRotation.z = targetRotation.z === Math.PI / 2 ? 0 : Math.PI / 2;
+            }
+        }
+
+        // --- 2. Industry Matrix Data ---
+        const industryContent = {
+            optimization: [
+                { title: 'Logistics', detail: 'Solving the Traveling Salesman problem for global fleets.', impact: '30% Fuel Reduction' },
+                { title: 'Finance', detail: 'Real-time multi-variable portfolio hedging.', impact: 'Quantum Monte Carlo' },
+                { title: 'Manufacturing', detail: 'Factory flow optimization with massive variables.', impact: 'Supply Chain Sync' }
+            ],
+            simulation: [
+                { title: 'Energy', detail: 'Simulating hydrogen production at the atomic level.', impact: 'Carbon Capture' },
+                { title: 'Healthcare', detail: 'Protein folding for personalized drug discovery.', impact: 'Cure Discovery' },
+                { title: 'Materials', detail: 'Room-temperature superconductors discovery.', impact: 'Next-Gen Grid' }
+            ]
         };
 
-        const rolesData = {
-            tech: [{ title: 'Hardware Engineer', desc: 'Builds physical processors.', skills: [90, 40, 80, 20, 20] }, { title: 'Software Developer', desc: 'Writes quantum algorithms.', skills: [40, 95, 70, 30, 50] }],
-            nontech: [{ title: 'Product Manager', desc: 'Links tech to market.', skills: [20, 30, 30, 90, 90] }, { title: 'Technical Sales', desc: 'Explains value to clients.', skills: [20, 20, 30, 95, 85] }]
+        function switchIndustry(type) {
+            const grid = document.getElementById('industry-grid');
+            grid.innerHTML = '';
+            industryContent[type].forEach(item => {
+                const card = document.createElement('div');
+                card.className = 'p-10 rounded-[32px] bg-white/5 border border-white/10 hover:bg-white/10 transition-all group';
+                card.innerHTML = `
+                    <p class="text-indigo-400 font-bold text-xs uppercase tracking-widest mb-4">${item.impact}</p>
+                    <h4 class="text-2xl font-bold mb-4">${item.title}</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">${item.detail}</p>
+                `;
+                grid.appendChild(card);
+            });
+            // Update tabs
+            document.querySelectorAll('.ind-tab').forEach(t => t.classList.remove('bg-indigo-600', 'border-indigo-600'));
+            const active = Array.from(document.querySelectorAll('.ind-tab')).find(t => t.innerText.toLowerCase().includes(type));
+            active.classList.add('bg-indigo-600', 'border-indigo-600');
+        }
+
+        // --- 3. Career Quiz Logic ---
+        let quizAnswers = {};
+        function nextQuiz(step, val) {
+            quizAnswers[step] = val;
+            const content = document.getElementById('quiz-content');
+            
+            if (step === 1) {
+                content.innerHTML = `
+                    <div class="quiz-step fade-in">
+                        <h4 class="text-xl font-bold mb-6">What is your favorite academic subject?</h4>
+                        <div class="space-y-4">
+                            <button onclick="nextQuiz(2, 'physics')" class="quiz-option w-full text-left p-6 rounded-2xl border border-slate-200 transition font-semibold hover:shadow-md">Quantum Mechanics / Physics</button>
+                            <button onclick="nextQuiz(2, 'math')" class="quiz-option w-full text-left p-6 rounded-2xl border border-slate-200 transition font-semibold hover:shadow-md">Linear Algebra / Data Science</button>
+                        </div>
+                    </div>
+                `;
+            } else if (step === 2) {
+                const result = getResult();
+                content.innerHTML = `
+                    <div class="text-center fade-in">
+                        <div class="w-20 h-20 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-6 text-3xl">🎯</div>
+                        <h4 class="text-2xl font-bold mb-2">You are a ${result.title}!</h4>
+                        <p class="text-slate-500 mb-8">${result.desc}</p>
+                        <button onclick="location.reload()" class="text-indigo-600 font-bold hover:underline">Retake Quiz</button>
+                    </div>
+                `;
+            }
+        }
+
+        function getResult() {
+            if (quizAnswers[1] === 'hw') return { title: 'Quantum Hardware Engineer', desc: 'Focus on cryogenic systems, microwave engineering, and qubit fabrication.' };
+            if (quizAnswers[1] === 'sw') return { title: 'Quantum Algorithm Researcher', desc: 'You belong in the world of complexity theory and software optimization.' };
+            return { title: 'Quantum Solutions Architect', desc: 'A bridge between corporate problems and quantum solvers.' };
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        window.onload = () => {
+            initBlochSphere();
+            switchIndustry('optimization');
         };
-
-        let skillsChartInstance = null;
-        let qubitChartInstance = null;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            initQubitChart();
-            showIndustry('pharma');
-            renderRoles('tech');
-        });
-
-        function scrollToSection(id) { document.getElementById(id).scrollIntoView({ behavior: 'smooth' }); }
-
-        function initQubitChart() {
-            const ctx = document.getElementById('qubitChart').getContext('2d');
-            qubitChartInstance = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: ['0', '1'], datasets: [{ data: [50, 50], backgroundColor: ['#94a3b8', '#4f46e5'], borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } }, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function measureQubit() {
-            const res = Math.random() > 0.5 ? 1 : 0;
-            qubitChartInstance.data.datasets[0].data = res === 1 ? [0, 100] : [100, 0];
-            qubitChartInstance.update();
-            setTimeout(() => { qubitChartInstance.data.datasets[0].data = [50, 50]; qubitChartInstance.update(); }, 2000);
-        }
-
-        function showIndustry(key) {
-            const d = industryData[key];
-            document.getElementById('industry-content').innerHTML = `
-                <h3 class="text-2xl font-bold text-slate-800 mb-4">${d.title}</h3>
-                <p class="text-slate-600 mb-6">${d.content}</p>
-                <div class="flex flex-wrap gap-2">${d.keyApps.map(a => `<span class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold">${a}</span>`).join('')}</div>
-            `;
-        }
-
-        function renderRoles(type) {
-            const container = document.getElementById('role-list');
-            container.innerHTML = '';
-            rolesData[type].forEach((r, i) => {
-                const div = document.createElement('div');
-                div.className = `p-4 rounded-lg border border-slate-200 cursor-pointer ${i === 0 ? 'bg-indigo-50 border-indigo-300' : 'bg-white'}`;
-                div.onclick = () => {
-                    document.querySelectorAll('#role-list div').forEach(d => d.className = 'p-4 rounded-lg border border-slate-200 bg-white');
-                    div.className = 'p-4 rounded-lg border border-indigo-300 bg-indigo-50';
-                    updateRadar(r);
-                };
-                div.innerHTML = `<h5 class="font-bold">${r.title}</h5><p class="text-xs text-slate-500">${r.desc}</p>`;
-                container.appendChild(div);
-            });
-            updateRadar(rolesData[type][0]);
-        }
-
-        function switchRoleType(type) {
-            document.getElementById('tab-tech').className = type === 'tech' ? 'active-tab w-1/2 py-3 text-center' : 'w-1/2 py-3 text-center text-slate-500';
-            document.getElementById('tab-nontech').className = type === 'nontech' ? 'active-tab w-1/2 py-3 text-center' : 'w-1/2 py-3 text-center text-slate-500';
-            renderRoles(type);
-        }
-
-        function updateRadar(r) {
-            if (skillsChartInstance) skillsChartInstance.destroy();
-            const ctx = document.getElementById('skillsChart').getContext('2d');
-            skillsChartInstance = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: ['Physics', 'Coding', 'Math', 'Business', 'Communication'],
-                    datasets: [{ data: r.skills, backgroundColor: 'rgba(79, 70, 229, 0.2)', borderColor: '#4f46e5' }]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 100, ticks: { display: false } } }, plugins: { legend: { display: false } } }
-            });
-        }
-
-        function toggleStep(id) { document.getElementById(id).classList.toggle('hidden-content'); }
     </script>
 </body>
 </html>
