@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NDIM North East Strategy Brief</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f5f5f4; color: #44403c; }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px; /* Constraint for large screens */
+            height: 300px;
+            max-height: 400px;
+            margin: 0 auto;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .active-tab {
+            background-color: #0d9488; /* Teal-600 */
+            color: white;
+            border-color: #0d9488;
+        }
+    </style>
+</head>
+<body class="bg-stone-100 min-h-screen flex flex-col">
+
+    <!-- Chosen Palette: Warm Neutrals (Stone) with Teal Accents for a professional, calm, yet growth-oriented look. -->
+    
+    <!-- Application Structure Plan: 
+         1. Hero Section: Contextualizes the request (Sender: Nikhil Singh, Goal: NE Expansion).
+         2. Strategic Pillars (Tabs): The 4 key requests (Speaking, Ads, Network, Content) act as the primary navigation.
+         3. Dynamic Detail Panel: Shows the specific text and needs for the selected pillar.
+         4. Analytics Dashboard: Two charts visualizing the 'Strategy Mix' and 'Stakeholder Network' derived from the email text.
+         5. Value Proposition Grid: Highlights the USP elements (Japan Centre, etc.) that need to be communicated.
+         Rationale: This structure separates the distinct requests into manageable chunks while providing a visual overview of the total scope.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Doughnut Chart (Strategy Mix): Visualizes the 4 distinct areas of the request to show balanced focus.
+         2. Bar Chart (Stakeholder Ecosystem): Visualizes the specific people mentioned (Principals, Consultants, etc.) to target.
+         3. Interactive Cards (USPs): Visualizes the selling points. 
+         All implementation uses Chart.js (Canvas) and Tailwind CSS. NO SVG or Mermaid.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <!-- Header / Context -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-stone-800 tracking-tight">NDIM North East Expansion Initiative</h1>
+                   <p class="text-sm text-stone-500 mt-1"></p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-teal-100 text-teal-800">
+                        Status: Planning Phase
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full space-y-8">
+
+        <!-- Executive Summary -->
+        <section class="bg-white rounded-xl shadow-sm p-6 border border-stone-200">
+            <h2 class="text-lg font-semibold text-stone-800 mb-3">Executive Summary</h2>
+            <p class="text-stone-600 leading-relaxed">
+                NDIM is seeking to expand its footprint in the North East states to admit high-quality MBA students. 
+                Leveraging local market understanding and ROI-focused social media expertise, the objective is to build a robust recruitment funnel through physical presence, strategic localized advertising, network building, and targeted content creation.
+            </p>
+        </section>
+
+        <!-- Main Interactive Dashboard -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Left Column: Strategic Pillars Navigation -->
+            <div class="lg:col-span-4 space-y-6">
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
+                    <div class="p-6 border-b border-stone-100">
+                        <h3 class="font-bold text-stone-800 text-lg">Strategic Pillars</h3>
+                        <p class="text-sm text-stone-500 mt-1">Select an area to view detailed requirements.</p>
+                    </div>
+                    <div class="flex flex-col">
+                        <button onclick="updateView('speaking')" id="btn-speaking" class="text-left px-6 py-4 hover:bg-stone-50 transition-colors border-b border-stone-100 focus:outline-none active-tab">
+                            <span class="font-semibold block">1. Speaking Opportunities</span>
+                            <span class="text-xs opacity-80 block mt-1">Universities & Coaching Institutes</span>
+                        </button>
+                        <button onclick="updateView('advertising')" id="btn-advertising" class="text-left px-6 py-4 hover:bg-stone-50 transition-colors border-b border-stone-100 focus:outline-none">
+                            <span class="font-semibold block">2. Strategic Advertising</span>
+                            <span class="text-xs opacity-80 block mt-1">Local Newspapers & Digital/Social</span>
+                        </button>
+                        <button onclick="updateView('network')" id="btn-network" class="text-left px-6 py-4 hover:bg-stone-50 transition-colors border-b border-stone-100 focus:outline-none">
+                            <span class="font-semibold block">3. Local Network Building</span>
+                            <span class="text-xs opacity-80 block mt-1">Influencers & Consultants</span>
+                        </button>
+                        <button onclick="updateView('content')" id="btn-content" class="text-left px-6 py-4 hover:bg-stone-50 transition-colors focus:outline-none">
+                            <span class="font-semibold block">4. Targeted Content</span>
+                            <span class="text-xs opacity-80 block mt-1">Success Stories & Inclusivity</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- USP Summary Card -->
+                <div class="bg-teal-50 rounded-xl p-6 border border-teal-100">
+                    <h4 class="font-bold text-teal-900 mb-2">NDIM Value Proposition</h4>
+                    <p class="text-sm text-teal-800 mb-4">The core message to communicate across all channels:</p>
+                    <ul class="space-y-2 text-sm text-teal-700">
+                        <li class="flex items-start"><span class="mr-2">🔹</span> Tech-enabled PGDM Program</li>
+                        <li class="flex items-start"><span class="mr-2">🔹</span> 1st & Only Mentor School of India</li>
+                        <li class="flex items-start"><span class="mr-2">🔹</span> Japan Centre of Excellence</li>
+                        <li class="flex items-start"><span class="mr-2">🔹</span> Korea Centre of Excellence</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Right Column: Dynamic Content & Visuals -->
+            <div class="lg:col-span-8 space-y-6">
+                
+                <!-- Dynamic Detail View -->
+                <div id="detail-panel" class="bg-white rounded-xl shadow-sm p-6 border border-stone-200 min-h-[200px] transition-all duration-300">
+                    <h3 id="panel-title" class="text-xl font-bold text-stone-800 mb-3">Speaking Opportunities</h3>
+                    <div id="panel-content" class="text-stone-600 space-y-4">
+                        <p>We need to connect with top universities and MBA coaching institutes in the North East states where we can present NDIM's programs directly to students.</p>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-100">
+                            <h5 class="font-semibold text-stone-800 text-sm mb-2">Key Action Items:</h5>
+                            <ul class="list-disc list-inside text-sm space-y-1">
+                                <li>Identify top universities in the region.</li>
+                                <li>Locate key MBA coaching institutes.</li>
+                                <li>Facilitate speaking slots to build direct relationships.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Analytics Section -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Chart 1: Focus Distribution -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-stone-200 flex flex-col items-center">
+                        <h4 class="text-sm font-bold text-stone-500 uppercase tracking-wide mb-4 w-full text-left">Strategic Focus Areas</h4>
+                        <div class="chart-container">
+                            <canvas id="strategyChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-stone-400 mt-4">
+                            Distribution of core initiatives requested in the proposal.
+                        </p>
+                    </div>
+
+                    <!-- Chart 2: Stakeholder Ecosystem -->
+                    <div class="bg-white rounded-xl shadow-sm p-6 border border-stone-200 flex flex-col items-center">
+                        <h4 class="text-sm font-bold text-stone-500 uppercase tracking-wide mb-4 w-full text-left">Target Stakeholders</h4>
+                        <div class="chart-container">
+                            <canvas id="stakeholderChart"></canvas>
+                        </div>
+                        <p class="text-xs text-center text-stone-400 mt-4">
+                            Key influencers identified for relationship building.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Strategy Matrix / Implementation Guide -->
+        <section>
+            <div class="mb-4">
+                <h3 class="text-xl font-bold text-stone-800">Implementation Matrix</h3>
+                <p class="text-stone-500 text-sm">A breakdown of channels and localization requirements derived from the brief.</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-teal-500 card-hover transition-transform duration-200">
+                    <h4 class="font-bold text-stone-800 mb-2">Media Mix</h4>
+                    <p class="text-stone-600 text-sm mb-4">Combining traditional and digital avenues for maximum reach.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs font-medium text-stone-500">
+                            <span>Local Newspapers</span>
+                            <span>High Priority</span>
+                        </div>
+                        <div class="w-full bg-stone-100 rounded-full h-2">
+                            <div class="bg-teal-500 h-2 rounded-full" style="width: 90%"></div>
+                        </div>
+                        <div class="flex justify-between text-xs font-medium text-stone-500 pt-1">
+                            <span>Social Media</span>
+                            <span>High Priority</span>
+                        </div>
+                        <div class="w-full bg-stone-100 rounded-full h-2">
+                            <div class="bg-teal-500 h-2 rounded-full" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-orange-400 card-hover transition-transform duration-200">
+                    <h4 class="font-bold text-stone-800 mb-2">Localization Strategy</h4>
+                    <p class="text-stone-600 text-sm mb-4">Ensuring resonance with the regional audience.</p>
+                    <div class="flex flex-col space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">A</div>
+                            <span class="text-sm text-stone-700">Bilingual Ads (English + Local)</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">B</div>
+                            <span class="text-sm text-stone-700">Region-specific Success Stories</span>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600 font-bold text-xs">C</div>
+                            <span class="text-sm text-stone-700">Cultural Inclusivity Messaging</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="bg-white p-6 rounded-xl shadow-sm border-t-4 border-indigo-500 card-hover transition-transform duration-200">
+                    <h4 class="font-bold text-stone-800 mb-2">Key Outcome</h4>
+                    <p class="text-stone-600 text-sm mb-4">Primary goal of this engagement.</p>
+                    <div class="flex items-center justify-center h-24 bg-indigo-50 rounded-lg">
+                        <div class="text-center">
+                            <span class="block text-2xl font-bold text-indigo-700">Admissions</span>
+                            <span class="text-xs text-indigo-500 font-semibold uppercase tracking-wider">High-Quality Candidates</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-400 py-8 mt-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm">Interactive Brief generated for NDIM Strategy Planning.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Data derived specifically from the provided email content
+        const strategyData = {
+            speaking: {
+                title: "1. Speaking Opportunities",
+                content: "We need to connect with top universities and MBA coaching institutes in the North East states where we can present NDIM's programs directly to students. This allows us to explain our unique value proposition face-to-face.",
+                actionItems: [
+                    "Identify top Universities in NE States",
+                    "Identify leading MBA Coaching Institutes",
+                    "Secure speaking slots for NDIM representatives",
+                    "Presentation focus: Tech-enabled PGDM, Mentor School status"
+                ],
+                color: "teal"
+            },
+            advertising: {
+                title: "2. Strategic Advertising",
+                content: "We need to establish NDIM's brand presence through targeted advertising campaigns. It is critical to communicate in both English and local languages to ensure the message resonates.",
+                actionItems: [
+                    "Select popular local newspapers for print ads",
+                    "Identify high-ROI digital & social media platforms",
+                    "Design bilingual creative assets (English + Local)",
+                    "Focus on ROI-based ad spend"
+                ],
+                color: "orange"
+            },
+            network: {
+                title: "3. Local Network Building",
+                content: "We need to identify and connect with the right people in the North East who can support our recruitment efforts and influence students' higher education decisions.",
+                actionItems: [
+                    "Connect with Education Consultants",
+                    "Engage School Principals & College Professors",
+                    "Activate Alumni Networks in the region",
+                    "Partner with Community Leaders"
+                ],
+                color: "indigo"
+            },
+            content: {
+                title: "4. Targeted Content",
+                content: "Develop marketing materials and literature that specifically appeal to students from the North East region, addressing their specific concerns and aspirations.",
+                actionItems: [
+                    "Highlight student Success Stories from NE",
+                    "Showcase specific Career Outcomes",
+                    "Emphasize Cultural Inclusivity at NDIM campus",
+                    "Address regional specific concerns"
+                ],
+                color: "rose"
+            }
+        };
+
+        // Current active state
+        let currentTab = 'speaking';
+
+        // Function to update the text content
+        function updateView(tabKey) {
+            // Update active state
+            currentTab = tabKey;
+            
+            // Update Buttons
+            document.querySelectorAll('button[id^="btn-"]').forEach(btn => {
+                btn.classList.remove('active-tab');
+                btn.classList.add('border-b', 'border-stone-100'); // Reset border
+            });
+            const activeBtn = document.getElementById(`btn-${tabKey}`);
+            activeBtn.classList.add('active-tab');
+            activeBtn.classList.remove('border-b', 'border-stone-100');
+
+            // Get Data
+            const data = strategyData[tabKey];
+            
+            // Update Content Panel
+            const panel = document.getElementById('detail-panel');
+            // Simple fade effect via opacity
+            panel.style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('panel-title').innerText = data.title;
+                
+                // Build HTML for content
+                let htmlContent = `<p class="mb-4 leading-relaxed">${data.content}</p>`;
+                htmlContent += `<div class="bg-${data.color}-50 p-4 rounded-lg border border-${data.color}-100">`;
+                htmlContent += `<h5 class="font-semibold text-${data.color}-900 text-sm mb-2">Key Action Items:</h5>`;
+                htmlContent += `<ul class="list-disc list-inside text-sm space-y-1 text-${data.color}-800">`;
+                data.actionItems.forEach(item => {
+                    htmlContent += `<li>${item}</li>`;
+                });
+                htmlContent += `</ul></div>`;
+
+                document.getElementById('panel-content').innerHTML = htmlContent;
+                panel.style.opacity = '1';
+                
+                // Update chart highlight (optional visual feedback)
+                updateChartHighlight(tabKey);
+
+            }, 200);
+        }
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // Chart 1: Strategy Mix
+            const ctx1 = document.getElementById('strategyChart').getContext('2d');
+            window.strategyChart = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Speaking Ops', 'Advertising', 'Networking', 'Content'],
+                    datasets: [{
+                        data: [25, 25, 25, 25], // Equal weight implied by the 4 points structure
+                        backgroundColor: [
+                            '#0d9488', // Teal (Speaking)
+                            '#f97316', // Orange (Ads)
+                            '#6366f1', // Indigo (Network)
+                            '#f43f5e'  // Rose (Content)
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom', labels: { usePointStyle: true, font: { size: 10 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '70%'
+                }
+            });
+
+            // Chart 2: Stakeholder Ecosystem
+            const ctx2 = document.getElementById('stakeholderChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'bar',
+                data: {
+                    labels: ['Consultants', 'Principals', 'Professors', 'Alumni', 'Leaders'],
+                    datasets: [{
+                        label: 'Influence Potential',
+                        data: [90, 85, 80, 75, 70], // Hypothetical weighting based on typical recruitment funnel
+                        backgroundColor: '#57534e', // Stone-600
+                        borderRadius: 4,
+                        barPercentage: 0.6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: { 
+                            beginAtZero: true,
+                            display: false, // Hide Y axis labels for cleaner look
+                            grid: { display: false }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10 } }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: () => 'Target Stakeholder',
+                                label: (ctx) => `Priority Level: High`
+                            }
+                        }
+                    }
+                }
+            });
+        });
+
+        function updateChartHighlight(tabKey) {
+            // Highlighting logic for the donut chart based on selection
+            if(window.strategyChart) {
+                const map = { 'speaking': 0, 'advertising': 1, 'network': 2, 'content': 3 };
+                const index = map[tabKey];
+                
+                // Reset colors
+                const baseColors = ['#0d9488', '#f97316', '#6366f1', '#f43f5e'];
+                const bgColors = baseColors.map((c, i) => i === index ? c : '#e5e7eb'); // Gray out others
+                
+                window.strategyChart.data.datasets[0].backgroundColor = bgColors;
+                window.strategyChart.update();
+            }
+        }
+    </script>
+</body>
+</html>
