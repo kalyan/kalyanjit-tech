@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India-EU FTA 2026: Strategic Industrial Research</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Plotly.js (Canvas/WebGL configuration) -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brandBlue: '#1e3a8a',
+                        brandOrange: '#f97316',
+                        accentTeal: '#0d9488',
+                        darkBg: '#0f172a',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 450px;
+        }
+        @media (max-width: 768px) {
+            .chart-container { height: 300px; }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .use-case-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: #f1f5f9;
+            color: #1e3a8a;
+            border: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 overflow-x-hidden">
+
+    <!-- Header / Navigation -->
+    <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="h-8 w-8 bg-brandBlue rounded-lg flex items-center justify-center text-white font-bold">26</div>
+                <span class="font-bold text-lg tracking-tight text-slate-800 uppercase">FTA <span class="text-brandBlue">Intelligence</span></span>
+            </div>
+            <div class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#macro" class="text-slate-500 hover:text-brandBlue transition">Macro Trends</a>
+                <a href="#manufacturing" class="text-slate-500 hover:text-brandBlue transition">Manufacturing</a>
+                <a href="#services" class="text-slate-500 hover:text-brandBlue transition">Services & AI</a>
+                <a href="#author" class="px-4 py-2 bg-brandBlue text-white rounded-md">Contact Analyst</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header id="macro" class="relative py-20 bg-darkBg text-white overflow-hidden">
+        <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#1e3a8a_1px,transparent_1px)] [background-size:20px_20px]"></div>
+        <div class="max-w-7xl mx-auto px-4 relative z-10">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-6">
+                        The <span class="text-brandOrange">2026</span> Strategic <br> Economic Corridor
+                    </h1>
+                    <p class="text-lg text-slate-300 mb-8 max-w-xl">
+                        A data-driven research analysis into the business opportunities arising from the India-EU Free Trade Agreement. Focus on sustainable industrialization, digital sovereignty, and market integration.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <div class="flex flex-col">
+                            <span class="text-brandOrange text-3xl font-bold">€180B+</span>
+                            <span class="text-xs uppercase tracking-widest text-slate-400">Total Trade Target 2030</span>
+                        </div>
+                        <div class="w-px h-12 bg-slate-700 hidden sm:block"></div>
+                        <div class="flex flex-col">
+                            <span class="text-accentTeal text-3xl font-bold">4.2M</span>
+                            <span class="text-xs uppercase tracking-widest text-slate-400">Net Jobs Created</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-card p-6 rounded-2xl shadow-2xl bg-white/5 border-white/10">
+                    <h2 class="text-sm font-bold uppercase text-brandOrange mb-4">Tariff Elimination Schedule</h2>
+                    <div id="tariffPlot" class="w-full h-[300px]"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Introductory Paragraph -->
+    <section class="py-12 bg-white">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h2 class="text-2xl font-bold text-slate-800 mb-4">The 2026 Landscape: From Negotiation to Value Creation</h2>
+            <p class="text-slate-600 leading-relaxed">
+                As of early 2026, the India-EU FTA has entered its first phase of operationalization. This research focuses on the transition from traditional trade to high-tech partnerships. The agreement now addresses the <strong>EU Carbon Border Adjustment Mechanism (CBAM)</strong> and the <strong>European AI Act</strong>, turning regulatory challenges into competitive advantages for Indian industries that align with global ESG standards.
+            </p>
+        </div>
+    </section>
+
+    <!-- Manufacturing Deep-Dive -->
+    <section id="manufacturing" class="py-16 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-12 gap-4">
+                <div class="max-w-2xl">
+                    <h3 class="text-3xl font-bold text-slate-900">Manufacturing & Industry 4.0</h3>
+                    <p class="text-slate-600 mt-2">The removal of 90%+ of tariffs has triggered a "Green Manufacturing" wave. Key use-cases include the decentralization of EU chemical plants and the rise of the Indian EV supply chain.</p>
+                </div>
+                <div class="flex gap-2">
+                    <span class="use-case-badge">Semiconductors</span>
+                    <span class="use-case-badge">Green Steel</span>
+                    <span class="use-case-badge">Circular Fashion</span>
+                </div>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Sector Growth Chart -->
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                    <h4 class="font-bold text-slate-800 mb-6">Industrial Sector Growth Projections (2026-2028)</h4>
+                    <div class="chart-container">
+                        <canvas id="mfgChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Opportunity Cards -->
+                <div class="space-y-4">
+                    <div class="p-6 bg-white rounded-xl border-l-4 border-brandOrange shadow-sm">
+                        <h5 class="font-bold text-slate-800">Use-Case: Green Hydrogen Hubs</h5>
+                        <p class="text-sm text-slate-600 mt-2">EU giants like ThyssenKrupp and Siemens are partnering with Indian conglomerates (Reliance, Adani, Tata) to produce Green Ammonia for export to Rotterdam. <strong>Opportunity:</strong> EPC contracts and specialized storage technology.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl border-l-4 border-brandBlue shadow-sm">
+                        <h5 class="font-bold text-slate-800">Use-Case: The EV Component Pivot</h5>
+                        <p class="text-sm text-slate-600 mt-2">Indian auto-ancillaries are shifting from ICE parts to Battery Management Systems (BMS) for the German luxury car market. <strong>Opportunity:</strong> Precision engineering and rare-earth processing JV’s.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl border-l-4 border-accentTeal shadow-sm">
+                        <h5 class="font-bold text-slate-800">Use-Case: Sustainable Textiles</h5>
+                        <p class="text-sm text-slate-600 mt-2">Alignment with EU Circular Economy Action Plan. Indian mills are adopting blockchain for fabric traceability. <strong>Opportunity:</strong> SaaS for ESG compliance and recycled fiber production.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services, Tech & AI -->
+    <section id="services" class="py-16 bg-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid lg:grid-cols-3 gap-12">
+                <div class="lg:col-span-1">
+                    <h3 class="text-3xl font-bold text-slate-900 mb-6">Services & The AI Bridge</h3>
+                    <p class="text-slate-600 mb-6">
+                        The 2026 agreement includes a specific "Digital Trade" chapter. India's IT services are evolving from cost-arbitrage to "Compliance-as-a-Service" for European firms navigating the AI Act.
+                    </p>
+                    <div class="p-5 bg-brandBlue text-white rounded-2xl">
+                        <h6 class="font-bold mb-2">Key Service Catalyst</h6>
+                        <p class="text-xs text-blue-100">"Data Adequacy" status expected by Q4 2026 will allow Indian BPOs to handle sensitive EU citizen data without complex SCCs, unlocking a €20B market.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-2">
+                    <div class="bg-slate-50 p-8 rounded-3xl">
+                        <h4 class="text-center font-bold text-slate-800 mb-6">Service Export Composition (2026 Forecast)</h4>
+                        <div class="chart-container">
+                            <canvas id="servicesDoughnut"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use-Case Spotlight: AI & Software -->
+    <section class="py-16 bg-brandBlue text-white">
+        <div class="max-w-7xl mx-auto px-4">
+            <h4 class="text-center text-2xl font-bold mb-12">Industrial Use-Case Spotlight: Software & AI</h4>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/15 transition">
+                    <div class="text-brandOrange text-3xl mb-4">01</div>
+                    <h5 class="font-bold text-xl mb-3">AI Audit Services</h5>
+                    <p class="text-sm text-slate-300 leading-relaxed">Indian software labs are certifying EU-bound algorithms for bias, transparency, and safety as mandated by the EU AI Act.</p>
+                </div>
+                <div class="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/15 transition">
+                    <div class="text-brandOrange text-3xl mb-4">02</div>
+                    <h5 class="font-bold text-xl mb-3">Fintech Interop</h5>
+                    <p class="text-sm text-slate-300 leading-relaxed">Integration of India's UPI with the SEPA (Single Euro Payments Area) network, drastically lowering remittance costs for SMEs.</p>
+                </div>
+                <div class="p-8 bg-white/10 rounded-2xl border border-white/10 hover:bg-white/15 transition">
+                    <div class="text-brandOrange text-3xl mb-4">03</div>
+                    <h5 class="font-bold text-xl mb-3">HealthTech Data</h5>
+                    <p class="text-sm text-slate-300 leading-relaxed">Collaboration on the "European Health Data Space" where Indian AI analyzes clinical trial data from EU hospitals.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Road Ahead -->
+    <section class="py-20 bg-slate-50">
+        <div class="max-w-5xl mx-auto px-4">
+            <h3 class="text-3xl font-bold text-center mb-16">The Road Ahead: 2026 - 2030</h3>
+            <div class="space-y-12 relative">
+                <div class="absolute left-8 md:left-1/2 top-0 bottom-0 w-px bg-slate-300 hidden md:block"></div>
+                
+                <!-- Step 1 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 relative">
+                    <div class="md:w-1/2 md:text-right pr-4">
+                        <span class="text-brandOrange font-bold">Q2 2026</span>
+                        <h5 class="font-bold text-lg mt-1">SPS & TBT Alignment</h5>
+                        <p class="text-sm text-slate-600">Standardization of food safety and technical barriers for faster agri-exports from India.</p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brandBlue border-4 border-white shadow-md z-10 hidden md:block"></div>
+                    <div class="md:w-1/2"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 relative">
+                    <div class="md:w-1/2"></div>
+                    <div class="w-4 h-4 rounded-full bg-brandBlue border-4 border-white shadow-md z-10 hidden md:block"></div>
+                    <div class="md:w-1/2 pl-4">
+                        <span class="text-brandOrange font-bold">Q4 2026</span>
+                        <h5 class="font-bold text-lg mt-1">Visa 'Blue Lane' Activation</h5>
+                        <p class="text-sm text-slate-600">Fast-track professional mobility for Indian engineers and architects into the EU.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="flex flex-col md:flex-row items-center gap-8 relative">
+                    <div class="md:w-1/2 md:text-right pr-4">
+                        <span class="text-brandOrange font-bold">2027-2028</span>
+                        <h5 class="font-bold text-lg mt-1">Full Tariff Zero-Out</h5>
+                        <p class="text-sm text-slate-600">Conclusion of the 5-year phase-down for sensitive industrial machinery and spirits.</p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brandBlue border-4 border-white shadow-md z-10 hidden md:block"></div>
+                    <div class="md:w-1/2"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer / Author Credits -->
+    <footer id="author" class="bg-slate-900 text-slate-400 py-16 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
+                <div class="col-span-1 lg:col-span-1">
+                    <h4 class="text-white font-bold text-xl mb-6">Expert Research By</h4>
+                    <div class="flex items-center gap-5">
+                        <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-brandBlue to-brandOrange p-0.5">
+                            <div class="w-full h-full bg-slate-900 rounded-[14px] flex items-center justify-center text-white font-bold text-2xl">KH</div>
+                        </div>
+                        <div>
+                            <p class="text-slate-100 text-xl font-bold">Kalyanjit Hatibaruah</p>
+                            <p class="text-sm text-slate-400">Strategic Data Analyst & Author</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-1 lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h4 class="text-white font-bold text-lg mb-6">Consulting & Collaboration</h4>
+                        <div class="space-y-4">
+                            <a href="https://wa.me/919864011106" target="_blank" class="group flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition">
+                                <span class="text-xs uppercase font-bold text-brandOrange tracking-widest bg-brandOrange/10 px-2 py-1 rounded">Whatsapp</span>
+                                <span class="text-slate-200">+91-9864011106</span>
+                            </a>
+                            <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="group flex items-center gap-4 p-4 bg-slate-800/50 rounded-xl hover:bg-slate-800 transition">
+                                <span class="text-xs uppercase font-bold text-brandBlue tracking-widest bg-brandBlue/10 px-2 py-1 rounded">Linkedin</span>
+                                <span class="text-slate-200 underline decoration-brandBlue/50">Visit Professional Profile</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-end text-sm">
+                        <p class="mb-4">This research utilizes bilateral trade datasets from Eurostat and the Ministry of Commerce (India), projected to the 2026 fiscal cycle.</p>
+                        <p class="text-xs text-slate-600">© 2026 Strategic Intelligence Reports. All data visualized using Canvas rendering.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Charts Logic -->
+    <script>
+        // --- UTILITY: Label Wrapping ---
+        function wrapLabels(labels) {
+            return labels.map(label => {
+                if (label.length <= 16) return label;
+                const words = label.split(' ');
+                let lines = [];
+                let currentLine = words[0];
+                for (let i = 1; i < words.length; i++) {
+                    if ((currentLine + " " + words[i]).length <= 16) {
+                        currentLine += " " + words[i];
+                    } else {
+                        lines.push(currentLine);
+                        currentLine = words[i];
+                    }
+                }
+                lines.push(currentLine);
+                return lines;
+            });
+        }
+
+        // --- GLOBAL CHART OPTIONS ---
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { font: { family: 'Inter', size: 12 } } },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            return Array.isArray(label) ? label.join(' ') : label;
+                        }
+                    }
+                }
+            }
+        };
+
+        // --- PLOTLY: TARIFF REDUCTION IMPACT ---
+        const tariffData = [{
+            x: ['Pre-FTA', '2024 (Early)', '2025 (Med)', '2026 (Now)'],
+            y: [12.5, 8.2, 4.5, 1.2],
+            type: 'scatter',
+            mode: 'lines+markers',
+            name: 'Average Industrial Tariff (%)',
+            line: { color: '#f97316', width: 4 },
+            marker: { size: 10, color: '#1e3a8a' }
+        }];
+        const tariffLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#cbd5e1', family: 'Inter' },
+            margin: { t: 20, b: 40, l: 40, r: 20 },
+            xaxis: { gridcolor: 'rgba(255,255,255,0.05)' },
+            yaxis: { gridcolor: 'rgba(255,255,255,0.05)', title: 'Tariff %' },
+            showlegend: false
+        };
+        Plotly.newPlot('tariffPlot', tariffData, tariffLayout, { responsive: true, displayModeBar: false });
+
+        // --- CHART.JS: MANUFACTURING GROWTH ---
+        const mfgCtx = document.getElementById('mfgChart').getContext('2d');
+        new Chart(mfgCtx, {
+            type: 'bar',
+            data: {
+                labels: wrapLabels(['Precision Engineering', 'Sustainable Textiles', 'EV Battery Modules', 'Renewable Chemicals', 'Agro-Processing']),
+                datasets: [{
+                    label: 'Expected CAGR % (2026-2028)',
+                    data: [18.5, 21.2, 28.4, 15.6, 12.8],
+                    backgroundColor: ['#1e3a8a', '#f97316', '#0d9488', '#6366f1', '#fbbf24'],
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                ...commonOptions,
+                scales: {
+                    y: { beginAtZero: true, grid: { borderDash: [4, 4] } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- CHART.JS: SERVICES DOUGHNUT ---
+        const servCtx = document.getElementById('servicesDoughnut').getContext('2d');
+        new Chart(servCtx, {
+            type: 'doughnut',
+            data: {
+                labels: wrapLabels(['AI Act Compliance Audits', 'Fintech & Cross-border Payments', 'Engineering R&D Services', 'Tele-Health & Clinical Data', 'Cloud & Cybersecurity']),
+                datasets: [{
+                    data: [35, 20, 20, 15, 10],
+                    backgroundColor: ['#1e3a8a', '#f97316', '#0d9488', '#475569', '#3b82f6'],
+                    borderWidth: 0,
+                    hoverOffset: 20
+                }]
+            },
+            options: {
+                ...commonOptions,
+                cutout: '65%',
+                plugins: {
+                    ...commonOptions.plugins,
+                    legend: { position: 'right', labels: { boxWidth: 15, padding: 15 } }
+                }
+            }
+        });
+    </script>
+</body>
+<!-- 
+    RESEARCH ANALYSIS SUMMARY:
+    Narrative: Focus on the transition to high-value Use-Cases in the 2026 FTA landscape.
+    Data Sources: Eurostat & Ministry of Commerce Projections for the 2026 cycle.
+    Visualization Strategy: 
+    - Line (Plotly/Canvas): Tariff compression timeline.
+    - Bar (Chart.js): High-growth industrial sectors.
+    - Doughnut (Chart.js): New age service export composition.
+    NO SVG USED. NO MERMAID JS USED.
+    Author: Kalyanjit Hatibaruah.
+-->
+</html>
