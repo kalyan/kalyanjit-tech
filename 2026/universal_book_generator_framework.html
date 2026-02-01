@@ -3,366 +3,534 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenBook: Universal Production Framework | Prompt Engine Edition</title>
+    <title>GenBook: Universal Production Framework | Command Center</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     
-    <!-- Chosen Palette: Architectural Slate & Indigo -->
+    <!-- Chosen Palette: Warm Neutral Studio with Indigo Accents -->
     
     <!-- Application Structure Plan:
-         1. Header: Branding for Kalyanjit Hatibaruah.
-         2. Dashboard: High-level metrics on market coverage.
-         3. Taxonomy: Industry-specific deep dives.
-         4. Style Library: Visual encyclopedia of 45+ styles.
-         5. Prompt Lab: (NEW) Interactive tool to construct complex AI prompts based on variables.
-         6. Production Sim: Tactical workflow execution.
-         7. Footer: Professional contact info.
+         1. Persistent Global Header: Contains high-visibility navigation links to the SPA's core features (Dashboard, Industry, Styles, Prompt Lab, SIM).
+         2. Dynamic Dashboard: Overview of market reach and the Lead Architect profile for Kalyanjit Hatibaruah.
+         3. Industry Matrix: Interactive cards detailing metadata logic for 10+ specific sectors.
+         4. Style Encyclopedia: A categorized visual library of 50+ artistic and technical methodologies.
+         5. Prompt Engineering Lab: A functional tool that compiles industry-anchored prompts for AI generation.
+         6. Production SIM: A terminal-style environment simulating the technical asset production workflow.
+         Chosen to provide an intuitive, non-linear experience that moves from high-level strategy to tactical implementation.
     -->
 
     <!-- Visualization & Content Choices:
-         - Market Saturation (Doughnut): Displays industry-wide reach.
-         - Prompt Terminal (HTML/JS): A dynamic text generator that compiles prompts into a copyable block.
-         - NO SVG/Mermaid.
+         - Market Saturation (Doughnut Chart): Displays industry breadth using Chart.js.
+         - Industry Grid: Interactive Tailwind-styled cards for browsing metadata.
+         - Prompt Terminal: A code-aesthetic interface for live string compilation.
+         - Pipeline SIM: Sequence-based terminal simulation for production modeling.
+         - NO SVG/Mermaid: All icons use Unicode and CSS-based geometry.
     -->
+    
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
-        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; }
-        .nav-item.active { border-bottom: 2px solid #6366F1; color: #6366F1; }
-        .style-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .style-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        .custom-scroll::-webkit-scrollbar { width: 6px; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
+        body { font-family: 'Inter', sans-serif; background-color: #FDFCFB; color: #1F2937; }
+        .font-mono { font-family: 'Fira Code', monospace; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 320px; }
         
-        .prompt-token {
-            display: inline-block;
-            background: #EEF2FF;
+        /* Persistent Navigation Styling */
+        .nav-link {
+            transition: all 0.2s ease-in-out;
+            border-bottom: 2px solid transparent;
+        }
+        .nav-link:hover { color: #4F46E5; }
+        .nav-link.active {
             color: #4F46E5;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-weight: 600;
-            border: 1px solid #C7D2FE;
-            margin: 0 2px;
+            background-color: #F5F3FF;
+            border-bottom-color: #4F46E5;
         }
+
+        .section-view { animation: fadeIn 0.35s ease-out forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        @keyframes pulse-soft {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+        /* Terminal Styling for SIM */
+        .terminal-bg {
+            background: #0F172A;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border: 1px solid #1E293B;
+            height: 400px;
+            overflow-y: auto;
         }
-        .pulse-active { animation: pulse-soft 2s infinite; }
+        .terminal-text { color: #10B981; font-family: 'Fira Code', monospace; font-size: 0.875rem; line-height: 1.6; }
+        
+        .card-hover { transition: all 0.25s ease; cursor: pointer; border: 1px solid #E5E7EB; }
+        .card-hover:hover { border-color: #4F46E5; transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); }
+
+        /* Custom Scrollbar for Terminal */
+        .terminal-bg::-webkit-scrollbar { width: 4px; }
+        .terminal-bg::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
-    <!-- Navigation -->
-    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
+    <!-- Persistent Header Navigation -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
+            <div class="flex justify-between h-18 items-center py-4">
+                <!-- Brand Identity -->
                 <div class="flex items-center">
-                    <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold mr-3 shadow-indigo-200 shadow-lg">KH</div>
+                    <div class="h-10 w-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold mr-4 shadow-lg shadow-indigo-100">KH</div>
                     <div class="flex flex-col">
-                        <span class="font-bold text-lg leading-tight">GenBook Framework</span>
-                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Architect: Kalyanjit Hatibaruah</span>
+                        <span class="font-bold text-xl tracking-tight text-gray-900 leading-none">GenBook Framework</span>
+                        <span class="text-[10px] text-gray-400 uppercase tracking-widest font-bold mt-1">Lead Architect: Kalyanjit Hatibaruah</span>
                     </div>
                 </div>
-                <div class="hidden md:flex space-x-6">
-                    <button onclick="switchTab('dashboard')" class="nav-item active px-1 pt-1 text-sm font-medium">Dashboard</button>
-                    <button onclick="switchTab('taxonomy')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Industry</button>
-                    <button onclick="switchTab('styles')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Styles</button>
-                    <button onclick="switchTab('promptlab')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Prompt Lab</button>
-                    <button onclick="switchTab('simulator')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Sim</button>
-                </div>
-                <div class="flex items-center">
-                    <a href="https://wa.me/919864011106" class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-indigo-700 transition shadow-md">Consult Architect</a>
+
+                <!-- Feature Navigation Links -->
+                <nav class="hidden md:flex space-x-1 items-center" id="global-nav">
+                    <button onclick="switchTab('dashboard')" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold active">Dashboard</button>
+                    <button onclick="switchTab('industry')" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-500">Industry Matrix</button>
+                    <button onclick="switchTab('styles')" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-500">Style Library</button>
+                    <button onclick="switchTab('promptlab')" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-500">Prompt Lab</button>
+                    <button onclick="switchTab('simulator')" class="nav-link px-4 py-2 rounded-lg text-sm font-semibold text-gray-500">Production SIM</button>
+                </nav>
+
+                <!-- Action Button -->
+                <div class="flex items-center gap-3">
+                    <a href="https://wa.me/919864011106" class="bg-green-600 text-white px-5 py-2 rounded-full text-xs font-bold hover:bg-green-700 transition shadow-md flex items-center">
+                        <span class="mr-2">📱</span> Contact Architect
+                    </a>
                 </div>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Content Sections -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        <!-- View: Dashboard -->
-        <div id="view-dashboard" class="space-y-8 animate-fade-in">
-            <div class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 flex flex-col md:flex-row gap-8 items-center">
-                <div class="flex-grow">
-                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">Unified Production System</h1>
-                    <p class="text-slate-600 text-lg mb-6 leading-relaxed">
-                        A systematic approach to generating professional books and animated short films. This framework, developed by <strong>Kalyanjit Hatibaruah</strong>, leverages industry-specific metadata to drive high-fidelity AI generation.
+        <!-- SECTION: DASHBOARD -->
+        <div id="view-dashboard" class="section-view space-y-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-2 bg-white rounded-3xl p-10 border border-gray-100 shadow-sm relative overflow-hidden">
+                    <h1 class="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Systemic Content Engineering</h1>
+                    <p class="text-gray-500 text-lg leading-relaxed mb-10 max-w-2xl">
+                        A multidimensional framework designed by <strong>Kalyanjit Hatibaruah</strong> for the industrial-scale generation of books and animated short films. Anchoring <strong>22+ production sectors</strong> through unique metadata logic and aesthetic profiles.
                     </p>
-                    <div class="flex flex-wrap gap-4">
-                        <div class="flex items-center text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full">
-                            <span class="mr-2">📍</span> Guwahati, India
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="p-5 bg-indigo-50 rounded-2xl border border-indigo-100 text-center">
+                            <span class="block text-2xl font-bold text-indigo-600">22+</span>
+                            <span class="text-[10px] uppercase font-bold text-indigo-400 tracking-tighter">Domain Contexts</span>
                         </div>
-                        <div class="flex items-center text-sm font-medium text-indigo-600 bg-indigo-50 px-3 py-1.5 rounded-full">
-                            <span class="mr-2">🔗</span> linkedin.com/in/kalyanjit
+                        <div class="p-5 bg-pink-50 rounded-2xl border border-pink-100 text-center">
+                            <span class="block text-2xl font-bold text-pink-600">55+</span>
+                            <span class="text-[10px] uppercase font-bold text-pink-400 tracking-tighter">Aesthetic Styles</span>
+                        </div>
+                        <div class="p-5 bg-emerald-50 rounded-2xl border border-emerald-100 text-center">
+                            <span class="block text-2xl font-bold text-emerald-600">12+</span>
+                            <span class="text-[10px] uppercase font-bold text-emerald-400 tracking-tighter">Pipeline Nodes</span>
+                        </div>
+                        <div class="p-5 bg-indigo-900 text-white rounded-2xl text-center shadow-xl">
+                            <span class="block text-2xl font-bold">1.2</span>
+                            <span class="text-[10px] uppercase font-bold opacity-70 tracking-tighter">Current Build</span>
                         </div>
                     </div>
                 </div>
-                <div class="flex-shrink-0 grid grid-cols-2 gap-3">
-                    <div class="p-4 bg-indigo-900 text-white rounded-xl text-center">
-                        <div class="text-2xl font-bold">18+</div>
-                        <div class="text-[10px] uppercase opacity-70">Sectors</div>
+                
+                <div class="bg-gray-900 rounded-3xl p-8 text-white relative overflow-hidden flex flex-col justify-between shadow-2xl">
+                    <div class="relative z-10">
+                        <span class="text-indigo-400 text-[11px] font-bold uppercase tracking-widest block mb-2">Lead Systems Architect</span>
+                        <h2 class="text-3xl font-bold mb-4">Kalyanjit Hatibaruah</h2>
+                        <p class="text-gray-400 text-sm leading-relaxed mb-8">Expert in the synthesis of information systems with high-fidelity generative visual pipelines.</p>
+                        <div class="space-y-3">
+                            <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="flex items-center text-xs font-semibold hover:text-indigo-300 transition group">
+                                <span class="w-8 h-8 bg-gray-800 rounded flex items-center justify-center mr-3 font-mono group-hover:bg-indigo-900 transition">in</span> LinkedIn Profile
+                            </a>
+                            <div class="flex items-center text-xs font-semibold text-gray-300">
+                                <span class="w-8 h-8 bg-gray-800 rounded flex items-center justify-center mr-3 font-mono">WA</span> +91-9864011106
+                            </div>
+                        </div>
                     </div>
-                    <div class="p-4 bg-slate-800 text-white rounded-xl text-center">
-                        <div class="text-2xl font-bold">45+</div>
-                        <div class="text-[10px] uppercase opacity-70">Styles</div>
-                    </div>
+                    <div class="absolute -right-16 -bottom-16 w-60 h-60 border-[15px] border-gray-800 rounded-full opacity-40"></div>
                 </div>
             </div>
 
-            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                <h2 class="text-xl font-bold text-slate-900 mb-6">Framework Ecosystem Coverage</h2>
+            <div class="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="font-bold text-gray-900 text-xl">Sector Integration Matrix</h3>
+                    <span class="text-xs text-gray-400 font-medium">Domain Saturation Analysis</span>
+                </div>
                 <div class="chart-container">
-                    <canvas id="ecosystemChart"></canvas>
+                    <canvas id="marketDepthChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- View: Taxonomy -->
-        <div id="view-taxonomy" class="hidden space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                <div class="lg:col-span-1 space-y-2" id="industry-nav"></div>
-                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-8 min-h-[500px]" id="industry-content">
-                    <div class="text-center py-20 opacity-30">
-                        <h3 class="text-xl font-bold">Select an Industry</h3>
-                    </div>
+        <!-- SECTION: INDUSTRY MATRIX -->
+        <div id="view-industry" class="hidden section-view space-y-8">
+            <div class="border-b border-gray-100 pb-6">
+                <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Industry-Specific Contexts</h2>
+                <p class="text-gray-500 mt-2">Specialized metadata anchors required for professional-grade content generation.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="industry-grid">
+                <!-- Dynamically populated by JS -->
+            </div>
+        </div>
+
+        <!-- SECTION: STYLE LIBRARY -->
+        <div id="view-styles" class="hidden section-view space-y-8">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6 border-b border-gray-100 pb-8">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900 tracking-tight">Style Encyclopedia</h2>
+                    <p class="text-gray-500 mt-2">A curated library of 50+ aesthetic methodologies mapped to cognitive goals.</p>
+                </div>
+                <div class="flex bg-gray-100 p-1.5 rounded-xl gap-1" id="style-filter-tabs">
+                    <button onclick="filterStyles('all')" class="bg-white text-indigo-600 px-5 py-2 rounded-lg text-xs font-bold shadow-sm">All Profiles</button>
+                    <button onclick="filterStyles('Technical')" class="text-gray-500 px-5 py-2 rounded-lg text-xs font-bold hover:text-indigo-600">Technical</button>
+                    <button onclick="filterStyles('Artistic')" class="text-gray-500 px-5 py-2 rounded-lg text-xs font-bold hover:text-indigo-600">Artistic</button>
+                    <button onclick="filterStyles('Narrative')" class="text-gray-500 px-5 py-2 rounded-lg text-xs font-bold hover:text-indigo-600">Narrative</button>
                 </div>
             </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="style-grid">
+                <!-- Dynamically populated by JS -->
+            </div>
         </div>
 
-        <!-- View: Styles -->
-        <div id="view-styles" class="hidden space-y-8">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="style-grid"></div>
-        </div>
-
-        <!-- View: Prompt Lab (NEW) -->
-        <div id="view-promptlab" class="hidden space-y-8 animate-fade-in">
-            <div class="bg-indigo-600 rounded-2xl p-8 text-white shadow-xl shadow-indigo-100 mb-8">
-                <h2 class="text-2xl font-bold mb-2">AI Prompt Engineering Lab</h2>
-                <p class="text-indigo-100 opacity-90">Construct complex multi-modal prompts by selecting variables from the architect's metadata library.</p>
+        <!-- SECTION: PROMPT LAB -->
+        <div id="view-promptlab" class="hidden section-view space-y-10">
+            <div class="bg-indigo-600 rounded-3xl p-10 text-white shadow-2xl relative overflow-hidden">
+                <h2 class="text-3xl font-bold mb-3 tracking-tight">Prompt Engineering Lab</h2>
+                <p class="text-indigo-100 opacity-90 max-w-2xl">Compile production-ready AI directives by bridging industry context with artistic styles and methodology.</p>
+                <div class="absolute right-[-20px] top-[-20px] w-40 h-40 bg-indigo-500 rounded-full blur-3xl opacity-40"></div>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Controls -->
-                <div class="lg:col-span-4 space-y-6 bg-white p-6 rounded-2xl border border-slate-200">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">1. Select Industry Context</label>
-                        <select id="prompt-industry" onchange="generatePrompt()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                            <option value="engineering">Mechanical Engineering</option>
-                            <option value="medical">Medical & Life Sciences</option>
-                            <option value="gaming">Gaming & Interactive Fiction</option>
-                            <option value="kids">Early Childhood Education</option>
-                            <option value="architecture">Architectural Visualization</option>
-                            <option value="history">Historical & Cultural Heritage</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">2. Select Visual Style</label>
-                        <select id="prompt-style" onchange="generatePrompt()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                            <option value="blueprint">Technical Blueprint</option>
-                            <option value="lowpoly">Low-Poly 3D Render</option>
-                            <option value="watercolor">Soft Watercolor Illustration</option>
-                            <option value="cyberpunk">Cyberpunk Neon Noir</option>
-                            <option value="risograph">Risograph Grainy Texture</option>
-                            <option value="papercraft">Tactile Papercraft</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">3. Generation Methodology</label>
-                        <select id="prompt-method" onchange="generatePrompt()" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                            <option value="static">Static High-Res Book Asset</option>
-                            <option value="animation">Short Film Animation Sequence</option>
-                            <option value="interactive">Interactive UI/UX Module</option>
-                            <option value="exploded">Exploded View Technical Demo</option>
-                        </select>
-                    </div>
-                    <div class="pt-4 border-t border-slate-100">
-                        <button onclick="copyPrompt()" class="w-full py-3 bg-slate-900 text-white rounded-xl font-bold flex items-center justify-center hover:bg-black transition">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                <div class="lg:col-span-4 space-y-6">
+                    <div class="bg-white p-8 rounded-3xl border border-gray-200 shadow-sm space-y-8">
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">1. Production Sector</label>
+                            <select id="lab-sector" onchange="compileLabPrompt()" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold transition">
+                                <!-- JS Injected -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">2. Visual Identity</label>
+                            <select id="lab-style" onchange="compileLabPrompt()" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold transition">
+                                <!-- JS Injected -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-3">3. Generation Mode</label>
+                            <select id="lab-method" onchange="compileLabPrompt()" class="w-full p-4 bg-gray-50 border border-gray-200 rounded-xl outline-none focus:ring-2 focus:ring-indigo-500 text-sm font-semibold transition">
+                                <option value="Static Asset Generation">Static Asset Generation</option>
+                                <option value="2.5D Layered Parallax Sequence">2.5D Layered Parallax Sequence</option>
+                                <option value="Technical Exploded View Demo">Technical Exploded View Demo</option>
+                                <option value="Cinemagraph Environmental Loop">Cinemagraph Environmental Loop</option>
+                            </select>
+                        </div>
+                        <button onclick="copyLabPrompt()" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg hover:bg-indigo-700 transition flex items-center justify-center">
                             <span class="mr-2">📋</span> Copy Compiled Prompt
                         </button>
                     </div>
                 </div>
-
-                <!-- Live Prompt View -->
-                <div class="lg:col-span-8 space-y-4">
-                    <div class="bg-slate-900 rounded-2xl p-8 min-h-[400px] shadow-2xl relative overflow-hidden flex flex-col">
-                        <div class="flex items-center justify-between mb-6 border-b border-slate-800 pb-4">
-                            <div class="flex gap-2">
-                                <span class="w-3 h-3 rounded-full bg-red-500"></span>
-                                <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
-                                <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                <div class="lg:col-span-8">
+                    <div class="bg-gray-950 rounded-3xl p-10 min-h-[480px] shadow-2xl relative flex flex-col">
+                        <div class="flex items-center justify-between mb-8 border-b border-gray-800 pb-5">
+                            <div class="flex gap-2.5">
+                                <span class="w-3.5 h-3.5 bg-red-500 rounded-full"></span>
+                                <span class="w-3.5 h-3.5 bg-yellow-500 rounded-full"></span>
+                                <span class="w-3.5 h-3.5 bg-green-500 rounded-full"></span>
                             </div>
-                            <span class="text-[10px] text-slate-500 font-mono font-bold tracking-widest">PROMPT_ENGINE_V3.0 // ARCHITECT: K. HATIBARUAH</span>
+                            <span class="text-[10px] font-mono text-gray-600 uppercase tracking-widest">Compiler v5.1 // Architect Signature Validated</span>
                         </div>
-                        
-                        <div class="flex-grow">
-                            <div id="live-prompt-display" class="font-mono text-sm sm:text-lg text-indigo-300 leading-relaxed whitespace-pre-wrap">
-                                <!-- JS Injected Prompt -->
-                            </div>
+                        <div id="compiled-prompt-box" class="font-mono text-base sm:text-lg text-indigo-400 leading-relaxed whitespace-pre-wrap flex-grow">
+                            <!-- Compiled string -->
                         </div>
-                        
-                        <div id="copy-success-msg" class="absolute bottom-4 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-1 rounded-full text-xs font-bold hidden">
-                            Copied to Clipboard!
-                        </div>
-                    </div>
-                    <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex items-start gap-4">
-                        <span class="text-xl">💡</span>
-                        <p class="text-xs text-amber-800 leading-relaxed">
-                            <strong>Architect's Tip:</strong> This prompt is optimized for high-fidelity generation. It includes negative constraints and lighting directives specific to the selected <strong>Methodology</strong>.
-                        </p>
+                        <div id="copy-toast" class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-indigo-600 text-white px-8 py-3 rounded-full text-xs font-bold hidden shadow-2xl animate-bounce">✓ Prompt Copied to Clipboard</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- View: Simulator -->
-        <div id="view-simulator" class="hidden space-y-6">
-            <!-- Simplified simulation view -->
-            <div class="bg-white rounded-2xl p-8 border border-slate-200">
-                <h3 class="font-bold text-xl mb-6">Tactical Workflow Execution</h3>
-                <div id="sim-terminal" class="bg-slate-950 text-emerald-500 p-6 rounded-xl font-mono text-xs h-64 overflow-y-auto custom-scroll">
-                    <p>// SYSTEM READY. STANDBY FOR ARCHITECT INPUT...</p>
+        <!-- SECTION: SIMULATOR -->
+        <div id="view-simulator" class="hidden section-view space-y-8">
+            <div class="max-w-4xl mx-auto space-y-6">
+                <div class="bg-white p-10 rounded-3xl border border-gray-200 shadow-sm flex flex-col md:flex-row justify-between items-center gap-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 tracking-tight">Technical Pipeline Simulator</h2>
+                        <p class="text-gray-500 text-sm mt-1">Select an industry node to simulate the production lifecycle.</p>
+                    </div>
+                    <div class="flex gap-4">
+                        <select id="sim-node" class="p-4 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold outline-none focus:ring-2 focus:ring-indigo-600">
+                            <!-- JS Injected -->
+                        </select>
+                        <button onclick="startSim()" class="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold hover:bg-black transition shadow-xl">Run Pipeline</button>
+                    </div>
+                </div>
+
+                <div id="terminal-sim" class="terminal-bg font-mono">
+                    <div class="text-gray-600 opacity-60 italic mb-2">// SYSTEM READY. AWAITING COMMANDS...</div>
+                    <div class="text-gray-600 opacity-60 italic">// ARCHITECT: K. HATIBARUAH VERIFIED.</div>
                 </div>
             </div>
         </div>
+
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-12 mt-auto">
+    <footer class="bg-white border-t border-gray-200 py-20 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                <div>
-                    <h3 class="font-bold text-slate-900 mb-4">GenBook Framework</h3>
-                    <p class="text-sm text-slate-500">A universal architecture for automated high-fidelity content creation.</p>
-                </div>
-                <div>
-                    <h3 class="font-bold text-slate-900 mb-4">Contact Architect</h3>
-                    <p class="text-sm text-slate-900 font-medium">Kalyanjit Hatibaruah</p>
-                    <div class="flex space-x-4 mt-2">
-                        <a href="https://wa.me/919864011106" class="text-xs text-indigo-600 hover:underline">WhatsApp</a>
-                        <a href="https://www.linkedin.com/in/kalyanjit" class="text-xs text-indigo-600 hover:underline">LinkedIn</a>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="col-span-2">
+                    <div class="flex items-center mb-8">
+                        <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold mr-4">KH</div>
+                        <span class="font-bold text-2xl text-gray-900 tracking-tighter">Kalyanjit Hatibaruah</span>
+                    </div>
+                    <p class="text-gray-500 text-sm leading-loose max-w-sm mb-8">
+                        Global Lead Information Architect specializing in automated content frameworks and high-fidelity production systems for technical and creative industries.
+                    </p>
+                    <div class="flex gap-8">
+                        <a href="https://www.linkedin.com/in/kalyanjit" class="text-xs font-bold text-indigo-600 uppercase tracking-widest hover:underline">LinkedIn</a>
+                        <a href="https://wa.me/919864011106" class="text-xs font-bold text-green-600 uppercase tracking-widest hover:underline">WhatsApp</a>
                     </div>
                 </div>
-                <div class="text-right">
-                    <p class="text-xs text-slate-400">&copy; 2026 Kalyanjit Hatibaruah</p>
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-widest text-gray-400 mb-8">System Scope</h4>
+                    <ul class="text-sm text-gray-500 space-y-4 font-medium">
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-600 rounded-full mr-3"></span> 22+ Industry Nodes</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-600 rounded-full mr-3"></span> 55+ Artistic Profiles</li>
+                        <li class="flex items-center"><span class="w-1.5 h-1.5 bg-indigo-600 rounded-full mr-3"></span> 12+ Pipeline Modes</li>
+                    </ul>
                 </div>
+                <div>
+                    <h4 class="font-bold text-xs uppercase tracking-widest text-gray-400 mb-8">Current Base</h4>
+                    <p class="text-sm text-gray-500 font-medium leading-loose">
+                        Guwahati, Assam, India<br>
+                        Systems Engineering Lead<br>
+                        Global Strategy Consultant
+                    </p>
+                </div>
+            </div>
+            <div class="mt-20 pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                <span>&copy; 2026 Kalyanjit Hatibaruah. All Rights Reserved.</span>
+                <span class="bg-gray-50 px-4 py-1.5 rounded-full text-gray-300">Build: 2026.02.01-v2-RESTORED</span>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- DATA ---
+        // --- DATA DEPOSITORY ---
         const industries = [
-            { id: 'eng', name: 'Mechanical Engineering', emoji: '⚙️', tag: 'Technical', desc: 'SOPs, Manuals, and Blueprints.' },
-            { id: 'med', name: 'Medical & Life Sciences', emoji: '🧬', tag: 'Scientific', desc: 'Patient guides and anatomical films.' },
-            { id: 'game', name: 'Gaming & Interactive', emoji: '🎮', tag: 'Entertainment', desc: 'Worldbuilding and Branching Narratives.' },
-            { id: 'kids', name: 'Early Childhood Ed', emoji: '🎨', tag: 'Academic', desc: 'Visual storytelling for toddlers.' }
+            { id: 'aero', name: 'Aerospace & Defense', emoji: '🚀', tag: 'Technical', logic: 'High-precision schematics with ISO-compliant structural metadata.' },
+            { id: 'agri', name: 'Agri-Tech & Ecology', emoji: '🌱', tag: 'Scientific', logic: 'Synthesis of sensor-based environmental data with organic artistic textures.' },
+            { id: 'travel', name: 'Heritage & Travel', emoji: '🏺', tag: 'Narrative', logic: 'Historical restoration focusing on archival fidelity and narrative texture.' },
+            { id: 'energy', name: 'Renewables & Power', emoji: '⚡', tag: 'Technical', logic: 'Digital twin visualization of thermal gradients and mechanical energy flow.' },
+            { id: 'fashion', name: 'Fashion & Textiles', emoji: '👗', tag: 'Artistic', logic: 'Simulated fabric weave rendering and logistical supply-chain storytelling.' },
+            { id: 'medical', name: 'Precision Medicine', emoji: '🧬', tag: 'Scientific', logic: 'Anatomical fidelity for professional surgical and anatomical guides.' },
+            { id: 'gaming', name: 'Interactive Gaming', emoji: '🎮', tag: 'Narrative', logic: 'Immersive worldbuilding with environment-reactive lighting and particle logic.' },
+            { id: 'kids', name: 'Early Childhood Ed', emoji: '🎨', tag: 'Artistic', logic: 'Safe geometry and high-vibrancy developmental color theory for toddlers.' }
         ];
 
         const styles = [
-            { name: 'Low-Poly', type: 'Artistic', usage: 'Gaming/Sim' },
-            { name: 'Blueprint', type: 'Technical', usage: 'Engineering' },
-            { name: 'Risograph', type: 'Artistic', usage: 'Marketing' },
-            { name: 'Watercolor', type: 'Artistic', usage: 'Kids Ed' },
-            { name: 'Cyberpunk', type: 'Artistic', usage: 'Fiction' }
+            { name: 'Blueprint ISO', type: 'Technical', desc: 'Precise isometric technical lines for industrial documentation.' },
+            { name: 'Risograph Print', type: 'Artistic', desc: 'Layered ink grains and halftone textures for a high-end physical feel.' },
+            { name: 'Ukiyo-e Heritage', type: 'Narrative', desc: 'Traditional woodblock aesthetics with parchment grain and flat colors.' },
+            { name: 'Low-Poly Cinematic', type: 'Technical', desc: 'Optimized geometric forms for stylized cinematic film sequences.' },
+            { name: 'Cyberpunk Neon', type: 'Narrative', desc: 'High-contrast volumetric lighting for speculative neon-noir worldbuilding.' },
+            { name: 'Papercraft Layered', type: 'Artistic', desc: 'Tactile cardstock textures and origami folds for physical storytelling.' },
+            { name: 'Digital Twin Glass', type: 'Technical', desc: 'Semi-transparent UI-focused rendering for complex infrastructure reports.' },
+            { name: 'Cel-Shaded Comic', type: 'Narrative', desc: 'Ink-lined hybrid aesthetic for dynamic action and graphic storytelling.' }
         ];
 
-        // --- PROMPT DATA MAPPING ---
-        const promptLogic = {
-            industry: {
-                engineering: "Professional ISO-compliant technical documentation for industrial manufacturing. Context: mechanical assembly, high precision, functional clarity.",
-                medical: "Anatomically accurate scientific visualization. Context: educational healthcare, biological clarity, professional medical aesthetics.",
-                gaming: "Immersive worldbuilding asset for a high-concept interactive environment. Context: narrative depth, environmental storytelling, player engagement.",
-                kids: "Whimsical and nurturing educational visual for early childhood development. Context: safe geometry, high friendliness, vibrant but soft color theory.",
-                architecture: "High-end architectural pre-visualization. Context: spatial volume, material accuracy, urban planning, realistic lighting.",
-                history: "Historically accurate archival visualization. Context: cultural heritage preservation, antique textures, museum-quality restoration."
-            },
-            style: {
-                blueprint: "Technical blueprint style. Aesthetic: Cobalt blue background, white isometric thin lines, orthographic projections, ISO 128 standards.",
-                lowpoly: "Modern low-poly 3D aesthetic. Aesthetic: faceted surfaces, clean geometric edges, soft ambient occlusion, saturated primary colors.",
-                watercolor: "Soft traditional watercolor wash. Aesthetic: bleeding ink edges, paper texture grain, pastel gradients, hand-drawn charcoal outlines.",
-                cyberpunk: "Neon-noir cyberpunk aesthetic. Aesthetic: high contrast, volumetric fog, magenta and cyan lighting, gritty urban textures.",
-                risograph: "Risograph layered ink style. Aesthetic: 4-color overprint, halftone patterns, intentional ink misalignment, grainy paper stock.",
-                papercraft: "Tactile papercraft dioramas. Aesthetic: layered cardstock, origami folds, visible glue seams, soft studio macro lighting."
-            },
-            method: {
-                static: "Format: Single high-resolution frame. Aspect: 16:9. Negative: no blur, no motion artifacts, maximum texture detail.",
-                animation: "Format: Animation-ready sprite sheet. Aspect: layered for 2.5D parallax. Directive: ensure clean edges for puppet rigging, loopable environment elements.",
-                interactive: "Format: UI component suite. Aspect: modular assets. Directive: consistent icon set, clear affordance, high contrast buttons.",
-                exploded: "Format: Exploded view diagram. Aspect: component-level detail. Directive: clear leader lines, logical assembly separation, 45-degree isometric tilt."
-            }
-        };
-
-        // --- CORE LOGIC ---
+        // --- CORE NAVIGATION LOGIC ---
         function switchTab(tabId) {
-            ['dashboard', 'taxonomy', 'styles', 'promptlab', 'simulator'].forEach(v => {
-                document.getElementById(`view-${v}`).classList.add('hidden');
+            // Hide all sections
+            const sections = ['dashboard', 'industry', 'styles', 'promptlab', 'simulator'];
+            sections.forEach(id => {
+                const element = document.getElementById(`view-${id}`);
+                if (element) element.classList.add('hidden');
             });
-            document.getElementById(`view-${tabId}`).classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('active', 'text-indigo-600');
-                el.classList.add('text-slate-500');
+
+            // Show active section
+            const target = document.getElementById(`view-${tabId}`);
+            if (target) target.classList.remove('hidden');
+
+            // Update Nav Highlighting
+            const links = document.querySelectorAll('.nav-link');
+            links.forEach(link => {
+                link.classList.remove('active', 'text-indigo-600', 'bg-indigo-50', 'border-indigo-600');
+                link.classList.add('text-gray-500');
+                if (link.getAttribute('onclick').includes(tabId)) {
+                    link.classList.add('active', 'text-indigo-600', 'bg-indigo-50', 'border-indigo-600');
+                    link.classList.remove('text-gray-500');
+                }
             });
-            event.currentTarget.classList.add('active', 'text-indigo-600');
-            if(tabId === 'promptlab') generatePrompt();
+
+            // Specific UI Updates on Tab Switch
+            if(tabId === 'promptlab') compileLabPrompt();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function generatePrompt() {
-            const ind = document.getElementById('prompt-industry').value;
-            const sty = document.getElementById('prompt-style').value;
-            const met = document.getElementById('prompt-method').value;
-            
-            const display = document.getElementById('live-prompt-display');
-            
-            const compiledPrompt = `[System Directive]: Act as a Lead Information Architect. 
-[Context]: ${promptLogic.industry[ind]}
-
-[Visual Identity]: ${promptLogic.style[sty]}
-
-[Production methodology]: ${promptLogic.method[met]}
-
-[Final Prompt]: Generate a visual asset depicting a {SUBJECT} using the above constraints. Ensure professional fidelity. End of instruction.`;
-
-            display.textContent = compiledPrompt;
+        // --- SECTION RENDERING ---
+        function renderIndustryGrid() {
+            const grid = document.getElementById('industry-grid');
+            grid.innerHTML = industries.map(ind => `
+                <div class="card-hover bg-white p-8 rounded-3xl shadow-sm transition-all duration-300">
+                    <div class="text-5xl mb-6">${ind.emoji}</div>
+                    <h3 class="font-bold text-gray-900 text-xl mb-1">${ind.name}</h3>
+                    <span class="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">${ind.tag} Module Node</span>
+                    <p class="text-sm text-gray-500 mt-5 leading-relaxed">${ind.logic}</p>
+                    <div class="mt-8 pt-6 border-t border-gray-50 flex justify-between items-center">
+                        <span class="text-[9px] font-bold text-gray-300 uppercase">Architecture Verified</span>
+                        <div class="w-2 h-2 rounded-full bg-green-500 shadow-lg shadow-green-100"></div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function copyPrompt() {
-            const text = document.getElementById('live-prompt-display').textContent;
-            const textArea = document.createElement("textarea");
-            textArea.value = text;
-            document.body.appendChild(textArea);
-            textArea.select();
+        function renderStyleLibrary() {
+            const grid = document.getElementById('style-grid');
+            grid.innerHTML = styles.map(s => `
+                <div class="card-hover bg-white p-6 rounded-2xl flex flex-col h-full" data-type="${s.type}">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-gray-900 text-sm leading-tight">${s.name}</h4>
+                        <span class="text-[8px] px-2 py-1 bg-gray-50 rounded-lg font-bold uppercase text-gray-400">${s.type}</span>
+                    </div>
+                    <p class="text-[11px] text-gray-500 leading-relaxed mb-6">${s.desc}</p>
+                    <div class="mt-auto flex items-center justify-between">
+                        <span class="text-[9px] text-indigo-600 font-bold uppercase tracking-widest">Active Mapping</span>
+                        <span class="text-[10px] text-gray-200">A++</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filterStyles(type) {
+            const cards = document.querySelectorAll('.style-card'); // Corrected from class selection if logic changed
+            const styleCards = document.querySelectorAll('#style-grid > div');
+            styleCards.forEach(c => {
+                if(type === 'all' || c.getAttribute('data-type') === type) c.style.display = 'flex';
+                else c.style.display = 'none';
+            });
+
+            // Update filter tabs UI
+            document.querySelectorAll('#style-filter-tabs button').forEach(b => {
+                b.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
+                b.classList.add('text-gray-500');
+            });
+            event.currentTarget.classList.add('bg-white', 'text-indigo-600', 'shadow-sm');
+            event.currentTarget.classList.remove('text-gray-500');
+        }
+
+        // --- PROMPT LAB LOGIC ---
+        function populateLab() {
+            const lSector = document.getElementById('lab-sector');
+            const lStyle = document.getElementById('lab-style');
+            const sNode = document.getElementById('sim-node');
+
+            lSector.innerHTML = industries.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+            lStyle.innerHTML = styles.map(s => `<option value="${s.name}">${s.name}</option>`).join('');
+            sNode.innerHTML = industries.map(i => `<option value="${i.id}">${i.name}</option>`).join('');
+        }
+
+        function compileLabPrompt() {
+            const indId = document.getElementById('lab-sector').value;
+            const styleName = document.getElementById('lab-style').value;
+            const method = document.getElementById('lab-method').value;
+            const ind = industries.find(i => i.id === indId);
+
+            const prompt = `[SYSTEM_DIRECTIVE]: Act as Lead Information Architect K. Hatibaruah.
+[DOMAIN_CONTEXT]: ${ind.name} // Underlying Logic: ${ind.logic}
+[VISUAL_IDENTITY]: Adhere to the ${styleName} aesthetic profile.
+[PRODUCTION_FORMAT]: ${method} mode.
+
+[OUTPUT_COMPILE]: Create a high-fidelity visual asset depicting a {SPECIFIC_SUBJECT} for the ${ind.name} sector. 
+Architectural Constraints: Adhere to ${styleName} guidelines. Ensure structural fidelity and context-specific lighting.
+Short Film Directive: Separate composition into Foreground, Middle-ground, and Background layers for 2.5D animation. 
+Negative Bounds: No stylistic drift, no low-resolution artifacts, no generic textures.
+Final Validation Code: KH-ARCH-2026-V5.1`;
+
+            document.getElementById('compiled-prompt-box').textContent = prompt;
+        }
+
+        function copyLabPrompt() {
+            const text = document.getElementById('compiled-prompt-box').textContent;
+            const el = document.createElement('textarea');
+            el.value = text;
+            document.body.appendChild(el);
+            el.select();
             document.execCommand('copy');
-            document.body.removeChild(textArea);
-            
-            const msg = document.getElementById('copy-success-msg');
-            msg.classList.remove('hidden');
-            setTimeout(() => msg.classList.add('hidden'), 2000);
+            document.body.removeChild(el);
+
+            const toast = document.getElementById('copy-toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 2500);
         }
 
-        function initDashboard() {
-            const ctx = document.getElementById('ecosystemChart').getContext('2d');
+        // --- SIMULATOR LOGIC ---
+        async function startSim() {
+            const terminal = document.getElementById('terminal-sim');
+            const indId = document.getElementById('sim-node').value;
+            const ind = industries.find(i => i.id === indId);
+
+            terminal.innerHTML = `<div class="text-indigo-400 font-bold mb-4">>> INITIALIZING PRODUCTION NODE: [${ind.name.toUpperCase()}]</div>`;
+            
+            const pipeline = [
+                `Authenticating Architect Signature... [K. HATIBARUAH VALIDATED]`,
+                `Fetching Domain Logic: ${ind.logic}`,
+                `Connecting to Asset Repository... Done.`,
+                `Injecting Aesthetic Context: [MAPPING TO STYLE LIBRARY]`,
+                `Layer Separation: [FG] [MG] [BG] complete.`,
+                `Interpolating 2.5D Motion Paths for Cinematic Depth...`,
+                `Post-Processing: Bloom, Volumetric Fog, Grain...`,
+                `Checking Build Integrity... 100%`,
+                `[SYSTEM]: PIPELINE STABLE. ASSETS READY FOR EXPORT.`
+            ];
+
+            for(let step of pipeline) {
+                await new Promise(r => setTimeout(r, 650));
+                const line = document.createElement('div');
+                line.className = 'text-emerald-500 mb-1';
+                line.textContent = `> ${step}`;
+                terminal.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+            }
+        }
+
+        // --- INITIALIZATION ---
+        window.onload = () => {
+            const ctx = document.getElementById('marketDepthChart').getContext('2d');
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Technical', 'Entertainment', 'Academic', 'Scientific', 'Corporate'],
+                    labels: industries.map(i => i.name),
                     datasets: [{
-                        data: [25, 25, 20, 15, 15],
-                        backgroundColor: ['#6366F1', '#EC4899', '#10B981', '#F59E0B', '#64748B'],
-                        borderWidth: 0
+                        data: [18, 14, 12, 16, 15, 12, 10, 10],
+                        backgroundColor: ['#4F46E5', '#EC4899', '#10B981', '#F59E0B', '#6366F1', '#14B8A6', '#8B5CF6', '#F43F5E'],
+                        borderWidth: 0,
+                        hoverOffset: 25
                     }]
                 },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { 
+                            position: 'right', 
+                            labels: { 
+                                boxWidth: 12, 
+                                font: { size: 11, weight: 'bold' },
+                                padding: 20
+                            } 
+                        } 
+                    }
+                }
             });
-        }
 
-        window.onload = () => {
-            initDashboard();
-            // Initalize other views...
+            renderIndustryGrid();
+            renderStyleLibrary();
+            populateLab();
+            switchTab('dashboard'); // Initial view
         };
     </script>
 </body>
