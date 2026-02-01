@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Casting Director: Gemini Actor Portfolio | By Kalyanjit Hatibaruah</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Chosen Palette: 'Studio Light' - Warm Neutrals & Cinematic Gold */
+        :root {
+            --bg-canvas: #fdfcf8; /* Warm off-white */
+            --text-primary: #1c1917; /* Warm black */
+            --text-secondary: #57534e; /* Stone grey */
+            --accent-gold: #d97706; /* Amber-600 */
+            --accent-subtle: #e7e5e4; /* Stone-200 */
+        }
+
+        body {
+            background-color: var(--bg-canvas);
+            color: var(--text-primary);
+            font-family: 'Lato', sans-serif;
+        }
+
+        h1, h2, h3, .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Chart Container Strategy: Responsive Boundaries */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 450px;
+        }
+        
+        @media (max-width: 640px) {
+            .chart-container {
+                height: 300px;
+                max-height: 350px;
+            }
+        }
+
+        .interactive-card {
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .interactive-card:hover {
+            border-color: var(--accent-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .genre-btn.active {
+            background-color: #44403c !important; /* Stone-700 */
+            border-left-color: var(--accent-gold) !important;
+        }
+
+        .footer-link {
+            transition: color 0.2s ease;
+        }
+
+        .footer-link:hover {
+            color: var(--accent-gold);
+        }
+    </style>
+    <!-- Chosen Palette: Studio Light (Warm Neutrals, Stone, Amber Gold) -->
+    <!-- Application Structure Plan: The layout mimics a professional casting dashboard with clear information hierarchy.
+         1. Navigation: Branding and Director status.
+         2. Actor Context: Hero section with identity and high-level predictive scores.
+         3. Archetypal Analysis: Radar chart for multi-dimensional trait mapping.
+         4. The Gemini Lens: A high-impact dark-mode simulation suite where genres can be toggled to see data shifts.
+         5. Deep Analytics: Temporal performance tracking and industry trend comparison.
+         6. Professional Footer: Author credentials, contact details, and corporate copyright. -->
+    <!-- Visualization & Content Choices:
+         - Radar (Chart.js): Maps personality fit across complex archetypes.
+         - Line Plot (Plotly): High-resolution emotional dynamics tracking over time.
+         - Bar Chart (Chart.js): Direct market comparison.
+         - Simulated Text: Dynamic updates in the "Gemini Lens" to provide qualitative context for quantitative shifts.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="w-full bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between h-16 items-center">
+            <div class="flex items-center">
+                <span class="text-2xl font-bold serif-font text-stone-900 tracking-tight">GEMINI <span class="text-amber-600 font-light">CASTING</span></span>
+            </div>
+            <div class="hidden md:flex items-center space-x-6">
+                <span class="text-xs font-bold text-stone-400 uppercase tracking-widest">Architect: K. Hatibaruah</span>
+                <button class="bg-stone-900 text-white px-4 py-2 rounded text-sm hover:bg-amber-600 transition-colors">Export Suite</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Section 1: Hero & Profile -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            <div class="lg:col-span-2 space-y-6">
+                <h1 class="text-5xl font-bold serif-font text-stone-900 leading-tight">
+                    Elena Vance: <br>
+                    <span class="text-stone-500">Predictive Visualization</span>
+                </h1>
+                <p class="text-lg text-stone-600 max-w-2xl leading-relaxed">
+                    This interactive portfolio, architected by <strong>Kalyanjit Hatibaruah</strong>, utilizes the <strong>Gemini Character Engine</strong> to bridge the gap between static headshots and live performance. By analyzing behavioral data, we predict how Elena will inhabit your specific cinematic world.
+                </p>
+                
+                <div class="grid grid-cols-3 gap-6 pt-4">
+                    <div class="p-6 bg-white border border-stone-200 rounded shadow-sm">
+                        <div class="text-xs text-stone-400 uppercase font-bold tracking-widest mb-1">Stability</div>
+                        <div class="text-3xl font-bold text-amber-600">98.4%</div>
+                    </div>
+                    <div class="p-6 bg-white border border-stone-200 rounded shadow-sm">
+                        <div class="text-xs text-stone-400 uppercase font-bold tracking-widest mb-1">Presence</div>
+                        <div class="text-3xl font-bold text-amber-600">Top 3%</div>
+                    </div>
+                    <div class="p-6 bg-white border border-stone-200 rounded shadow-sm">
+                        <div class="text-xs text-stone-400 uppercase font-bold tracking-widest mb-1">Range</div>
+                        <div class="text-3xl font-bold text-amber-600">Omni</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-8 border-l-4 border-amber-600 shadow-lg">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h2 class="text-3xl font-bold serif-font text-stone-900">Actor Profile</h2>
+                        <p class="text-stone-500 text-sm mt-1 uppercase tracking-tighter">Verified Talent Profile</p>
+                    </div>
+                    <span class="text-4xl">🎞️</span>
+                </div>
+                <div class="space-y-4 text-stone-700">
+                    <div class="flex justify-between border-b border-stone-100 pb-2">
+                        <span class="font-bold">Archetype</span>
+                        <span>Intellectual Rebel</span>
+                    </div>
+                    <div class="flex justify-between border-b border-stone-100 pb-2">
+                        <span class="font-bold">Vocal Base</span>
+                        <span>Mezzo-Soprano</span>
+                    </div>
+                    <div class="flex justify-between border-b border-stone-100 pb-2">
+                        <span class="font-bold">Location</span>
+                        <span>London / NYC</span>
+                    </div>
+                    <div class="flex justify-between border-b border-stone-100 pb-2">
+                        <span class="font-bold">Languages</span>
+                        <span>English, French</span>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <button class="w-full py-3 bg-stone-100 text-stone-800 rounded font-bold text-sm hover:bg-stone-200 transition-colors">Request Callback</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Archetype Radar -->
+        <section class="space-y-8">
+            <div class="text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold serif-font text-stone-900">The Archetypal Map</h2>
+                <p class="text-stone-600 mt-2">
+                    Our AI models analyze Elena's facial geometry and vocal cadence to map her resonance across the 12 primary archetypes. This allows directors to instantly see if she fits the "Soul" of the character.
+                </p>
+            </div>
+            
+            <div class="bg-white p-8 rounded-xl border border-stone-200 shadow-sm">
+                <div class="chart-container">
+                    <canvas id="archetypeRadar"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: The Gemini Lens -->
+        <section class="bg-stone-900 text-stone-100 rounded-3xl overflow-hidden shadow-2xl">
+            <div class="p-10 md:p-16">
+                <div class="flex flex-col md:flex-row justify-between items-start gap-10">
+                    <div class="w-full md:w-1/3 space-y-4">
+                        <span class="text-amber-500 font-bold tracking-widest text-xs uppercase block">Simulation Engine v4.0</span>
+                        <h2 class="text-4xl font-bold serif-font text-white">The Gemini Lens</h2>
+                        <p class="text-stone-400 leading-relaxed">
+                            Interactively modify the cinematic context. Our model will re-calculate Elena's performance metrics based on genre-specific requirements.
+                        </p>
+                        
+                        <div class="space-y-2 pt-6">
+                            <button onclick="simulateGenre('noir')" id="btn-noir" class="genre-btn w-full text-left px-5 py-4 rounded bg-stone-800 hover:bg-stone-700 transition-all border-l-4 border-transparent flex justify-between items-center">
+                                <span>🕵️‍♂️ Neo-Noir Thriller</span>
+                                <span class="text-stone-500 text-xs">READY</span>
+                            </button>
+                            <button onclick="simulateGenre('scifi')" id="btn-scifi" class="genre-btn w-full text-left px-5 py-4 rounded bg-stone-800 hover:bg-stone-700 transition-all border-l-4 border-transparent flex justify-between items-center">
+                                <span>🚀 Hard Sci-Fi</span>
+                                <span class="text-stone-500 text-xs">READY</span>
+                            </button>
+                            <button onclick="simulateGenre('period')" id="btn-period" class="genre-btn w-full text-left px-5 py-4 rounded bg-stone-800 hover:bg-stone-700 transition-all border-l-4 border-transparent flex justify-between items-center">
+                                <span>🕯️ Period Drama</span>
+                                <span class="text-stone-500 text-xs">READY</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="w-full md:w-2/3 bg-stone-800 rounded-2xl p-8 border border-stone-700 min-h-[400px] flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center border-b border-stone-700 pb-6 mb-6">
+                                <h3 id="sim-title" class="text-3xl font-bold serif-font text-white">Select Genre</h3>
+                                <div class="text-right">
+                                    <div class="text-xs text-stone-500 uppercase font-bold">Predicted Suitability</div>
+                                    <div id="sim-score" class="text-4xl font-bold text-amber-500">--%</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div>
+                                    <h4 class="text-xs font-bold text-amber-600 uppercase mb-3 tracking-widest">Generative Insight</h4>
+                                    <p id="sim-desc" class="text-stone-300 text-sm leading-relaxed">
+                                        Select a scenario from the sidebar to activate the Gemini predictive engine.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h4 class="text-xs font-bold text-amber-600 uppercase mb-3 tracking-widest">Directorial Adjustments</h4>
+                                    <ul id="sim-adjustments" class="space-y-3 text-sm text-stone-400">
+                                        <li>--</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-10 pt-8 border-t border-stone-700">
+                            <div class="flex justify-between text-[10px] text-stone-500 uppercase font-bold mb-2">
+                                <span>Physical Gravity</span>
+                                <span>Timbre Resonance</span>
+                                <span>Scene Intensity</span>
+                            </div>
+                            <div class="w-full bg-stone-900 h-2 rounded-full flex overflow-hidden">
+                                <div id="bar-phys" class="h-full bg-amber-600 transition-all duration-700" style="width: 0%"></div>
+                                <div id="bar-voc" class="h-full bg-stone-400 transition-all duration-700" style="width: 0%"></div>
+                                <div id="bar-int" class="h-full bg-stone-200 transition-all duration-700" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Analytics -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+            <div>
+                <h3 class="text-2xl font-bold serif-font text-stone-900 mb-4">Micro-Expression Temporal Analysis</h3>
+                <div class="bg-white p-6 rounded-xl border border-stone-200">
+                    <div class="chart-container">
+                        <div id="emotionPlot"></div>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-2xl font-bold serif-font text-stone-900 mb-4">Market Demand vs. Profile Fit</h3>
+                <div class="bg-white p-6 rounded-xl border border-stone-200">
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Author Section -->
+        <section class="bg-stone-50 rounded-2xl p-8 border border-stone-200 flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-shrink-0 w-24 h-24 bg-stone-200 rounded-full flex items-center justify-center text-3xl">
+                👨‍💻
+            </div>
+            <div class="flex-grow text-center md:text-left">
+                <h3 class="text-xl font-bold text-stone-900">Kalyanjit Hatibaruah</h3>
+                <p class="text-stone-500 text-sm mt-1">Lead Architect & Data Scientist | Flugelsoft Labs</p>
+                <p class="text-stone-600 mt-3 text-sm max-w-2xl leading-relaxed">
+                    Kalyanjit specializes in bridging AI-driven behavioral analysis with creative workflows. This platform is part of a broader initiative to bring quantifiable data to the art of casting.
+                </p>
+            </div>
+            <div class="flex flex-col gap-2 w-full md:w-auto">
+                <a href="https://wa.me/919864011106" target="_blank" class="bg-green-600 text-white px-6 py-3 rounded-lg text-sm font-bold text-center hover:bg-green-700 transition-colors flex items-center justify-center gap-2">
+                    WhatsApp Architect
+                </a>
+                <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="bg-blue-700 text-white px-6 py-3 rounded-lg text-sm font-bold text-center hover:bg-blue-800 transition-colors flex items-center justify-center gap-2">
+                    LinkedIn Profile
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 py-12 mt-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10 text-center md:text-left">
+                <div>
+                    <span class="text-xl font-bold serif-font text-stone-900 tracking-tight">GEMINI <span class="text-amber-600 font-light">CASTING</span></span>
+                    <p class="text-xs text-stone-400 mt-4 uppercase tracking-widest">Precision Casting Technology</p>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-stone-900 uppercase tracking-widest mb-4">Contact Info</h4>
+                    <ul class="text-sm text-stone-500 space-y-2">
+                        <li>Kalyanjit Hatibaruah</li>
+                        <li><a href="tel:+919864011106" class="footer-link">+91-9864011106</a></li>
+                        <li><a href="https://www.linkedin.com/in/kalyanjit" class="footer-link">linkedin.com/in/kalyanjit</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-stone-900 uppercase tracking-widest mb-4">Legal</h4>
+                    <p class="text-sm text-stone-500">&copy; 2025 Flugelsoft Labs. All Rights Reserved.</p>
+                    <p class="text-[10px] text-stone-400 mt-2 italic">Character Visualization Simulation Suite v4.0.0-Beta</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Implementation -->
+    <script>
+        // --- 1. Archetype Radar Chart ---
+        const ctxRadar = document.getElementById('archetypeRadar').getContext('2d');
+        const archetypeChart = new Chart(ctxRadar, {
+            type: 'radar',
+            data: {
+                labels: ['Hero', 'Magician', 'Rebel', 'Jester', 'Lover', 'Caregiver', 'Ruler', 'Creator', 'Innocent', 'Sage', 'Explorer', 'Everyman'],
+                datasets: [{
+                    label: 'Elena Vance Resonance',
+                    data: [65, 80, 95, 40, 55, 30, 75, 70, 20, 92, 60, 50],
+                    backgroundColor: 'rgba(217, 119, 6, 0.2)',
+                    borderColor: 'rgba(217, 119, 6, 1)',
+                    pointBackgroundColor: 'rgba(217, 119, 6, 1)',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 5
+                }, {
+                    label: 'Industry Median',
+                    data: [50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50],
+                    backgroundColor: 'rgba(87, 83, 78, 0.05)',
+                    borderColor: 'rgba(87, 83, 78, 0.2)',
+                    borderDash: [5, 5],
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        angleLines: { color: '#e7e5e4' },
+                        grid: { color: '#e7e5e4' },
+                        pointLabels: { font: { size: 11, weight: 'bold' }, color: '#57534e' },
+                        ticks: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+
+        // --- 2. Emotional Intensity Plot (Plotly) ---
+        const time = Array.from({length: 40}, (_, i) => i);
+        const emotions = [
+            { name: 'Joy', color: '#fbbf24', y: time.map(t => 10 + Math.sin(t/4) * 15 + Math.random()*5) },
+            { name: 'Grief', color: '#60a5fa', y: time.map(t => t > 20 ? 40 + Math.cos(t/3) * 30 : 5) },
+            { name: 'Anger', color: '#f87171', y: time.map(t => t > 10 && t < 25 ? 60 + Math.random()*20 : 10) }
+        ];
+
+        Plotly.newPlot('emotionPlot', emotions.map(e => ({
+            x: time, y: e.y, name: e.name, type: 'scatter', mode: 'lines',
+            line: { color: e.color, shape: 'spline', width: 3 }
+        })), {
+            margin: { t: 10, r: 10, b: 30, l: 30 },
+            paper_bgcolor: 'rgba(0,0,0,0)',
+            plot_bgcolor: 'rgba(0,0,0,0)',
+            showlegend: true,
+            legend: { orientation: 'h', y: -0.2 },
+            xaxis: { showgrid: false, zeroline: false },
+            yaxis: { showgrid: true, gridcolor: '#f3f4f6' }
+        }, { displayModeBar: false, responsive: true });
+
+        // --- 3. Market Chart ---
+        const ctxMarket = document.getElementById('marketChart').getContext('2d');
+        new Chart(ctxMarket, {
+            type: 'bar',
+            data: {
+                labels: ['Streaming Originals', 'Theatrical Blockbusters', 'Indie Film', 'Stage/Theater', 'Voiceover'],
+                datasets: [{
+                    label: 'Elena Compatibility',
+                    data: [96, 72, 88, 82, 90],
+                    backgroundColor: '#d97706',
+                    borderRadius: 8
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, max: 100, grid: { color: '#f3f4f6' } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // --- 4. Simulation Logic ---
+        const simData = {
+            'noir': {
+                title: 'Neo-Noir Thriller',
+                score: '96%',
+                desc: 'In shadowy, high-contrast settings, Elena’s features sharpen. Her performance profile shifts toward mystery and stoicism, with a 12% increase in micro-expression subtlety.',
+                adj: ['Dialogue: Slower pacing (0.8x)', 'Physicality: Restricted movements', 'Vocal: Deeper resonant fry'],
+                bars: [30, 40, 30]
+            },
+            'scifi': {
+                title: 'Hard Sci-Fi',
+                score: '91%',
+                desc: 'Excellent for high-tech environments. The "Sage" archetype dominates here, providing a grounded, intelligent anchor to complex exposition scenes.',
+                adj: ['Diction: Sharp consonants', 'Movement: Economic/Precise', 'Emotional: Controlled release'],
+                bars: [20, 50, 30]
+            },
+            'period': {
+                title: 'Period Drama',
+                score: '84%',
+                desc: 'Her face takes on a classical symmetry in era-appropriate lighting. The performance model suggests a "Lover-Rebel" hybrid, ideal for characters defying societal constraints.',
+                adj: ['Posture: Formal spinal alignment', 'Subtext: Heavy reliance on eyes', 'Volume: Controlled projection'],
+                bars: [45, 25, 30]
+            }
+        };
+
+        function simulateGenre(key) {
+            const d = simData[key];
+            document.getElementById('sim-title').innerText = d.title;
+            document.getElementById('sim-score').innerText = d.score;
+            document.getElementById('sim-desc').innerText = d.desc;
+            
+            const list = document.getElementById('sim-adjustments');
+            list.innerHTML = d.adj.map(a => `<li><span class="text-amber-500 mr-2">✦</span> ${a}</li>`).join('');
+            
+            document.getElementById('bar-phys').style.width = d.bars[0] + '%';
+            document.getElementById('bar-voc').style.width = d.bars[1] + '%';
+            document.getElementById('bar-int').style.width = d.bars[2] + '%';
+
+            document.querySelectorAll('.genre-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-${key}`).classList.add('active');
+        }
+
+        // Init
+        window.onload = () => simulateGenre('noir');
+    </script>
+</body>
+</html>
