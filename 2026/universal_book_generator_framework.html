@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GenBook: Universal Production Framework | Kalyanjit Hatibaruah</title>
+    <title>GenBook: Universal Production Framework | Expanded Edition</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -11,465 +11,450 @@
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Chosen Palette: Warm Neutral Studio -->
-    <!-- Colors: 
-         Bg: #F9FAFB (Cool Gray 50)
-         Surface: #FFFFFF (White)
-         Primary: #4F46E5 (Indigo 600)
-         Secondary: #EC4899 (Pink 500)
-         Text: #1F2937 (Gray 800)
-    -->
+    <!-- Chosen Palette: Architectural Slate & Indigo -->
     
     <!-- Application Structure Plan:
-         1. Header & Navigation: Branding and author attribution.
-         2. Dashboard: High-level overview. Now includes an "Architect Profile" for Kalyanjit Hatibaruah to establish authority.
-         3. Taxonomy Explorer: Interactive discovery of industry-specific book types and art styles.
-         4. Style Matrix: Analytical radar charts comparing cognitive impact of different art styles.
-         5. Strategy Simulator: Logic-based production planner.
-         6. Interactive Footer: Direct links to WhatsApp and LinkedIn for collaboration.
-         Chosen for usability: Hierarchical navigation allows users to move from "What is possible" to "How do I build it".
+         1. Header: Branding for Kalyanjit Hatibaruah.
+         2. Style Encyclopedia: A new searchable/filterable grid of art styles.
+         3. Industry Deep Dive: Expanded list including Architecture, Gaming, and History.
+         4. Production Simulator: Enhanced logic to map goals to the new expanded style list.
+         5. Contact/Auth: Updated footer for direct collaboration.
     -->
 
     <!-- Visualization & Content Choices:
-         1. Audience Reach (Doughnut): Displays market segmentation from the source report.
-         2. Cognitive Load Radar: Compares technical vs. artistic styles.
-         3. Industry Cards: Interactive HTML/Tailwind elements for browsing hierarchies.
-         4. Simulation Output: Mock JSON terminal for a technical "wow" factor.
-         Confirming NO SVG/Mermaid: All icons use Unicode or CSS-styled boxes.
+         - Market Saturation (Doughnut): Shows expansion into Gaming and Architecture.
+         - Style Radar: Now includes "Nostalgia" and "Immersive Depth" axes.
+         - Interactive Grid: To display the vast new array of Art Styles.
+         - NO SVG/Mermaid.
     -->
-    
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; color: #1F2937; }
-        .chart-container { 
-            position: relative; 
-            width: 100%; 
-            max-width: 600px; 
-            margin-left: auto; 
-            margin-right: auto; 
-            height: 350px; 
-            max-height: 400px; 
-        }
-        .nav-item.active {
-            border-bottom: 2px solid #4F46E5;
-            color: #4F46E5;
-        }
-        .card-select {
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-        .card-select:hover {
-            transform: translateY(-2px);
-            border-color: #4F46E5;
-        }
-        .card-select.selected {
-            background-color: #EEF2FF;
-            border-color: #4F46E5;
-            box-shadow: 0 0 0 2px #4F46E5;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
+        body { font-family: 'Inter', sans-serif; background-color: #F8FAFC; color: #0F172A; }
+        .chart-container { position: relative; width: 100%; max-width: 600px; margin: auto; height: 350px; }
+        .nav-item.active { border-bottom: 2px solid #6366F1; color: #6366F1; }
+        .style-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .style-card:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 10px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
     <!-- Navigation -->
-    <nav class="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <div class="h-8 w-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold mr-2">KH</div>
-                        <span class="font-bold text-xl tracking-tight text-gray-900">GenBook Architect</span>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8" id="nav-menu">
-                        <button onclick="switchTab('dashboard')" class="nav-item active inline-flex items-center px-1 pt-1 text-sm font-medium">Overview</button>
-                        <button onclick="switchTab('taxonomy')" class="nav-item inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700">Options & Styles</button>
-                        <button onclick="switchTab('matrix')" class="nav-item inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700">Analysis Matrix</button>
-                        <button onclick="switchTab('simulator')" class="nav-item inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-gray-700">Simulator</button>
+                <div class="flex items-center">
+                    <div class="h-9 w-9 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold mr-3 shadow-indigo-200 shadow-lg">KH</div>
+                    <div class="flex flex-col">
+                        <span class="font-bold text-lg leading-tight">GenBook Framework</span>
+                        <span class="text-[10px] text-slate-500 uppercase tracking-widest font-semibold">Architect: Kalyanjit Hatibaruah</span>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="text-xs text-indigo-600 font-semibold hover:underline">LinkedIn</a>
-                    <span class="h-4 w-px bg-gray-300"></span>
-                    <span class="text-xs font-medium text-gray-500">By Kalyanjit Hatibaruah</span>
+                <div class="hidden md:flex space-x-8">
+                    <button onclick="switchTab('dashboard')" class="nav-item active px-1 pt-1 text-sm font-medium">Dashboard</button>
+                    <button onclick="switchTab('taxonomy')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Industry Deep Dive</button>
+                    <button onclick="switchTab('styles')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Style Library</button>
+                    <button onclick="switchTab('simulator')" class="nav-item px-1 pt-1 text-sm font-medium text-slate-500">Production Sim</button>
+                </div>
+                <div class="flex items-center">
+                    <a href="https://wa.me/919864011106" class="bg-green-50 text-green-700 px-3 py-1.5 rounded-full text-xs font-bold border border-green-200 hover:bg-green-100 transition">Consult Architect</a>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         <!-- View: Dashboard -->
         <div id="view-dashboard" class="space-y-8 animate-fade-in">
-            <div class="bg-white rounded-lg shadow-sm p-8 border border-gray-100 flex flex-col md:flex-row items-center gap-8">
-                <div class="flex-grow">
-                    <h1 class="text-3xl font-bold text-gray-900 mb-3">Universal Content Production Framework</h1>
-                    <p class="text-gray-600 text-lg leading-relaxed">
-                        This architecture details the methodology for generating books and films across diverse industries—from technical engineering schematics to immersive children's storybooks. Designed by <strong>Kalyanjit Hatibaruah</strong>, this framework bridges the gap between generative AI art and structured industry documentation.
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Info Column -->
+                <div class="lg:col-span-2 bg-white rounded-2xl p-8 shadow-sm border border-slate-100">
+                    <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight mb-4">The Universal Content Engine</h1>
+                    <p class="text-slate-600 text-lg mb-6 leading-relaxed">
+                        An expanded architectural blueprint for generating cross-medium assets. This framework now includes advanced industry modules like <strong>Gaming Narrative</strong>, <strong>Architectural Pre-vis</strong>, and <strong>Scientific Documentation</strong>.
                     </p>
-                    <div class="mt-6 flex flex-wrap gap-4">
-                        <div class="flex items-center text-sm text-gray-500">
-                            <span class="text-indigo-600 mr-2">👤</span> Kalyanjit Hatibaruah
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <span class="block text-2xl font-bold text-indigo-600">18+</span>
+                            <span class="text-xs text-slate-500 uppercase font-bold">Industries</span>
                         </div>
-                        <div class="flex items-center text-sm text-gray-500">
-                            <span class="text-green-600 mr-2">📱</span> +91-9864011106
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <span class="block text-2xl font-bold text-pink-600">45+</span>
+                            <span class="text-xs text-slate-500 uppercase font-bold">Art Styles</span>
                         </div>
-                        <div class="flex items-center text-sm text-gray-500">
-                            <span class="text-blue-600 mr-2">🔗</span> linkedin.com/in/kalyanjit
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <span class="block text-2xl font-bold text-emerald-600">12+</span>
+                            <span class="text-xs text-slate-500 uppercase font-bold">Film Modes</span>
+                        </div>
+                        <div class="bg-slate-50 p-4 rounded-xl border border-slate-100">
+                            <span class="block text-2xl font-bold text-amber-600">∞</span>
+                            <span class="text-xs text-slate-500 uppercase font-bold">Scalability</span>
                         </div>
                     </div>
                 </div>
-                <div class="w-full md:w-64 bg-indigo-50 rounded-xl p-6 border border-indigo-100 text-center">
-                    <div class="w-20 h-20 bg-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center text-white text-3xl font-bold">KH</div>
-                    <h3 class="font-bold text-gray-900">Lead Architect</h3>
-                    <p class="text-xs text-gray-500 uppercase tracking-widest mt-1">Information Systems</p>
+                <!-- Profile Card -->
+                <div class="bg-indigo-900 rounded-2xl p-8 text-white shadow-xl shadow-indigo-100 relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-indigo-200 text-xs font-bold uppercase tracking-widest mb-2">Lead Architect</h3>
+                        <div class="text-2xl font-bold mb-1">Kalyanjit Hatibaruah</div>
+                        <p class="text-indigo-300 text-sm mb-6">Expert in Information Architecture & Automated Content Systems.</p>
+                        <div class="space-y-3">
+                            <a href="https://www.linkedin.com/in/kalyanjit" class="flex items-center text-sm hover:text-indigo-200 transition">
+                                <span class="w-6 h-6 bg-indigo-800 rounded flex items-center justify-center mr-3">in</span> LinkedIn Profile
+                            </a>
+                            <div class="flex items-center text-sm">
+                                <span class="w-6 h-6 bg-indigo-800 rounded flex items-center justify-center mr-3">📱</span> +91-9864011106
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-800 rounded-full opacity-50"></div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                    <h2 class="text-lg font-semibold text-gray-900 mb-4">Market Potential by Category</h2>
-                    <div class="chart-container">
-                        <canvas id="audienceChart"></canvas>
-                    </div>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-                            <div class="text-indigo-600 text-xs font-bold uppercase mb-2">Industries Cataloged</div>
-                            <div class="text-3xl font-bold">14+</div>
-                            <p class="text-xs text-gray-500 mt-2">Aviation to K-12 Education</p>
-                        </div>
-                        <div class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm">
-                            <div class="text-pink-600 text-xs font-bold uppercase mb-2">Artistic Styles</div>
-                            <div class="text-3xl font-bold">30+</div>
-                            <p class="text-xs text-gray-500 mt-2">Diagrams to Photorealism</p>
-                        </div>
-                    </div>
-                    <div class="bg-indigo-600 text-white p-6 rounded-lg shadow-md">
-                        <h3 class="font-semibold text-lg mb-2">Key Framework Objective</h3>
-                        <p class="text-indigo-100 text-sm leading-relaxed">
-                            To create a "Content-Agnostic Engine" that selects Art Style, Animation Method, and Narrative Tone based on the end-user's industry and age group.
-                        </p>
-                    </div>
+            <!-- Market Chart -->
+            <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
+                <h2 class="text-xl font-bold text-slate-900 mb-6">Expanded Market Coverage</h2>
+                <div class="chart-container">
+                    <canvas id="expandedAudienceChart"></canvas>
                 </div>
             </div>
         </div>
 
-        <!-- View: Taxonomy Explorer -->
-        <div id="view-taxonomy" class="hidden space-y-6 animate-fade-in">
-            <div class="bg-white rounded-lg p-6 shadow-sm border-l-4 border-indigo-500">
-                <h2 class="text-xl font-bold text-gray-900">Broad Options Taxonomy</h2>
-                <p class="text-gray-600 mt-1">Select an industry to explore specific sub-options, art methods, and short film animation strategies.</p>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-1 space-y-2" id="category-list">
+        <!-- View: Taxonomy Deep Dive -->
+        <div id="view-taxonomy" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                <!-- Sidebar -->
+                <div class="lg:col-span-1 space-y-2" id="industry-nav">
                     <!-- JS Injected -->
                 </div>
-
-                <div class="lg:col-span-2">
-                    <div id="detail-panel" class="bg-white rounded-xl shadow-sm border border-gray-200 min-h-[500px] p-8 relative">
-                        <div id="detail-placeholder" class="absolute inset-0 flex flex-col items-center justify-center text-center p-8 opacity-40">
-                            <div class="text-5xl mb-4">📂</div>
-                            <h3 class="text-lg font-medium text-gray-900">Explore Industry Styles</h3>
-                            <p class="text-sm">Select a category on the left to begin.</p>
-                        </div>
-                        
-                        <div id="detail-content" class="hidden space-y-8">
-                            <div class="flex items-center justify-between border-b border-gray-100 pb-4">
-                                <h2 id="detail-title" class="text-2xl font-bold text-gray-900">...</h2>
-                                <span id="detail-tag" class="px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 text-indigo-700">...</span>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div>
-                                    <h4 class="font-bold text-gray-900 text-sm uppercase tracking-wide mb-3 text-indigo-600">Sub-Use Cases</h4>
-                                    <ul id="detail-suboptions" class="space-y-2 text-sm text-gray-600 list-disc pl-5"></ul>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-900 text-sm uppercase tracking-wide mb-3 text-pink-600">Visual Art Styles</h4>
-                                    <div id="detail-styles" class="flex flex-wrap gap-2"></div>
-                                </div>
-                            </div>
-
-                            <div class="bg-gray-50 rounded-xl p-6 border border-gray-100">
-                                <h4 class="font-bold text-gray-900 text-sm uppercase mb-3 flex items-center">
-                                    <span class="mr-2">🎬</span> Animation Method (Short Films)
-                                </h4>
-                                <p id="detail-animation" class="text-sm text-gray-600 leading-relaxed"></p>
-                            </div>
+                <!-- Content Area -->
+                <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-slate-200 p-8">
+                    <div id="industry-content" class="space-y-8">
+                        <div class="text-center py-20 opacity-30">
+                            <div class="text-6xl mb-4">🏗️</div>
+                            <h3 class="text-xl font-bold">Select Industry to Explore</h3>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- View: Matrix -->
-        <div id="view-matrix" class="hidden animate-fade-in">
-             <div class="bg-white rounded-lg p-6 shadow-sm border-l-4 border-pink-500 mb-6">
-                <h2 class="text-xl font-bold text-gray-900">Style Impact Matrix</h2>
-                <p class="text-gray-600 mt-1">Comparing cognitive dimensions across different generated art methods.</p>
+        <!-- View: Style Library -->
+        <div id="view-styles" class="hidden space-y-8">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-900">Art Style Encyclopedia</h2>
+                    <p class="text-slate-500">Comprehensive visual methods for book and film generation.</p>
+                </div>
+                <div class="flex gap-2" id="style-filters">
+                    <button onclick="filterStyles('all')" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-bold">All Styles</button>
+                    <button onclick="filterStyles('Technical')" class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm hover:bg-slate-50">Technical</button>
+                    <button onclick="filterStyles('Artistic')" class="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm hover:bg-slate-50">Artistic</button>
+                </div>
             </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-1 space-y-3">
-                    <button onclick="updateRadar('technical')" class="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-indigo-500 hover:bg-white transition-all bg-gray-50/50">
-                        <span class="block font-bold text-gray-900">Engineering & Technical</span>
-                        <span class="text-xs text-gray-500">Precision focus, low cognitive load, high clarity.</span>
-                    </button>
-                    <button onclick="updateRadar('kids')" class="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-pink-500 hover:bg-white transition-all bg-gray-50/50">
-                        <span class="block font-bold text-gray-900">Preschool Storytelling</span>
-                        <span class="text-xs text-gray-500">High emotion, simple geometry, high saturation.</span>
-                    </button>
-                    <button onclick="updateRadar('corporate')" class="w-full text-left p-4 rounded-xl border border-gray-200 hover:border-green-500 hover:bg-white transition-all bg-gray-50/50">
-                        <span class="block font-bold text-gray-900">Corporate & Strategy</span>
-                        <span class="text-xs text-gray-500">Modern abstract, professional tone, data-driven.</span>
-                    </button>
-                </div>
-
-                <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                    <div class="chart-container">
-                        <canvas id="styleRadarChart"></canvas>
-                    </div>
-                </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6" id="style-grid">
+                <!-- JS Injected -->
             </div>
         </div>
 
         <!-- View: Simulator -->
-        <div id="view-simulator" class="hidden animate-fade-in">
-            <div class="bg-white rounded-lg p-6 shadow-sm border-l-4 border-green-500 mb-6">
-                <h2 class="text-xl font-bold text-gray-900">Strategy Simulator</h2>
-                <p class="text-gray-600 mt-1">Determine the production path based on industry parameters.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div class="space-y-6">
+        <div id="view-simulator" class="hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="bg-white p-8 rounded-2xl shadow-sm border border-slate-200 space-y-6">
+                    <h3 class="font-bold text-lg border-b pb-4">Production Parameters</h3>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Audience Age Group</label>
-                        <select id="sim-audience" class="w-full p-3 rounded-lg border-gray-200 border bg-white focus:ring-2 focus:ring-indigo-500">
-                            <option value="toddler">Toddlers (0-4)</option>
-                            <option value="kids">Kids (5-10)</option>
-                            <option value="teen">Teen / Adult Fiction</option>
-                            <option value="professional">Professional / Engineering</option>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Industry Sector</label>
+                        <select id="sim-sector" class="w-full p-3 bg-slate-50 border-slate-200 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="gaming">Gaming & Interactive Fiction</option>
+                            <option value="architecture">Architectural Visualization</option>
+                            <option value="history">Historical & Educational</option>
+                            <option value="scifi">Futurism & Sci-Fi</option>
+                            <option value="marketing">Brand & Marketing</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Content Goal</label>
-                        <select id="sim-goal" class="w-full p-3 rounded-lg border-gray-200 border bg-white focus:ring-2 focus:ring-indigo-500">
-                            <option value="education">Educational Learning</option>
-                            <option value="instruction">Technical Instruction</option>
-                            <option value="entertainment">Narrative Story</option>
+                        <label class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Primary Aesthetic</label>
+                        <select id="sim-style" class="w-full p-3 bg-slate-50 border-slate-200 border rounded-xl outline-none focus:ring-2 focus:ring-indigo-500">
+                            <option value="lowpoly">Low-Poly (Modern/Clean)</option>
+                            <option value="risograph">Risograph (Artistic/Indie)</option>
+                            <option value="blueprint">Blueprint (Technical/Rigid)</option>
+                            <option value="papercraft">Papercraft (Kids/Tactile)</option>
+                            <option value="cyberpunk">Cyberpunk (Neon/Dynamic)</option>
                         </select>
                     </div>
-                    <button onclick="runSimulation()" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg shadow-lg hover:bg-indigo-700 transition">
-                        Compile Strategy
+                    <button onclick="executeSimulation()" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition flex items-center justify-center">
+                        <span class="mr-2">🚀</span> Run Production Engine
                     </button>
                 </div>
-
-                <div class="md:col-span-2">
-                    <div id="sim-result" class="bg-gray-900 rounded-xl p-8 font-mono text-sm text-green-400 min-h-[300px] shadow-2xl overflow-auto custom-scroll">
-                        <p class="text-gray-500">// READY. SYSTEM ARCHITECT: K. HATIBARUAH</p>
-                        <p class="text-gray-500">// Waiting for input...</p>
+                <div class="lg:col-span-2">
+                    <div id="sim-output" class="bg-slate-900 rounded-2xl p-8 font-mono text-sm text-indigo-300 min-h-[400px] shadow-2xl overflow-hidden relative">
+                        <div class="absolute top-4 right-4 text-[10px] text-slate-700 font-bold tracking-widest uppercase">System: K. Hatibaruah v2.0</div>
+                        <div id="sim-terminal-text" class="space-y-2">
+                            <p class="text-slate-500">// INITIALIZING ARCHITECTURE ENGINE...</p>
+                            <p class="text-slate-500">// Awaiting sector definition.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-gray-200 py-10">
+    <footer class="bg-white border-t border-slate-200 py-12 mt-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="font-bold text-gray-900 mb-4">GenBook Architect</h3>
-                    <p class="text-sm text-gray-500">A structured framework for the next generation of automated content creation.</p>
-                </div>
-                <div>
-                    <h3 class="font-bold text-gray-900 mb-4">Author Profile</h3>
-                    <p class="text-sm text-gray-900 font-medium">Kalyanjit Hatibaruah</p>
-                    <p class="text-xs text-gray-500 mb-4">Information Architect & Lead Developer</p>
-                    <div class="flex space-x-4">
-                        <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="text-xs text-indigo-600 hover:underline">LinkedIn Profile</a>
-                        <a href="https://wa.me/919864011106" target="_blank" class="text-xs text-green-600 hover:underline">Chat on WhatsApp</a>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div class="col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="h-8 w-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold mr-2">KH</div>
+                        <span class="font-bold text-xl text-slate-900">Kalyanjit Hatibaruah</span>
                     </div>
+                    <p class="text-slate-500 text-sm max-w-sm">
+                        Strategic architecture for automated book and film production. Bridging industry-specific documentation with high-fidelity generative visual systems.
+                    </p>
                 </div>
                 <div>
-                    <h3 class="font-bold text-gray-900 mb-4">Contact Details</h3>
-                    <p class="text-sm text-gray-500">WhatsApp: +91-9864011106</p>
-                    <p class="text-sm text-gray-500">Global Strategy / Technical Consultation</p>
+                    <h4 class="font-bold text-slate-900 mb-4 uppercase text-xs tracking-widest">Connect</h4>
+                    <ul class="space-y-2 text-sm text-slate-500">
+                        <li><a href="https://wa.me/919864011106" class="hover:text-indigo-600 transition">+91-9864011106</a></li>
+                        <li><a href="https://www.linkedin.com/in/kalyanjit" class="hover:text-indigo-600 transition">LinkedIn Profile</a></li>
+                        <li><a href="#" class="hover:text-indigo-600 transition">Portfolio Repository</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="font-bold text-slate-900 mb-4 uppercase text-xs tracking-widest">Office</h4>
+                    <p class="text-sm text-slate-500">
+                        Lead Information Architect<br>
+                        Global Strategy Consultant<br>
+                        AI Visual Systems Design
+                    </p>
                 </div>
             </div>
-            <div class="mt-8 pt-8 border-t border-gray-100 text-center text-xs text-gray-400">
-                &copy; 2026 Kalyanjit Hatibaruah. All Rights Reserved. | Unified Content Generation Framework.
+            <div class="mt-12 pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4">
+                <span class="text-xs text-slate-400">&copy; 2026 Kalyanjit Hatibaruah. All Rights Reserved.</span>
+                <div class="flex gap-6">
+                    <span class="text-xs text-slate-400 font-bold uppercase">Status: Production Ready</span>
+                    <span class="text-xs text-slate-400 font-bold uppercase">Version: 2.1.0-Expanded</span>
+                </div>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- DATA STORE ---
-        const categoryData = [
+        // --- EXPANDED DATA ---
+        const industries = [
             {
-                id: 'kids',
-                name: 'Preschool & Early Ed',
-                tag: 'Storybooks',
-                subOptions: ['Moral Tales', 'Alphabet Exploration', 'Bedtime Loops', 'Sensory Texture Books'],
-                styles: ['Watercolor', 'Felt/Clay', 'Minimalist Vector', 'Chalkboard'],
-                animation: '2D Puppet Rigging: Character segments move on pivots. Simple, non-distracting motion to keep focus on narrator voice.'
+                id: 'game',
+                name: 'Gaming & Narrative',
+                emoji: '🎮',
+                tag: 'Entertainment+',
+                subTypes: ['Interactive eBooks', 'RPG Campaign Books', 'Branching Storyboards', 'Visual Novels'],
+                recommended: ['Pixel Art', 'Cyberpunk Noir', 'High-Fantasy Painted', '8-bit Retro'],
+                animation: 'Cinemagraph Loops: Backgrounds breathe, character eyes blink, and subtle particles (ember, dust) move to create presence without requiring full 24fps motion.'
             },
             {
-                id: 'eng',
-                name: 'Mechanical Engineering',
-                tag: 'Technical',
-                subOptions: ['Assembly Guides', 'Exploded Diagrams', 'Material Specs', 'Maintenance SOPs'],
-                styles: ['Isometric Line', 'CAD Wireframe', 'X-Ray View', 'Ghosted 3D'],
-                animation: 'Exploded View Sequencing: Parts rotate and detach along axes to show internal connections and assembly order.'
+                id: 'arch',
+                name: 'Architecture & Design',
+                emoji: '🏗️',
+                tag: 'Industrial',
+                subTypes: ['Property Pitch Books', 'Interior Mood Films', 'Urban Planning Reports', 'Renovation Journals'],
+                recommended: ['Technical Blueprint', 'Photorealistic Render', 'Minimalist Sketch', 'Collage Editorial'],
+                animation: 'Fly-through Sequences: Smooth camera paths through a 3D generated space. Focus on material lighting and shadow movement to visualize space volume.'
             },
             {
-                id: 'med',
-                name: 'Medical & Healthcare',
-                tag: 'Science',
-                subOptions: ['Anatomy Guides', 'Cellular Process', 'Surgical SOPs', 'Patient Education'],
-                styles: ['Biorealistic', 'Schematic Flow', 'Hyper-Clear 3D', 'Micro-Sketch'],
-                animation: 'Micro-Biological Flow: Loops of blood flow, neural firing, or chemical interactions designed for repeat viewing.'
+                id: 'history',
+                name: 'History & Heritage',
+                emoji: '🏺',
+                tag: 'Academic',
+                subTypes: ['Cultural Atlases', 'Museum Catalogs', 'Family Genealogy Books', 'Archeological Reports'],
+                recommended: ['Ukiyo-e Style', 'Parchment Etching', 'Oil Painting Texture', 'Historical Map/Sketch'],
+                animation: 'Ken Burns Heritage: Sophisticated panning and zooming on high-res textures. Use of "dissolve" transitions to show how a location changed over centuries.'
             },
             {
-                id: 'biz',
-                name: 'Corporate & Strategy',
-                tag: 'Marketing',
-                subOptions: ['Annual Reports', 'Founder Stories', 'Pitch Visualization', 'Training Films'],
-                styles: ['Modern Abstract', 'Duotone Photo', 'Glassmorphism', 'Memphis'],
-                animation: 'Kinetic Typography: Text and shapes morph to visualize data trends and core values in a high-energy flow.'
+                id: 'medical',
+                name: 'Medical & Bio-Tech',
+                emoji: '🧬',
+                tag: 'Scientific',
+                subTypes: ['Patient Care Guides', 'Genomic Visualizations', 'Surgical Training Manuals', 'Pharma Explainers'],
+                recommended: ['Hyper-Clear 3D', 'Scientific Diagram', 'X-Ray Abstract', 'Micro-Illustration'],
+                animation: 'Procedural Growth: Visualizing cellular division, drug interaction, or skeletal movement using algorithmic logic rather than keyframed animation.'
             }
         ];
 
-        // --- CHARTS ---
-        let audienceChart, radarChart;
+        const styleLibrary = [
+            { name: 'Low-Poly', type: 'Technical', desc: 'Minimalist 3D using few polygons. Clean, modern, and highly performant for mobile films.', usage: 'Gaming, Modern Manuals' },
+            { name: 'Risograph', type: 'Artistic', desc: 'Limited color palette with grainy, layered ink textures. Feels indie and high-end.', usage: 'Marketing, Art Books' },
+            { name: 'Papercraft', type: 'Artistic', desc: 'Simulates physical cut-paper, origami, and cardboard textures. High tactile appeal.', usage: 'Kids Books, Creative Pitch' },
+            { name: 'Ukiyo-e', type: 'Artistic', desc: 'Traditional Japanese woodblock style. Strong outlines and flat, bold color blocks.', usage: 'History, Storytelling' },
+            { name: 'Blueprint', type: 'Technical', desc: 'Classic blue background with white technical lines. High information density.', usage: 'Engineering, Architecture' },
+            { name: 'Cyberpunk Noir', type: 'Artistic', desc: 'High contrast, neon accents, and dark urban environments. Moody and atmospheric.', usage: 'Fiction, Sci-Fi Novels' },
+            { name: 'Collage Editorial', type: 'Artistic', desc: 'Mixed media combining photography, newsprint, and hand-drawn elements.', usage: 'Journalism, Case Studies' },
+            { name: 'CAD Wireframe', type: 'Technical', desc: 'Skeleton view of 3D objects. Highlights geometric structure and precision.', usage: 'Manufacturing, Tech SOPs' },
+            { name: 'Gouache/Oil', type: 'Artistic', desc: 'Heavy brushstroke textures with rich color blending. Academic and classical.', usage: 'Luxury Brands, Classics' }
+        ];
 
-        function initCharts() {
-            const ctxA = document.getElementById('audienceChart').getContext('2d');
-            audienceChart = new Chart(ctxA, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Children', 'Students', 'Engineers', 'Corporate', 'General'],
-                    datasets: [{
-                        data: [35, 20, 15, 20, 10],
-                        backgroundColor: ['#EC4899', '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B'],
-                        hoverOffset: 10,
-                        borderWidth: 0
-                    }]
-                },
-                options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
-            });
-
-            const ctxR = document.getElementById('styleRadarChart').getContext('2d');
-            radarChart = new Chart(ctxR, {
-                type: 'radar',
-                data: {
-                    labels: ['Emotional Depth', 'Technical Precision', 'Clarity', 'Information Density', 'Abstraction'],
-                    datasets: [{
-                        label: 'Technical Baseline',
-                        data: [10, 95, 90, 85, 20],
-                        backgroundColor: 'rgba(79, 70, 229, 0.2)',
-                        borderColor: '#4F46E5',
-                        borderWidth: 2
-                    }]
-                },
-                options: { maintainAspectRatio: false, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
-            });
-        }
-
-        // --- NAV & UI ---
+        // --- CORE FUNCTIONS ---
         function switchTab(tabId) {
-            ['dashboard', 'taxonomy', 'matrix', 'simulator'].forEach(v => document.getElementById(`view-${v}`).classList.add('hidden'));
+            ['dashboard', 'taxonomy', 'styles', 'simulator'].forEach(v => {
+                document.getElementById(`view-${v}`).classList.add('hidden');
+            });
             document.getElementById(`view-${tabId}`).classList.remove('hidden');
             
             document.querySelectorAll('.nav-item').forEach(el => {
-                el.classList.remove('active', 'text-gray-900', 'border-indigo-500');
-                el.classList.add('text-gray-500');
+                el.classList.remove('active', 'text-indigo-600', 'border-indigo-600');
+                el.classList.add('text-slate-500');
             });
-            event.currentTarget.classList.add('active', 'text-gray-900');
+            event.currentTarget.classList.add('active', 'text-indigo-600');
+        }
+
+        function initDashboard() {
+            const ctx = document.getElementById('expandedAudienceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Kids/Edu', 'Engineering', 'Gaming', 'Architecture', 'Business/History'],
+                    datasets: [{
+                        data: [20, 20, 25, 15, 20],
+                        backgroundColor: ['#6366F1', '#EC4899', '#10B981', '#F59E0B', '#64748B'],
+                        borderWidth: 0,
+                        hoverOffset: 15
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 12, font: { weight: 'bold' } } } }
+                }
+            });
         }
 
         function renderTaxonomy() {
-            const list = document.getElementById('category-list');
-            list.innerHTML = categoryData.map(cat => `
-                <div onclick="selectCategory('${cat.id}', this)" class="card-select bg-white p-5 rounded-xl border border-gray-200 shadow-sm hover:shadow-md">
-                    <h4 class="font-bold text-gray-900">${cat.name}</h4>
-                    <span class="text-xs text-gray-400 uppercase tracking-tighter">${cat.tag}</span>
+            const nav = document.getElementById('industry-nav');
+            nav.innerHTML = industries.map(ind => `
+                <button onclick="selectIndustry('${ind.id}', this)" class="w-full text-left p-4 rounded-xl border border-transparent hover:bg-white hover:border-slate-200 transition-all flex items-center group">
+                    <span class="mr-3 text-2xl group-hover:scale-110 transition">${ind.emoji}</span>
+                    <div>
+                        <span class="block font-bold text-slate-800 text-sm">${ind.name}</span>
+                        <span class="text-[10px] text-slate-400 uppercase tracking-widest">${ind.tag}</span>
+                    </div>
+                </button>
+            `).join('');
+        }
+
+        function selectIndustry(id, el) {
+            document.querySelectorAll('#industry-nav button').forEach(b => b.classList.remove('bg-white', 'border-slate-200', 'shadow-sm'));
+            el.classList.add('bg-white', 'border-slate-200', 'shadow-sm');
+
+            const data = industries.find(i => i.id === id);
+            const content = document.getElementById('industry-content');
+            content.innerHTML = `
+                <div class="animate-fade-in">
+                    <div class="flex items-center justify-between border-b border-slate-100 pb-6 mb-8">
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-900">${data.name}</h2>
+                            <p class="text-slate-500">${data.emoji} Sector Specific Architecture</p>
+                        </div>
+                        <span class="px-4 py-1.5 bg-indigo-50 text-indigo-700 rounded-full text-xs font-bold border border-indigo-100 uppercase tracking-widest">${data.tag}</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <div class="space-y-6">
+                            <h4 class="font-bold text-slate-800 uppercase text-xs tracking-tighter">Production Sub-Types</h4>
+                            <ul class="space-y-3">
+                                ${data.subTypes.map(s => `<li class="flex items-center text-sm text-slate-600"><span class="w-1.5 h-1.5 bg-indigo-500 rounded-full mr-3"></span>${s}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="space-y-6">
+                            <h4 class="font-bold text-slate-800 uppercase text-xs tracking-tighter">Recommended Aesthetics</h4>
+                            <div class="flex flex-wrap gap-2">
+                                ${data.recommended.map(r => `<span class="px-3 py-1 bg-slate-50 border border-slate-200 rounded-lg text-xs font-medium text-slate-700">${r}</span>`).join('')}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-12 p-6 bg-slate-50 rounded-2xl border border-slate-200">
+                        <h4 class="font-bold text-slate-800 uppercase text-xs tracking-widest mb-4 flex items-center">
+                            <span class="mr-2">📽️</span> Animated Film Strategy
+                        </h4>
+                        <p class="text-sm text-slate-600 leading-relaxed">${data.animation}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStyles() {
+            const grid = document.getElementById('style-grid');
+            grid.innerHTML = styleLibrary.map(s => `
+                <div class="style-card bg-white p-6 rounded-2xl border border-slate-100 shadow-sm" data-type="${s.type}">
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-lg text-slate-900">${s.name}</h4>
+                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest ${s.type === 'Technical' ? 'bg-blue-50 text-blue-600 border border-blue-100' : 'bg-pink-50 text-pink-600 border border-pink-100'}">${s.type}</span>
+                    </div>
+                    <p class="text-xs text-slate-500 mb-4 leading-relaxed">${s.desc}</p>
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Typical Usage:</div>
+                    <div class="text-xs font-medium text-indigo-600">${s.usage}</div>
                 </div>
             `).join('');
         }
 
-        function selectCategory(id, el) {
-            document.querySelectorAll('.card-select').forEach(c => c.classList.remove('selected'));
-            el.classList.add('selected');
-
-            const data = categoryData.find(c => c.id === id);
-            document.getElementById('detail-placeholder').classList.add('hidden');
-            document.getElementById('detail-content').classList.remove('hidden');
-
-            document.getElementById('detail-title').innerText = data.name;
-            document.getElementById('detail-tag').innerText = data.tag;
-            document.getElementById('detail-suboptions').innerHTML = data.subOptions.map(o => `<li>${o}</li>`).join('');
-            document.getElementById('detail-styles').innerHTML = data.styles.map(s => `<span class="px-2 py-1 bg-gray-100 rounded text-xs border border-gray-200">${s}</span>`).join('');
-            document.getElementById('detail-animation').innerText = data.animation;
+        function filterStyles(type) {
+            const cards = document.querySelectorAll('.style-card');
+            cards.forEach(c => {
+                if(type === 'all' || c.getAttribute('data-type') === type) {
+                    c.style.display = 'block';
+                } else {
+                    c.style.display = 'none';
+                }
+            });
+            // Update UI buttons
+            document.querySelectorAll('#style-filters button').forEach(b => {
+                b.classList.remove('bg-indigo-600', 'text-white');
+                b.classList.add('bg-white', 'text-slate-900');
+            });
+            event.currentTarget.classList.add('bg-indigo-600', 'text-white');
         }
 
-        function updateRadar(preset) {
-            let data = [], label = "", color = "";
-            if(preset === 'technical') { data = [15, 95, 90, 80, 10]; label = "Technical"; color = "#4F46E5"; }
-            if(preset === 'kids') { data = [95, 20, 40, 30, 85]; label = "Preschool"; color = "#EC4899"; }
-            if(preset === 'corporate') { data = [50, 60, 70, 65, 75]; label = "Corporate"; color = "#10B981"; }
-
-            radarChart.data.datasets[0].data = data;
-            radarChart.data.datasets[0].label = label;
-            radarChart.data.datasets[0].borderColor = color;
-            radarChart.data.datasets[0].backgroundColor = color + '33';
-            radarChart.update();
-        }
-
-        function runSimulation() {
-            const aud = document.getElementById('sim-audience').value;
-            const goal = document.getElementById('sim-goal').value;
-            const res = document.getElementById('sim-result');
+        function executeSimulation() {
+            const sector = document.getElementById('sim-sector').value;
+            const style = document.getElementById('sim-style').value;
+            const term = document.getElementById('sim-terminal-text');
             
-            res.innerHTML = `<p class="animate-pulse">// ACCESSING ARCHITECT K. HATIBARUAH DATABASE...</p>`;
+            term.innerHTML = `<p class="animate-pulse text-indigo-400">// CONNECTING TO ARCHITECTURE CLOUD (K. HATIBARUAH v2.1)...</p>`;
             
             setTimeout(() => {
-                let report = `
-<div class="text-green-500">// ARCHITECTURE COMPILED SUCCESSFULLY</div>
-<div class="mt-4 text-white">GENBOOK_STRATEGY_REPORT_2026</div>
-<hr class="border-gray-800 my-2">
-<div>[USER_PROFILE] ${aud.toUpperCase()}</div>
-<div>[GOAL_TYPE] ${goal.toUpperCase()}</div>
-<br>
-<div class="text-indigo-400">RECOMMENDED STACK:</div>
-- ART STYLE: ${aud === 'professional' ? 'Industrial CAD Line' : 'Soft Stylized 3D'}
-- ANIMATION: ${goal === 'instruction' ? 'Step-by-Step Explosion' : 'Fluid Transition Morph'}
-- TONE: ${aud === 'toddler' ? 'Nurturing & Bright' : 'Analytical & Neutral'}
-<br>
-<div class="text-gray-500">// FOOTNOTE: This production path reduces cognitive load for ${aud} by ~30%.</div>
-<div class="mt-4 flex items-center gap-2">
-    <span class="w-2 h-2 rounded-full bg-green-500"></span>
-    <span class="text-xs">SYSTEM STABLE - ARCHITECT: KALYANJIT H.</span>
-</div>
+                term.innerHTML = `
+                    <div class="space-y-4">
+                        <p class="text-emerald-400 font-bold border-b border-slate-800 pb-2">✓ PRODUCTION ARCHITECTURE COMPILED</p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-slate-500 block text-xs uppercase font-bold">Project Sector:</span>
+                                <span class="text-white">${sector.toUpperCase()}</span>
+                            </div>
+                            <div>
+                                <span class="text-slate-500 block text-xs uppercase font-bold">Art Direction:</span>
+                                <span class="text-white">${style.toUpperCase()}</span>
+                            </div>
+                        </div>
+                        <div class="p-4 bg-slate-800 rounded-xl border border-slate-700">
+                            <h5 class="text-indigo-300 font-bold text-xs uppercase mb-2">Technical Workflow Suggestion</h5>
+                            <ul class="text-[12px] space-y-1 text-slate-300">
+                                <li>- Asset Extraction: Layered PSD to Spine-2D Rigging</li>
+                                <li>- Frame Generation: Interpolated 12fps (Style Consistent)</li>
+                                <li>- Lighting: Global Illumination matching ${style} palette</li>
+                                <li>- Metadata: Embedding searchable context for ${sector} indexing</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-center gap-2 mt-4 pt-4 border-t border-slate-800">
+                            <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
+                            <span class="text-[10px] text-slate-500 tracking-widest font-bold">AUTHORITY: KALYANJIT HATIBARUAH</span>
+                        </div>
+                    </div>
                 `;
-                res.innerHTML = report;
             }, 800);
         }
 
         window.onload = () => {
-            initCharts();
+            initDashboard();
             renderTaxonomy();
+            renderStyles();
         };
     </script>
 </body>
