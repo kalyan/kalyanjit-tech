@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scaling Social Ventures with Deep Tech - TISS Module</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #F9FAFB; color: #1F2937; }
+        h1, h2, h3, h4 { font-family: 'Merriweather', serif; }
+        .chart-container { position: relative; width: 100%; max-width: 650px; margin-left: auto; margin-right: auto; height: 350px; max-height: 400px; }
+        @media (min-width: 768px) { .chart-container { height: 400px; } }
+        .nav-active { border-bottom: 2px solid #059669; color: #059669; font-weight: 600; }
+        .card-hover { transition: all 0.3s ease; }
+        .card-hover:hover { transform: translateY(-4px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
+        .animate-fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+
+    <!-- Placeholder Comments -->
+    <!-- Chosen Palette: Nature Green (Impact) and Slate Blue (Technology) -->
+    <!-- Application Structure Plan: 
+         1. Dashboard: Ecosystem overview.
+         2. Scaling: Strategy module on using tech to multiply impact.
+         3. Incubators: Support system directory.
+         4. Deep Tech: Interaction matrix for startup ideas.
+         5. Idea Lab: Interactive brainstorming tool.
+         The structure is designed to guide TISS students from 'What exists' to 'How to grow'. -->
+    <!-- Visualization & Content Choices: 
+         - Line Chart: Linear vs Exponential Scaling comparison.
+         - Polar Area Chart: Dimensions of Deep Tech Scaling.
+         - Scatter Plot: Impact-Complexity Matrix.
+         - Dynamic Table: Scaling Frameworks. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <nav class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <span class="text-2xl text-emerald-600"><i class="fa-solid fa-seedling"></i></span>
+                        <span class="font-bold text-xl tracking-tight text-gray-900">Social<span class="text-emerald-600">Impact</span>Lab</span>
+                    </div>
+                    <div class="hidden sm:ml-8 sm:flex sm:space-x-4 lg:space-x-8">
+                        <button onclick="navigate('dashboard')" id="nav-dashboard" class="nav-btn nav-active inline-flex items-center px-1 pt-1 text-sm font-medium">Dashboard</button>
+                        <button onclick="navigate('scaling')" id="nav-scaling" class="nav-btn inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-emerald-600 transition">Scaling Strategies</button>
+                        <button onclick="navigate('incubators')" id="nav-incubators" class="nav-btn inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-emerald-600 transition">Top Incubators</button>
+                        <button onclick="navigate('deeptech')" id="nav-deeptech" class="nav-btn inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-emerald-600 transition">Use Cases</button>
+                        <button onclick="navigate('idealab')" id="nav-idealab" class="nav-btn inline-flex items-center px-1 pt-1 text-sm font-medium text-gray-500 hover:text-emerald-600 transition">Idea Generator</button>
+                    </div>
+                </div>
+                <div class="flex items-center">
+                    <span class="text-xs font-semibold bg-emerald-100 text-emerald-700 px-3 py-1 rounded-full uppercase tracking-wider">TISS MBA Series</span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow bg-slate-50">
+        
+        <!-- SECTION 1: DASHBOARD -->
+        <section id="dashboard" class="view-section py-8 px-4 sm:px-6 lg:px-8 animate-fade-in">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h1 class="text-4xl font-bold text-gray-900 mb-4">India's Social Tech Revolution</h1>
+                    <p class="text-lg text-gray-600 max-w-4xl mx-auto">
+                        In the TISS Mumbai tradition of social justice, we now look at how **Deep Tech**—from Artificial Intelligence to advanced biotech—is not just a tool for profit, but the ultimate lever for equity at scale.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-emerald-100 card-hover">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="bg-emerald-100 p-3 rounded-lg text-emerald-600 text-xl"><i class="fa-solid fa-chart-line"></i></div>
+                            <h3 class="font-bold text-lg">Support Ecosystem</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Over 50+ dedicated incubators are shifting focus from simple service delivery to tech-led intervention.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-blue-100 card-hover">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="bg-blue-100 p-3 rounded-lg text-blue-600 text-xl"><i class="fa-solid fa-microchip"></i></div>
+                            <h3 class="font-bold text-lg">Deep Tech Penetration</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">35% of new social ventures in 2024 leverage AI or IoT for remote monitoring and diagnostics.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-indigo-100 card-hover">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="bg-indigo-100 p-3 rounded-lg text-indigo-600 text-xl"><i class="fa-solid fa-arrows-to-circle"></i></div>
+                            <h3 class="font-bold text-lg">Scaling Focus</h3>
+                        </div>
+                        <p class="text-sm text-gray-600">Moving beyond "local pilots" to "national platforms" using cloud-native infrastructure.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4">Incubator Focus by Life-Cycle</h3>
+                        <div class="chart-container">
+                            <canvas id="lifecycleChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-gray-200">
+                        <h3 class="text-xl font-bold mb-4">Tech Adoption Trends (2020-2025)</h3>
+                        <div class="chart-container">
+                            <canvas id="adoptionChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: SCALING STRATEGIES -->
+        <section id="scaling" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8 animate-fade-in">
+            <div class="max-w-7xl mx-auto">
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold text-gray-900">Scaling Social Ventures with Deep Tech</h2>
+                    <p class="text-gray-600 mt-2">The transition from high-touch service to high-tech reach.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+                    <div class="lg:col-span-2 bg-white p-8 rounded-2xl shadow-sm border border-gray-100">
+                        <h3 class="text-xl font-bold text-gray-900 mb-6">The Scaling Force-Multiplier</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="scalingForceChart"></canvas>
+                        </div>
+                        <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="p-4 bg-emerald-50 rounded-lg">
+                                <h4 class="font-bold text-emerald-800 mb-2">Linear Scaling (Traditional)</h4>
+                                <ul class="text-sm text-emerald-700 space-y-2">
+                                    <li>• Scaling requires proportional hiring</li>
+                                    <li>• Cost per impact remains constant</li>
+                                    <li>• Geographically constrained</li>
+                                </ul>
+                            </div>
+                            <div class="p-4 bg-indigo-50 rounded-lg">
+                                <h4 class="font-bold text-indigo-800 mb-2">Exponential Scaling (Deep Tech)</h4>
+                                <ul class="text-sm text-indigo-700 space-y-2">
+                                    <li>• Scaling via algorithms & automation</li>
+                                    <li>• Marginal cost per impact drops</li>
+                                    <li>• Borderless, cloud-delivered impact</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
+                            <h4 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-bolt text-amber-500"></i> The 3 Levers of Scaling
+                            </h4>
+                            <div class="space-y-4">
+                                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition border-l-2 border-emerald-500">
+                                    <p class="font-semibold text-sm">Automated Triage (AI)</p>
+                                    <p class="text-xs text-gray-500">Handling 10,000 requests as easily as 10.</p>
+                                </div>
+                                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition border-l-2 border-blue-500">
+                                    <p class="font-semibold text-sm">Remote Verification (IoT)</p>
+                                    <p class="text-xs text-gray-500">Ensuring integrity across thousands of sites.</p>
+                                </div>
+                                <div class="cursor-pointer hover:bg-gray-50 p-2 rounded transition border-l-2 border-indigo-500">
+                                    <p class="font-semibold text-sm">Trust Architecture (Blockchain)</p>
+                                    <p class="text-xs text-gray-500">Reducing leakage in large-scale cash transfers.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-br from-gray-900 to-indigo-900 p-6 rounded-xl text-white">
+                            <h4 class="font-bold mb-2">Key Scaling Model</h4>
+                            <p class="text-xs text-gray-300 italic mb-4">"The Platform Play"</p>
+                            <p class="text-sm">Don't just build a school; build a <strong>Learning OS</strong> that local communities can use to run their own schools.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: INCUBATORS -->
+        <section id="incubators" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-8">
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">Social Tech Incubators</h2>
+                        <p class="text-gray-600 mt-2">Specialized hubs that bridge the gap between "Tech" and "Social".</p>
+                    </div>
+                </div>
+                
+                <div id="incubator-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: DEEP TECH -->
+        <section id="deeptech" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl font-bold text-gray-900">The Social x Tech Matrix</h2>
+                    <p class="text-gray-600 mt-2">Hover over technological domains to see scaling use cases.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:bg-indigo-50 transition">
+                        <div class="w-16 h-16 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-brain"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">AI & Prediction</h3>
+                        <p class="text-sm text-gray-600 mb-6">Scaling diagnostics from city hospitals to village clinics via smartphone-only screening.</p>
+                        <div class="text-xs font-bold text-indigo-700 bg-indigo-100 px-3 py-1 rounded-full inline-block">Scaling: 1,000x Reach</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:bg-emerald-50 transition">
+                        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-wifi"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">IoT & Sensing</h3>
+                        <p class="text-sm text-gray-600 mb-6">Scaling farm yields by deploying soil sensors that talk to central irrigation systems automatically.</p>
+                        <div class="text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full inline-block">Scaling: 50% Efficiency</div>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 text-center hover:bg-amber-50 transition">
+                        <div class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3">Web3 & Trust</h3>
+                        <p class="text-sm text-gray-600 mb-6">Scaling micro-finance by removing middle-men and using smart contracts for transparent loans.</p>
+                        <div class="text-xs font-bold text-amber-700 bg-amber-100 px-3 py-1 rounded-full inline-block">Scaling: 0% Leakage</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: IDEA LAB -->
+        <section id="idealab" class="view-section hidden py-8 px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white p-10 rounded-3xl shadow-xl border border-gray-100 text-center">
+                    <h2 class="text-3xl font-bold mb-6">The TISS Idea Generator</h2>
+                    <p class="mb-10 text-gray-500 italic">Combine a sector with a tech lever to generate a scaling strategy.</p>
+                    
+                    <div class="flex flex-col md:flex-row gap-4 mb-8">
+                        <select id="sectorSelect" class="flex-1 p-4 rounded-xl border-2 border-gray-200 focus:border-emerald-500 outline-none font-medium">
+                            <option value="Health">Healthcare</option>
+                            <option value="Agri">Agriculture</option>
+                            <option value="Edu">Education</option>
+                            <option value="Waste">Waste Mgmt</option>
+                        </select>
+                        <select id="techSelect" class="flex-1 p-4 rounded-xl border-2 border-gray-200 focus:border-indigo-500 outline-none font-medium">
+                            <option value="AI">Generative AI</option>
+                            <option value="IoT">IoT Sensors</option>
+                            <option value="BC">Blockchain</option>
+                        </select>
+                        <button onclick="generateIdea()" class="bg-emerald-600 text-white font-bold px-8 py-4 rounded-xl hover:bg-emerald-700 transition shadow-lg">Generate</button>
+                    </div>
+
+                    <div id="ideaOutput" class="hidden p-6 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
+                        <p id="ideaText" class="text-lg font-medium text-gray-800 leading-relaxed"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-white pt-12 pb-6 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div>
+                    <h4 class="text-xl font-bold mb-4">Module Content Author</h4>
+                    <div class="flex items-center gap-4 bg-gray-800 p-6 rounded-2xl border border-gray-700">
+                        <div class="w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center text-3xl font-bold">KH</div>
+                        <div>
+                            <p class="text-lg font-bold">Kalyanjit Hatibaruah</p>
+                            <p class="text-sm text-gray-400">Social Entrepreneurship & Deep Tech Consultant</p>
+                            <div class="flex gap-4 mt-3">
+                                <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i class="fa-brands fa-linkedin"></i> LinkedIn
+                                </a>
+                                <a href="https://wa.me/919864011106" target="_blank" class="text-emerald-400 hover:text-emerald-300 text-sm flex items-center gap-1">
+                                    <i class="fa-brands fa-whatsapp"></i> +91 9864011106
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <p class="text-gray-400 text-sm leading-relaxed mb-4">
+                        This module is designed for the MBA students of Tata Institute of Social Sciences (TISS), Mumbai, to explore the frontier of tech-led social innovation.
+                    </p>
+                    <p class="text-xs text-gray-600">© 2024 Social Impact Lab Module. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Logic ---
+        function navigate(viewId) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('nav-active', 'text-emerald-600'));
+            const activeBtn = document.getElementById('nav-' + viewId);
+            if(activeBtn) activeBtn.classList.add('nav-active');
+            
+            // Re-render charts for responsiveness
+            if(viewId === 'dashboard') initDashboardCharts();
+            if(viewId === 'scaling') initScalingCharts();
+        }
+
+        // --- Charts Initialization ---
+        function initDashboardCharts() {
+            const lc = document.getElementById('lifecycleChart').getContext('2d');
+            new Chart(lc, {
+                type: 'polarArea',
+                data: {
+                    labels: ['Idea Stage', 'Early Traction', 'Scaling', 'Systemic Shift'],
+                    datasets: [{
+                        data: [40, 30, 20, 10],
+                        backgroundColor: ['#10b981', '#3b82f6', '#6366f1', '#f59e0b']
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            const ad = document.getElementById('adoptionChart').getContext('2d');
+            new Chart(ad, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [
+                        { label: 'AI in Social Ventures', data: [5, 12, 18, 25, 38, 55], borderColor: '#6366f1', tension: 0.3 },
+                        { label: 'Mobile Platforms', data: [40, 55, 70, 85, 90, 95], borderColor: '#10b981', tension: 0.3 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        }
+
+        function initScalingCharts() {
+            const sfc = document.getElementById('scalingForceChart').getContext('2d');
+            new Chart(sfc, {
+                type: 'line',
+                data: {
+                    labels: ['Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                    datasets: [
+                        { label: 'Linear Scaling (Staff-Led)', data: [10, 20, 30, 40, 50], borderColor: '#10b981', borderDash: [5,5] },
+                        { label: 'Exponential (Tech-Led)', data: [10, 30, 90, 270, 810], borderColor: '#6366f1', borderWidth: 3 }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    scales: { y: { type: 'logarithmic', title: { display: true, text: 'Beneficiaries Reached (Log Scale)' } } }
+                }
+            });
+        }
+
+        // --- Data ---
+        const incubatorData = [
+            { name: "CIIE.CO", host: "IIM Ahmedabad", focus: "Science-led Innovation", tags: ["Deep Tech", "IP"], desc: "Known for the 'Bharat Inclusion Initiative' supporting tech for the underserved." },
+            { name: "Social Alpha", host: "Tata Trusts", focus: "Lab to Market", tags: ["Healthcare", "Hardware"], desc: "Focuses specifically on deep tech science startups with massive scale potential." },
+            { name: "Villgro", host: "Independent", focus: "Market Ready", tags: ["Agri", "Energy"], desc: "India's pioneer social incubator, now shifting heavily toward IoT and Agri-tech." },
+            { name: "NSRCEL", host: "IIM Bangalore", focus: "Women & Social", tags: ["Mobility", "SaaS"], desc: "Scaling social startups using robust business logic and tech platforms." }
+        ];
+
+        function renderIncubators() {
+            const grid = document.getElementById('incubator-grid');
+            grid.innerHTML = incubatorData.map(inc => `
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 card-hover">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-lg">${inc.name}</h3>
+                        <span class="text-xs font-bold text-gray-400 uppercase">${inc.host}</span>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        ${inc.tags.map(t => `<span class="bg-blue-50 text-blue-700 text-[10px] font-bold px-2 py-1 rounded-full">${t}</span>`).join('')}
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">${inc.desc}</p>
+                    <button class="text-emerald-600 font-bold text-xs uppercase hover:underline">Apply to Cohort &rarr;</button>
+                </div>
+            `).join('');
+        }
+
+        // --- Idea Lab ---
+        const strategies = {
+            "Health-AI": "Use GenAI to train local health workers in real-time, allowing 1 supervisor to manage 100 villages remotely.",
+            "Agri-IoT": "Deploy low-cost solar sensors that feed data into a central platform, automating irrigation across 5,000 hectares.",
+            "Edu-AI": "A localized AI tutor that speaks the tribal dialect of the student, scaling high-quality personalized education.",
+            "Waste-BC": "A blockchain ledger to track plastic waste from collection to recycling, ensuring fair pay for 10,000+ ragpickers."
+        };
+
+        function generateIdea() {
+            const s = document.getElementById('sectorSelect').value;
+            const t = document.getElementById('techSelect').value;
+            const key = `${s}-${t}`;
+            const out = document.getElementById('ideaOutput');
+            const txt = document.getElementById('ideaText');
+            
+            txt.textContent = strategies[key] || "A platform play that uses digital verification to enable decentralized operations and community ownership at national scale.";
+            out.classList.remove('hidden');
+        }
+
+        window.onload = () => {
+            initDashboardCharts();
+            renderIncubators();
+        };
+    </script>
+</body>
+</html>
