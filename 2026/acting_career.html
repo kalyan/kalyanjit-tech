@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strategic Roadmap | Kalyanjit Hatibaruah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;600&display=swap');
+        
+        :root {
+            --brand-orange: #f97316;
+            --brand-dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+
+        h1, h2, h3, .heading-font {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: auto;
+            height: 320px;
+        }
+
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link.active {
+            color: var(--brand-orange);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--brand-orange);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .timeline-dot::before {
+            content: '';
+            position: absolute;
+            left: -33px;
+            top: 4px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--brand-orange);
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px #ffedd5;
+        }
+    </style>
+    <!-- Chosen Palette: Slate & International Orange -->
+    <!-- Application Structure Plan:
+         1. Executive Profile: Direct links to WhatsApp/LinkedIn.
+         2. The Strategy Matrix: Defining Authority Casting, Digital Footprint, and the Bridge.
+         3. Interactive Roadmap: 4-phase timeline from local to Hollywood.
+         4. Casting Database: Filterable grid of CDs and Ad Agencies.
+         5. Skills Gap Analysis: Radar chart for technical actor training.
+    -->
+    <!-- Visualization & Content Choices:
+         - Radar Chart: Skill Gap Analysis.
+         - Doughnut Chart: Time/Effort distribution.
+         - Interactive Tabs: Navigation without page reloads.
+         - CONFIRMATION: NO SVG/Mermaid used.
+    -->
+</head>
+<body class="antialiased">
+
+    <!-- Global Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center space-x-4">
+                    <div class="w-10 h-10 bg-slate-900 rounded-lg flex items-center justify-center text-white font-bold">KH</div>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-tight text-slate-900">Kalyanjit <span class="text-orange-600">Hatibaruah</span></h1>
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em]">Tech Visionary • Film Actor</p>
+                    </div>
+                </div>
+                
+                <div class="hidden md:flex space-x-8 items-center">
+                    <button onclick="nav('strategy')" id="nav-strategy" class="nav-link active text-sm font-semibold">The Pitch</button>
+                    <button onclick="nav('roadmap')" id="nav-roadmap" class="nav-link text-sm font-semibold text-slate-500">Roadmap</button>
+                    <button onclick="nav('network')" id="nav-network" class="nav-link text-sm font-semibold text-slate-500">Network</button>
+                    <div class="h-6 w-[1px] bg-slate-200"></div>
+                    <a href="https://wa.me/919864011106" target="_blank" class="text-green-600 hover:scale-110 transition"><i class="fa-brands fa-whatsapp text-xl"></i></a>
+                    <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="text-blue-700 hover:scale-110 transition"><i class="fa-brands fa-linkedin text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 py-10">
+
+        <!-- SECTION: STRATEGY & PITCH -->
+        <div id="view-strategy" class="space-y-12">
+            <!-- Hero Pitch -->
+            <div class="bg-slate-900 rounded-[2rem] p-10 text-white relative overflow-hidden shadow-2xl">
+                <div class="relative z-10 max-w-3xl">
+                    <div class="inline-block px-4 py-1 rounded-full bg-orange-600 text-[10px] font-bold uppercase tracking-widest mb-6">Strategy 2024-2026</div>
+                    <h2 class="text-4xl md:text-5xl font-bold mb-6 leading-tight">Crossover: From Tech Pioneer to <span class="text-orange-500 italic">Hollywood Powerhouse</span></h2>
+                    <p class="text-slate-400 text-lg mb-8 leading-relaxed">
+                        We are not building a typical acting career. We are executing an **Authority Pivot**. By leveraging your status as an AI/Blockchain expert, we position you for roles that demand intellectual weight and executive presence—the roles Hollywood struggles to cast authentically.
+                    </p>
+                </div>
+                <!-- Abstract visual using CSS -->
+                <div class="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-orange-500/10 to-transparent"></div>
+            </div>
+
+            <!-- Three Pillars Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Pillar 1 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div class="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Authority Casting</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
+                        Stop auditioning for generic roles. Target the **"Grey Eminence"** archetype:
+                    </p>
+                    <ul class="text-xs space-y-2 text-slate-700 font-semibold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> High-Tech Antagonists</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Diplomatic Mediators</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-green-500 mr-2"></i> Financial Hegemons</li>
+                    </ul>
+                </div>
+
+                <!-- Pillar 2 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-fingerprint"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Digital Footprint</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
+                        Your LinkedIn is your strongest acting pitch. Merge both worlds:
+                    </p>
+                    <ul class="text-xs space-y-2 text-slate-700 font-semibold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i> Professional IMDb Management</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i> AI/Performance Intersection Content</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-blue-500 mr-2"></i> High-Production Intro Reels</li>
+                    </ul>
+                </div>
+
+                <!-- Pillar 3 -->
+                <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300">
+                    <div class="w-14 h-14 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center text-2xl mb-6">
+                        <i class="fa-solid fa-bridge"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Hollywood Bridge</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed mb-4">
+                        Strategic entry into the US market via International CDs:
+                    </p>
+                    <ul class="text-xs space-y-2 text-slate-700 font-semibold">
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Target Tess Joseph (Tenet CD)</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Boutique US Representation</li>
+                        <li class="flex items-center"><i class="fa-solid fa-check text-purple-500 mr-2"></i> Film Market Networking</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Visualization: Skills & Effort -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold mb-6 flex items-center"><i class="fa-solid fa-chart-pie text-orange-600 mr-3"></i> Resource Allocation</h3>
+                    <div class="chart-container">
+                        <canvas id="effortChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-6 italic">Focus 40% on **high-level networking** (Producers/Investors) where your tech background creates immediate peer-to-peer trust.</p>
+                </div>
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                    <h3 class="text-lg font-bold mb-6 flex items-center"><i class="fa-solid fa-brain text-orange-600 mr-3"></i> Skill Development Focus</h3>
+                    <div class="chart-container">
+                        <canvas id="skillChart"></canvas>
+                    </div>
+                    <p class="text-xs text-slate-500 mt-6 italic">Mastering the **General American Accent** and **Self-Tape Technicality** are the non-negotiables for US entry.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: ROADMAP -->
+        <div id="view-roadmap" class="hidden space-y-10 animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <h2 class="text-3xl font-bold mb-4">The 24-Month Execution Roadmap</h2>
+                <p class="text-slate-500 mb-12">From building the portfolio to signing with a US boutique agent.</p>
+                
+                <div class="relative border-l-2 border-slate-200 ml-8 space-y-16">
+                    <!-- Phase 1 -->
+                    <div class="relative pl-12 timeline-dot">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Phase 1: Foundation & Asset Creation (Months 1-6)</h3>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Casting Portfolio:</strong> 3 distinct looks (CEO, Scientist, Global Antagonist).</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>The Digital Reel:</strong> A 90-second "Authority Reel" showing command of dialogue.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Ad Film Sprint:</strong> Target 5-10 premium ads for banking, tech, and luxury brands.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 2 -->
+                    <div class="relative pl-12 timeline-dot">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Phase 2: OTT & Feature Penetration (Months 7-12)</h3>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Audition for Mukesh Chhabra:</strong> Focus on character-driven OTT roles (Netflix/Amazon).</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Short Film Strategy:</strong> Execute one high-production short film aimed at Cannes Short Film Corner.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>IMDb Consolidation:</strong> Clean up and optimize IMDb Pro presence.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 3 -->
+                    <div class="relative pl-12 timeline-dot">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Phase 3: The Global Bridge (Months 13-18)</h3>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Tess Joseph Networking:</strong> Secure audition slots for international projects shooting in India.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Accent Perfection:</strong> Finalize coaching for Neutral Global/American accent.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-circle-dot text-orange-500 mt-1 mr-3"></i> <strong>Festival PR:</strong> Attend Film Markets (AFM/Berlinale) leveraging your tech background as an entree.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Phase 4 -->
+                    <div class="relative pl-12 timeline-dot">
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Phase 4: Hollywood Crossover (Months 19-24)</h3>
+                        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm border-2 border-orange-100">
+                            <ul class="space-y-3 text-sm text-slate-600">
+                                <li class="flex items-start"><i class="fa-solid fa-star text-orange-500 mt-1 mr-3"></i> <strong>Boutique Agency Representation:</strong> Sign with a manager in LA focusing on diverse, intellectual talent.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-star text-orange-500 mt-1 mr-3"></i> <strong>Pilot Season Prep:</strong> Remote self-taping for US network pilots.</li>
+                                <li class="flex items-start"><i class="fa-solid fa-star text-orange-500 mt-1 mr-3"></i> <strong>Strategic PR:</strong> Mainstream feature role in a high-profile Hollywood-India co-production.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: NETWORK -->
+        <div id="view-network" class="hidden space-y-8 animate-fade-in">
+            <div class="flex justify-between items-center mb-8">
+                <div>
+                    <h2 class="text-3xl font-bold">The Casting Network</h2>
+                    <p class="text-slate-500 mt-2">Gatekeepers for Ad Films, OTT, and Hollywood Bridge.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="filterNetwork('all')" class="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-semibold">All</button>
+                    <button onclick="filterNetwork('international')" class="px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-lg text-sm font-semibold hover:border-orange-500 transition">Hollywood Bridge</button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="network-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Action for Mobile -->
+    <div class="fixed bottom-8 right-8 flex flex-col space-y-3 md:hidden">
+        <a href="https://wa.me/919864011106" class="w-14 h-14 bg-green-500 text-white rounded-full flex items-center justify-center shadow-2xl"><i class="fa-brands fa-whatsapp text-2xl"></i></a>
+    </div>
+
+    <script>
+        // --- DATA ---
+        const contacts = [
+            { name: "Tess Joseph", focus: "International / Hollywood", type: "international", bio: "The primary gatekeeper for US/UK productions shooting in India (e.g., Lion, Tenet, Shantaram). Needs perfect English and distinct face value." },
+            { name: "Mukesh Chhabra (MCCC)", focus: "OTT & Big Features", type: "bollywood", bio: "India's biggest CD. Mandatory for Netflix/Amazon originals. Best for securing your 'Short Role' entry in mainstream OTT." },
+            { name: "Panchami Ghavri", focus: "Stylish OTT / Features", type: "bollywood", bio: "Known for casting urban, sophisticated, and high-style projects (Class, Mismatched). Perfect for your 'Executive' profile." },
+            { name: "Nandini Shrikent", focus: "Excel / Zoya Akhtar", type: "bollywood", bio: "Specializes in high-IQ, upscale urban cinema. The primary CD for 'Tiger 3', 'Gully Boy', and 'Made in Heaven'." },
+            { name: "Corcoise Films", focus: "Premium Ad Films", type: "ads", bio: "Prasoon Pandey's agency. They make the ads that actually look like cinema. Ideal for CEO/Expert roles." },
+            { name: "Nirvana Films", focus: "Narrative Ads", type: "ads", bio: "Specializes in storytelling ads. Good for building a reel that shows acting nuances in 30 seconds." },
+            { name: "Seher Aly Latif", focus: "International Features", type: "international", bio: "Late CD's legacy continues. Experts in crossover films and European co-productions." },
+            { name: "Casting Bay", type: "bollywood", focus: "Web Series / TVF", bio: "Excellent for quick entry into OTT series. Very active with Amazon Prime projects." }
+        ];
+
+        // --- NAVIGATION ---
+        function nav(sectionId) {
+            document.querySelectorAll('main > div').forEach(div => div.classList.add('hidden'));
+            document.getElementById(`view-${sectionId}`).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active', 'text-orange-600'));
+            document.getElementById(`nav-${sectionId}`).classList.add('active');
+            window.scrollTo(0,0);
+        }
+
+        function filterNetwork(type) {
+            renderNetwork(type === 'all' ? contacts : contacts.filter(c => c.type === type));
+        }
+
+        function renderNetwork(data) {
+            const grid = document.getElementById('network-grid');
+            grid.innerHTML = '';
+            data.forEach(c => {
+                const card = document.createElement('div');
+                card.className = "bg-white p-6 rounded-3xl border border-slate-200 shadow-sm hover:border-orange-200 transition group";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-4">
+                        <h4 class="font-bold text-slate-900 group-hover:text-orange-600 transition">${c.name}</h4>
+                        <span class="text-[9px] font-bold px-2 py-1 bg-slate-100 text-slate-500 rounded uppercase tracking-tighter">${c.type}</span>
+                    </div>
+                    <p class="text-xs font-bold text-slate-400 mb-2 uppercase tracking-wide">${c.focus}</p>
+                    <p class="text-xs text-slate-600 leading-relaxed">${c.bio}</p>
+                    <button class="mt-4 w-full py-2 bg-slate-50 text-[10px] font-bold text-slate-400 rounded-lg group-hover:bg-orange-600 group-hover:text-white transition uppercase">Strategy: Targeted Pitch</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // --- CHARTS ---
+        function initCharts() {
+            // Effort Chart
+            new Chart(document.getElementById('effortChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Networking (C-Suite)', 'Craft Training', 'Portfolio/PR', 'Auditions'],
+                    datasets: [{
+                        data: [40, 20, 25, 15],
+                        backgroundColor: ['#0f172a', '#f97316', '#64748b', '#cbd5e1'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, font: { size: 11 } } } }
+                }
+            });
+
+            // Radar Skill Chart
+            new Chart(document.getElementById('skillChart').getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: ['US/Neutral Accent', 'Camera Technique', 'Self-Tape Production', 'Emotional Fluidity', 'Script Analysis', 'Body Language'],
+                    datasets: [{
+                        label: 'Current Strategy',
+                        data: [45, 60, 80, 50, 95, 55],
+                        fill: true,
+                        backgroundColor: 'rgba(249, 115, 22, 0.2)',
+                        borderColor: '#f97316',
+                        pointBackgroundColor: '#f97316',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { r: { angleLines: { display: false }, suggestedMin: 0, suggestedMax: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        window.onload = () => {
+            initCharts();
+            renderNetwork(contacts);
+        };
+    </script>
+</body>
+</html>
