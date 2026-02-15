@@ -3,626 +3,269 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Industrial Manufacturing: Process & Planning Report</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Industrial Manufacturing: Stage-Wise Process Manager</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Plotly.js -->
-    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-
-    <!-- Tailwind Config for specific colors -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        ind: {
-                            50: '#f8fafc',
-                            100: '#f1f5f9',
-                            200: '#e2e8f0', // Slate basics
-                            500: '#64748b',
-                            800: '#1e293b',
-                            900: '#0f172a',
-                            accent: '#0ea5e9', // Sky blue for technical feel
-                            warn: '#f59e0b',    // Amber for attention
-                            success: '#10b981'  // Emerald for completion
-                        }
-                    },
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
-                    }
-                }
-            }
-        }
-    </script>
-
     <style>
-        body {
-            background-color: #f8fafc; /* ind-50 */
-            color: #1e293b; /* ind-800 */
-        }
-        
-        /* Chart Container Strict Styling */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            margin-left: auto;
-            margin-right: auto;
-            background: white;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1);
-        }
-
-        /* Specific constraints for different chart types */
-        .viz-chart {
-            height: 300px;
-            max-height: 300px;
-        }
-
-        .profile-chart-container {
-            height: 400px;
-            max-height: 400px;
-            width: 100%;
-        }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8; 
-        }
-
-        .nav-item.active {
-            border-bottom: 2px solid #0ea5e9;
-            color: #0f172a;
-            font-weight: 600;
-        }
+        .glossary-card { transition: all 0.2s ease-in-out; }
+        .glossary-card:hover { border-color: #3b82f6; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin: auto; height: 350px; }
+        .input-focus:focus { border-color: #3b82f6; ring: 2px; ring-color: #bfdbfe; }
     </style>
 </head>
-<body class="font-sans antialiased">
+<body class="bg-slate-50 text-slate-900 font-sans">
 
-    <!-- REQUIRED PLACEHOLDERS -->
-    <!-- Chosen Palette: Industrial Slate & Sky Blue. Grounded in warm neutrals (Slate 50-900) for a technical, engineering document feel. Sky Blue (#0ea5e9) used as a precise, digital accent. Amber for alerts/stages. -->
-    
-    <!-- Application Structure Plan:
-         1. Header: Professional title and global navigation.
-         2. Executive Summary: High-level overview of the report's core thesis (Stage-wise manufacturing).
-         3. Interactive Digital Process Sheet (The Core): A dashboard simulating the proposed application. It uses a Stepper to navigate manufacturing stages.
-            - Visual: Plotly.js generic plot to simulate a "Live CAD" profile view of a shaft being machined.
-            - Data: Dynamic table showing dimensions and tolerances specific to that stage.
-         4. Analytics Dashboard: Quantitative data showing the value of this approach (Time/Cost breakdown).
-         5. The Way Forward: A strategic grid proposing features for the future software application (IoT, Digital Twins).
-         6. Conclusion: Final synthesis.
-         
-         Reasoning: The user asked for a "report" and a "way forward" for an application. This structure presents the static report content first, then *demonstrates* the application concept interactively, effectively merging the request into a functional prototype.
-    -->
+<!-- Chosen Palette: Precision Engineering. Base of Slate-50 for clarity, accented with Industrial Blue (#3b82f6) and Tooling Grey (#475569). -->
 
-    <!-- Visualization & Content Choices:
-         1. Interactive Process Profile (Plotly): Goal: Visualize "Process Drawings". Method: A Scatter plot drawing the 2D cross-section of a shaft. Interaction: Changing the stage updates the data points to show material removal (Diameter shrinking, features appearing). Justification: Plotly handles precise coordinate mapping better than Chart.js for engineering profiles. NO SVG used.
-         2. Stage Metrics (HTML/JS): Goal: Show data context. Method: Dynamic table. Interaction: Updates with stage selection.
-         3. Cost/Time Analysis (Chart.js): Goal: Compare efficiency. Method: Bar/Line combo. Interaction: Hover details. Justification: Standard business metrics.
-         4. Feature Cards (Grid): Goal: Present the "Way Forward". Method: CSS Grid with hover effects.
-    -->
+<!-- Application Structure Plan:
+     1. Digital Job Card (Input): A data entry section where users define a manufacturing stage.
+     2. Process Result (Output): A dynamically generated visual card simulating a workshop process sheet.
+     3. Cumulative Tolerance Analysis: A Chart.js visualization showing how tolerances tighten over stages.
+     4. Industrial Glossary: A searchable grid of technical terms categorized by "Machining," "Metrology," and "Quality."
+     
+     This structure was chosen to mirror the real-world workflow: Inputting data -> Generating a Process Sheet -> Analyzing results -> Referencing standards.
+-->
 
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+<!-- Visualization & Content Choices:
+     1. Tolerance Trend (Chart.js): Goal: Visualize precision tightening. Method: Line Chart.
+     2. Process Glossary: Goal: Define technical terms. Method: Searchable Card Grid with JS filtering.
+     3. Result Card: Goal: Present calculated data. Method: HTML/CSS styled as a shop-floor document.
+-->
 
-    <!-- Navigation -->
-    <nav class="bg-white border-b border-ind-200 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-16">
-                <div class="flex">
-                    <div class="flex-shrink-0 flex items-center">
-                        <span class="text-2xl font-bold text-ind-900 tracking-tight">CMPT<span class="text-ind-accent">.Mfg</span></span>
-                    </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <button onclick="navTo('overview')" class="nav-item active px-1 pt-1 text-sm font-medium text-ind-500 hover:text-ind-700 h-full border-b-2 border-transparent">Overview</button>
-                        <button onclick="navTo('simulation')" class="nav-item px-1 pt-1 text-sm font-medium text-ind-500 hover:text-ind-700 h-full border-b-2 border-transparent">Process Simulation</button>
-                        <button onclick="navTo('analytics')" class="nav-item px-1 pt-1 text-sm font-medium text-ind-500 hover:text-ind-700 h-full border-b-2 border-transparent">Analysis</button>
-                        <button onclick="navTo('roadmap')" class="nav-item px-1 pt-1 text-sm font-medium text-ind-500 hover:text-ind-700 h-full border-b-2 border-transparent">The Way Forward</button>
-                    </div>
-                </div>
-                <div class="flex items-center">
-                    <span class="text-xs font-mono text-ind-400 border border-ind-200 rounded px-2 py-1">v1.0.4 Draft</span>
-                </div>
-            </div>
+<!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+<nav class="bg-slate-900 text-white p-4 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold tracking-tight">PRECISION<span class="text-blue-400">.OPS</span></h1>
+        <div class="hidden md:flex space-x-8 text-sm font-medium">
+            <a href="#planner" class="hover:text-blue-300">Stage Planner</a>
+            <a href="#analytics" class="hover:text-blue-300">Analytics</a>
+            <a href="#glossary" class="hover:text-blue-300">Terminology</a>
         </div>
-        <!-- Mobile Menu (Simple Logic) -->
-        <div class="sm:hidden border-t border-ind-200 flex justify-around py-2 bg-ind-50">
-            <button onclick="navTo('overview')" class="text-xs text-ind-600 font-medium">Overview</button>
-            <button onclick="navTo('simulation')" class="text-xs text-ind-600 font-medium">Sim</button>
-            <button onclick="navTo('analytics')" class="text-xs text-ind-600 font-medium">Data</button>
-            <button onclick="navTo('roadmap')" class="text-xs text-ind-600 font-medium">Future</button>
-        </div>
-    </nav>
+    </div>
+</nav>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+<main class="max-w-7xl mx-auto p-4 md:p-8 space-y-12">
 
-        <!-- SECTION 1: OVERVIEW -->
-        <section id="overview" class="space-y-6">
-            <div class="bg-white rounded-xl shadow-sm border border-ind-200 p-6 md:p-8">
-                <div class="grid md:grid-cols-2 gap-8 items-start">
+    <!-- Header -->
+    <header class="space-y-2">
+        <h2 class="text-3xl font-extrabold text-slate-800">Stage-Wise Manufacturing Control</h2>
+        <p class="text-slate-500 max-w-2xl">Manage intermediate manufacturing drawings, dimensions, and cumulative tolerances through a structured digital process sheet.</p>
+    </header>
+
+    <!-- SECTION 1: STAGE PLANNER (INPUT & OUTPUT) -->
+    <section id="planner" class="grid lg:grid-cols-5 gap-8">
+        <!-- Input Form -->
+        <div class="lg:col-span-2 bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+            <h3 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">1</span>
+                Input: Define Manufacturing Stage
+            </h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Process Name</label>
+                    <input type="text" id="stageName" placeholder="e.g. Finish Grinding" class="w-full p-2.5 rounded border border-slate-300 input-focus outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <h1 class="text-3xl font-bold text-ind-900 mb-4">Stage-Wise Manufacturing: A Protocol</h1>
-                        <p class="text-ind-600 leading-relaxed mb-4">
-                            The manufacturing of industrial components is rarely a single-step event. It is a cumulative process where raw material is transformed through sequential operations—turning, milling, hardening, grinding—to achieve final specifications.
-                        </p>
-                        <p class="text-ind-600 leading-relaxed mb-4">
-                            <strong>The Core Challenge:</strong> Traditional engineering often focuses solely on the final component drawing. However, each intermediate stage requires its own specific geometry, tolerance, and process drawing to ensure the next stage can be performed correctly.
-                        </p>
-                        <div class="bg-ind-50 border-l-4 border-ind-accent p-4 mt-4">
-                            <h3 class="font-semibold text-ind-800">Report Objective</h3>
-                            <p class="text-sm text-ind-600 mt-1">To outline the necessity of distinct Stage Process Drawings for industrial components and propose a digital application architecture ("The Way Forward") to manage this complexity.</p>
-                        </div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Target Dim (mm)</label>
+                        <input type="number" id="targetDim" placeholder="50.00" class="w-full p-2.5 rounded border border-slate-300 input-focus outline-none">
                     </div>
-                    <div class="bg-ind-900 rounded-lg p-6 text-white">
-                        <h3 class="text-lg font-semibold text-ind-100 mb-4 border-b border-ind-700 pb-2">Key Principles</h3>
-                        <ul class="space-y-3 text-sm text-ind-200">
-                            <li class="flex items-start">
-                                <span class="mr-2 text-ind-accent">➜</span>
-                                <span><strong>Incremental Accuracy:</strong> Tolerances tighten with each stage. Rough turning might be +/- 0.5mm, while finish grinding is +/- 0.005mm.</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="mr-2 text-ind-accent">➜</span>
-                                <span><strong>Material Allowance:</strong> Each stage must leave sufficient stock (material) for the subsequent operation to remove.</span>
-                            </li>
-                            <li class="flex items-start">
-                                <span class="mr-2 text-ind-accent">➜</span>
-                                <span><strong>Traceability:</strong> Every stage requires a unique "Process Drawing" to guide the operator.</span>
-                            </li>
-                        </ul>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Tolerance ($\pm$ mm)</label>
+                        <input type="number" id="tolerance" placeholder="0.01" class="w-full p-2.5 rounded border border-slate-300 input-focus outline-none">
                     </div>
                 </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: SIMULATION (THE APP PROTOTYPE) -->
-        <section id="simulation" class="scroll-mt-24">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-ind-900">Interactive Process Planner</h2>
-                <p class="text-ind-500 mt-2">
-                    This module demonstrates the proposed application's core functionality: visualizing the component's state at every step of manufacturing. Select a stage below to view the "Digital Process Drawing" and associated data.
-                </p>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg border border-ind-200 overflow-hidden">
-                <!-- Stepper Navigation -->
-                <div class="bg-ind-50 border-b border-ind-200 p-4">
-                    <div class="flex flex-wrap md:flex-nowrap justify-between gap-2" id="stepperContainer">
-                        <!-- Injected via JS -->
-                    </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Required Surface Finish (Ra)</label>
+                    <select id="surfaceFinish" class="w-full p-2.5 rounded border border-slate-300 input-focus outline-none">
+                        <option value="12.5">Ra 12.5 (Roughing)</option>
+                        <option value="3.2">Ra 3.2 (Commercial)</option>
+                        <option value="0.8">Ra 0.8 (Fine Turning)</option>
+                        <option value="0.4">Ra 0.4 (Grinding)</option>
+                    </select>
                 </div>
-
-                <div class="grid lg:grid-cols-3 gap-0">
-                    <!-- Visualization Panel -->
-                    <div class="lg:col-span-2 p-6 border-r border-ind-200">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-semibold text-ind-800">Process Drawing: <span id="currentStageTitle" class="text-ind-accent">Raw Material</span></h3>
-                            <span class="text-xs bg-ind-100 text-ind-600 px-2 py-1 rounded font-mono">View: Cross-Section Profile</span>
-                        </div>
-                        
-                        <!-- Plotly Chart Container -->
-                        <div class="profile-chart-container chart-container border border-ind-100 rounded bg-white">
-                            <div id="partProfileViz" style="width:100%; height:100%;"></div>
-                        </div>
-
-                        <div class="mt-4 flex gap-4 text-sm text-ind-500 justify-center">
-                            <div class="flex items-center"><div class="w-3 h-3 bg-slate-400 mr-2 rounded-full"></div> Previous Material</div>
-                            <div class="flex items-center"><div class="w-3 h-3 bg-sky-500 mr-2 rounded-full"></div> Current Profile</div>
-                        </div>
-                    </div>
-
-                    <!-- Data Panel -->
-                    <div class="lg:col-span-1 bg-ind-50/50 p-6 flex flex-col h-full">
-                        <div class="mb-6">
-                            <h4 class="text-sm font-bold text-ind-400 uppercase tracking-wider mb-3">Stage Parameters</h4>
-                            <div id="stageMetrics" class="space-y-3">
-                                <!-- Injected via JS -->
-                            </div>
-                        </div>
-                        
-                        <div class="mt-auto bg-white p-4 rounded border border-ind-200">
-                            <h4 class="text-sm font-bold text-ind-800 mb-2">Operator Notes</h4>
-                            <p id="operatorNotes" class="text-sm text-ind-600 italic">
-                                Loading data...
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: ANALYTICS -->
-        <section id="analytics" class="scroll-mt-24">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-ind-900">Process Analytics</h2>
-                <p class="text-ind-500 mt-2">
-                    Analyzing the cumulative impact of stage-wise manufacturing on cycle time and tolerance stack-up. This data justifies the investment in detailed process planning.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <!-- Chart 1: Time & Cost -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-ind-200">
-                    <h3 class="font-semibold text-ind-800 mb-4">Cycle Time & Cost Accumulation</h3>
-                    <div class="chart-container viz-chart">
-                        <canvas id="costTimeChart"></canvas>
-                    </div>
-                    <p class="text-xs text-ind-400 mt-4 text-center">Cost increases non-linearly as precision requirements increase.</p>
-                </div>
-
-                <!-- Chart 2: Tolerance Evolution -->
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-ind-200">
-                    <h3 class="font-semibold text-ind-800 mb-4">Precision Evolution (Tolerance Tightening)</h3>
-                    <div class="chart-container viz-chart">
-                        <canvas id="toleranceChart"></canvas>
-                    </div>
-                    <p class="text-xs text-ind-400 mt-4 text-center">Visualizing the reduction in allowable deviation per stage (Logarithmic scale).</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 4: THE WAY FORWARD (ROADMAP) -->
-        <section id="roadmap" class="scroll-mt-24 pb-12">
-            <div class="bg-ind-900 rounded-2xl p-8 md:p-12 text-center mb-8">
-                <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">The Way Forward: Application Roadmap</h2>
-                <p class="text-ind-300 max-w-2xl mx-auto text-lg">
-                    To modernize industrial component manufacturing, we propose developing a centralized <strong>Manufacturing Execution System (MES)</strong> module focusing on stage-wise version control.
-                </p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6">
-                <!-- Card 1 -->
-                <div class="group bg-white p-6 rounded-xl border border-ind-200 hover:border-ind-accent hover:shadow-md transition-all duration-300">
-                    <div class="w-10 h-10 bg-ind-100 rounded-lg flex items-center justify-center text-ind-600 mb-4 group-hover:bg-ind-accent group-hover:text-white transition-colors">
-                        <span class="text-xl font-bold">1</span>
-                    </div>
-                    <h3 class="font-bold text-ind-800 mb-2">Digital Twin Integration</h3>
-                    <p class="text-sm text-ind-600">
-                        Create a "Live" 3D model that updates in real-time as operations are completed. Instead of static PDFs, operators view a rotatable model of *exactly* what the part should look like at their specific stage.
-                    </p>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="group bg-white p-6 rounded-xl border border-ind-200 hover:border-ind-accent hover:shadow-md transition-all duration-300">
-                    <div class="w-10 h-10 bg-ind-100 rounded-lg flex items-center justify-center text-ind-600 mb-4 group-hover:bg-ind-accent group-hover:text-white transition-colors">
-                        <span class="text-xl font-bold">2</span>
-                    </div>
-                    <h3 class="font-bold text-ind-800 mb-2">Automated Dimensioning</h3>
-                    <p class="text-sm text-ind-600">
-                        Algorithms that automatically calculate the required stock for previous stages based on the final stage's geometry, applying standard material removal safety margins automatically.
-                    </p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="group bg-white p-6 rounded-xl border border-ind-200 hover:border-ind-accent hover:shadow-md transition-all duration-300">
-                    <div class="w-10 h-10 bg-ind-100 rounded-lg flex items-center justify-center text-ind-600 mb-4 group-hover:bg-ind-accent group-hover:text-white transition-colors">
-                        <span class="text-xl font-bold">3</span>
-                    </div>
-                    <h3 class="font-bold text-ind-800 mb-2">IoT Metrology Connection</h3>
-                    <p class="text-sm text-ind-600">
-                        Connected digital calipers and micrometers that send measurement data directly to the app. If a stage 2 dimension is out of tolerance, the app alerts the stage 3 operator to adjust parameters or scrap the part.
-                    </p>
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <footer class="bg-white border-t border-ind-200 mt-12 py-8">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <p class="text-ind-400 text-sm">Generated for Industrial Manufacturing Strategy Report.</p>
-        </div>
-    </footer>
-
-    <!-- LOGIC -->
-    <script>
-        // --- DATA MODEL: The Industrial Gear Shaft ---
-        const stages = [
-            {
-                id: 0,
-                title: "Raw Material",
-                machine: "Stock Yard / Saw",
-                description: "Initial bar stock cut to rough length. No features machined yet.",
-                metrics: {
-                    "Diameter (OD)": "50.0 mm",
-                    "Total Length": "205.0 mm",
-                    "Surface Finish": "Ra 6.3 (Rough)",
-                    "Tolerance": "+/- 1.0 mm"
-                },
-                notes: "Ensure material certification matches Heat #4922. Check for surface rust or bending.",
-                profile: {
-                    x: [0, 205, 205, 0, 0], // Rectangle
-                    y: [25, 25, -25, -25, 25] // Radius 25 (Dia 50)
-                },
-                color: '#94a3b8' // Slate 400
-            },
-            {
-                id: 1,
-                title: "Rough Turning",
-                machine: "CNC Lathe (Op 10)",
-                description: "Material removal to establish primary stepped geometry. Leaving 0.5mm stock for finishing.",
-                metrics: {
-                    "Major Dia": "46.0 mm",
-                    "Minor Dia": "30.5 mm",
-                    "Cycle Time": "145 sec",
-                    "Tolerance": "+/- 0.2 mm"
-                },
-                notes: "Use carbide insert CNMG 120408. Coolant pressure > 10 bar. Watch for chip wrapping.",
-                profile: {
-                    // Stepped shaft profile
-                    x: [0, 50, 50, 150, 150, 202, 202, 150, 150, 50, 50, 0, 0],
-                    y: [15.25, 15.25, 23, 23, 15.25, 15.25, -15.25, -15.25, -23, -23, -15.25, -15.25, 15.25] 
-                    // Note: Y values are Radius. 30.5mm dia -> 15.25 rad. 46mm dia -> 23 rad.
-                },
-                color: '#38bdf8' // Sky 400
-            },
-            {
-                id: 2,
-                title: "Grooving & Drilling",
-                machine: "VMC / Multi-tasking",
-                description: "Adding functional features: Keyway slot and center drill holes.",
-                metrics: {
-                    "Groove Width": "5.0 mm",
-                    "Drill Depth": "15.0 mm",
-                    "Cycle Time": "85 sec",
-                    "Tolerance": "+/- 0.05 mm"
-                },
-                notes: "Check groove position relative to Face A. Deburr all sharp edges.",
-                profile: {
-                    // Similar to stage 1 but with a groove dip
-                    x: [0, 50, 50, 100, 100, 105, 105, 150, 150, 202, 202, 150, 150, 105, 105, 100, 100, 50, 50, 0, 0],
-                    y: [15.25, 15.25, 23, 23, 20, 20, 23, 23, 15.25, 15.25, -15.25, -15.25, -23, -23, -20, -20, -23, -23, -15.25, -15.25, 15.25]
-                },
-                color: '#f59e0b' // Amber 500
-            },
-            {
-                id: 3,
-                title: "Finish Grinding",
-                machine: "Cylindrical Grinder",
-                description: "Final dimensioning for bearing fits. High precision surface finish required.",
-                metrics: {
-                    "Bearing Seat Dia": "30.00 mm",
-                    "Main Body Dia": "45.00 mm",
-                    "Surface Finish": "Ra 0.4 (Ground)",
-                    "Tolerance": "+/- 0.005 mm"
-                },
-                notes: "CRITICAL: Measure at 3 points. Ensure runout is < 0.002mm.",
-                profile: {
-                    // Final sleek profile, slightly smaller dims than Stage 1/2
-                    x: [0, 50, 50, 100, 100, 105, 105, 150, 150, 200, 200, 150, 150, 105, 105, 100, 100, 50, 50, 0, 0],
-                    y: [15, 15, 22.5, 22.5, 20, 20, 22.5, 22.5, 15, 15, -15, -15, -22.5, -22.5, -20, -20, -22.5, -22.5, -15, -15, 15]
-                    // 30mm dia -> 15 rad. 45mm dia -> 22.5 rad.
-                },
-                color: '#10b981' // Emerald 500
-            }
-        ];
-
-        // --- STATE MANAGEMENT ---
-        let currentStageIndex = 0;
-
-        // --- INIT ---
-        document.addEventListener('DOMContentLoaded', () => {
-            renderStepper();
-            updateDashboard(0);
-            initCharts();
-        });
-
-        // --- NAVIGATION ---
-        function navTo(sectionId) {
-            // Update UI buttons
-            document.querySelectorAll('.nav-item').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-            
-            // Scroll logic
-            const el = document.getElementById(sectionId);
-            if(el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-
-        // --- RENDER FUNCTIONS ---
-        function renderStepper() {
-            const container = document.getElementById('stepperContainer');
-            container.innerHTML = stages.map((stage, index) => `
-                <button onclick="updateDashboard(${index})" 
-                    class="flex-1 flex items-center p-3 rounded-lg border transition-all duration-200 ${index === currentStageIndex ? 'bg-white border-ind-accent shadow-sm ring-1 ring-ind-accent' : 'bg-transparent border-transparent hover:bg-ind-100'}">
-                    <div class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-full ${index === currentStageIndex ? 'bg-ind-accent text-white' : 'bg-ind-200 text-ind-500'} font-bold text-sm">
-                        ${index + 1}
-                    </div>
-                    <div class="ml-3 text-left">
-                        <p class="text-xs font-bold ${index === currentStageIndex ? 'text-ind-900' : 'text-ind-500'} uppercase">Step ${index}</p>
-                        <p class="text-sm font-medium ${index === currentStageIndex ? 'text-ind-800' : 'text-ind-400'} whitespace-nowrap">${stage.title}</p>
-                    </div>
+                <button onclick="generateProcessSheet()" class="w-full bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition shadow-lg shadow-blue-200">
+                    Generate Process Result
                 </button>
-            `).join('');
-        }
+            </div>
+        </div>
 
-        function updateDashboard(index) {
-            currentStageIndex = index;
-            const stage = stages[index];
+        <!-- Output Result -->
+        <div class="lg:col-span-3">
+            <h3 class="text-lg font-bold mb-4 flex items-center">
+                <span class="bg-slate-800 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs mr-2">2</span>
+                Output: Process Drawing Data
+            </h3>
+            <div id="outputContainer" class="bg-white border-2 border-dashed border-slate-200 rounded-xl h-[380px] flex items-center justify-center text-slate-400">
+                <p>Complete the input fields to generate the workshop result.</p>
+            </div>
+        </div>
+    </section>
 
-            // 1. Update Titles
-            document.getElementById('currentStageTitle').innerText = stage.title;
-            
-            // 2. Update Metrics Table
-            const metricsContainer = document.getElementById('stageMetrics');
-            metricsContainer.innerHTML = Object.entries(stage.metrics).map(([key, value]) => `
-                <div class="flex justify-between items-center border-b border-ind-200 pb-2 last:border-0">
-                    <span class="text-sm text-ind-500">${key}</span>
-                    <span class="text-sm font-mono font-semibold text-ind-800">${value}</span>
+    <!-- SECTION 2: ANALYTICS -->
+    <section id="analytics" class="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
+        <div class="mb-6">
+            <h3 class="text-xl font-bold">Cumulative Tolerance Trend</h3>
+            <p class="text-sm text-slate-500">Visualization of how allowable error decreases as the component nears completion.</p>
+        </div>
+        <div class="chart-container">
+            <canvas id="toleranceTrendChart"></canvas>
+        </div>
+    </section>
+
+    <!-- SECTION 3: GLOSSARY -->
+    <section id="glossary" class="space-y-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+                <h3 class="text-2xl font-bold">Manufacturing Glossary</h3>
+                <p class="text-slate-500">Standardized terminology for stage-wise production control.</p>
+            </div>
+            <div class="relative w-full md:w-64">
+                <input type="text" id="glossarySearch" onkeyup="filterGlossary()" placeholder="Search terms..." class="w-full p-2.5 pl-10 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-blue-500">
+                <span class="absolute left-3 top-3 text-slate-400">🔍</span>
+            </div>
+        </div>
+
+        <div id="glossaryGrid" class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <!-- Injected via JavaScript -->
+        </div>
+    </section>
+
+</main>
+
+<script>
+    // --- GLOSSARY DATA ---
+    const manufacturingTerms = [
+        { term: "Allowance", category: "Machining", definition: "The intentional difference in dimensions prescribed to allow for the removal of material in a subsequent stage." },
+        { term: "Tolerance", category: "Quality", definition: "The total amount a specific dimension is permitted to vary ($\pm$). Calculated as the difference between upper and lower limits." },
+        { term: "Ra (Roughness Average)", category: "Metrology", definition: "The arithmetic average of the absolute values of the profile height deviations from the mean line." },
+        { term: "GD&T", category: "Design", definition: "Geometric Dimensioning and Tolerancing. A system for defining and communicating engineering tolerances." },
+        { term: "Billet", category: "Material", definition: "The raw material form (usually square or round bar) before the first manufacturing stage begins." },
+        { term: "Datum", category: "Metrology", definition: "A fixed starting point, line, or surface used as a reference for all other measurements on the component." },
+        { term: "Interference Fit", category: "Assembly", definition: "A fit where the internal member is slightly larger than the hole, requiring force for assembly." },
+        { term: "Burr", category: "Machining", definition: "A raised edge or small piece of material remaining attached to a workpiece after a machining operation." },
+        { term: "Climb Milling", category: "Machining", definition: "A milling technique where the cutter rotates with the direction of the feed, improving surface finish." }
+    ];
+
+    // --- INITIALIZATION ---
+    window.onload = () => {
+        renderGlossary(manufacturingTerms);
+        initChart();
+    };
+
+    // --- GLOSSARY LOGIC ---
+    function renderGlossary(terms) {
+        const grid = document.getElementById('glossaryGrid');
+        grid.innerHTML = terms.map(t => `
+            <div class="glossary-card bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col">
+                <div class="flex justify-between items-start mb-2">
+                    <h4 class="font-bold text-blue-600">${t.term}</h4>
+                    <span class="text-[10px] font-bold uppercase px-2 py-0.5 bg-slate-100 text-slate-500 rounded">${t.category}</span>
                 </div>
-            `).join('');
+                <p class="text-sm text-slate-600 leading-relaxed">${t.definition}</p>
+            </div>
+        `).join('');
+    }
 
-            // 3. Update Notes
-            document.getElementById('operatorNotes').innerText = stage.notes;
+    function filterGlossary() {
+        const query = document.getElementById('glossarySearch').value.toLowerCase();
+        const filtered = manufacturingTerms.filter(t => 
+            t.term.toLowerCase().includes(query) || 
+            t.definition.toLowerCase().includes(query)
+        );
+        renderGlossary(filtered);
+    }
 
-            // 4. Update Stepper UI
-            renderStepper();
+    // --- PROCESS SHEET GENERATION (OUTPUT) ---
+    function generateProcessSheet() {
+        const name = document.getElementById('stageName').value || "Unnamed Process";
+        const dim = document.getElementById('targetDim').value || "0.00";
+        const tol = document.getElementById('tolerance').value || "0.00";
+        const ra = document.getElementById('surfaceFinish').value;
+        
+        const timestamp = new Date().toLocaleString();
+        const sheetId = "PRC-" + Math.floor(Math.random() * 9000 + 1000);
 
-            // 5. Update Plotly Visualization
-            drawProfile(stage);
-        }
+        const container = document.getElementById('outputContainer');
+        container.classList.remove('flex', 'items-center', 'justify-center', 'text-slate-400');
+        container.innerHTML = `
+            <div class="p-8 w-full h-full text-left flex flex-col">
+                <div class="flex justify-between items-start border-b-2 border-slate-900 pb-4 mb-6">
+                    <div>
+                        <h4 class="text-2xl font-black uppercase text-slate-900">${name}</h4>
+                        <p class="text-xs font-bold text-slate-500">STAGE PROCESS DRAWING SHEET</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-mono font-bold">${sheetId}</p>
+                        <p class="text-[10px] text-slate-400">${timestamp}</p>
+                    </div>
+                </div>
 
-        function drawProfile(stage) {
-            // Shadow Trace (Raw Material Reference)
-            const rawTrace = {
-                x: stages[0].profile.x,
-                y: stages[0].profile.y,
-                fill: 'toself',
-                fillcolor: 'rgba(226, 232, 240, 0.3)', // Very light slate
-                line: { color: '#cbd5e1', width: 1, dash: 'dot' },
-                name: 'Raw Stock',
-                hoverinfo: 'skip'
-            };
+                <div class="grid grid-cols-2 gap-8 mb-8">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Primary Dimension</p>
+                        <p class="text-4xl font-mono font-bold text-slate-800">${dim}<span class="text-lg text-slate-400 ml-1">mm</span></p>
+                        <p class="text-sm font-bold text-blue-600 mt-1">Tolerance: $\pm${tol}$ mm</p>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <p class="text-xs font-bold text-slate-400 uppercase mb-2">Surface Quality</p>
+                        <p class="text-4xl font-mono font-bold text-slate-800">${ra}<span class="text-lg text-slate-400 ml-1">Ra</span></p>
+                        <p class="text-sm font-bold text-slate-500 mt-1">Status: Inspection Required</p>
+                    </div>
+                </div>
 
-            // Current Stage Trace
-            const currentTrace = {
-                x: stage.profile.x,
-                y: stage.profile.y,
-                fill: 'toself',
-                fillcolor: stage.color, // Solid color based on stage
-                line: { color: '#0f172a', width: 2 },
-                mode: 'lines',
-                name: stage.title,
-                hoverinfo: 'x+y'
-            };
+                <div class="mt-auto pt-4 border-t border-slate-100 flex justify-between items-end">
+                    <div class="space-y-1">
+                        <div class="flex items-center text-xs">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 mr-2"></span>
+                            <span>Critical Control Point: Active</span>
+                        </div>
+                        <p class="text-[10px] text-slate-400 italic">Verify machine zero before starting operation.</p>
+                    </div>
+                    <div class="w-24 h-24 bg-slate-100 flex items-center justify-center border border-slate-200 rounded text-[10px] text-slate-300 font-bold uppercase text-center p-2">
+                        Draft Profile Drawing Placeholder
+                    </div>
+                </div>
+            </div>
+        `;
+    }
 
-            const layout = {
-                margin: { t: 20, b: 30, l: 30, r: 20 },
-                showlegend: false,
-                xaxis: { 
-                    range: [-10, 220], 
-                    title: 'Length (mm)',
-                    zeroline: false,
-                    showgrid: true,
-                    gridcolor: '#f1f5f9'
-                },
-                yaxis: { 
-                    range: [-40, 40], 
-                    title: 'Radius (mm)',
-                    scaleanchor: "x",
-                    scaleratio: 1, // Keep aspect ratio 1:1 so it looks like a real part
-                    zeroline: true,
-                    zerolinecolor: '#94a3b8',
-                    showgrid: true,
-                    gridcolor: '#f1f5f9'
-                },
-                paper_bgcolor: 'rgba(0,0,0,0)',
-                plot_bgcolor: 'rgba(0,0,0,0)',
-                dragmode: false // Disable zoom for stability
-            };
-
-            const config = { responsive: true, displayModeBar: false };
-
-            Plotly.newPlot('partProfileViz', [rawTrace, currentTrace], layout, config);
-        }
-
-        // --- CHART.JS INITIALIZATION ---
-        function initCharts() {
-            // Chart 1: Cost & Time
-            const ctxCost = document.getElementById('costTimeChart').getContext('2d');
-            new Chart(ctxCost, {
-                type: 'bar',
-                data: {
-                    labels: ['Raw', 'Turning', 'Grooving', 'Grinding'],
-                    datasets: [
-                        {
-                            label: 'Cumulative Cost ($)',
-                            data: [15, 45, 65, 95],
-                            backgroundColor: '#0ea5e9',
-                            order: 2
-                        },
-                        {
-                            label: 'Cycle Time (sec)',
-                            data: [0, 145, 85, 120],
-                            type: 'line',
-                            borderColor: '#f59e0b',
-                            borderWidth: 2,
-                            pointBackgroundColor: '#fff',
-                            pointBorderColor: '#f59e0b',
-                            yAxisID: 'y1',
-                            order: 1
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' },
-                        tooltip: { mode: 'index', intersect: false }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { display: false },
-                            title: { display: true, text: 'Cost ($)' }
-                        },
-                        y1: {
-                            type: 'linear',
-                            display: true,
-                            position: 'right',
-                            grid: { drawOnChartArea: false },
-                            title: { display: true, text: 'Time (s)' }
-                        }
+    // --- ANALYTICS CHART ---
+    function initChart() {
+        const ctx = document.getElementById('toleranceTrendChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['Raw Billet', 'Rough Turning', 'Semi-Finish', 'Finish Grind', 'Lapping'],
+                datasets: [{
+                    label: 'Allowable Tolerance ($\pm$ mm)',
+                    data: [2.0, 0.5, 0.1, 0.01, 0.002],
+                    borderColor: '#3b82f6',
+                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 6,
+                    pointHoverRadius: 10,
+                    borderWidth: 3
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'logarithmic',
+                        beginAtZero: false,
+                        title: { display: true, text: 'Tolerance Range (mm) - Log Scale' }
                     }
-                }
-            });
-
-            // Chart 2: Tolerance Evolution (Log Scale visual trick)
-            const ctxTol = document.getElementById('toleranceChart').getContext('2d');
-            new Chart(ctxTol, {
-                type: 'line',
-                data: {
-                    labels: ['Raw', 'Rough Turn', 'Semi-Finish', 'Finish Grind'],
-                    datasets: [{
-                        label: 'Tolerance Band (+/- mm)',
-                        data: [1.0, 0.2, 0.05, 0.005],
-                        borderColor: '#ef4444', // Red for "Danger/Strictness"
-                        backgroundColor: 'rgba(239, 68, 68, 0.1)',
-                        fill: true,
-                        tension: 0.3,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
-                    }]
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { 
-                            callbacks: {
-                                label: function(context) {
-                                    return `+/- ${context.raw} mm`;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            type: 'logarithmic', // Log scale best shows the dramatic drop in tolerance
-                            title: { display: true, text: 'Tolerance (mm) - Log Scale' },
-                            grid: { color: '#f1f5f9' }
-                        }
-                    }
+                plugins: {
+                    legend: { display: false }
                 }
-            });
-        }
-
-    </script>
+            }
+        });
+    }
+</script>
 </body>
 </html>

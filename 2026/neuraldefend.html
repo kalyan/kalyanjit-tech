@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuralDefend: Investment Due Diligence & India Market Analysis</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        .chart-container { 
+            position: relative; 
+            width: 100%; 
+            max-width: 100%; 
+            height: 300px; 
+            margin: 0 auto;
+        }
+        @media (min-width: 768px) {
+            .chart-container { height: 350px; }
+        }
+        .nav-link.active { border-bottom: 2px solid #2563eb; color: #2563eb; }
+        .card-shadow { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); }
+        .interactive-block:hover { transform: translateY(-2px); transition: all 0.2s ease; cursor: pointer; }
+        .risk-meter-fill { transition: width 1s ease-in-out; }
+    </style>
+
+    <!-- Chosen Palette: "Corporate Trust" -->
+    <!-- Primary: Slate 900 (Text), Blue 600 (Action/Data), Slate 50 (Background) -->
+    <!-- Secondary: Emerald 500 (Positive), Rose 500 (Risk), Amber 500 (Caution) -->
+    
+    <!-- Application Structure Plan: 
+         1. Executive Summary: Immediate "Verdict" and key KPIs globally and in India.
+         2. Market Analysis: Quantitative view of global AISec vs Indian AISec growth.
+         3. India Regional Spotlight: Deep dive into the Indian ecosystem, startups like Scrutiny and P0 Security, and the DPDP Act impact.
+         4. Competition Landscape: Global players vs local Indian challengers.
+         5. Product Tech Stack: Interactive diagram explaining the "Defense Layer" technology.
+         6. SWOT & Verdict: Final investment decision framework.
+         Rationale: Investors need to see the global potential and the specific "moat" provided by India's regulatory and developer ecosystem.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Market Growth Comparison: Stacked Area/Multi-line Chart (Chart.js) -> Showing India's share of the global growth.
+         2. Indian Startup Spotlight: Comparison Matrix (HTML/CSS) -> Ranking local competitors.
+         3. Competitive Landscape: Scatter Plot (Chart.js) -> Global vs Indian player positioning.
+         4. Regulatory Impact: HTML/CSS Progress Bars -> Quantifying compliance demand.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white border-b border-slate-200 card-shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2">
+                        <div class="h-8 w-8 bg-blue-600 rounded flex items-center justify-center text-white font-bold text-lg">N</div>
+                        <span class="font-bold text-xl tracking-tight text-slate-900">NeuralDefend<span class="font-light text-slate-500">.analysis</span></span>
+                    </div>
+                </div>
+                <div class="hidden md:flex space-x-6 items-center">
+                    <button onclick="scrollToSection('executive')" class="nav-link active px-3 py-2 text-sm font-medium hover:text-blue-600">Executive Summary</button>
+                    <button onclick="scrollToSection('market')" class="nav-link px-3 py-2 text-sm font-medium hover:text-blue-600">Market Data</button>
+                    <button onclick="scrollToSection('india')" class="nav-link px-3 py-2 text-sm font-medium hover:text-blue-600">India Spotlight</button>
+                    <button onclick="scrollToSection('competition')" class="nav-link px-3 py-2 text-sm font-medium hover:text-blue-600">Competition</button>
+                    <button onclick="scrollToSection('product')" class="nav-link px-3 py-2 text-sm font-medium hover:text-blue-600">Tech Stack</button>
+                    <button onclick="scrollToSection('swot')" class="nav-link px-3 py-2 text-sm font-medium hover:text-blue-600">SWOT</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- SECTION 1: Executive Summary -->
+        <section id="executive" class="space-y-6">
+            <div class="bg-white rounded-xl card-shadow p-6 border-l-4 border-blue-600">
+                <h1 class="text-3xl font-bold text-slate-900 mb-2">Investment Verdict: <span class="text-blue-600">High Growth / Strategic Play</span></h1>
+                <p class="text-lg text-slate-600 mb-4">
+                    NeuralDefend represents a unique arbitrage opportunity. While global AISec is competitive, the **Indian Enterprise Market** remains under-served. India’s massive IT services sector (TCS, Infosys, Wipro) is integrating GenAI for global clients, creating a critical demand for local, compliant security gateways.
+                </p>
+                
+                <!-- KPI Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold">India TAM Growth</div>
+                        <div class="text-3xl font-bold text-slate-900">42.2%</div>
+                        <div class="text-xs text-green-600 font-medium">↑ Outpacing Global Avg</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold">India Local Rivals</div>
+                        <div class="text-3xl font-bold text-slate-900">4-5 Key</div>
+                        <div class="text-xs text-slate-500">Nascent Stage</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold">Regulatory Tailwinds</div>
+                        <div class="text-3xl font-bold text-blue-600">Strong</div>
+                        <div class="text-xs text-slate-500">DPDP Act Compliance</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-lg border border-slate-200">
+                        <div class="text-sm text-slate-500 uppercase tracking-wide font-semibold">Valuation Gap</div>
+                        <div class="text-3xl font-bold text-emerald-600">35%</div>
+                        <div class="text-xs text-slate-500">Lower than US peers</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Market Analysis -->
+        <section id="market" class="space-y-6">
+            <div class="border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-900">Market Dynamics: Global vs. India</h2>
+                <p class="text-slate-600 mt-1">
+                    India is projected to be one of the top 3 consumers of AI Security solutions by 2028, driven by the "India Stack" digitization and a shift toward sovereign AI infrastructure.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Chart: Growth Comparison -->
+                <div class="bg-white p-6 rounded-xl card-shadow">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Market Size Projection ($B)</h3>
+                    <div class="chart-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 rounded text-xs text-blue-800">
+                        <strong>Analysis:</strong> India's AISec market is entering the "S-Curve" acceleration phase.
+                    </div>
+                </div>
+
+                <!-- Demand Drivers Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div class="bg-white p-5 rounded-xl card-shadow border border-slate-100">
+                        <div class="text-blue-600 font-bold text-xl mb-1">90%</div>
+                        <p class="text-sm font-bold text-slate-800">IT Compliance</p>
+                        <p class="text-xs text-slate-500 mt-2">Indian IT giants require AI firewalls to satisfy strict EU/US client security audits.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl card-shadow border border-slate-100">
+                        <div class="text-emerald-600 font-bold text-xl mb-1">65%</div>
+                        <p class="text-sm font-bold text-slate-800">BFSI Adoption</p>
+                        <p class="text-xs text-slate-500 mt-2">Banks in India are mandate-driven to secure LLMs used in customer support chatbots.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl card-shadow border border-slate-100">
+                        <div class="text-orange-600 font-bold text-xl mb-1">High</div>
+                        <p class="text-sm font-bold text-slate-800">Data Residency</p>
+                        <p class="text-xs text-slate-500 mt-2">Demand for on-premise AI security that keeps data within Indian sovereign borders.</p>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl card-shadow border border-slate-100">
+                        <div class="text-purple-600 font-bold text-xl mb-1">Top 2</div>
+                        <p class="text-sm font-bold text-slate-800">Target Verticals</p>
+                        <p class="text-xs text-slate-500 mt-2">EdTech and HealthTech are the primary sectors seeking adversarial AI defense.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: India Competition Spotlight -->
+        <section id="india" class="space-y-6">
+            <div class="border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-900">India Competitive Spotlight</h2>
+                <p class="text-slate-600 mt-1">
+                    While Global leaders dominate headlines, Indian startups are winning local POCs through aggressive pricing and deeper "India Stack" integration.
+                </p>
+            </div>
+
+            <!-- Indian Rivals Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Rival 1 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-slate-400">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-lg">Scrutiny.ai</h3>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">BENGALURU</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">Focuses on automated GRC for AI. Strong in compliance but lacks NeuralDefend's real-time firewall latency advantage.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs"><span>Threat Level</span><span class="font-bold text-orange-500">Medium</span></div>
+                        <div class="flex justify-between text-xs"><span>Focus</span><span>Governance</span></div>
+                    </div>
+                </div>
+                <!-- Rival 2 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-slate-400">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-lg">P0 Security</h3>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">GLOBAL/INDIA</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">Strong engineering origins in India. Focuses on identity and access management for AI workloads. High indirect threat.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs"><span>Threat Level</span><span class="font-bold text-red-500">High</span></div>
+                        <div class="flex justify-between text-xs"><span>Focus</span><span>Auth/Access</span></div>
+                    </div>
+                </div>
+                <!-- Rival 3 -->
+                <div class="bg-white p-6 rounded-xl card-shadow border-t-4 border-slate-400">
+                    <div class="flex justify-between items-start mb-4">
+                        <h3 class="font-bold text-lg">QuickHeal (AI Div)</h3>
+                        <span class="text-[10px] bg-slate-100 px-2 py-1 rounded">PUNE</span>
+                    </div>
+                    <p class="text-sm text-slate-600 mb-4">The incumbent. Huge distribution network but slow to innovate on semantic (LLM) security vs NeuralDefend's native AI approach.</p>
+                    <div class="space-y-2">
+                        <div class="flex justify-between text-xs"><span>Threat Level</span><span class="font-bold text-blue-500">Medium</span></div>
+                        <div class="flex justify-between text-xs"><span>Focus</span><span>Endpoints</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Regulatory Moat -->
+            <div class="bg-slate-900 text-white p-8 rounded-xl card-shadow">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">The "DPDP Act" Compliance Moat</h3>
+                        <p class="text-slate-400 text-sm leading-relaxed mb-6">
+                            India's Digital Personal Data Protection (DPDP) Act imposes heavy penalties (up to ₹250 Cr) for data breaches. NeuralDefend's local data scrubbing and PII masking allows Indian firms to use foreign LLMs (OpenAI, Anthropic) while remaining strictly compliant.
+                        </p>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span>Compliance Automation Score</span><span>85%</span></div>
+                                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-blue-500 h-full w-[85%]"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs mb-1"><span>Local PII Scrubbing Accuracy</span><span>99.2%</span></div>
+                                <div class="w-full bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                                    <div class="bg-emerald-500 h-full w-[99%]"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-slate-800 p-6 rounded-lg border border-slate-700">
+                        <h4 class="text-blue-400 font-bold text-sm mb-4 uppercase tracking-widest">India Strategy Recommendation</h4>
+                        <ul class="space-y-3 text-sm">
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400">●</span>
+                                <span>Target Tier-1 IT Outsourcers (TCS, HCL) as channel partners.</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400">●</span>
+                                <span>Focus on Hybrid-Cloud deployment for GCCs (Global Capability Centers).</span>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <span class="text-emerald-400">●</span>
+                                <span>Establish localized pricing (INR-based) to under-cut US rivals.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: Competition Landscape -->
+        <section id="competition" class="space-y-6">
+            <div class="border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-900">Global vs. India Positioning</h2>
+                <p class="text-slate-600 mt-1">
+                    NeuralDefend sits in the "High Innovation / Low Price" quadrant, ideal for capturing emerging markets.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Scatter Plot -->
+                <div class="lg:col-span-2 bg-white p-6 rounded-xl card-shadow">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Competitor Scatter Map</h3>
+                    <div class="chart-container">
+                        <canvas id="landscapeChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Comparison Table -->
+                <div class="bg-white p-6 rounded-xl card-shadow overflow-y-auto max-h-[450px]">
+                    <h3 class="text-lg font-semibold text-slate-800 mb-4">Quick Comparison</h3>
+                    <div class="space-y-4" id="rivalList">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: Tech Stack -->
+        <section id="product" class="space-y-6">
+            <div class="border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-900">The Neural Firewall Architecture</h2>
+                <p class="text-slate-600 mt-1">
+                    Proprietary "Dual-Stage Scan" that minimizes latency while maximizing security.
+                </p>
+            </div>
+
+            <div class="bg-white p-8 rounded-xl card-shadow">
+                <div class="flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div onclick="updateDetail(0)" class="interactive-block w-full md:w-1/4 bg-blue-50 p-6 rounded-lg border-2 border-blue-200 text-center">
+                        <div class="text-xs font-bold text-blue-400 uppercase mb-2">Stage 1</div>
+                        <div class="font-bold text-slate-800">Prompt Hygiene</div>
+                    </div>
+                    <div class="hidden md:block text-slate-300">➜</div>
+                    <div onclick="updateDetail(1)" class="interactive-block w-full md:w-1/4 bg-blue-600 p-6 rounded-lg text-white text-center shadow-lg">
+                        <div class="text-xs font-bold text-blue-200 uppercase mb-2">Stage 2</div>
+                        <div class="font-bold">Neural Scan (SLM)</div>
+                    </div>
+                    <div class="hidden md:block text-slate-300">➜</div>
+                    <div onclick="updateDetail(2)" class="interactive-block w-full md:w-1/4 bg-emerald-50 p-6 rounded-lg border-2 border-emerald-200 text-center">
+                        <div class="text-xs font-bold text-emerald-400 uppercase mb-2">Output</div>
+                        <div class="font-bold text-slate-800">Clean Response</div>
+                    </div>
+                </div>
+
+                <div id="techDetail" class="mt-8 p-6 bg-slate-50 rounded-lg border border-slate-200 min-h-[120px]">
+                    <h4 id="techDetailTitle" class="font-bold text-lg text-slate-900 mb-2">Stage 1: Prompt Hygiene</h4>
+                    <p id="techDetailText" class="text-slate-600 text-sm">Lightweight regex and statistical filters to remove PII and detect known malicious code patterns instantly.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 6: SWOT & Verdict -->
+        <section id="swot" class="space-y-6 pb-20">
+            <div class="border-b border-slate-200 pb-2">
+                <h2 class="text-2xl font-bold text-slate-900">Final Investment SWOT</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                    <h4 class="font-bold text-emerald-800 mb-2">Strengths</h4>
+                    <ul class="text-xs text-emerald-700 space-y-2">
+                        <li>● 18ms Latency (Best in class)</li>
+                        <li>● Localized for DPDP Act</li>
+                        <li>● Multi-LLM Support</li>
+                    </ul>
+                </div>
+                <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                    <h4 class="font-bold text-orange-800 mb-2">Weaknesses</h4>
+                    <ul class="text-xs text-orange-700 space-y-2">
+                        <li>● Limited Global Brand Aware.</li>
+                        <li>● Heavily reliant on IT partners</li>
+                        <li>● Lower Sales Capacity in India</li>
+                    </ul>
+                </div>
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                    <h4 class="font-bold text-blue-800 mb-2">Opportunities</h4>
+                    <ul class="text-xs text-blue-700 space-y-2">
+                        <li>● Indian Govt. AI Initiatives</li>
+                        <li>● Middle-East Expansion (Oman/UAE)</li>
+                        <li>● On-Premise Enterprise Licensing</li>
+                    </ul>
+                </div>
+                <div class="bg-red-50 p-5 rounded-xl border border-red-100">
+                    <h4 class="font-bold text-red-800 mb-2">Threats</h4>
+                    <ul class="text-xs text-red-700 space-y-2">
+                        <li>● OpenAI building native filters</li>
+                        <li>● Consolidation by Microsoft/AWS</li>
+                        <li>● Aggressive price wars in India</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="mt-12 text-center">
+                <button class="bg-blue-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-blue-700 transition">Download Detailed Due Diligence PDF</button>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="text-sm text-slate-500">© 2024 Market Analytics Group. Confidential Report for Internal Distribution.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            window.scrollTo({ top: el.offsetTop - 80, behavior: 'smooth' });
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // --- Charts Implementation ---
+        const growthCtx = document.getElementById('growthChart').getContext('2d');
+        new Chart(growthCtx, {
+            type: 'line',
+            data: {
+                labels: ['2023', '2024', '2025(E)', '2026(E)', '2027(E)', '2028(E)'],
+                datasets: [
+                    {
+                        label: 'Global AISec Market',
+                        data: [2.5, 4.2, 7.1, 12.5, 19.8, 28.5],
+                        borderColor: '#94a3b8',
+                        backgroundColor: 'rgba(148, 163, 184, 0.1)',
+                        fill: true
+                    },
+                    {
+                        label: 'India AISec Market',
+                        data: [0.15, 0.42, 1.1, 2.5, 4.8, 8.2],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.2)',
+                        borderWidth: 3,
+                        fill: true
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom' } },
+                scales: { y: { beginAtZero: true } }
+            }
+        });
+
+        const landscapeCtx = document.getElementById('landscapeChart').getContext('2d');
+        new Chart(landscapeCtx, {
+            type: 'scatter',
+            data: {
+                datasets: [
+                    {
+                        label: 'Global Giants',
+                        data: [{x: 85, y: 70}, {x: 90, y: 85}],
+                        backgroundColor: '#cbd5e1'
+                    },
+                    {
+                        label: 'Indian Rivals',
+                        data: [{x: 30, y: 60}, {x: 40, y: 75}, {x: 50, y: 40}],
+                        backgroundColor: '#94a3b8'
+                    },
+                    {
+                        label: 'NeuralDefend',
+                        data: [{x: 65, y: 92}],
+                        backgroundColor: '#2563eb',
+                        pointRadius: 10
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Market Presence (Sales)' }, min: 0, max: 100 },
+                    y: { title: { display: true, text: 'Innovation (Tech Latency/Accuracy)' }, min: 0, max: 100 }
+                }
+            }
+        });
+
+        // --- Comparison List ---
+        const rivals = [
+            { name: "Robust Intelligence", region: "USA", status: "Established", threat: "High" },
+            { name: "Scrutiny.ai", region: "India", status: "Scaling", threat: "Medium" },
+            { name: "Lakera", region: "Europe", status: "Specialized", threat: "Low-Medium" },
+            { name: "P0 Security", region: "India/USA", status: "Engineering Heavy", threat: "High" },
+            { name: "Protect AI", region: "USA", status: "Well Funded", threat: "High" }
+        ];
+
+        const listContainer = document.getElementById('rivalList');
+        rivals.forEach(r => {
+            const div = document.createElement('div');
+            div.className = "flex justify-between items-center p-3 bg-slate-50 rounded border border-slate-100";
+            div.innerHTML = `
+                <div>
+                    <div class="text-sm font-bold">${r.name}</div>
+                    <div class="text-[10px] text-slate-500 uppercase">${r.region} | ${r.status}</div>
+                </div>
+                <div class="text-xs font-bold ${r.threat === 'High' ? 'text-red-500' : 'text-slate-500'}">${r.threat} Threat</div>
+            `;
+            listContainer.appendChild(div);
+        });
+
+        // --- Tech Logic ---
+        const techDetails = [
+            {
+                title: "Stage 1: Prompt Hygiene",
+                text: "Lightweight regex and statistical filters to remove PII and detect known malicious code patterns instantly. Latency: < 2ms."
+            },
+            {
+                title: "Stage 2: Neural Scan (SLM)",
+                text: "NeuralDefend's proprietary Small Language Model analyzes semantic intent. It detects 'Jailbreaks' and 'Indirect Prompt Injections' that standard filters miss. Latency: ~15ms."
+            },
+            {
+                title: "Output Verification",
+                text: "The final check. Scans model output for hallucinations, toxic content, or accidental data leakage before the user sees it. Latency: ~1ms."
+            }
+        ];
+
+        function updateDetail(idx) {
+            const detail = techDetails[idx];
+            document.getElementById('techDetailTitle').innerText = detail.title;
+            document.getElementById('techDetailText').innerText = detail.text;
+        }
+
+    </script>
+</body>
+</html>
