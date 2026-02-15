@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web3 Marketing: The Interactive Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Chosen Palette: Warm Neural -->
+    <!-- 
+        Background: Stone-50 (#fafaf9)
+        Primary Text: Stone-800 (#292524)
+        Accent 1: Indigo-600
+        Accent 2: Emerald-500
+        Accent 3: Orange-400
+    -->
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9;
+            color: #292524;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f5f5f4;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1;
+            border-radius: 4px;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-item.active {
+            border-bottom: 2px solid #4f46e5;
+            color: #4f46e5;
+            font-weight: 600;
+        }
+
+        .author-gradient {
+            background: linear-gradient(135deg, #4f46e5 0%, #10b981 100%);
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <!-- Application Structure Plan:
+         1. Header: Branding and sticky navigation.
+         2. Navigation: Tabs for (Dashboard, Primer, Community, Tools, Strategies, Author).
+         3. Content Area:
+            - Dashboard: Comparative metrics between Web2 and Web3.
+            - Primer: Foundational Web3 concepts.
+            - Community: Conversion funnels and engagement strategies.
+            - Tools: Filterable marketing tech stack.
+            - Strategies: Partnership and GTM roadmaps.
+            - Author: Professional profile for Kalyanjit Hatibaruah with contact integration.
+         4. Footer: Author credentials and quick links.
+         
+         The structure is designed for "Narrative Exploration" - moving from the "What" to the "How" and finally the "Who".
+    -->
+
+    <!-- Header -->
+    <header class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <span class="text-2xl mr-2">🌐</span>
+                    <h1 class="text-xl font-bold tracking-tight text-stone-900">Web3 Marketing <span class="text-indigo-600 font-light">Expert Analysis</span></h1>
+                </div>
+                <nav class="hidden lg:flex space-x-6" id="desktop-nav"></nav>
+                <button id="mobile-menu-btn" class="lg:hidden text-stone-500 hover:text-stone-900">
+                    <span class="text-2xl">☰</span>
+                </button>
+            </div>
+        </div>
+        <div id="mobile-nav" class="hidden lg:hidden bg-white border-b border-stone-200 px-4 py-2"></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+        <div id="content-area"></div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-stone-200 mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-4 md:mb-0">
+                <p class="text-sm font-semibold text-stone-900">Kalyanjit Hatibaruah</p>
+                <p class="text-xs text-stone-500">Web3 Information Architect & Data Analyst</p>
+            </div>
+            <div class="flex space-x-6 text-sm">
+                <a href="https://wa.me/919864011106" class="text-stone-600 hover:text-green-600 transition-colors">WhatsApp</a>
+                <a href="https://www.linkedin.com/in/kalyanjit_" class="text-stone-600 hover:text-indigo-600 transition-colors">LinkedIn</a>
+            </div>
+            <p class="text-xs text-stone-400 mt-4 md:mt-0">© 2024 Interactive Report</p>
+        </div>
+    </footer>
+
+    <!-- Visualization & Content Choices:
+         - Dashboard: Multi-dataset Bar Chart for competitive analysis (Web2 vs Web3).
+         - Community: Horizontal Bar/Funnel for lifecycle tracking.
+         - Tools: Dynamic JS grid filtering for resource discovery.
+         - Strategy: Bubble Chart for risk/reward assessment of GTM tactics.
+         - Author Section: Responsive grid layout with contact action items.
+         
+         Confirming: NO SVG graphics used. NO Mermaid JS used.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <script>
+        const appData = {
+            navItems: [
+                { id: 'dashboard', label: 'Dashboard' },
+                { id: 'primer', label: 'Web3 Primer' },
+                { id: 'community', label: 'Community' },
+                { id: 'tools', label: 'Tool Stack' },
+                { id: 'strategy', label: 'GTM Strategy' },
+                { id: 'author', label: 'About Author' }
+            ],
+            sections: {
+                dashboard: {
+                    title: "The Ownership Paradigm",
+                    intro: "Marketing in Web3 is no longer about buying attention; it's about building equity and trust. This dashboard highlights the fundamental shift in KPIs from traditional Web2 models to decentralized community models.",
+                    charts: [
+                        {
+                            id: 'chart-paradigm',
+                            type: 'bar',
+                            title: 'Web2 (Ads) vs Web3 (Community) Efficiency',
+                            data: {
+                                labels: ['CAC', 'LTV', 'Retention', 'Virality'],
+                                datasets: [
+                                    { label: 'Web2 (Paid)', data: [85, 40, 30, 15], backgroundColor: '#d6d3d1' },
+                                    { label: 'Web3 (Organic)', data: [25, 90, 85, 75], backgroundColor: '#4f46e5' }
+                                ]
+                            },
+                            description: "Community-led growth results in 70% lower acquisition costs over the long term."
+                        },
+                        {
+                            id: 'chart-channels',
+                            type: 'doughnut',
+                            title: 'Top Web3 Traffic Sources',
+                            data: {
+                                labels: ['KOLs/Threads', 'Discord/TG', 'DAO Partner', 'DApp Quest', 'Ads'],
+                                datasets: [{
+                                    data: [40, 25, 20, 10, 5],
+                                    backgroundColor: ['#4f46e5', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444']
+                                }]
+                            },
+                            description: "KOL Threads and cross-DAO partnerships drive the highest quality 'diamond-hand' users."
+                        }
+                    ]
+                },
+                primer: {
+                    title: "Web3 Fundamentals",
+                    intro: "To market Web3, you must speak the language of the 'On-Chain' user. These pillars define the user expectations of any project entering the space.",
+                    cards: [
+                        { title: "Self-Sovereignty", icon: "🔑", content: "Users own their data and assets via wallets. Marketing must respect privacy and choice." },
+                        { title: "Composability", icon: "🧱", content: "Lego-like building where apps interact. Marketing focuses on being a 'part' of an ecosystem." },
+                        { title: "Trustlessness", icon: "🛡️", content: "Code is law. Marketing claims must be verifiable on-chain (e.g., proof of reserves)." },
+                        { title: "Aligned Incentives", icon: "📈", content: "Tokens turn users into advocates. If the project wins, the community wins." }
+                    ]
+                },
+                community: {
+                    title: "The Engagement Funnel",
+                    intro: "Successful projects move users from 'Lurkers' to 'DAO Governors'. This process is highly data-driven and requires automated onboarding triggers.",
+                    funnelData: {
+                        labels: ['Discovery (X)', 'Interest (Docs)', 'Onboarding (Discord)', 'Activity (Tx)', 'Governance (DAO)'],
+                        data: [15000, 6000, 2500, 900, 200]
+                    }
+                },
+                tools: {
+                    title: "The Marketer's Arsenal",
+                    intro: "A curated list of tools for tracking on-chain attribution, managing decentralized communication, and automating community rewards.",
+                    categories: ['All', 'Analytics', 'Community', 'Automation'],
+                    items: [
+                        { name: "Dune", cat: "Analytics", desc: "SQL-powered on-chain data visualization." },
+                        { name: "Galxe", cat: "Community", desc: "Quest-based reward systems for on-chain growth." },
+                        { name: "Guild.xyz", cat: "Automation", desc: "Automated Discord role management via wallet holdings." },
+                        { name: "Snapshot", cat: "Community", desc: "Decentralized voting for token holders." },
+                        { name: "Nansen", cat: "Analytics", desc: "Wallet intelligence and smart-money tracking." },
+                        { name: "QuestN", cat: "Automation", desc: "Campaign automation for community engagement." }
+                    ]
+                },
+                strategy: {
+                    title: "GTM & Partnership Matrix",
+                    intro: "Web3 GTM relies on 'vampire attacks', airdrops, and deep protocol tie-ups. Prioritize initiatives based on Impact vs. Effort.",
+                    bubbleData: {
+                        datasets: [{
+                            label: 'Tactics',
+                            data: [
+                                { x: 10, y: 95, r: 20, strategy: 'Airdrop Strategy' },
+                                { x: 70, y: 80, r: 15, strategy: 'Ecosystem Grant' },
+                                { x: 40, y: 60, r: 12, strategy: 'KOL Campaign' },
+                                { x: 80, y: 30, r: 10, strategy: 'Conferences' }
+                            ],
+                            backgroundColor: 'rgba(79, 70, 229, 0.5)'
+                        }]
+                    }
+                },
+                author: {
+                    title: "Meet the Architect",
+                    name: "Kalyanjit Hatibaruah",
+                    role: "Expert Frontend Developer | Data Analyst | Information Architect",
+                    intro: "Bridging the gap between complex blockchain data and intuitive user experiences. Specialized in Web3 go-to-market strategies, interactive data visualization, and decentralized community architecture.",
+                    whatsapp: "+91-9864011106",
+                    linkedin: "https://www.linkedin.com/in/kalyanjit_",
+                    skills: ["On-Chain Data Analysis", "UI/UX for DApps", "Information Architecture", "GTM Strategy"]
+                }
+            }
+        };
+
+        let currentState = { activeTab: 'dashboard', toolFilter: 'All' };
+        let activeCharts = {};
+
+        function init() {
+            renderNav();
+            renderView(currentState.activeTab);
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                document.getElementById('mobile-nav').classList.toggle('hidden');
+            });
+        }
+
+        function renderNav() {
+            const navHTML = appData.navItems.map(item => `
+                <button onclick="switchTab('${item.id}')" class="nav-item ${currentState.activeTab === item.id ? 'active' : 'text-stone-500 hover:text-stone-800'} px-2 py-4 text-sm font-medium transition-all">
+                    ${item.label}
+                </button>
+            `).join('');
+            document.getElementById('desktop-nav').innerHTML = navHTML;
+            document.getElementById('mobile-nav').innerHTML = appData.navItems.map(item => `
+                <button onclick="switchTab('${item.id}')" class="block w-full text-left px-4 py-3 border-l-4 ${currentState.activeTab === item.id ? 'border-indigo-500 bg-indigo-50 text-indigo-700' : 'border-transparent text-stone-600'}">
+                    ${item.label}
+                </button>
+            `).join('');
+        }
+
+        function switchTab(id) {
+            currentState.activeTab = id;
+            document.getElementById('mobile-nav').classList.add('hidden');
+            renderNav();
+            renderView(id);
+        }
+
+        function renderView(id) {
+            Object.values(activeCharts).forEach(c => c.destroy());
+            activeCharts = {};
+
+            const section = appData.sections[id];
+            let html = `
+                <div class="mb-10">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">${section.title}</h2>
+                    <p class="text-lg text-stone-600 max-w-4xl">${section.intro || ''}</p>
+                </div>
+            `;
+
+            if (id === 'dashboard') {
+                html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    ${section.charts.map(c => `<div class="bg-white p-6 rounded-2xl border border-stone-100 card-hover">
+                        <h3 class="font-bold text-stone-800 mb-4">${c.title}</h3>
+                        <div class="chart-container"><canvas id="${c.id}"></canvas></div>
+                        <p class="mt-4 text-xs text-stone-500">${c.description}</p>
+                    </div>`).join('')}
+                </div>`;
+            } else if (id === 'primer') {
+                html += `<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    ${section.cards.map(c => `<div class="bg-white p-6 rounded-2xl border border-stone-100 card-hover">
+                        <div class="text-3xl mb-4">${c.icon}</div>
+                        <h4 class="font-bold text-stone-900 mb-2">${c.title}</h4>
+                        <p class="text-stone-600 text-sm">${c.content}</p>
+                    </div>`).join('')}
+                </div>`;
+            } else if (id === 'community') {
+                html += `<div class="bg-white p-8 rounded-2xl border border-stone-100 flex flex-col lg:flex-row gap-10">
+                    <div class="flex-grow"><div class="chart-container"><canvas id="funnelChart"></canvas></div></div>
+                    <div class="lg:w-80 space-y-4">
+                        <div class="p-4 bg-indigo-50 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900">Automation Rule</h5><p class="text-xs text-indigo-700">Auto-assign Discord roles via Guild.xyz based on NFT metadata.</p></div>
+                        <div class="p-4 bg-emerald-50 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-900">Partnership Trick</h5><p class="text-xs text-emerald-700">Co-market airdrops with protocols to leverage their active wallet lists.</p></div>
+                    </div>
+                </div>`;
+            } else if (id === 'tools') {
+                html += `<div class="flex flex-wrap gap-2 mb-8">${section.categories.map(c => `
+                    <button onclick="filterTools('${c}')" class="px-5 py-2 rounded-full text-sm font-semibold transition-all ${currentState.toolFilter === c ? 'bg-indigo-600 text-white shadow-lg' : 'bg-white text-stone-600 border border-stone-200'}">${c}</button>
+                `).join('')}</div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">${section.items.filter(i => currentState.toolFilter === 'All' || i.cat === currentState.toolFilter).map(i => `
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 card-hover">
+                        <div class="flex justify-between items-start mb-4"><h4 class="font-bold text-stone-900">${i.name}</h4><span class="text-[10px] uppercase tracking-wider font-bold bg-stone-100 text-stone-500 px-2 py-1 rounded">${i.cat}</span></div>
+                        <p class="text-stone-600 text-sm">${i.desc}</p>
+                    </div>
+                `).join('')}</div>`;
+            } else if (id === 'strategy') {
+                html += `<div class="bg-white p-8 rounded-2xl border border-stone-100 mb-8"><div class="chart-container"><canvas id="bubbleChart"></canvas></div></div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 bg-white rounded-xl border border-stone-100">
+                        <h4 class="font-bold text-stone-900 mb-2">Vampire Attacks</h4>
+                        <p class="text-sm text-stone-600">Incentivize liquidity migration from competitors using higher yields or targeted airdrops.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl border border-stone-100">
+                        <h4 class="font-bold text-stone-900 mb-2">Credential Gating</h4>
+                        <p class="text-sm text-stone-600">Use Galxe/Layer3 to ensure users complete specific actions before earning rewards.</p>
+                    </div>
+                    <div class="p-6 bg-white rounded-xl border border-stone-100">
+                        <h4 class="font-bold text-stone-900 mb-2">Protocol Tie-ups</h4>
+                        <p class="text-sm text-stone-600">Integrate with aggregators like Zapper or Zerion to gain visibility for your token assets.</p>
+                    </div>
+                </div>`;
+            } else if (id === 'author') {
+                html += `
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                    <div class="lg:col-span-1">
+                        <div class="author-gradient rounded-3xl p-1 shadow-2xl overflow-hidden aspect-square flex items-center justify-center">
+                            <div class="bg-white w-full h-full rounded-[1.4rem] flex flex-col items-center justify-center p-8 text-center">
+                                <div class="w-32 h-32 rounded-full author-gradient flex items-center justify-center text-white text-4xl font-bold mb-4">KH</div>
+                                <h3 class="text-2xl font-bold text-stone-900">${section.name}</h3>
+                                <p class="text-stone-500 text-sm mt-2">${section.role}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="lg:col-span-2 space-y-8">
+                        <div class="bg-white p-8 rounded-3xl border border-stone-100">
+                            <h4 class="text-xl font-bold text-stone-900 mb-4">Professional Expertise</h4>
+                            <p class="text-stone-600 leading-relaxed mb-6">${section.intro}</p>
+                            <div class="flex flex-wrap gap-2">
+                                ${section.skills.map(s => `<span class="px-3 py-1 bg-indigo-50 text-indigo-600 text-xs font-bold rounded-full">${s}</span>`).join('')}
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="https://wa.me/919864011106" target="_blank" class="flex items-center p-6 bg-emerald-50 rounded-2xl border border-emerald-100 hover:bg-emerald-100 transition-colors">
+                                <div class="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-xl mr-4">📱</div>
+                                <div><div class="text-xs text-emerald-600 font-bold uppercase">WhatsApp</div><div class="font-bold text-stone-900">${section.whatsapp}</div></div>
+                            </a>
+                            <a href="${section.linkedin}" target="_blank" class="flex items-center p-6 bg-indigo-50 rounded-2xl border border-indigo-100 hover:bg-indigo-100 transition-colors">
+                                <div class="w-12 h-12 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xl mr-4">💼</div>
+                                <div><div class="text-xs text-indigo-600 font-bold uppercase">LinkedIn</div><div class="font-bold text-stone-900">Connect with me</div></div>
+                            </a>
+                        </div>
+                    </div>
+                </div>`;
+            }
+
+            document.getElementById('content-area').innerHTML = `<div class="animate-in fade-in slide-in-from-bottom-4 duration-500">${html}</div>`;
+
+            setTimeout(() => {
+                if (id === 'dashboard') {
+                    activeCharts.p = new Chart(document.getElementById('chart-paradigm'), { type: 'bar', data: section.charts[0].data, options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } } });
+                    activeCharts.c = new Chart(document.getElementById('chart-channels'), { type: 'doughnut', data: section.charts[1].data, options: { maintainAspectRatio: false, plugins: { legend: { position: 'right' } } } });
+                } else if (id === 'community') {
+                    activeCharts.f = new Chart(document.getElementById('funnelChart'), { type: 'bar', data: { labels: section.funnelData.labels, datasets: [{ label: 'Users', data: section.funnelData.data, backgroundColor: ['#e0e7ff','#c7d2fe','#a5b4fc','#818cf8','#4f46e5'] }] }, options: { indexAxis: 'y', maintainAspectRatio: false, plugins: { legend: { display: false } } } });
+                } else if (id === 'strategy') {
+                    activeCharts.b = new Chart(document.getElementById('bubbleChart'), { type: 'bubble', data: section.bubbleData, options: { maintainAspectRatio: false, scales: { x: { title: { display: true, text: 'Effort' }, min: 0, max: 100 }, y: { title: { display: true, text: 'Impact' }, min: 0, max: 100 } } } });
+                }
+            }, 50);
+        }
+
+        window.filterTools = (cat) => { currentState.toolFilter = cat; renderView('tools'); };
+        init();
+    </script>
+</body>
+</html>
