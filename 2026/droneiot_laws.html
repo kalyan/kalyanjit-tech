@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>India Drone & IoT Regulatory Landscape</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Config for Custom Colors/Fonts -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'reg-bg': '#F3F4F6', // Warm light grey
+                        'reg-dark': '#1F2937', // Dark charcoal
+                        'reg-blue': '#2563EB', // Official Blue
+                        'reg-teal': '#14B8A6', // IoT/Data Teal
+                        'reg-amber': '#F59E0B', // Warning/Caution
+                        'reg-white': '#FFFFFF',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        /* Chart Container Rules - MANDATORY */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px; /* Constrain width on large screens */
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; /* Base height */
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Interactive Card Hover Effects */
+        .interactive-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .interactive-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #2563EB;
+        }
+        
+        .active-tab {
+            border-bottom: 2px solid #2563EB;
+            color: #2563EB;
+            font-weight: 600;
+        }
+    </style>
+
+    <!-- 
+    Placeholder Comments 
+    -->
+    <!-- Chosen Palette: Aero-Cyber (Warm Light Grey Background, Official Blue, Data Teal, Warning Amber) - Designed to feel authoritative yet modern and clean. -->
+    
+    <!-- Application Structure Plan: 
+         The app is structured as a vertical scrolling report with sticky navigation for distinct thematic sections.
+         1. Executive Summary: High-level metrics to engage the user immediately.
+         2. The Drone Ecosystem: Focuses on hardware classification and zoning laws (Drone Rules 2021). Uses a bar chart for weight classes because weight dictates the law.
+         3. The IoT Framework: Focuses on connectivity, spectrum, and privacy (DPDP Act). Uses a stacked approach to show layers of regulation.
+         4. Market & Compliance: Shows the "Why" (Market Growth) and the "How" (Penalties). 
+         This structure moves from physical definitions -> operational rules -> digital data rules -> economic outcome.
+    -->
+
+    <!-- Visualization & Content Choices:
+         1. Drone Weight Categories (Bar Chart): Goal is to Compare. Interaction: Click bar to see specific laws for that class. Justification: Weight is the primary legal differentiator.
+         2. Airspace Zones (Donut Chart - Conceptual): Goal is to Inform. Interaction: Click segment to understand permissions (Green/Yellow/Red). Justification: Visualizes the "Digital Sky" concept.
+         3. Industry Growth (Line Chart): Goal is to Show Change. Interaction: Hover for values. Justification: Validates the impact of the PLI scheme and liberalized rules.
+         4. Process Steps (HTML/CSS): Goal is to Organize. Interaction: Simple visual flow for compliance. Justification: Lists are boring; flows show the lifecycle.
+    -->
+
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-reg-bg text-gray-800 font-sans leading-relaxed">
+
+    <!-- Navigation -->
+    <nav class="bg-white sticky top-0 z-50 shadow-sm border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="text-2xl font-bold text-reg-blue tracking-tight">Regulatory<span class="text-reg-teal">Cockpit</span></div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <button onclick="scrollToSection('summary')" class="text-gray-600 hover:text-reg-blue transition">Summary</button>
+                    <button onclick="scrollToSection('drones')" class="text-gray-600 hover:text-reg-blue transition">Drone Rules</button>
+                    <button onclick="scrollToSection('iot')" class="text-gray-600 hover:text-reg-blue transition">IoT & Privacy</button>
+                    <button onclick="scrollToSection('market')" class="text-gray-600 hover:text-reg-blue transition">Market & PLI</button>
+                </div>
+                <!-- Mobile Menu Button (Functional simplified) -->
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-gray-600 hover:text-reg-blue p-2">
+                        <span>Menu</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu Panel -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 p-4 space-y-2">
+            <button onclick="scrollToSection('summary')" class="block w-full text-left py-2 px-4 hover:bg-gray-50 rounded">Summary</button>
+            <button onclick="scrollToSection('drones')" class="block w-full text-left py-2 px-4 hover:bg-gray-50 rounded">Drone Rules</button>
+            <button onclick="scrollToSection('iot')" class="block w-full text-left py-2 px-4 hover:bg-gray-50 rounded">IoT & Privacy</button>
+            <button onclick="scrollToSection('market')" class="block w-full text-left py-2 px-4 hover:bg-gray-50 rounded">Market & PLI</button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <!-- Executive Summary Section -->
+        <section id="summary" class="bg-white rounded-2xl p-6 md:p-10 shadow-sm border border-gray-200">
+            <div class="text-center max-w-3xl mx-auto mb-10">
+                <h1 class="text-3xl md:text-4xl font-extrabold text-reg-dark mb-4">India's Drone & IoT Regulatory Framework</h1>
+                <p class="text-lg text-gray-500">A comprehensive analysis of the <span class="font-semibold text-reg-blue">Drone Rules, 2021</span>, the <span class="font-semibold text-reg-teal">DPDP Act, 2023</span>, and the intersection of hardware and data laws driving Industry 4.0 in India.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-blue-50 p-6 rounded-xl border border-blue-100">
+                    <div class="text-reg-blue font-bold text-lg mb-2">Liberalized Regime</div>
+                    <p class="text-sm text-gray-600">Drone Rules 2021 abolished 25+ forms. No security clearance required for registration.</p>
+                </div>
+                <div class="bg-teal-50 p-6 rounded-xl border border-teal-100">
+                    <div class="text-reg-teal font-bold text-lg mb-2">Digital Sky Platform</div>
+                    <p class="text-sm text-gray-600">Single-window online system for UIN (Unique ID), permissions, and airspace map access.</p>
+                </div>
+                <div class="bg-amber-50 p-6 rounded-xl border border-amber-100">
+                    <div class="text-reg-amber font-bold text-lg mb-2">Data Protection</div>
+                    <p class="text-sm text-gray-600">The DPDP Act 2023 mandates strict consent architecture for IoT data involving personal identifiers.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Drone Ecosystem Section -->
+        <section id="drones" class="space-y-6">
+            <div class="border-l-4 border-reg-blue pl-4">
+                <h2 class="text-2xl font-bold text-gray-900">1. The Drone Ecosystem: Hardware & Flight</h2>
+                <p class="text-gray-600 mt-2">
+                    Regulation in India is primarily based on the **All-Up Weight** of the drone. This interactive section breaks down requirements by category and visualizes the airspace zoning ("The Digital Sky").
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Interactive Chart: Drone Categories -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-gray-800 mb-4">Interactive: Categorization by Weight</h3>
+                    <div class="chart-container">
+                        <canvas id="droneCategoryChart"></canvas>
+                    </div>
+                    <div id="categoryDetails" class="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-100 text-sm">
+                        <p class="text-gray-500 italic text-center">Tap a bar above to see legal requirements.</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Map Logic: Zones -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 flex flex-col">
+                    <h3 class="font-bold text-lg text-gray-800 mb-4">The Airspace Map (Digital Sky)</h3>
+                    <div class="flex-grow flex flex-col items-center justify-center">
+                        <div class="chart-container" style="height: 250px;">
+                            <canvas id="airspaceChart"></canvas>
+                        </div>
+                    </div>
+                    <div id="zoneDetails" class="mt-4 p-4 bg-green-50 rounded-lg border border-green-100 text-sm transition-colors duration-300">
+                        <h4 class="font-bold text-green-800 mb-1">Green Zone</h4>
+                        <p class="text-green-700">Airspace up to 400 feet (120m) that has not been designated as a red or yellow zone. <strong>No permission required</strong> for flight.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Compliance Checklist -->
+            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                <h3 class="font-bold text-lg text-gray-800 mb-4">Mandatory Compliance Checklist</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="p-4 border border-gray-200 rounded-lg text-center hover:bg-blue-50 transition">
+                        <div class="text-2xl mb-2">🆔</div>
+                        <div class="font-semibold text-sm">UIN Generation</div>
+                        <div class="text-xs text-gray-500 mt-1">Unique Identification Number via Digital Sky</div>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg text-center hover:bg-blue-50 transition">
+                        <div class="text-2xl mb-2">🎮</div>
+                        <div class="font-semibold text-sm">Remote Pilot Cert</div>
+                        <div class="text-xs text-gray-500 mt-1">Required for non-micro drones via DGCA school</div>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg text-center hover:bg-blue-50 transition">
+                        <div class="text-2xl mb-2">🛡️</div>
+                        <div class="font-semibold text-sm">Insurance</div>
+                        <div class="text-xs text-gray-500 mt-1">Third-party liability insurance is mandatory</div>
+                    </div>
+                    <div class="p-4 border border-gray-200 rounded-lg text-center hover:bg-blue-50 transition">
+                        <div class="text-2xl mb-2">🚫</div>
+                        <div class="font-semibold text-sm">No Permission No Takeoff</div>
+                        <div class="text-xs text-gray-500 mt-1">NPNT compliant hardware required (exceptions apply)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- IoT Framework Section -->
+        <section id="iot" class="space-y-6">
+            <div class="border-l-4 border-reg-teal pl-4">
+                <h2 class="text-2xl font-bold text-gray-900">2. The IoT Framework: Data & Connectivity</h2>
+                <p class="text-gray-600 mt-2">
+                    Drones are essentially flying IoT devices. Their regulation intersects with telecommunications standards and the new Digital Personal Data Protection (DPDP) Act.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Data Privacy Card -->
+                <div class="md:col-span-1 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-reg-teal mb-4">DPDP Act 2023 Impact</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-teal-100 text-teal-800 font-bold text-xs mr-3 mt-0.5">1</span>
+                            <span class="text-sm text-gray-700"><strong>Data Fiduciary:</strong> Drone operators collecting images/video of people are 'Fiduciaries' and liable for data misuse.</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-teal-100 text-teal-800 font-bold text-xs mr-3 mt-0.5">2</span>
+                            <span class="text-sm text-gray-700"><strong>Notice & Consent:</strong> Explicit consent is required before capturing personal data, unless for specific legitimate uses (e.g., medical emergency).</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-teal-100 text-teal-800 font-bold text-xs mr-3 mt-0.5">3</span>
+                            <span class="text-sm text-gray-700"><strong>Penalty:</strong> Up to ₹250 Crore for failure to prevent data breaches.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- M2M & Spectrum Card -->
+                <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-reg-teal mb-4">Connectivity & Spectrum (DoT)</h3>
+                    <p class="text-sm text-gray-600 mb-6">IoT devices in India must adhere to specific frequency allocations. The DoT has de-licensed certain bands to foster the IoT ecosystem.</p>
+                    
+                    <!-- Spectrum Table -->
+                    <div class="overflow-hidden border border-gray-200 rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Frequency Band</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Typical Use</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">865-867 MHz</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">De-licensed</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">RFID, LoRaWAN (Low Power IoT)</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2.4 GHz</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">De-licensed</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">WiFi, Bluetooth, Short-range control</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5.8 GHz</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-semibold">De-licensed</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">FPV Drone Video Feed</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Licensed Cellular</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-amber-600 font-semibold">Strict Regulation</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4G/5G for BVLOS (Beyond Visual Line of Sight)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Market & PLI Section -->
+        <section id="market" class="space-y-6">
+            <div class="border-l-4 border-reg-amber pl-4">
+                <h2 class="text-2xl font-bold text-gray-900">3. Economic Impact & Penalties</h2>
+                <p class="text-gray-600 mt-2">
+                    The government's PLI (Production Linked Incentive) scheme aims to make India a global drone hub by 2030, balancing growth with strict compliance penalties.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Market Growth Chart -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="font-bold text-lg text-gray-800">Projected Industry Turnover (INR Crore)</h3>
+                        <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">PLI Impact</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="marketChart"></canvas>
+                    </div>
+                    <p class="mt-4 text-xs text-gray-500 text-center">Source: Industry Estimates & Civil Aviation Ministry Projections</p>
+                </div>
+
+                <!-- Offences & Penalties Matrix -->
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+                    <h3 class="font-bold text-lg text-gray-800 mb-4">The Cost of Non-Compliance</h3>
+                    <div class="space-y-3">
+                        <div class="group p-4 border border-gray-100 rounded-lg hover:border-red-200 hover:bg-red-50 transition cursor-default">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-700 group-hover:text-red-700">Flying in Red Zone w/o Permission</span>
+                                <span class="text-sm bg-gray-200 group-hover:bg-red-200 px-2 py-1 rounded">High Severity</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2 group-hover:text-red-600">Action: Fine up to ₹1 Lakh + confiscation of hardware.</p>
+                        </div>
+                        <div class="group p-4 border border-gray-100 rounded-lg hover:border-red-200 hover:bg-red-50 transition cursor-default">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-700 group-hover:text-red-700">Failure to register UIN</span>
+                                <span class="text-sm bg-gray-200 group-hover:bg-red-200 px-2 py-1 rounded">Medium Severity</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2 group-hover:text-red-600">Action: Fine + Suspension of Remote Pilot Licence.</p>
+                        </div>
+                        <div class="group p-4 border border-gray-100 rounded-lg hover:border-red-200 hover:bg-red-50 transition cursor-default">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-700 group-hover:text-red-700">Privacy Breach (DPDP Act)</span>
+                                <span class="text-sm bg-gray-200 group-hover:bg-red-200 px-2 py-1 rounded">Critical Severity</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-2 group-hover:text-red-600">Action: Fines scaling up to ₹250 Cr depending on data impact.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-400 text-sm py-8 border-t border-gray-200">
+            <p>Designed for Educational Purposes based on Indian Drone Rules 2021 & DPDP Act 2023.</p>
+            <p class="mt-2">Always verify with the Digital Sky Platform for real-time regulatory updates.</p>
+        </footer>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        // --- Navigation Logic ---
+        function scrollToSection(id) {
+            const element = document.getElementById(id);
+            const navHeight = 80; // Approximate height of sticky nav
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+
+        // --- Data & State ---
+        
+        // Drone Category Data
+        const droneCategories = [
+            { label: 'Nano', range: '≤ 250g', color: '#60A5FA', 
+              req: 'Exempt from UIN & Pilot Licence. Flight limited to 50ft AGL.' },
+            { label: 'Micro', range: '250g - 2kg', color: '#3B82F6', 
+              req: 'UIN Required. Pilot Licence Required (unless non-commercial). Flight up to 200ft.' },
+            { label: 'Small', range: '2kg - 25kg', color: '#2563EB', 
+              req: 'Full Compliance: UIN, Pilot Licence, Logbook, Insurance Mandatory.' },
+            { label: 'Medium', range: '25kg - 150kg', color: '#1D4ED8', 
+              req: 'Full Compliance + Stricter maintenance protocols.' },
+            { label: 'Large', range: '> 150kg', color: '#1E3A8A', 
+              req: 'Treat as standard aircraft. Advanced certification required.' }
+        ];
+
+        // --- Chart Initialization ---
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Drone Category Chart
+            const ctxCategory = document.getElementById('droneCategoryChart').getContext('2d');
+            const categoryChart = new Chart(ctxCategory, {
+                type: 'bar',
+                data: {
+                    labels: droneCategories.map(d => `${d.label} (${d.range})`),
+                    datasets: [{
+                        label: 'Weight Class',
+                        data: [250, 2000, 25000, 150000, 180000], // Using grams for scale visual
+                        backgroundColor: droneCategories.map(d => d.color),
+                        borderRadius: 6,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'Click to see requirements';
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            type: 'logarithmic', // Log scale to handle 250g vs 150kg
+                            title: { display: true, text: 'Payload Capacity (Log Scale)' },
+                            grid: { color: '#f3f4f6' }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    onClick: (e, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            updateCategoryDetails(index);
+                        }
+                    }
+                }
+            });
+
+            // Update function for category text
+            function updateCategoryDetails(index) {
+                const data = droneCategories[index];
+                const container = document.getElementById('categoryDetails');
+                container.className = "mt-4 p-4 rounded-lg border border-blue-100 bg-blue-50 text-sm transition-all";
+                container.innerHTML = `
+                    <h4 class="font-bold text-reg-blue text-lg">${data.label} Drone (${data.range})</h4>
+                    <p class="text-gray-700 mt-2">${data.req}</p>
+                `;
+            }
+
+            // 2. Airspace Zone Chart (Donut)
+            const ctxAirspace = document.getElementById('airspaceChart').getContext('2d');
+            const airspaceChart = new Chart(ctxAirspace, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Green Zone', 'Yellow Zone', 'Red Zone'],
+                    datasets: [{
+                        data: [70, 25, 5], // Conceptual % of airspace accessibility
+                        backgroundColor: ['#10B981', '#FBBF24', '#EF4444'],
+                        borderWidth: 0,
+                        hoverOffset: 10
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' Click for rules';
+                                }
+                            }
+                        }
+                    },
+                    onClick: (e, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            updateZoneDetails(index);
+                        }
+                    }
+                }
+            });
+
+            const zoneInfo = [
+                { title: 'Green Zone', color: 'green', desc: 'Airspace up to 400 feet (120m) that has not been designated as a red or yellow zone. <strong>No permission required</strong> for flight.' },
+                { title: 'Yellow Zone', color: 'yellow', desc: 'Controlled airspace (e.g., near airports). <strong>Permission required</strong> from Air Traffic Control via Digital Sky.' },
+                { title: 'Red Zone', color: 'red', desc: 'Strictly No-Fly Zones (e.g., Military bases, Rashtrapati Bhavan). <strong>Flight prohibited</strong> unless exceptional clearance given by Central Govt.' }
+            ];
+
+            function updateZoneDetails(index) {
+                const data = zoneInfo[index];
+                const container = document.getElementById('zoneDetails');
+                
+                // Dynamic Tailwind classes for colors
+                let bgClass, borderClass, textClass, titleClass;
+                if(data.color === 'green') { bgClass='bg-green-50'; borderClass='border-green-100'; textClass='text-green-700'; titleClass='text-green-800'; }
+                else if(data.color === 'yellow') { bgClass='bg-yellow-50'; borderClass='border-yellow-100'; textClass='text-yellow-800'; titleClass='text-yellow-900'; }
+                else { bgClass='bg-red-50'; borderClass='border-red-100'; textClass='text-red-700'; titleClass='text-red-800'; }
+
+                container.className = `mt-4 p-4 rounded-lg border ${borderClass} ${bgClass} text-sm transition-colors duration-300`;
+                container.innerHTML = `
+                    <h4 class="font-bold ${titleClass} mb-1">${data.title}</h4>
+                    <p class="${textClass}">${data.desc}</p>
+                `;
+            }
+
+            // 3. Market Growth Chart (Line)
+            const ctxMarket = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctxMarket, {
+                type: 'line',
+                data: {
+                    labels: ['2021', '2022', '2023', '2024', '2025', '2026', '2030'],
+                    datasets: [{
+                        label: 'Turnover (INR Crore)',
+                        data: [60, 150, 300, 600, 900, 1200, 15000], // Conceptual growth curve based on industry reports
+                        borderColor: '#2563EB',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#2563EB',
+                        pointRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: { borderDash: [2, 4] }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    }
+                }
+            });
+
+        });
+    </script>
+</body>
+</html>
