@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Private Equity Transaction Lifecycle Explorer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        .step-connector::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 100%;
+            width: 2rem;
+            height: 2px;
+            background-color: #cbd5e1;
+            z-index: 0;
+            display: none;
+        }
+        
+        @media (min-width: 1024px) {
+            .step-connector::after {
+                display: block;
+            }
+            .step-connector:last-child::after {
+                display: none;
+            }
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+    </style>
+    <!-- Chosen Palette: Slate & Amber -->
+    <!-- Application Structure Plan: 
+         1. Hero: High-level overview.
+         2. The Lifecycle Framework: Interactive timeline with dynamic Detail View.
+         3. Financial Mechanics: Deep dive into J-Curve and Leverage.
+         4. Author Section: Integrated contact and professional details.
+    -->
+    <!-- Visualization & Content Choices:
+         1. Funnel/Bar/Line/Stacked Charts via Chart.js for process visualization.
+         2. Leverage Simulator: Real-time calculation using JS state.
+         3. HTML-based author card for better accessibility.
+         NO SVG/Mermaid used.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="antialiased min-h-screen flex flex-col">
+
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <span class="text-2xl font-bold text-slate-800 tracking-tight">PE<span class="text-amber-600">Cycle</span></span>
+            </div>
+            <nav class="hidden md:flex space-x-8">
+                <button onclick="scrollToSection('hero')" class="text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors">Overview</button>
+                <button onclick="scrollToSection('lifecycle-section')" class="text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors">Lifecycle Explorer</button>
+                <button onclick="scrollToSection('mechanics-section')" class="text-sm font-medium text-slate-600 hover:text-amber-600 transition-colors">Financial Mechanics</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <section id="hero" class="bg-slate-900 text-white py-16 lg:py-24">
+            <div class="max-w-4xl mx-auto px-4 text-center">
+                <h1 class="text-4xl md:text-5xl font-extrabold mb-6 tracking-tight">The Anatomy of a Private Equity Deal</h1>
+                <p class="text-lg md:text-xl text-slate-300 mb-8 leading-relaxed">
+                    A comprehensive interactive framework breaking down the transaction lifecycle from sourcing to exit. 
+                    Provided by industry expert <strong>Kalyanjit Hatibaruah</strong>.
+                </p>
+                <button onclick="scrollToSection('lifecycle-section')" class="bg-amber-600 hover:bg-amber-700 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition-transform transform hover:-translate-y-0.5">
+                    Explore Framework
+                </button>
+            </div>
+        </section>
+
+        <section id="lifecycle-section" class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-10 text-center max-w-3xl mx-auto">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Transaction Lifecycle Framework</h2>
+                <p class="text-slate-600 text-lg">
+                    Private Equity deals follow a rigorous, structured process. Select a phase below to uncover the specific activities, 
+                    critical documents, and decision-making criteria.
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 overflow-x-auto no-scrollbar py-4 mb-8 bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <div id="timeline-container" class="flex lg:w-full justify-between min-w-max gap-4 lg:gap-0"></div>
+            </div>
+
+            <div id="details-view" class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden transition-all duration-300">
+                <div class="bg-slate-50 border-b border-slate-100 p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div>
+                        <span id="detail-phase-badge" class="inline-block px-3 py-1 text-xs font-semibold tracking-wider text-amber-700 bg-amber-100 rounded-full mb-2">PHASE</span>
+                        <h3 id="detail-title" class="text-3xl font-bold text-slate-800">Select a Step</h3>
+                    </div>
+                    <div id="detail-kpi" class="text-right hidden md:block">
+                        <span class="block text-sm text-slate-500 uppercase tracking-wide">Key Focus</span>
+                        <span id="detail-focus" class="text-lg font-semibold text-slate-900">-</span>
+                    </div>
+                </div>
+
+                <div class="p-6 md:p-8 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div>
+                            <h4 class="text-lg font-bold text-slate-900 mb-3 flex items-center">
+                                <span class="w-2 h-8 bg-amber-500 rounded-r mr-3"></span>
+                                Core Activities
+                            </h4>
+                            <p id="detail-desc" class="text-slate-600 leading-relaxed mb-4">Select a stage above to see details.</p>
+                            <ul id="detail-list" class="space-y-2 text-slate-600 list-disc pl-5 marker:text-amber-500"></ul>
+                        </div>
+
+                        <div id="docs-container" class="bg-slate-50 p-5 rounded-lg border border-slate-200">
+                            <h5 class="text-sm font-bold text-slate-700 uppercase mb-3 border-b border-slate-200 pb-2">Key Documents</h5>
+                            <div id="detail-docs" class="flex flex-wrap gap-2"></div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col space-y-6">
+                        <div class="bg-slate-50 rounded-xl p-4 border border-slate-100 h-full flex flex-col justify-center">
+                            <h4 id="chart-title" class="text-center text-sm font-semibold text-slate-500 mb-4 uppercase tracking-wide">Visual Context</h4>
+                            <div class="chart-container">
+                                <canvas id="lifecycleChart"></canvas>
+                            </div>
+                            <p id="chart-caption" class="text-center text-xs text-slate-400 mt-3 italic"></p>
+                        </div>
+                        
+                        <div class="bg-amber-50 border border-amber-100 rounded-lg p-5">
+                            <h5 class="text-amber-800 font-bold text-sm mb-2 flex items-center">
+                                <span>⚖️ Decision Logic & Governance</span>
+                            </h5>
+                            <p id="detail-governance" class="text-amber-900 text-sm leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="mechanics-section" class="bg-slate-100 py-16 border-t border-slate-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4">Financial Mechanics & Value Creation</h2>
+                    <p class="text-slate-600">
+                        Understanding how leverage amplifies returns and the trajectory of value through the fund's lifecycle.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">The J-Curve Effect</h3>
+                        <p class="text-sm text-slate-500 mb-6">Visualizing cash flows and value creation over the holding period.</p>
+                        <div class="chart-container">
+                            <canvas id="jCurveChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Leverage Impact Simulator</h3>
+                        <p class="text-sm text-slate-500 mb-6">Adjust leverage to see the impact on MOIC (Multiple on Invested Capital).</p>
+                        <div class="space-y-6 mb-6">
+                            <div>
+                                <label class="flex justify-between text-sm font-medium text-slate-700 mb-1">
+                                    <span>Debt Portion (Leverage)</span>
+                                    <span id="leverage-display">50%</span>
+                                </label>
+                                <input type="range" id="leverage-input" min="0" max="80" step="10" value="50" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-amber-600">
+                            </div>
+                        </div>
+                        <div class="chart-container h-48">
+                            <canvas id="leverageChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white py-12 border-t border-slate-200">
+            <div class="max-w-4xl mx-auto px-4">
+                <div class="bg-slate-50 rounded-2xl p-8 border border-slate-200 flex flex-col md:flex-row items-center gap-8 shadow-sm">
+                    <div class="flex-shrink-0">
+                        <div class="w-24 h-24 bg-amber-600 rounded-full flex items-center justify-center text-white text-3xl font-bold shadow-inner">
+                            KH
+                        </div>
+                    </div>
+                    <div class="text-center md:text-left">
+                        <h3 class="text-2xl font-bold text-slate-900 mb-1">Kalyanjit Hatibaruah</h3>
+                        <p class="text-slate-600 font-medium mb-4">Strategic Advisor | Private Equity & Corporate Finance Expert</p>
+                        <div class="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
+                            <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="flex items-center gap-2 text-slate-700 hover:text-amber-600 transition-colors">
+                                <span class="p-1.5 bg-slate-200 rounded">🔗</span> LinkedIn Profile
+                            </a>
+                            <a href="https://wa.me/919864011106" target="_blank" class="flex items-center gap-2 text-slate-700 hover:text-amber-600 transition-colors">
+                                <span class="p-1.5 bg-slate-200 rounded">💬</span> WhatsApp: +91 9864011106
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-900 text-slate-400 py-8 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p class="mb-2 text-sm">&copy; 2024 Private Equity Analysis Framework. Author: Kalyanjit Hatibaruah.</p>
+            <p class="text-xs text-slate-600">Built for interactive exploration of corporate finance and PE operations.</p>
+        </div>
+    </footer>
+
+    <script>
+        const lifecycleData = [
+            {
+                id: 'sourcing',
+                phase: 'Pre-Deal',
+                title: 'Deal Sourcing',
+                focus: 'Origination',
+                desc: 'Identifying potential investment targets through proprietary networks or corporate carve-outs.',
+                activities: [
+                    'Market mapping and sector thesis development.',
+                    'Networking with investment banks and brokers.',
+                    'Cold outreach to founders.',
+                    'Tracking divestiture announcements.'
+                ],
+                docs: ['Teaser', 'NDA', 'CIM'],
+                governance: 'IC reviews Concept Paper to authorize preliminary resources.',
+                chartType: 'funnel',
+                chartData: {
+                    labels: ['Leads', 'Reviewed', 'Mgmt Mtg', 'LOI', 'Closed'],
+                    data: [100, 40, 15, 3, 1],
+                    color: '#cbd5e1',
+                    highlight: '#d97706'
+                },
+                chartCaption: 'Typical Deal Funnel: High attrition rates define the sourcing stage.'
+            },
+            {
+                id: 'valuation',
+                phase: 'Pre-Deal',
+                title: 'Valuation & Analysis',
+                focus: 'Pricing',
+                desc: 'Determining fair value via LBO modelling and comparative analysis.',
+                activities: [
+                    'LBO Returns Analysis.',
+                    'Comparable Trading Multiples.',
+                    'Precedent Transaction Analysis.',
+                    'Submitting Indication of Interest (IOI).'
+                ],
+                docs: ['LBO Model', 'IOI Letter', 'Valuation Bridge'],
+                governance: 'Deal team presents prelim valuation to IC for IOI approval.',
+                chartType: 'bar',
+                chartData: {
+                    labels: ['Entry EBITDA', 'Mult. Arb', 'Growth', 'Exit Value'],
+                    data: [100, 20, 50, 170]
+                },
+                chartCaption: 'Valuation Bridge: Mapping future value drivers.'
+            },
+            {
+                id: 'duediligence',
+                phase: 'Execution',
+                title: 'Due Diligence',
+                focus: 'Verification',
+                desc: 'Comprehensive audit to verify value and uncover red-flag risks.',
+                activities: [
+                    'Financial DD: Quality of Earnings (QoE).',
+                    'Commercial DD: Market size & competitive landscape.',
+                    'Legal DD: Contracts and liability.',
+                    'Tax & ESG Structuring.'
+                ],
+                docs: ['QoE Report', 'Legal Red Flag Report', 'Commercial Study'],
+                governance: 'Findings summarized in Final Investment Memo (FIM).',
+                chartType: 'doughnut',
+                chartData: {
+                    labels: ['Financial', 'Legal', 'Commercial', 'Tax'],
+                    data: [35, 25, 25, 15]
+                },
+                chartCaption: 'DD Effort Allocation: Financial health remains the core focus.'
+            },
+            {
+                id: 'closing',
+                phase: 'Execution',
+                title: 'Negotiation & Closing',
+                focus: 'Execution',
+                desc: 'Finalizing legal frameworks and funding the acquisition.',
+                activities: [
+                    'Negotiating SPA (Sales & Purchase Agreement).',
+                    'Finalizing SHA (Shareholders Agreement).',
+                    'Executing Funds Flow.',
+                    '100-Day Plan kickoff.'
+                ],
+                docs: ['SPA', 'SHA', 'Disclosure Schedules'],
+                governance: 'Final Board/IC approval required for funding.',
+                chartType: 'pie',
+                chartData: {
+                    labels: ['Reps & Warranties', 'Indemnities', 'Pricing', 'Conditions'],
+                    data: [30, 30, 20, 20]
+                },
+                chartCaption: 'Closing Complexity: Balancing risk allocation between buyer and seller.'
+            },
+            {
+                id: 'monitoring',
+                phase: 'Post-Deal',
+                title: 'Value Creation',
+                focus: 'Optimization',
+                desc: 'Active management to expand margins and improve operational performance.',
+                activities: [
+                    'Operational margin expansion.',
+                    'Strategic Add-on M&A.',
+                    'Top-grading leadership teams.',
+                    'Monthly KPI governance.'
+                ],
+                docs: ['Board Deck', '100-Day Plan', 'KPI Dashboard'],
+                governance: 'Sponsor-controlled Board oversees management execution.',
+                chartType: 'line',
+                chartData: {
+                    labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                    data: [100, 110, 130, 160, 200, 250]
+                },
+                chartCaption: 'The Value Climb: Compounding improvements toward exit.'
+            },
+            {
+                id: 'exit',
+                phase: 'Post-Deal',
+                title: 'Exit Strategies',
+                focus: 'Realization',
+                desc: 'Monetizing the investment to return capital to Limited Partners.',
+                activities: [
+                    'Strategic Trade Sale.',
+                    'Secondary Buyout (PE-to-PE).',
+                    'Initial Public Offering (IPO).',
+                    'Dividend Recapitalization.'
+                ],
+                docs: ['Exit IM', 'Vendor Due Diligence'],
+                governance: 'IC must approve exit timing and reserve pricing.',
+                chartType: 'bar',
+                chartData: {
+                    labels: ['Trade Sale', 'Secondary', 'IPO', 'Other'],
+                    data: [55, 30, 10, 5]
+                },
+                chartCaption: 'Exit Distribution: Strategic buyers often offer the highest premiums.'
+            }
+        ];
+
+        let lifecycleChartInstance = null;
+        let jCurveChartInstance = null;
+        let leverageChartInstance = null;
+
+        function init() {
+            renderTimeline();
+            loadStep(0);
+            initMechanics();
+            document.getElementById('leverage-input').addEventListener('input', updateLeverage);
+        }
+
+        function scrollToSection(id) {
+            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function renderTimeline() {
+            const container = document.getElementById('timeline-container');
+            lifecycleData.forEach((step, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'step-connector relative flex-1 min-w-[120px] lg:min-w-0 group';
+                btn.innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div id="node-${idx}" class="w-10 h-10 rounded-full border-2 flex items-center justify-center text-sm font-bold bg-white transition-all duration-300 z-10 mb-2">
+                            ${idx + 1}
+                        </div>
+                        <span class="text-xs font-semibold uppercase tracking-wide text-slate-500 text-center">${step.title}</span>
+                    </div>
+                `;
+                btn.onclick = () => loadStep(idx);
+                container.appendChild(btn);
+            });
+        }
+
+        function loadStep(idx) {
+            const data = lifecycleData[idx];
+            document.getElementById('detail-phase-badge').textContent = data.phase;
+            document.getElementById('detail-title').textContent = data.title;
+            document.getElementById('detail-focus').textContent = data.focus;
+            document.getElementById('detail-desc').textContent = data.desc;
+            document.getElementById('detail-governance').textContent = data.governance;
+            document.getElementById('chart-caption').textContent = data.chartCaption;
+            document.getElementById('detail-list').innerHTML = data.activities.map(a => `<li>${a}</li>`).join('');
+            document.getElementById('detail-docs').innerHTML = data.docs.map(d => `<span class="px-2 py-0.5 border border-slate-300 rounded text-xs bg-white">📄 ${d}</span>`).join('');
+            
+            lifecycleData.forEach((_, i) => {
+                const n = document.getElementById(`node-${i}`);
+                if(i===idx) n.className = n.className.replace('border-slate-300', 'border-amber-600 bg-amber-50 text-amber-700');
+                else n.className = n.className.replace('border-amber-600 bg-amber-50 text-amber-700', 'border-slate-300');
+            });
+
+            updateMainChart(data);
+        }
+
+        function updateMainChart(data) {
+            const ctx = document.getElementById('lifecycleChart').getContext('2d');
+            if (lifecycleChartInstance) lifecycleChartInstance.destroy();
+            
+            let type = data.chartType;
+            let chartConfig = {
+                type: type === 'funnel' ? 'bar' : type,
+                data: {
+                    labels: data.chartData.labels,
+                    datasets: [{
+                        data: data.chartData.data,
+                        backgroundColor: type === 'line' ? 'rgba(217, 119, 6, 0.2)' : ['#1e293b', '#d97706', '#fbbf24', '#94a3b8'],
+                        borderColor: '#d97706',
+                        fill: true
+                    }]
+                },
+                options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
+            };
+            if(type === 'funnel') chartConfig.options.indexAxis = 'y';
+            lifecycleChartInstance = new Chart(ctx, chartConfig);
+        }
+
+        function initMechanics() {
+            const ctxJ = document.getElementById('jCurveChart').getContext('2d');
+            jCurveChartInstance = new Chart(ctxJ, {
+                type: 'line',
+                data: {
+                    labels: ['Year 0', 'Year 1', 'Year 2', 'Year 3', 'Year 4', 'Year 5'],
+                    datasets: [{
+                        label: 'Cash Flow',
+                        data: [-100, -20, 10, 50, 100, 220],
+                        borderColor: '#d97706',
+                        segment: { borderColor: ctx => ctx.p0.parsed.y < 0 ? '#ef4444' : '#22c55e' },
+                        tension: 0.3
+                    }]
+                },
+                options: { maintainAspectRatio: false }
+            });
+            updateLeverage();
+        }
+
+        function updateLeverage() {
+            const lev = parseInt(document.getElementById('leverage-input').value);
+            document.getElementById('leverage-display').innerText = `${lev}%`;
+            const ctxL = document.getElementById('leverageChart').getContext('2d');
+            if(leverageChartInstance) leverageChartInstance.destroy();
+
+            const equity = 100 - lev;
+            const exit = 200 - lev; // Simplified exit calc
+            const moic = (exit / equity).toFixed(2);
+
+            leverageChartInstance = new Chart(ctxL, {
+                type: 'bar',
+                data: {
+                    labels: ['Entry', 'Exit'],
+                    datasets: [
+                        { label: 'Debt', data: [lev, lev], backgroundColor: '#94a3b8' },
+                        { label: 'Equity', data: [equity, exit], backgroundColor: '#d97706' }
+                    ]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { x: { stacked: true }, y: { stacked: true } },
+                    plugins: { title: { display: true, text: `Implied MOIC: ${moic}x` } }
+                }
+            });
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>

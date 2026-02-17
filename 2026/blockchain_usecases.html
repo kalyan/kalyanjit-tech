@@ -41,7 +41,7 @@
             position: relative;
             width: 100%;
             max-width: 100%;
-            height: 300px; /* Default height */
+            height: 300px; 
             max-height: 400px;
         }
         
@@ -51,7 +51,6 @@
             }
         }
 
-        /* Card Hover Effects */
         .industry-card {
             transition: all 0.3s ease;
         }
@@ -72,49 +71,32 @@
             background-color: #CBD5E1;
         }
 
-        /* Modal Transitions */
-        .modal-enter {
-            opacity: 0;
-            transform: scale(0.95);
-        }
-        .modal-enter-active {
-            opacity: 1;
-            transform: scale(1);
-            transition: opacity 300ms, transform 300ms;
-        }
-        .modal-exit {
-            opacity: 1;
-            transform: scale(1);
-        }
-        .modal-exit-active {
-            opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 200ms, transform 200ms;
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
         }
     </style>
 
     <!-- 
-    Placeholder Comments Required by Prompt:
-    
-    <!-- Chosen Palette: Warm Professional Neutral. Background: #FDFBF7 (Off-white/Sand). Primary Text: #1F2937 (Dark Slate). Accents: #0F766E (Teal/Sustainability), #B45309 (Ochre/Finance), #4F46E5 (Indigo/Tech). -->
+    <!-- Chosen Palette: Warm Professional Neutral with authoritative accents. -->
     
     <!-- Application Structure Plan: 
-         1. Hero Section: Sets the context of the "Triad" (Blockchain, Crypto, Tokenization).
-         2. Macro Analytics Dashboard: High-level stats visualising the global impact (Market Size, Efficiency, Adoption).
-         3. Industry Explorer (The Core): A filterable grid of 20 cards. This structure was chosen to handle the large volume of "list" data (20 items) without overwhelming the user.
-         4. Detail Modal: Clicking a card opens a detailed view with specific "Use Cases," "Benefits," and "Challenges," preventing information overload on the main page.
-         5. Focus Sections: Dedicated functional areas for "Finance" and "Climate" as requested, isolating high-priority data points.
+         1. Hero Section: Direct high-impact messaging.
+         2. Macro Analytics: Data-driven proof points.
+         3. Industry Explorer: Categorized 20-industry grid for easy navigation.
+         4. Use-Case Modals: Drill-down mechanism for content density.
+         5. Focus Areas: Finance and Climate specific logic blocks.
+         6. Author Attribution: Footer-integrated professional profile for Kalyanjit Hatibaruah.
     -->
     
     <!-- Visualization & Content Choices:
-         1. Adoption Bar Chart (Chart.js): Comparison of adoption maturity across sectors. Goal: Compare. 
-         2. Tokenization Potential Doughnut (Chart.js): Visualizing the share of Real World Assets (RWA). Goal: Inform.
-         3. Interactive Grid: Main navigation method. Goal: Organize.
-         4. Modal Views: Text-heavy details (Use Cases) hidden until requested. Goal: Inform/Deep Dive.
-         5. Benefit Metrics: Progress bars in modals. Goal: Quantify impact.
+         - Doughnut (Chart.js): Market share distribution.
+         - Bar (Chart.js): Adoption maturity comparison.
+         - Line (Chart.js): Efficiency comparison (TradFi vs DeFi).
+         - Interactive Grid: Primary content organizational method.
     -->
     
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. Icons are Unicode characters. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     -->
 
 </head>
@@ -129,14 +111,12 @@
                     <span class="font-bold text-xl tracking-tight text-gray-900">ChainImpact Report</span>
                 </div>
                 <div class="hidden md:flex items-center space-x-8">
-                    <button onclick="scrollToSection('dashboard')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Dashboard</button>
-                    <button onclick="scrollToSection('industry-grid')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Industries</button>
-                    <button onclick="scrollToSection('focus-finance')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Finance</button>
-                    <button onclick="scrollToSection('focus-climate')" class="text-gray-600 hover:text-indigo-600 font-medium transition">Climate</button>
-                </div>
-                <!-- Mobile Menu Button (simplified for SPA) -->
-                <div class="flex md:hidden items-center">
-                    <button class="text-gray-600 hover:text-gray-900">☰</button>
+                    <button onclick="scrollToSection('dashboard')" class="text-gray-600 hover:text-indigo-600 font-medium transition text-sm">Dashboard</button>
+                    <button onclick="scrollToSection('industry-grid')" class="text-gray-600 hover:text-indigo-600 font-medium transition text-sm">Industries</button>
+                    <button onclick="scrollToSection('focus-finance')" class="text-gray-600 hover:text-indigo-600 font-medium transition text-sm">Finance</button>
+                    <button onclick="scrollToSection('focus-climate')" class="text-gray-600 hover:text-indigo-600 font-medium transition text-sm">Climate</button>
+                    <div class="h-6 w-px bg-gray-200"></div>
+                    <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="text-indigo-600 font-semibold text-sm hover:text-indigo-800 transition">Author Profile</a>
                 </div>
             </div>
         </div>
@@ -145,19 +125,23 @@
     <!-- Hero Section -->
     <header class="bg-[#FDFBF7] pt-12 pb-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">
+            <div class="inline-block px-4 py-1.5 mb-6 text-xs font-bold tracking-widest text-indigo-700 uppercase bg-indigo-50 rounded-full">
+                Industry Insights 2024
+            </div>
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">
                 The Tokenization of Everything
             </h1>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-                Exploring how <span class="text-indigo-600 font-semibold">Blockchain</span>, <span class="text-indigo-600 font-semibold">Crypto</span>, and <span class="text-indigo-600 font-semibold">Tokenization</span> are reshaping the global economy. A deep dive into the top 20 industries driving the decentralized revolution.
+                A comprehensive analysis of how <span class="text-indigo-600 font-semibold">Blockchain</span> and <span class="text-indigo-600 font-semibold">Tokenization</span> are reshaping the global economy across 20 key sectors.
             </p>
-            <div class="flex justify-center gap-4">
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
                 <button onclick="scrollToSection('industry-grid')" class="bg-indigo-600 text-white px-8 py-3 rounded-full font-semibold hover:bg-indigo-700 transition shadow-lg">
-                    Explore 20 Industries
+                    Explore Industries
                 </button>
-                <button onclick="scrollToSection('dashboard')" class="bg-white text-indigo-600 border border-indigo-200 px-8 py-3 rounded-full font-semibold hover:bg-gray-50 transition shadow-sm">
-                    View Data Analytics
-                </button>
+                <div class="flex items-center justify-center bg-white border border-gray-200 px-6 py-3 rounded-full shadow-sm">
+                    <span class="text-sm text-gray-500 mr-2">By</span>
+                    <span class="text-sm font-bold text-gray-900">Kalyanjit Hatibaruah</span>
+                </div>
             </div>
         </div>
     </header>
@@ -168,65 +152,59 @@
             <div class="mb-10 text-center md:text-left">
                 <h2 class="text-3xl font-bold text-gray-900 mb-4">Macro Market Impact</h2>
                 <p class="text-gray-600 max-w-2xl">
-                    This dashboard synthesizes high-level data from the report, highlighting the projected growth of asset tokenization and the maturity levels of blockchain adoption across different sectors.
+                    Aggregated data highlighting the transition from traditional asset classes to programmable, tokenized equivalents.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                <!-- Chart 1: Tokenization Market Potential -->
-                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                     <div class="flex justify-between items-center mb-6">
                         <h3 class="text-lg font-bold text-gray-800">Projected Asset Tokenization (2030)</h3>
-                        <span class="text-sm bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full font-medium">Est. $16 Trillion</span>
+                        <span class="text-sm bg-indigo-100 text-indigo-800 py-1 px-3 rounded-full font-medium">10% of Global GDP</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="tokenizationChart"></canvas>
                     </div>
-                    <p class="mt-4 text-sm text-gray-500 italic text-center">Source: Aggregated Industry Forecasts (Real Estate & Finance Dominance)</p>
                 </div>
 
-                <!-- Chart 2: Adoption Maturity Index -->
-                <div class="bg-gray-50 p-6 rounded-2xl shadow-sm border border-gray-100">
+                <div class="bg-gray-50 p-6 rounded-2xl border border-gray-100">
                     <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-lg font-bold text-gray-800">Industry Adoption Maturity Index</h3>
+                        <h3 class="text-lg font-bold text-gray-800">Industry Adoption Maturity</h3>
                         <span class="text-sm text-gray-500">Score 0-100</span>
                     </div>
                     <div class="chart-container">
                         <canvas id="adoptionChart"></canvas>
                     </div>
-                    <p class="mt-4 text-sm text-gray-500 italic text-center">Note: Finance leads in maturity, while Healthcare and Govt are emerging.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Section 2: Industry Explorer (The Core) -->
+    <!-- Section 2: Industry Explorer -->
     <section id="industry-grid" class="py-16 bg-[#FDFBF7]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-3xl font-bold text-gray-900 mb-4">The Top 20 Industries</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto mb-8">
-                    Select a category to filter the grid. Click on any industry card to reveal specific use cases, tokenization utility, and key benefits.
+                    Discover specific use cases and the functional benefits of decentralization across the economic landscape.
                 </p>
                 
-                <!-- Filters -->
                 <div class="flex flex-wrap justify-center gap-3" id="filter-container">
-                    <button class="filter-btn active-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="all">All Industries</button>
-                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Finance & Value">Finance & Value</button>
-                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Social & Public">Social & Public</button>
-                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Industrial & Supply">Industrial & Supply</button>
-                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Digital & Media">Digital & Media</button>
+                    <button class="filter-btn active-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="all">All</button>
+                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Finance & Value">Finance</button>
+                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Social & Public">Social</button>
+                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Industrial & Supply">Industrial</button>
+                    <button class="filter-btn inactive-filter px-5 py-2 rounded-full text-sm font-semibold transition" data-filter="Digital & Media">Digital</button>
                 </div>
             </div>
 
-            <!-- Grid Container -->
             <div id="industries-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Cards will be injected here via JS -->
+                <!-- Cards Injected via JS -->
             </div>
         </div>
     </section>
 
-    <!-- Section 3: Deep Dive - Finance -->
+    <!-- Section 3: Finance Deep Dive -->
     <section id="focus-finance" class="py-16 bg-white border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
@@ -235,38 +213,18 @@
                         <span class="mr-3 text-4xl">🏦</span> Finance & DeFi
                     </h2>
                     <p class="text-gray-700 text-lg mb-6 leading-relaxed">
-                        The financial sector is the "Year Zero" of blockchain adoption. From <strong>DeFi</strong> protocols offering automated lending to the massive wave of <strong>Real World Asset (RWA)</strong> tokenization, finance is moving from centralized ledgers to distributed truth.
+                        Financial services represent the most mature sector for tokenization. From stablecoins facilitating global payments to programmable bonds, blockchain is removing friction from capital markets.
                     </p>
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            <span class="text-gray-700"><strong>Settlement:</strong> Reducing T+2 settlement times to T+0 (Instant).</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            <span class="text-gray-700"><strong>Liquidity:</strong> Fractionalizing high-value assets (Real Estate, Bonds).</span>
-                        </li>
-                        <li class="flex items-start">
-                            <span class="text-green-500 mr-2">✓</span>
-                            <span class="text-gray-700"><strong>Inclusion:</strong> Banking the unbanked via permissionless protocols.</span>
-                        </li>
-                    </ul>
-                    <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
-                        <h4 class="font-bold text-amber-900 mb-1">Key Trend: CBDCs</h4>
-                        <p class="text-sm text-amber-800">Over 90% of central banks are exploring Central Bank Digital Currencies to modernize national payment stacks.</p>
+                    <div class="p-4 bg-amber-50 rounded-xl border border-amber-100">
+                        <h4 class="font-bold text-amber-900 mb-2">Key Data Point</h4>
+                        <p class="text-sm text-amber-800 italic">"Tokenizing financial assets could save the industry $20 billion annually in clearing and settlement costs."</p>
                     </div>
                 </div>
-                
                 <div class="md:col-span-7">
-                    <!-- Finance Use Case Table -->
-                    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-                        <div class="bg-gray-50 px-6 py-4 border-b border-gray-100">
-                            <h3 class="font-bold text-gray-800">DeFi vs. TradFi: Efficiency Gains</h3>
-                        </div>
-                        <div class="p-6">
-                            <div class="chart-container" style="height: 300px;">
-                                <canvas id="financeComparisonChart"></canvas>
-                            </div>
+                    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                        <h3 class="font-bold text-gray-800 mb-4">Efficiency Gains: DeFi vs TradFi</h3>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="financeComparisonChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -274,521 +232,266 @@
         </div>
     </section>
 
-    <!-- Section 4: Deep Dive - Climate -->
+    <!-- Section 4: Climate Deep Dive -->
     <section id="focus-climate" class="py-16 bg-[#ECFDF5] border-t border-gray-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
                 <div class="md:col-span-7 order-2 md:order-1">
-                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- Regenerative Finance Card -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
-                            <div class="text-3xl mb-3">🌳</div>
-                            <h4 class="font-bold text-gray-900 mb-2">ReFi (Regenerative Finance)</h4>
-                            <p class="text-sm text-gray-600">Using tokenomics to incentivize ecosystem restoration rather than extraction.</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-green-100">
+                            <h4 class="font-bold text-gray-900 mb-1">Carbon Credits</h4>
+                            <p class="text-xs text-gray-500">Immutable tracking prevents double-counting.</p>
                         </div>
-                        <!-- Carbon Credits Card -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
-                            <div class="text-3xl mb-3">🏭</div>
-                            <h4 class="font-bold text-gray-900 mb-2">Transparent Carbon Markets</h4>
-                            <p class="text-sm text-gray-600">Tokenizing carbon credits prevents "double spending" and ensures retirement verification.</p>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-green-100">
+                            <h4 class="font-bold text-gray-900 mb-1">Grid Balancing</h4>
+                            <p class="text-xs text-gray-500">Decentralized P2P energy sharing.</p>
                         </div>
-                        <!-- Supply Chain Card -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
-                            <div class="text-3xl mb-3">♻️</div>
-                            <h4 class="font-bold text-gray-900 mb-2">Circular Economy</h4>
-                            <p class="text-sm text-gray-600">Product passports track lifecycle, encouraging recycling and material recovery.</p>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-green-100">
+                            <h4 class="font-bold text-gray-900 mb-1">Impact Tracking</h4>
+                            <p class="text-xs text-gray-500">Real-time ESG verification.</p>
                         </div>
-                        <!-- Energy Card -->
-                        <div class="bg-white p-6 rounded-xl shadow-sm border border-green-100">
-                            <div class="text-3xl mb-3">⚡</div>
-                            <h4 class="font-bold text-gray-900 mb-2">P2P Energy Trading</h4>
-                            <p class="text-sm text-gray-600">Households with solar can sell excess energy directly to neighbors via smart contracts.</p>
+                        <div class="bg-white p-5 rounded-xl shadow-sm border border-green-100">
+                            <h4 class="font-bold text-gray-900 mb-1">Circular Tech</h4>
+                            <p class="text-xs text-gray-500">Lifecycle provenance for recycling.</p>
                         </div>
-                     </div>
+                    </div>
                 </div>
-
                 <div class="md:col-span-5 order-1 md:order-2">
                     <h2 class="text-3xl font-bold text-gray-900 mb-6 flex items-center">
                         <span class="mr-3 text-4xl">🌍</span> Climate & ReFi
                     </h2>
                     <p class="text-gray-700 text-lg mb-6 leading-relaxed">
-                        Blockchain is often criticized for energy usage, but the <strong>ReFi (Regenerative Finance)</strong> movement is flipping the script. By creating transparent, immutable records for environmental impact, blockchain solves the "trust gap" in carbon markets and sustainability claims.
+                        Regenerative Finance (ReFi) leverages tokenomics to incentivize planetary health. It solves the transparency issues that have historically plagued voluntary carbon markets.
                     </p>
-                    <div class="space-y-4">
-                        <div class="bg-white bg-opacity-60 p-4 rounded-lg">
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Carbon Credit Transparency</span>
-                                <span class="text-sm font-medium text-green-700">95% Improvement</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div class="bg-green-600 h-2.5 rounded-full" style="width: 95%"></div>
-                            </div>
-                        </div>
-                        <div class="bg-white bg-opacity-60 p-4 rounded-lg">
-                            <div class="flex justify-between mb-1">
-                                <span class="text-sm font-medium text-gray-700">Verification Speed</span>
-                                <span class="text-sm font-medium text-green-700">80% Faster</span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2.5">
-                                <div class="bg-green-600 h-2.5 rounded-full" style="width: 80%"></div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="bg-gray-900 text-white py-12">
-        <div class="max-w-7xl mx-auto px-4 text-center">
-            <h3 class="text-2xl font-bold mb-4">ChainImpact Report</h3>
-            <p class="text-gray-400 max-w-lg mx-auto mb-8">
-                Synthesizing the potential of decentralized technologies across the global economy. 
-                Data simulated for demonstration purposes.
-            </p>
-            <div class="text-sm text-gray-600">
-                &copy; 2023 ChainImpact Analysis. All rights reserved.
+    <!-- Footer & Author Section -->
+    <footer class="bg-[#0F172A] text-white pt-16 pb-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-12 border-b border-gray-800 pb-12">
+                <!-- Branding -->
+                <div>
+                    <h3 class="text-2xl font-bold mb-4">ChainImpact Analysis</h3>
+                    <p class="text-gray-400 max-w-sm leading-relaxed mb-6">
+                        Driving clarity into the decentralized economy through data-driven research and strategic analysis.
+                    </p>
+                    <div class="flex space-x-4">
+                        <div class="flex items-center text-sm text-gray-400">
+                            <span class="mr-2">📅</span> Updated Oct 2024
+                        </div>
+                        <div class="flex items-center text-sm text-gray-400">
+                            <span class="mr-2">📈</span> Real-world Data
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Author Card -->
+                <div class="bg-gray-800 bg-opacity-50 p-6 rounded-2xl border border-gray-700">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="h-14 w-14 bg-indigo-600 rounded-full flex items-center justify-center text-2xl font-bold text-white shadow-inner">
+                            KH
+                        </div>
+                        <div>
+                            <h4 class="text-xl font-bold">Kalyanjit Hatibaruah</h4>
+                            <p class="text-indigo-400 text-sm font-medium">Author & Industry Expert</p>
+                        </div>
+                    </div>
+                    <div class="space-y-3">
+                        <a href="https://wa.me/919864011106" target="_blank" class="flex items-center p-3 bg-gray-900 rounded-xl hover:bg-black transition border border-gray-800">
+                            <span class="mr-3 text-xl">📱</span>
+                            <div>
+                                <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">Whatsapp</div>
+                                <div class="text-sm font-semibold">91-9864011106</div>
+                            </div>
+                        </a>
+                        <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="flex items-center p-3 bg-gray-900 rounded-xl hover:bg-black transition border border-gray-800">
+                            <span class="mr-3 text-xl">🔗</span>
+                            <div>
+                                <div class="text-[10px] text-gray-500 uppercase tracking-widest font-bold">LinkedIn</div>
+                                <div class="text-sm font-semibold">in/kalyanjit</div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center text-gray-500 text-xs">
+                &copy; 2024 ChainImpact Report. Prepared for Research & Strategic Analysis.
             </div>
         </div>
     </footer>
 
-    <!-- MODAL (Hidden by default) -->
-    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden transition-opacity duration-300">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl mx-4 relative flex flex-col max-h-[90vh]">
-            <!-- Modal Header -->
-            <div class="p-6 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-2xl">
+    <!-- MODAL -->
+    <div id="detail-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 hidden">
+        <div class="bg-white rounded-2xl w-full max-w-xl mx-4 overflow-hidden shadow-2xl">
+            <div class="p-6 border-b flex justify-between items-center bg-gray-50">
                 <div class="flex items-center gap-3">
                     <span id="modal-icon" class="text-3xl"></span>
-                    <div>
-                        <h3 id="modal-title" class="text-2xl font-bold text-gray-900"></h3>
-                        <span id="modal-category" class="text-xs font-bold uppercase tracking-wide text-indigo-600 bg-indigo-50 px-2 py-1 rounded"></span>
-                    </div>
+                    <h3 id="modal-title" class="text-xl font-bold text-gray-900"></h3>
                 </div>
-                <button id="close-modal" class="text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+                <button id="close-modal" class="text-2xl text-gray-400 hover:text-gray-800 transition">&times;</button>
             </div>
-            
-            <!-- Modal Content (Scrollable) -->
-            <div class="p-6 overflow-y-auto">
-                <p id="modal-desc" class="text-gray-600 mb-6 text-lg leading-relaxed"></p>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div class="bg-blue-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-blue-900 mb-2">Key Use Cases</h4>
-                        <ul id="modal-usecases" class="list-disc pl-5 text-sm text-blue-800 space-y-1"></ul>
+            <div class="p-6">
+                <p id="modal-desc" class="text-gray-600 mb-6 leading-relaxed"></p>
+                <div class="bg-indigo-50 p-4 rounded-xl mb-6">
+                    <h4 class="text-indigo-900 font-bold text-sm mb-2 uppercase tracking-wide">Key Use Cases</h4>
+                    <ul id="modal-usecases" class="grid grid-cols-1 gap-1 text-sm text-indigo-800 list-disc pl-5"></ul>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-bold text-gray-500 uppercase">
+                        <span>Efficiency Impact</span>
+                        <span id="modal-impact-label"></span>
                     </div>
-                    <div class="bg-amber-50 p-4 rounded-lg">
-                        <h4 class="font-bold text-amber-900 mb-2">Tokenization Utility</h4>
-                        <p id="modal-token" class="text-sm text-amber-800"></p>
+                    <div class="w-full bg-gray-100 rounded-full h-3">
+                        <div id="modal-impact-bar" class="h-3 rounded-full bg-indigo-600 transition-all duration-700" style="width: 0%"></div>
                     </div>
                 </div>
-
-                <div>
-                    <h4 class="font-bold text-gray-900 mb-2">Efficiency Impact</h4>
-                    <div class="flex items-center gap-4">
-                        <div class="w-full bg-gray-200 rounded-full h-4">
-                            <div id="modal-impact-bar" class="bg-indigo-600 h-4 rounded-full transition-all duration-1000" style="width: 0%"></div>
-                        </div>
-                        <span id="modal-impact-val" class="text-sm font-bold text-indigo-700"></span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Modal Footer -->
-            <div class="p-4 border-t border-gray-100 text-center">
-                <button id="close-modal-btn" class="text-sm text-gray-500 hover:text-gray-800 underline">Close Details</button>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript -->
     <script>
-        // --- DATA STORE ---
-        // This acts as our "Database" for the report.
-        
         const industries = [
-            {
-                id: 1, name: "Finance & DeFi", icon: "🏦", category: "Finance & Value",
-                desc: "The backbone of the blockchain revolution. Includes payments, lending, and asset management.",
-                useCases: ["Cross-border Payments", "Automated Market Makers", "Stablecoins", "Smart Contracts"],
-                tokenization: "Tokenization of securities, bonds, and fiat currency (CBDCs).",
-                impactScore: 95
-            },
-            {
-                id: 2, name: "Climate & ReFi", icon: "🌳", category: "Social & Public",
-                desc: "Using blockchain to verify environmental impact and create transparent carbon markets.",
-                useCases: ["Carbon Credit Tracking", "Regenerative Agriculture", "Parametric Climate Insurance"],
-                tokenization: "Tokenized carbon offsets and ecological assets.",
-                impactScore: 88
-            },
-            {
-                id: 3, name: "Real Estate", icon: "🏙️", category: "Finance & Value",
-                desc: "Fractional ownership of property, lowering barriers to entry and increasing liquidity.",
-                useCases: ["Fractional Ownership", "Automated Lease Contracts", "Title Management"],
-                tokenization: "Tokenizing property deeds and rental income streams.",
-                impactScore: 90
-            },
-            {
-                id: 4, name: "Supply Chain", icon: "🚚", category: "Industrial & Supply",
-                desc: "End-to-end traceability of goods, preventing fraud and ensuring ethical sourcing.",
-                useCases: ["Provenance Tracking", "Inventory Management", "Counterfeit Prevention"],
-                tokenization: "Digital twins of physical goods.",
-                impactScore: 85
-            },
-            {
-                id: 5, name: "Healthcare", icon: "🏥", category: "Social & Public",
-                desc: "Securing patient data and ensuring the integrity of the pharmaceutical supply chain.",
-                useCases: ["Electronic Health Records (EHR)", "Drug Traceability", "Clinical Trials Data"],
-                tokenization: "Tokenized patient data consent (Monetizing own data).",
-                impactScore: 75
-            },
-            {
-                id: 6, name: "Energy", icon: "⚡", category: "Industrial & Supply",
-                desc: "Decentralizing energy grids and enabling peer-to-peer energy trading.",
-                useCases: ["P2P Energy Trading", "Grid Balancing", "Renewable Energy Certificates"],
-                tokenization: "Tokenizing kilowatt-hours and renewable energy credits.",
-                impactScore: 82
-            },
-            {
-                id: 7, name: "Government", icon: "🏛️", category: "Social & Public",
-                desc: "Enhancing trust in public services through immutable records and transparent voting.",
-                useCases: ["Voting Systems", "Land Registry", "Public Tender Tracking"],
-                tokenization: "GovTokens for civic engagement.",
-                impactScore: 70
-            },
-            {
-                id: 8, name: "Identity (SSI)", icon: "🆔", category: "Social & Public",
-                desc: "Self-Sovereign Identity allows users to control their own digital credentials.",
-                useCases: ["Digital Passports", "KYC Compliance", "Academic Credentials"],
-                tokenization: "Soulbound Tokens (Non-transferable identity tokens).",
-                impactScore: 92
-            },
-            {
-                id: 9, name: "Insurance", icon: "🛡️", category: "Finance & Value",
-                desc: "Automating claims processing and reducing fraud via smart contracts.",
-                useCases: ["Parametric Insurance", "Automated Claims", "Reinsurance"],
-                tokenization: "Tokenized insurance policies and risk pools.",
-                impactScore: 80
-            },
-            {
-                id: 10, name: "Art & Media", icon: "🎨", category: "Digital & Media",
-                desc: "Revolutionizing ownership and royalties for creators via NFTs.",
-                useCases: ["Digital Art (NFTs)", "Royalty Automation", "IP Protection"],
-                tokenization: "Non-Fungible Tokens representing art and music.",
-                impactScore: 88
-            },
-            {
-                id: 11, name: "Gaming", icon: "🎮", category: "Digital & Media",
-                desc: "Enabling true ownership of in-game assets and interoperability between games.",
-                useCases: ["Play-to-Earn", "In-game Asset Ownership", "Metaverse Land"],
-                tokenization: "Tokenized skins, weapons, and avatars.",
-                impactScore: 85
-            },
-            {
-                id: 12, name: "Legal", icon: "⚖️", category: "Social & Public",
-                desc: "Automating legal agreements and managing intellectual property rights.",
-                useCases: ["Smart Legal Contracts", "IP Management", "Notary Services"],
-                tokenization: "Tokenized legal agreements and IP rights.",
-                impactScore: 65
-            },
-            {
-                id: 13, name: "Education", icon: "🎓", category: "Social & Public",
-                desc: "Verifying credentials and preventing diploma fraud.",
-                useCases: ["Digital Diplomas", "Skill Badges", "Academic Transcripts"],
-                tokenization: "Tokenized degrees and micro-credentials.",
-                impactScore: 60
-            },
-            {
-                id: 14, name: "Agriculture", icon: "🌾", category: "Industrial & Supply",
-                desc: "Ensuring fair trade and food safety through transparent tracking.",
-                useCases: ["Crop Insurance", "Fair Trade Verification", "Food Safety Tracking"],
-                tokenization: "Tokenized crops and livestock.",
-                impactScore: 72
-            },
-            {
-                id: 15, name: "Travel", icon: "✈️", category: "Digital & Media",
-                desc: "Simplifying ticketing and loyalty programs.",
-                useCases: ["Loyalty Programs", "Smart Ticketing", "Baggage Tracking"],
-                tokenization: "NFT Tickets and tokenized miles.",
-                impactScore: 68
-            },
-            {
-                id: 16, name: "Retail", icon: "🛍️", category: "Industrial & Supply",
-                desc: "Enhancing loyalty programs and combating counterfeiting.",
-                useCases: ["Loyalty Rewards", "Anti-counterfeiting", "Supply Transparency"],
-                tokenization: "Tokenized reward points and coupons.",
-                impactScore: 75
-            },
-            {
-                id: 17, name: "Manufacturing", icon: "🏭", category: "Industrial & Supply",
-                desc: "Integrating IoT with blockchain for machine-to-machine economy.",
-                useCases: ["Machine Maintenance Logs", "IoT Payments", "Quality Assurance"],
-                tokenization: "Tokenized machine output and capacity.",
-                impactScore: 78
-            },
-            {
-                id: 18, name: "Non-Profit", icon: "🤲", category: "Social & Public",
-                desc: "Ensuring donation transparency and efficient fund allocation.",
-                useCases: ["Donation Tracking", "Direct Aid Distribution", "Impact Reporting"],
-                tokenization: "Charity tokens and transparent wallets.",
-                impactScore: 85
-            },
-            {
-                id: 19, name: "Sports", icon: "⚽", category: "Digital & Media",
-                desc: "Engaging fans and monetizing memorabilia.",
-                useCases: ["Fan Tokens", "Ticket Scalping Prevention", "Memorabilia Auth"],
-                tokenization: "Fan engagement tokens and collectible moments.",
-                impactScore: 80
-            },
-            {
-                id: 20, name: "Automotive", icon: "🚗", category: "Industrial & Supply",
-                desc: "Tracking vehicle history and authenticating spare parts.",
-                useCases: ["Vehicle History Logs", "Parts Authentication", "Autonomous Payments"],
-                tokenization: "Tokenized car ownership and data.",
-                impactScore: 74
-            }
+            { id: 1, name: "Financial Services", icon: "🏦", category: "Finance & Value", desc: "Global payments, automated lending via DeFi, and settlement efficiency.", useCases: ["Cross-border payments", "Tokenized Bonds", "Stablecoins", "DeFi Lending"], impact: 95 },
+            { id: 2, name: "Climate (ReFi)", icon: "🌳", category: "Social & Public", desc: "Transparent carbon markets and regenerative finance models.", useCases: ["Carbon Credit Tracking", "Verified Sustainability Reports", "P2P Solar Energy"], impact: 88 },
+            { id: 3, name: "Real Estate", icon: "🏙️", category: "Finance & Value", desc: "Fractional ownership and liquid markets for commercial/residential assets.", useCases: ["REIT Tokenization", "Land Title Registry", "Smart Leasing"], impact: 92 },
+            { id: 4, name: "Supply Chain", icon: "🚚", category: "Industrial & Supply", desc: "Immutable provenance and traceability of high-value goods.", useCases: ["Provenance Tracking", "Inventory Management", "Logistics Automation"], impact: 85 },
+            { id: 5, name: "Healthcare", icon: "🏥", category: "Social & Public", desc: "Securing patient data and clinical trial integrity.", useCases: ["Electronic Health Records", "Pharma Supply Chain", "Research Privacy"], impact: 74 },
+            { id: 6, name: "Energy Grid", icon: "⚡", category: "Industrial & Supply", desc: "Managing microgrids and decentralized energy trading.", useCases: ["P2P Energy Trading", "Grid Balancing", "REC Tokenization"], impact: 82 },
+            { id: 7, name: "Public Sector", icon: "🏛️", category: "Social & Public", desc: "Decentralized voting and digital identity (SSI).", useCases: ["Voting Systems", "Public Grant Tracking", "Birth/Death Registry"], impact: 70 },
+            { id: 8, name: "Digital Identity", icon: "🆔", category: "Social & Public", desc: "Self-sovereign identity (SSI) for personal credential control.", useCases: ["KYC/AML Automation", "Passport Verification", "Age Verification"], impact: 90 },
+            { id: 9, name: "Insurance", icon: "🛡️", category: "Finance & Value", desc: "Parametric insurance and automated claims processing.", useCases: ["Flight Delay Insurance", "Crop Yield Insurance", "Reinsurance Pools"], impact: 80 },
+            { id: 10, name: "Entertainment", icon: "🎨", category: "Digital & Media", desc: "Direct monetization for creators via NFTs and royalty automation.", useCases: ["Art Ownership", "Music Royalties", "Content Distribution"], impact: 88 },
+            { id: 11, name: "Gaming", icon: "🎮", category: "Digital & Media", desc: "In-game asset ownership and player-owned economies.", useCases: ["Skin Marketplaces", "Asset Portability", "DAO Game Governance"], impact: 85 },
+            { id: 12, name: "Legal Tech", icon: "⚖️", category: "Social & Public", desc: "Smart legal contracts and automated compliance.", useCases: ["Smart Contracts", "IP Rights Management", "Chain of Custody"], impact: 65 },
+            { id: 13, name: "Education", icon: "🎓", category: "Social & Public", desc: "Verifying credentials and academic histories.", useCases: ["Digital Degrees", "Transcript Verification", "Skills Badges"], impact: 60 },
+            { id: 14, name: "Agriculture", icon: "🌾", category: "Industrial & Supply", desc: "Farm-to-table traceability and fair trade verification.", useCases: ["Crop Provenance", "Fair-Trade Tokens", "Soil Health Records"], impact: 72 },
+            { id: 15, name: "Travel & Hospitality", icon: "✈️", category: "Digital & Media", desc: "Tokenized loyalty programs and ticketing systems.", useCases: ["NFT Boarding Passes", "Interoperable Loyalty", "Hotel Inventory"], impact: 68 },
+            { id: 16, name: "Retail / Luxury", icon: "🛍️", category: "Industrial & Supply", desc: "Combating counterfeits for high-end fashion and collectibles.", useCases: ["Digital Passports", "Loyalty Rewards", "Anti-Counterfeit Logs"], impact: 78 },
+            { id: 17, name: "Manufacturing", icon: "🏭", category: "Industrial & Supply", desc: "Tracking industrial parts and machine identities (M2M).", useCases: ["Part Lifecycle Log", "IoT Auth", "Vendor Compliance"], impact: 75 },
+            { id: 18, name: "Philanthropy", icon: "🤲", category: "Social & Public", desc: "Real-time tracking of charitable donations to the end user.", useCases: ["Donation Transparency", "Direct Cash Transfers", "Impact Auditing"], impact: 84 },
+            { id: 19, name: "Sports", icon: "⚽", category: "Digital & Media", desc: "Fan engagement and memorabilia authentication.", useCases: ["Fan Tokens", "Collectible NFTs", "Ticketing Anti-Scalp"], impact: 80 },
+            { id: 20, name: "Telecom", icon: "📱", category: "Digital & Media", desc: "Managing roaming settlements and eSIM distribution.", useCases: ["Settlement Automation", "eSIM Portability", "Service Tokenization"], impact: 72 }
         ];
 
-        // --- APP STATE ---
-        let currentFilter = 'all';
-
-        // --- DOM ELEMENTS ---
-        const gridContainer = document.getElementById('industries-grid');
-        const filterButtons = document.querySelectorAll('.filter-btn');
-        const modal = document.getElementById('detail-modal');
-        const closeModalBtn = document.getElementById('close-modal');
-        const closeModalBottomBtn = document.getElementById('close-modal-btn');
-
-        // --- INITIALIZATION ---
         document.addEventListener('DOMContentLoaded', () => {
             renderGrid(industries);
             initCharts();
+            setupFilters();
         });
 
-        // --- RENDER FUNCTIONS ---
         function renderGrid(data) {
-            gridContainer.innerHTML = '';
-            
-            // Initial animation delay counter
-            let delay = 0;
-
-            data.forEach(industry => {
+            const container = document.getElementById('industries-grid');
+            container.innerHTML = '';
+            data.forEach((item, index) => {
                 const card = document.createElement('div');
-                card.className = `industry-card bg-white p-6 rounded-xl shadow-sm border border-gray-100 cursor-pointer flex flex-col items-center text-center hover:border-indigo-300 h-full`;
-                // Simple fade in animation styling inline
-                card.style.animation = `fadeIn 0.5s ease-out ${delay}s forwards`;
-                card.style.opacity = '0'; // Start hidden for animation
-                
+                card.className = "industry-card bg-white p-6 rounded-2xl shadow-sm border border-gray-100 cursor-pointer flex flex-col h-full";
+                card.style.animation = `fadeIn 0.5s ease forwards ${index * 0.05}s`;
+                card.style.opacity = '0';
                 card.innerHTML = `
-                    <div class="text-4xl mb-4 p-3 bg-gray-50 rounded-full">${industry.icon}</div>
-                    <h3 class="font-bold text-lg text-gray-900 mb-2">${industry.name}</h3>
-                    <span class="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-3">${industry.category}</span>
-                    <p class="text-sm text-gray-500 line-clamp-2">${industry.desc}</p>
-                    <button class="mt-auto pt-4 text-indigo-600 font-medium text-sm hover:underline">View Details →</button>
+                    <div class="text-3xl mb-4">${item.icon}</div>
+                    <h3 class="font-bold text-gray-900 mb-1">${item.name}</h3>
+                    <p class="text-xs text-indigo-600 font-bold uppercase mb-3">${item.category}</p>
+                    <p class="text-sm text-gray-500 line-clamp-2 mb-4">${item.desc}</p>
+                    <div class="mt-auto flex items-center text-xs font-bold text-gray-400">
+                        Explore Use Cases →
+                    </div>
                 `;
-
-                // Add animation keyframes dynamically if not present
-                if (!document.getElementById('anim-style')) {
-                    const style = document.createElement('style');
-                    style.id = 'anim-style';
-                    style.innerHTML = `@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }`;
-                    document.head.appendChild(style);
-                }
-
-                card.addEventListener('click', () => openModal(industry));
-                gridContainer.appendChild(card);
-                
-                delay += 0.05; // Stagger effect
+                card.onclick = () => showModal(item);
+                container.appendChild(card);
             });
         }
 
-        // --- FILTER LOGIC ---
-        filterButtons.forEach(btn => {
-            btn.addEventListener('click', () => {
-                // UI Update
-                filterButtons.forEach(b => {
-                    b.classList.remove('active-filter');
-                    b.classList.add('inactive-filter');
-                });
-                btn.classList.remove('inactive-filter');
-                btn.classList.add('active-filter');
-
-                // Filter Logic
-                currentFilter = btn.dataset.filter;
-                if (currentFilter === 'all') {
-                    renderGrid(industries);
-                } else {
-                    const filtered = industries.filter(i => i.category.includes(currentFilter.split('&')[0].trim())); // Simple string match
-                    renderGrid(filtered);
-                }
-            });
-        });
-
-        // --- MODAL LOGIC ---
-        function openModal(item) {
+        function showModal(item) {
+            const modal = document.getElementById('detail-modal');
             document.getElementById('modal-icon').textContent = item.icon;
             document.getElementById('modal-title').textContent = item.name;
-            document.getElementById('modal-category').textContent = item.category;
             document.getElementById('modal-desc').textContent = item.desc;
-            document.getElementById('modal-token').textContent = item.tokenization;
-            document.getElementById('modal-impact-val').textContent = item.impactScore + '/100 Impact';
-            
-            const useCaseList = document.getElementById('modal-usecases');
-            useCaseList.innerHTML = '';
-            item.useCases.forEach(uc => {
-                const li = document.createElement('li');
-                li.textContent = uc;
-                useCaseList.appendChild(li);
-            });
-
-            // Show Modal
+            const ucList = document.getElementById('modal-usecases');
+            ucList.innerHTML = item.useCases.map(u => `<li>${u}</li>`).join('');
+            document.getElementById('modal-impact-label').textContent = `${item.impact}%`;
             modal.classList.remove('hidden');
-            
-            // Animate Bar after modal opens
             setTimeout(() => {
-                document.getElementById('modal-impact-bar').style.width = item.impactScore + '%';
+                document.getElementById('modal-impact-bar').style.width = `${item.impact}%`;
             }, 100);
         }
 
-        function closeModal() {
-            modal.classList.add('hidden');
-            document.getElementById('modal-impact-bar').style.width = '0%'; // Reset for animation
-        }
-
-        closeModalBtn.addEventListener('click', closeModal);
-        closeModalBottomBtn.addEventListener('click', closeModal);
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) closeModal();
-        });
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !modal.classList.contains('hidden')) closeModal();
-        });
-
-        // --- NAVIGATION LOGIC ---
-        window.scrollToSection = function(id) {
-            const el = document.getElementById(id);
-            if (el) {
-                const yOffset = -70; // Header height offset
-                const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                window.scrollTo({top: y, behavior: 'smooth'});
-            }
+        document.getElementById('close-modal').onclick = () => {
+            document.getElementById('detail-modal').classList.add('hidden');
+            document.getElementById('modal-impact-bar').style.width = '0%';
         };
 
-        // --- CHART.JS VISUALIZATIONS ---
-        function initCharts() {
-            
-            // 1. Tokenization Market Chart
-            const ctx1 = document.getElementById('tokenizationChart').getContext('2d');
-            new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Real Estate', 'Bonds/Debt', 'Private Equity', 'Commodities', 'Other Assets'],
-                    datasets: [{
-                        data: [40, 30, 15, 10, 5], // Simulated Proportions
-                        backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#6366F1', '#94A3B8'],
-                        borderWidth: 0,
-                        hoverOffset: 10
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'right', labels: { boxWidth: 12, font: {family: 'Inter'} } },
-                        tooltip: { 
-                            callbacks: {
-                                label: function(context) {
-                                    return context.label + ': ' + context.raw + '% Share';
-                                }
-                            }
-                        }
-                    },
-                    cutout: '65%'
-                }
-            });
-
-            // 2. Adoption Maturity Chart
-            const ctx2 = document.getElementById('adoptionChart').getContext('2d');
-            new Chart(ctx2, {
-                type: 'bar',
-                data: {
-                    labels: ['Finance', 'Supply Chain', 'Gaming', 'Identity', 'Health', 'Govt', 'Legal'],
-                    datasets: [{
-                        label: 'Maturity Score (0-100)',
-                        data: [95, 85, 85, 92, 75, 70, 65],
-                        backgroundColor: '#0F766E',
-                        borderRadius: 6,
-                        barPercentage: 0.6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false }
-                    },
-                    scales: {
-                        y: { beginAtZero: true, max: 100, grid: { borderDash: [2, 4] } },
-                        x: { grid: { display: false } }
-                    }
-                }
-            });
-
-            // 3. Finance Comparison Chart
-            const ctx3 = document.getElementById('financeComparisonChart').getContext('2d');
-            new Chart(ctx3, {
-                type: 'line',
-                data: {
-                    labels: ['Cost per Tx', 'Settlement Speed (Hrs)', 'Intermediaries'],
-                    datasets: [
-                        {
-                            label: 'Traditional Finance',
-                            data: [100, 48, 4], // Normalized values for visual comparison
-                            borderColor: '#9CA3AF',
-                            backgroundColor: 'rgba(156, 163, 175, 0.2)',
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'DeFi / Blockchain',
-                            data: [5, 1, 1], // Normalized values
-                            borderColor: '#F59E0B', // Gold/Ochre
-                            backgroundColor: 'rgba(245, 158, 11, 0.2)',
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: { display: false, beginAtZero: true }, // Normalized index, hide numbers
-                        x: { grid: { display: false } }
-                    },
-                    plugins: {
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    // Custom text for the normalized data
-                                    let val = context.raw;
-                                    if(context.dataset.label === 'Traditional Finance') {
-                                        if (context.label.includes('Cost')) return 'TradFi: High Fees ($1-50+)';
-                                        if (context.label.includes('Speed')) return 'TradFi: T+2 Days';
-                                        if (context.label.includes('Intermediaries')) return 'TradFi: Banks, Clearers, Brokers';
-                                    } else {
-                                        if (context.label.includes('Cost')) return 'DeFi: Low Fees (<$1)';
-                                        if (context.label.includes('Speed')) return 'DeFi: Instant / Seconds';
-                                        if (context.label.includes('Intermediaries')) return 'DeFi: Peer-to-Peer';
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+        function setupFilters() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.onclick = () => {
+                    document.querySelectorAll('.filter-btn').forEach(b => {
+                        b.classList.replace('active-filter', 'inactive-filter');
+                    });
+                    btn.classList.replace('inactive-filter', 'active-filter');
+                    const f = btn.dataset.filter;
+                    renderGrid(f === 'all' ? industries : industries.filter(i => i.category === f));
+                };
             });
         }
 
+        function scrollToSection(id) {
+            const el = document.getElementById(id);
+            const offset = 80;
+            const bodyRect = document.body.getBoundingClientRect().top;
+            const elementRect = el.getBoundingClientRect().top;
+            const elementPosition = elementRect - bodyRect;
+            const offsetPosition = elementPosition - offset;
+            window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+        }
+
+        function initCharts() {
+            const config = { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } };
+            
+            // Market Potential
+            new Chart(document.getElementById('tokenizationChart'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Finance', 'Real Estate', 'Commodities', 'Intellectual Property'],
+                    datasets: [{
+                        data: [45, 30, 15, 10],
+                        backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444'],
+                        borderWidth: 0
+                    }]
+                },
+                options: { ...config, cutout: '70%', plugins: { legend: { display: true, position: 'bottom' } } }
+            });
+
+            // Adoption
+            new Chart(document.getElementById('adoptionChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Fin', 'Supp', 'Iden', 'Real', 'Clim'],
+                    datasets: [{
+                        data: [95, 85, 90, 75, 70],
+                        backgroundColor: '#6366F1',
+                        borderRadius: 8
+                    }]
+                },
+                options: { ...config, scales: { y: { display: false } } }
+            });
+
+            // Efficiency
+            new Chart(document.getElementById('financeComparisonChart'), {
+                type: 'line',
+                data: {
+                    labels: ['Settlement', 'Fees', 'Friction'],
+                    datasets: [
+                        { label: 'TradFi', data: [90, 80, 85], borderColor: '#CBD5E1', tension: 0.3 },
+                        { label: 'DeFi', data: [5, 10, 8], borderColor: '#4F46E5', tension: 0.3 }
+                    ]
+                },
+                options: { ...config, scales: { y: { display: false } } }
+            });
+        }
     </script>
 </body>
 </html>
