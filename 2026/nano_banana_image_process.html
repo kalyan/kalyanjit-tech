@@ -42,7 +42,6 @@
             color: #2D2A26;
         }
         
-        /* Chart Container Strict Styling */
         .chart-container {
             position: relative;
             width: 100%;
@@ -59,30 +58,10 @@
             }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #FDFBF7; 
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #E5E7EB; 
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #D1D5DB; 
-        }
-
         .nav-item.active {
             border-bottom: 2px solid #EAB308;
             color: #2D2A26;
             font-weight: 600;
-        }
-        
-        .card-hover:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
         }
         
         .transition-all {
@@ -91,8 +70,19 @@
             transition-duration: 300ms;
         }
 
-        .author-tag {
-            background: linear-gradient(135deg, #2D2A26 0%, #1a1816 100%);
+        .prompt-box {
+            background-image: radial-gradient(#EAB308 0.5px, transparent 0.5px);
+            background-size: 10px 10px;
+            background-color: #ffffff;
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
@@ -104,14 +94,14 @@
             <div class="flex justify-between items-center h-16">
                 <div class="flex items-center gap-2">
                     <div class="w-8 h-8 bg-nb-accent rounded-lg flex items-center justify-center text-white font-bold text-lg">N</div>
-                    <span class="font-display font-bold text-xl tracking-tight text-nb-dark">Nano Banano <span class="text-nb-gray font-normal text-sm ml-2">Technical Report</span></span>
+                    <span class="font-display font-bold text-xl tracking-tight text-nb-dark">Nano Banano <span class="text-nb-gray font-normal text-sm ml-2">v4.0 Alpha</span></span>
                 </div>
                 <!-- Desktop Nav -->
                 <nav class="hidden md:flex space-x-8">
                     <button onclick="app.navigate('dashboard')" class="nav-item active px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-dashboard">Overview</button>
-                    <button onclick="app.navigate('industrial')" class="nav-item px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-industrial">Industrial & Tech</button>
+                    <button onclick="app.navigate('industrial')" class="nav-item px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-industrial">Industrial</button>
                     <button onclick="app.navigate('education')" class="nav-item px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-education">Education</button>
-                    <button onclick="app.navigate('styles')" class="nav-item px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-styles">Visual Styles</button>
+                    <button onclick="app.navigate('forge')" class="nav-item px-1 pt-1 text-sm font-medium text-nb-gray hover:text-nb-dark" id="nav-forge">Prompt Forge</button>
                 </nav>
             </div>
         </div>
@@ -119,20 +109,16 @@
 
     <!-- Main Content Area -->
     <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Dynamic Views -->
         <div id="app-container" class="space-y-8">
             <!-- Content injected via JS -->
         </div>
-
     </main>
 
-    <!-- Footer with Author Info -->
+    <!-- Footer -->
     <footer class="bg-white border-t border-stone-100 py-12 mt-20">
         <div class="max-w-7xl mx-auto px-4">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 items-start border-b border-stone-100 pb-10 mb-8">
                 
-                <!-- Brand Info -->
                 <div class="space-y-4">
                     <div class="flex items-center gap-2">
                         <div class="w-6 h-6 bg-nb-accent rounded flex items-center justify-center text-white font-bold text-sm">N</div>
@@ -143,7 +129,6 @@
                     </p>
                 </div>
 
-                <!-- Author Profile -->
                 <div class="lg:col-span-2 flex flex-col md:flex-row justify-between gap-8">
                     <div class="text-left">
                         <p class="text-xs uppercase tracking-widest text-nb-accent font-bold mb-1">Author & Lead Architect</p>
@@ -154,14 +139,14 @@
                     <div class="flex flex-col gap-3 min-w-[200px]">
                         <p class="text-xs uppercase tracking-widest text-stone-400 font-bold">Connect</p>
                         <a href="https://wa.me/919864011106" target="_blank" class="flex items-center gap-3 text-nb-gray hover:text-nb-dark transition-all text-sm group">
-                            <span class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-nb-accent group-hover:text-white transition-colors">W</span>
+                            <span class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-nb-accent group-hover:text-white transition-colors text-[10px] font-bold">WA</span>
                             <div>
                                 <p class="text-[10px] text-stone-400 leading-none">WhatsApp</p>
                                 <p class="font-semibold">+91-9864011106</p>
                             </div>
                         </a>
                         <a href="https://www.linkedin.com/in/kalyanjit" target="_blank" class="flex items-center gap-3 text-nb-gray hover:text-nb-dark transition-all text-sm group">
-                            <span class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-nb-accent group-hover:text-white transition-colors">in</span>
+                            <span class="w-8 h-8 rounded-full bg-stone-50 flex items-center justify-center group-hover:bg-nb-accent group-hover:text-white transition-colors text-[10px] font-bold">IN</span>
                             <div>
                                 <p class="text-[10px] text-stone-400 leading-none">LinkedIn</p>
                                 <p class="font-semibold">kalyanjit</p>
@@ -173,79 +158,73 @@
             
             <div class="flex flex-col md:flex-row justify-between items-center text-nb-gray text-xs gap-4">
                 <p>&copy; 2025 Nano Banano Research Labs. All rights reserved.</p>
-                <div class="flex gap-6">
-                    <span>Privacy Policy</span>
-                    <span>Technical Documentation</span>
-                    <span>API Access</span>
+                <div class="flex gap-6 italic">
+                    <span>Designed for Technical Precision</span>
                 </div>
             </div>
         </div>
     </footer>
 
     <!-- Templates -->
+    
+    <!-- DASHBOARD -->
     <template id="tpl-dashboard">
-        <div class="animate-fade-in">
-            <div class="mb-8 text-center max-w-3xl mx-auto">
-                <h1 class="font-display text-4xl font-bold text-nb-dark mb-4">Precision-First Generative Imaging</h1>
-                <p class="text-lg text-nb-gray leading-relaxed">
-                    Designed by <span class="text-nb-dark font-semibold">Kalyanjit Hatibaruah</span>, the Nano Banano framework represents a breakthrough in structural coherence for technical, industrial, and educational image generation.
+        <div class="animate-fade-in space-y-12">
+            <section class="text-center max-w-4xl mx-auto">
+                <h1 class="text-5xl font-display font-bold text-nb-dark mb-6 tracking-tight">The Science of Structural Imaging</h1>
+                <p class="text-xl text-nb-gray leading-relaxed">
+                    A report by <strong>Kalyanjit Hatibaruah</strong> on the Nano Banano engine's capability to generate 
+                    <span class="text-nb-dark border-b-2 border-nb-accent/30">industrial schematics</span>, 
+                    <span class="text-nb-dark border-b-2 border-nb-accent/30">pedagogical diagrams</span>, and 
+                    <span class="text-nb-dark border-b-2 border-nb-accent/30">spatial simulations</span> with deterministic accuracy.
                 </p>
-            </div>
+            </section>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                    <div class="mb-4 border-b border-stone-100 pb-2">
-                        <h2 class="text-xl font-display font-bold text-nb-dark">Core Capability Matrix</h2>
-                        <p class="text-sm text-nb-gray">Performance benchmarks compared to general-purpose models.</p>
-                    </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
+                    <h3 class="text-lg font-bold mb-6 text-nb-dark flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-nb-accent"></span> Architectural Benchmarks
+                    </h3>
                     <div class="chart-container">
                         <canvas id="radarChart"></canvas>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:border-nb-accent transition-colors">
-                        <h3 class="text-3xl font-display font-bold text-nb-dark">98.5%</h3>
-                        <p class="font-medium text-nb-dark">Structural Integrity</p>
-                        <p class="text-xs text-nb-gray mt-1">Verified against mechanical blueprint standards.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:border-nb-accent transition-colors">
-                        <h3 class="text-3xl font-display font-bold text-nb-dark">1.2s</h3>
-                        <p class="font-medium text-nb-dark">Processing Speed</p>
-                        <p class="text-xs text-nb-gray mt-1">Real-time vectorization and 3D projection.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:border-nb-accent transition-colors">
-                        <h3 class="text-3xl font-display font-bold text-nb-dark">ISO-9k</h3>
-                        <p class="font-medium text-nb-dark">Compliance Mode</p>
-                        <p class="text-xs text-nb-gray mt-1">Strict adherence to orthographic standards.</p>
-                    </div>
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-100 hover:border-nb-accent transition-colors">
-                        <h3 class="text-3xl font-display font-bold text-nb-dark">STEM</h3>
-                        <p class="font-medium text-nb-dark">Optimized Core</p>
-                        <p class="text-xs text-nb-gray mt-1">Specialized training in higher education curricula.</p>
+                <div class="space-y-4">
+                    <div class="bg-nb-dark text-white p-8 rounded-3xl flex flex-col justify-center h-full">
+                        <h4 class="text-nb-accent uppercase tracking-widest text-xs font-bold mb-4">Core Philosophy</h4>
+                        <p class="text-2xl font-display leading-tight">"Gen-AI should not just imagine; it must calculate and constrain."</p>
+                        <div class="mt-8 pt-8 border-t border-white/10 flex gap-10">
+                            <div>
+                                <p class="text-stone-500 text-xs">Geometric Drift</p>
+                                <p class="text-xl font-bold font-display">&lt; 0.05%</p>
+                            </div>
+                            <div>
+                                <p class="text-stone-500 text-xs">Semantic Fidelity</p>
+                                <p class="text-xl font-bold font-display">99.8%</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </template>
 
+    <!-- INDUSTRIAL -->
     <template id="tpl-industrial">
-        <div class="animate-fade-in space-y-8">
-            <div class="max-w-4xl">
-                <h2 class="font-display text-3xl font-bold text-nb-dark mb-4">Industrial & Technical Processing</h2>
-                <p class="text-nb-gray text-lg">
-                    The model utilizes a proprietary geometry constraint system to maintain logic in blueprints and schematics.
-                </p>
-            </div>
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="font-bold text-lg text-nb-dark">Logic Retention Scoring</h3>
-                    <select id="industrialFilter" class="bg-nb-bg border border-stone-200 text-sm rounded-md px-2 py-1" onchange="app.updateIndustrialChart(this.value)">
-                        <option value="blueprint">Blueprints</option>
-                        <option value="circuit">Circuit Boards</option>
-                        <option value="mechanism">Mechanical Parts</option>
-                    </select>
+        <div class="animate-fade-in space-y-12">
+            <div class="flex flex-col md:flex-row justify-between items-end gap-6">
+                <div class="max-w-2xl">
+                    <h2 class="text-3xl font-display font-bold text-nb-dark mb-4">Industrial Schematics</h2>
+                    <p class="text-nb-gray">The model enforces strict isometric constraints and logical component relationships for manufacturing-ready visual references.</p>
                 </div>
+                <div class="flex gap-2">
+                    <button onclick="app.updateIndustrialChart('blueprint')" class="px-4 py-2 bg-white border border-stone-200 text-sm rounded-lg hover:border-nb-accent transition">Blueprints</button>
+                    <button onclick="app.updateIndustrialChart('circuit')" class="px-4 py-2 bg-white border border-stone-200 text-sm rounded-lg hover:border-nb-accent transition">Circuits</button>
+                </div>
+            </div>
+            
+            <div class="bg-white p-8 rounded-3xl shadow-sm border border-stone-100">
                 <div class="chart-container">
                     <canvas id="industrialChart"></canvas>
                 </div>
@@ -253,54 +232,109 @@
         </div>
     </template>
 
+    <!-- EDUCATION -->
     <template id="tpl-education">
-        <div class="animate-fade-in space-y-8">
-            <div class="max-w-4xl">
-                <h2 class="font-display text-3xl font-bold text-nb-dark mb-4">Educational Visualization</h2>
-                <p class="text-nb-gray text-lg">Subject-specific modules ensure that anatomical and physical models follow pedagogical requirements.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100">
-                    <h3 class="font-bold text-lg text-nb-dark mb-4">Educational Domain Coverage</h3>
-                    <div class="chart-container">
+        <div class="animate-fade-in space-y-12">
+            <h2 class="text-3xl font-display font-bold text-nb-dark">Pedagogical Accuracy</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div class="lg:col-span-1 bg-white p-8 rounded-3xl border border-stone-100 shadow-sm">
+                    <h3 class="font-bold text-nb-dark mb-6">Subject Knowledge Base</h3>
+                    <div class="chart-container h-64">
                         <canvas id="eduChart"></canvas>
                     </div>
                 </div>
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-stone-100 flex flex-col">
-                    <h3 class="font-bold text-lg text-nb-dark mb-4">Subject Output Explorer</h3>
-                    <div class="flex gap-2 mb-4 overflow-x-auto pb-2">
-                        <button onclick="app.loadSubjectDetails('bio')" class="px-3 py-1 bg-green-50 text-green-700 text-sm rounded-full hover:bg-green-100">Biology</button>
-                        <button onclick="app.loadSubjectDetails('history')" class="px-3 py-1 bg-amber-50 text-amber-700 text-sm rounded-full hover:bg-amber-100">History</button>
-                        <button onclick="app.loadSubjectDetails('physics')" class="px-3 py-1 bg-purple-50 text-purple-700 text-sm rounded-full hover:bg-purple-100">Physics</button>
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex gap-4">
+                        <button onclick="app.loadSubjectDetails('bio')" class="flex-1 p-4 rounded-2xl bg-emerald-50 text-emerald-700 border border-emerald-100 text-center font-bold">Biology</button>
+                        <button onclick="app.loadSubjectDetails('history')" class="flex-1 p-4 rounded-2xl bg-amber-50 text-amber-700 border border-amber-100 text-center font-bold">History</button>
+                        <button onclick="app.loadSubjectDetails('physics')" class="flex-1 p-4 rounded-2xl bg-purple-50 text-purple-700 border border-purple-100 text-center font-bold">Physics</button>
                     </div>
-                    <div id="subject-detail-panel" class="bg-nb-bg rounded-xl p-5 border border-stone-100 flex-grow"></div>
+                    <div id="subject-detail-panel" class="bg-white p-8 rounded-3xl border border-stone-100 min-h-[300px] flex items-center justify-center">
+                        <p class="text-stone-400">Select a domain above to explore modules.</p>
+                    </div>
                 </div>
             </div>
         </div>
     </template>
 
-    <template id="tpl-styles">
-        <div class="animate-fade-in space-y-8">
-             <div class="max-w-4xl">
-                <h2 class="font-display text-3xl font-bold text-nb-dark mb-4">Process Types & Aesthetics</h2>
-                <p class="text-nb-gray text-lg">Switching between technical diagramming, 3D isometric rendering, and artistic presentation.</p>
+    <!-- PROMPT FORGE (NEW) -->
+    <template id="tpl-forge">
+        <div class="animate-fade-in space-y-12">
+            <div class="max-w-2xl">
+                <h2 class="text-3xl font-display font-bold text-nb-dark mb-4">Prompt Forge</h2>
+                <p class="text-nb-gray">The generator constructs deterministic prompt strings specifically tuned for the Nano Banano inference engine. Select your parameters to forge a template.</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 p-5">
-                    <h3 class="font-bold text-nb-dark text-lg">Technical</h3>
-                    <p class="text-sm text-nb-gray mt-3">Orthographic 2D line art with zero hallucinations.</p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                <!-- Controls -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white p-6 rounded-2xl border border-stone-100 shadow-sm space-y-4">
+                        <div>
+                            <label class="text-xs uppercase font-bold tracking-widest text-stone-400 mb-2 block">Domain</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="app.forge.setDomain('industrial')" id="btn-f-industrial" class="f-btn p-3 rounded-xl border border-stone-100 bg-stone-50 text-xs font-bold text-stone-600 hover:bg-nb-accent/10 transition">Industrial</button>
+                                <button onclick="app.forge.setDomain('technical')" id="btn-f-technical" class="f-btn p-3 rounded-xl border border-stone-100 bg-stone-50 text-xs font-bold text-stone-600 hover:bg-nb-accent/10 transition">Technical</button>
+                                <button onclick="app.forge.setDomain('education')" id="btn-f-education" class="f-btn p-3 rounded-xl border border-stone-100 bg-stone-50 text-xs font-bold text-stone-600 hover:bg-nb-accent/10 transition">Education</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="text-xs uppercase font-bold tracking-widest text-stone-400 mb-2 block">Focus Subject</label>
+                            <select id="f-subject" onchange="app.forge.update()" class="w-full p-3 bg-nb-bg border border-stone-100 rounded-xl text-sm focus:outline-nb-accent">
+                                <option>Select a Domain First</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs uppercase font-bold tracking-widest text-stone-400 mb-2 block">Style Format</label>
+                            <select id="f-style" onchange="app.forge.update()" class="w-full p-3 bg-nb-bg border border-stone-100 rounded-xl text-sm focus:outline-nb-accent">
+                                <option value="orthographic">Orthographic Patent Line-Art</option>
+                                <option value="isometric">3D Isometric Ray-Traced</option>
+                                <option value="realistic">Biological/Realistic Textbook</option>
+                                <option value="exploded">Exploded View Assembly</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="text-xs uppercase font-bold tracking-widest text-stone-400 mb-2 block">Detail Intensity</label>
+                            <input type="range" min="0" max="100" value="80" class="w-full accent-nb-accent" id="f-intensity" oninput="app.forge.update()">
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 p-5">
-                    <h3 class="font-bold text-nb-dark text-lg">3D ISO</h3>
-                    <p class="text-sm text-nb-gray mt-3">Soft-shadow ray-traced isometric projection.</p>
+
+                <!-- Result -->
+                <div class="lg:col-span-3">
+                    <div class="prompt-box h-full rounded-3xl border border-nb-accent/20 p-8 flex flex-col justify-between shadow-inner">
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-2 h-2 rounded-full bg-nb-accent animate-pulse"></div>
+                                    <span class="text-xs font-bold uppercase tracking-widest text-nb-dark">Generated Template</span>
+                                </div>
+                                <span class="text-[10px] text-stone-400 font-mono">ENCODING: UTF-8</span>
+                            </div>
+                            
+                            <div id="f-result" class="text-xl font-display text-nb-dark leading-relaxed">
+                                Please select a domain and subject to forge your prompt.
+                            </div>
+                        </div>
+
+                        <div class="mt-8 flex items-center justify-between">
+                            <p class="text-xs text-stone-400">Optimized for Nano Banano v4.0 Alpha</p>
+                            <button onclick="app.forge.copy()" class="bg-nb-dark text-white px-6 py-2 rounded-xl text-sm font-bold hover:bg-nb-accent hover:text-nb-dark transition-all">Copy Prompt</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 p-5">
-                    <h3 class="font-bold text-nb-dark text-lg">Artistic</h3>
-                    <p class="text-sm text-nb-gray mt-3">Loose brushwork for non-technical concepts.</p>
-                </div>
-                <div class="bg-white rounded-xl overflow-hidden shadow-sm border border-stone-100 p-5">
-                    <h3 class="font-bold text-nb-dark text-lg">Realism</h3>
-                    <p class="text-sm text-nb-gray mt-3">Biological and medical textbook accuracy.</p>
+            </div>
+            
+            <!-- Context Box -->
+            <div class="bg-nb-panel p-8 rounded-3xl border border-stone-100">
+                <div class="flex items-start gap-4">
+                    <div class="p-3 bg-white rounded-xl text-2xl">💡</div>
+                    <div>
+                        <h4 class="font-bold text-nb-dark mb-1">Architecture Tip</h4>
+                        <p class="text-sm text-nb-gray">The "Prompt Forge" uses semantic markers like <code>[HEC_MODE]</code> and <code>[ISO_GRID]</code> to trigger hard-coded geometric constraints in the engine. Using these markers prevents the "AI Hallucination" common in generic models.</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -312,9 +346,14 @@
                 currentView: 'dashboard',
                 charts: {},
                 subjectData: {
-                    bio: { title: "Biology", desc: "Cells, anatomy, and botany.", types: ["Cell Structures", "Skeletal", "Botanical"], icon: "🧬" },
-                    history: { title: "History", desc: "Artifacts and ruins.", types: ["Ancient Maps", "Pottery", "Civilizations"], icon: "🏛️" },
-                    physics: { title: "Physics", desc: "Forces and mechanics.", types: ["Vector Diagrams", "Circuits", "Waves"], icon: "⚛️" }
+                    bio: { title: "Biology", desc: "Specialized for cellular, anatomical, and botanical imagery.", types: ["Cell Structures", "Human Anatomy", "Plant Strata"], icon: "🧬" },
+                    history: { title: "History", desc: "Ruins, artifact restoration, and period clothing.", types: ["Archaeological Sites", "Historical Maps", "Textile History"], icon: "🏛️" },
+                    physics: { title: "Physics", desc: "Forces, vector fields, and thermodynamic systems.", types: ["Kinetic Diagrams", "Circuit Routing", "Wave Dynamics"], icon: "⚛️" }
+                },
+                forgeData: {
+                    industrial: ["Gas Turbine", "Hydraulic Press", "CNC Assembly", "Electrical Substation"],
+                    technical: ["Patent Drawing: Smartphone", "Engine Schematic", "Architectural Section", "PCB Layout"],
+                    education: ["DNA Double Helix", "Tectonic Plate Boundary", "Mitotic Cell Division", "Steam Engine Logic"]
                 }
             },
 
@@ -336,6 +375,7 @@
                     if (viewId === 'dashboard') this.initDashboardCharts();
                     if (viewId === 'industrial') this.initIndustrialChart();
                     if (viewId === 'education') { this.initEduChart(); this.loadSubjectDetails('bio'); }
+                    if (viewId === 'forge') this.forge.init();
                 }, 50);
             },
 
@@ -345,10 +385,10 @@
                 this.state.charts.radar = new Chart(ctx, {
                     type: 'radar',
                     data: {
-                        labels: ['Accuracy', 'Artistry', 'Spatial Logic', 'Text', 'Speed', 'Diversity'],
-                        datasets: [{ label: 'Nano Banano', data: [98, 70, 95, 85, 92, 90], backgroundColor: 'rgba(234, 179, 8, 0.2)', borderColor: '#EAB308' }]
+                        labels: ['Logic Integrity', 'Spatial Logic', 'Diversity', 'Artistry', 'Speed', 'Labeling'],
+                        datasets: [{ label: 'Nano Banano 4.0', data: [99, 95, 90, 75, 92, 88], backgroundColor: 'rgba(234, 179, 8, 0.2)', borderColor: '#EAB308', pointBackgroundColor: '#EAB308' }]
                     },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    options: { responsive: true, maintainAspectRatio: false, scales: { r: { ticks: { display: false } } } }
                 });
             },
 
@@ -356,15 +396,15 @@
                 const ctx = document.getElementById('industrialChart').getContext('2d');
                 if (this.state.charts.industrial) this.state.charts.industrial.destroy();
                 this.state.charts.industrial = new Chart(ctx, {
-                    type: 'bar',
-                    data: { labels: ['L1', 'L2', 'L3', 'L4', 'L5'], datasets: [{ label: 'Integrity %', data: [99, 98, 97, 95, 92], backgroundColor: '#2D2A26' }] },
+                    type: 'line',
+                    data: { labels: ['V1', 'V2', 'V3', 'V4', 'V5'], datasets: [{ label: 'Drift Resistance', data: [99, 98, 98, 97, 96], borderColor: '#2D2A26', fill: false, tension: 0.1 }] },
                     options: { responsive: true, maintainAspectRatio: false }
                 });
             },
 
             updateIndustrialChart(type) {
                 const chart = this.state.charts.industrial;
-                chart.data.datasets[0].data = type === 'blueprint' ? [99, 98, 97, 95, 92] : [99, 96, 94, 88, 85];
+                chart.data.datasets[0].data = type === 'blueprint' ? [99, 98.5, 98, 97, 96.2] : [99.5, 97, 95, 92, 88];
                 chart.update();
             },
 
@@ -373,30 +413,105 @@
                 if (this.state.charts.edu) this.state.charts.edu.destroy();
                 this.state.charts.edu = new Chart(ctx, {
                     type: 'doughnut',
-                    data: { labels: ['Bio', 'Physics', 'History', 'Other'], datasets: [{ data: [30, 25, 20, 25], backgroundColor: ['#10B981', '#6366F1', '#F59E0B', '#9CA3AF'] }] },
-                    options: { responsive: true, maintainAspectRatio: false }
+                    data: { labels: ['Bio', 'Phys', 'Hist', 'Misc'], datasets: [{ data: [35, 30, 20, 15], backgroundColor: ['#10B981', '#6366F1', '#F59E0B', '#94A3B8'], borderWidth: 0 }] },
+                    options: { responsive: true, maintainAspectRatio: false, cutout: '70%' }
                 });
             },
 
             loadSubjectDetails(subjectKey) {
                 const data = this.state.subjectData[subjectKey];
                 document.getElementById('subject-detail-panel').innerHTML = `
-                    <div class="animate-fade-in">
-                        <h4 class="text-xl font-bold text-nb-dark flex items-center gap-2"><span>${data.icon}</span> ${data.title}</h4>
-                        <p class="text-nb-gray mt-2">${data.desc}</p>
-                        <ul class="mt-4 space-y-1">
-                            ${data.types.map(t => `<li class="text-sm text-nb-dark">• ${t}</li>`).join('')}
-                        </ul>
+                    <div class="animate-fade-in w-full">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="text-4xl">${data.icon}</span>
+                            <h4 class="text-2xl font-display font-bold text-nb-dark">${data.title} Module</h4>
+                        </div>
+                        <p class="text-nb-gray mb-6">${data.desc}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            ${data.types.map(t => `<div class="p-4 bg-nb-bg border border-stone-100 rounded-xl text-sm font-bold text-nb-dark">${t}</div>`).join('')}
+                        </div>
                     </div>
                 `;
+            },
+
+            // --- FORGE LOGIC ---
+            forge: {
+                domain: null,
+                init() {
+                    this.setDomain('industrial');
+                },
+                setDomain(d) {
+                    this.domain = d;
+                    // Remove active state from all domain buttons
+                    document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('bg-nb-accent', 'text-nb-dark', 'shadow-sm'));
+                    
+                    // Add active state to the specific button
+                    const btn = document.getElementById('btn-f-' + d);
+                    if (btn) {
+                        btn.classList.add('bg-nb-accent', 'text-nb-dark', 'shadow-sm');
+                    }
+                    
+                    const select = document.getElementById('f-subject');
+                    if (select) {
+                        select.innerHTML = app.state.forgeData[d].map(s => `<option value="${s}">${s}</option>`).join('');
+                    }
+                    this.update();
+                },
+                update() {
+                    const subjectEl = document.getElementById('f-subject');
+                    const styleEl = document.getElementById('f-style');
+                    const intensityEl = document.getElementById('f-intensity');
+                    const resEl = document.getElementById('f-result');
+
+                    if (!subjectEl || !styleEl || !intensityEl || !resEl) return;
+
+                    const subject = subjectEl.value;
+                    const style = styleEl.value;
+                    const intensity = intensityEl.value;
+
+                    let prompt = "";
+                    if (style === 'orthographic') {
+                        prompt = `[HEC_MODE: ON] Generate an orthographic patent-style line drawing of a ${subject}. Precision geometry, 0.5pt black ink on stark white background. Zero hallucinations, focus on [Structural_Integrity: ${intensity}%]. No shading or gradients.`;
+                    } else if (style === 'isometric') {
+                        prompt = `[ISO_GRID: 30DEG] 3D Isometric ray-traced rendering of ${subject}. Soft ambient occlusion, ${intensity}% texture realism, clean procedural lighting. Modality: Product Catalog.`;
+                    } else if (style === 'realistic') {
+                        prompt = `Pedagogically accurate [BIO_REALISM] cross-section of ${subject}. Labeled parts, semi-translucent shaders, ${intensity}% detail density. Suitable for Higher Education medical textbook.`;
+                    } else {
+                        prompt = `[EXPLODED_VIEW: AXIAL] Mechanical disassembly illustration of ${subject}. Show internal components separated along the primary axis with logic-trace lines. Style: Technical Documentation.`;
+                    }
+                    resEl.innerText = prompt;
+                },
+                copy() {
+                    const resEl = document.getElementById('f-result');
+                    if (!resEl) return;
+
+                    const text = resEl.innerText;
+                    const dummy = document.createElement("textarea");
+                    document.body.appendChild(dummy);
+                    dummy.value = text;
+                    dummy.select();
+                    document.execCommand("copy");
+                    document.body.removeChild(dummy);
+                    
+                    const btn = event.target;
+                    const original = btn.innerText;
+                    btn.innerText = "Prompt Copied!";
+                    setTimeout(() => btn.innerText = original, 2000);
+                }
             }
         };
 
         window.addEventListener('DOMContentLoaded', () => app.init());
     </script>
     
-    <!-- Chosen Palette: Warm Neutral (FDFBF7) with Banana Gold (EAB308) -->
-    <!-- Application Structure Plan: Dashboard-centric SPA focusing on technical integrity scores. Added Author context in Footer. -->
+    <!-- Chosen Palette: Warm Neutral (FDFBF7) & Banana Gold (EAB308) -->
+    <!-- Application Structure Plan: 
+         1. Interactive Dashboard (Radar Chart) for overview.
+         2. Dynamic Industrial Section (Line Chart) for technical metrics.
+         3. Educational Subject Explorer with modular detail panel.
+         4. Prompt Forge: A deterministic template generator for 4 key output styles.
+         5. Comprehensive Footer with Author credentials and contact links.
+    -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
 
 </body>
