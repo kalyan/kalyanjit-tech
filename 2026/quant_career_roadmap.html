@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quant Engineering Roadmap | Kalyanjit Hatibaruah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f5f5f4; color: #1c1917; }
+        
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e7e5e4; }
+        ::-webkit-scrollbar-thumb { background: #a8a29e; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #78716c; }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (max-width: 640px) {
+            .chart-container { height: 300px; }
+        }
+
+        .nav-item.active { border-bottom: 2px solid #ea580c; color: #ea580c; font-weight: 600; }
+        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
+    </style>
+    <!-- Chosen Palette: Warm Neutrals & Terracotta -->
+    <!-- Application Structure Plan: Dashboard layout with tabs. 
+         Updated to include Author Attribution (Kalyanjit Hatibaruah) in the header and footer.
+         1. Hero/Overview: Quick context and role toggle.
+         2. Author Profile: Integrated contact details (WhatsApp/LinkedIn).
+         3. Skills Radar: Visual comparison of requirements.
+         4. Company Landscape: HFTs vs Banks.
+         5. Curriculum & Project Lab: Technical deep-dives. -->
+    <!-- Visualization & Content Choices: 
+         1. Radar Chart: Contrast math vs coding intensity for roles.
+         2. Interactive Accordions: Managing dense curriculum text.
+         3. Grid Layouts: Clean presentation of company profiles.
+         Confirming NO SVG, NO Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-stone-100 min-h-screen flex flex-col">
+
+    <!-- Navigation -->
+    <nav class="bg-white border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center space-x-4">
+                    <span class="text-2xl font-bold text-stone-800 tracking-tight">Quant<span class="text-orange-600">Map</span></span>
+                    <span class="hidden md:block h-6 w-px bg-stone-200"></span>
+                    <span class="hidden md:block text-xs text-stone-500 font-medium">By Kalyanjit Hatibaruah</span>
+                </div>
+                <div class="hidden sm:flex space-x-8 items-center" id="nav-menu">
+                    <button data-target="dashboard" class="nav-item active px-3 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">Dashboard</button>
+                    <button data-target="curriculum" class="nav-item px-3 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">Curriculum</button>
+                    <button data-target="projects" class="nav-item px-3 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">Project Lab</button>
+                    <button data-target="companies" class="nav-item px-3 py-2 text-sm font-medium text-stone-600 hover:text-stone-900 transition-colors">Companies</button>
+                </div>
+                <div class="flex items-center sm:hidden">
+                    <button id="mobile-menu-btn" class="text-stone-500 hover:text-stone-900 focus:outline-none font-bold">MENU</button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden sm:hidden bg-white border-t border-stone-200">
+             <div class="px-2 pt-2 pb-3 space-y-1">
+                <button data-target="dashboard" class="mobile-nav-item block w-full text-left px-3 py-2 text-base font-medium text-stone-700 hover:bg-stone-50">Dashboard</button>
+                <button data-target="curriculum" class="mobile-nav-item block w-full text-left px-3 py-2 text-base font-medium text-stone-700 hover:bg-stone-50">Curriculum</button>
+                <button data-target="projects" class="mobile-nav-item block w-full text-left px-3 py-2 text-base font-medium text-stone-700 hover:bg-stone-50">Project Lab</button>
+                <button data-target="companies" class="mobile-nav-item block w-full text-left px-3 py-2 text-base font-medium text-stone-700 hover:bg-stone-50">Companies</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
+
+        <!-- SECTION: DASHBOARD -->
+        <div id="dashboard" class="view-section block animate-fade-in">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                <!-- Main Header -->
+                <div class="lg:col-span-2">
+                    <h1 class="text-3xl font-bold text-stone-900 mb-2">Quant Engineering Career Path</h1>
+                    <p class="text-stone-600">
+                        A specialized roadmap for engineering students aiming for High Frequency Trading (HFT) and Tier-1 Investment Banks. This guide provides the strategic focus needed to clear interviews at India's most elite quant firms.
+                    </p>
+                </div>
+                <!-- Author Info Sidebar -->
+                <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm flex flex-col justify-center">
+                    <h4 class="text-xs font-bold text-stone-400 uppercase tracking-widest mb-3">Prepared By</h4>
+                    <div class="font-bold text-stone-900 text-lg">Kalyanjit Hatibaruah</div>
+                    <div class="flex flex-col mt-4 space-y-2">
+                        <a href="https://www.linkedin.com/in/kalyanjit_" target="_blank" class="flex items-center text-sm text-blue-600 hover:underline">
+                            <span class="mr-2">🔗</span> LinkedIn Profile
+                        </a>
+                        <a href="https://wa.me/919864011106" class="flex items-center text-sm text-green-600 hover:underline">
+                            <span class="mr-2">💬</span> +91-9864011106
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="bg-white rounded-xl shadow-sm border border-stone-200 p-6 mb-8">
+                <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-stone-800">Role Analysis & Skill Requirements</h2>
+                    <div class="mt-4 sm:mt-0 bg-stone-100 p-1 rounded-lg flex">
+                        <button id="btn-role-dev" class="px-4 py-2 rounded-md text-sm font-medium bg-white shadow-sm text-stone-900 transition-all" onclick="updateRole('dev')">Quant Developer</button>
+                        <button id="btn-role-analyst" class="px-4 py-2 rounded-md text-sm font-medium text-stone-500 hover:text-stone-900 transition-all" onclick="updateRole('analyst')">Quant Analyst</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <h3 id="role-title" class="text-2xl font-bold text-orange-600 mb-3">Quant Developer</h3>
+                        <p id="role-desc" class="text-stone-600 leading-relaxed mb-4">
+                            The backbone of HFT. You optimize trading systems to the microsecond. Key focus: C++, OS Architecture, and Network Latency.
+                        </p>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <h4 class="font-semibold text-stone-700 mb-2">Key Focus Areas:</h4>
+                            <ul id="role-focus-list" class="list-disc list-inside text-sm text-stone-600 space-y-1">
+                                <li>Low Latency C++ (11/14/17/20)</li>
+                                <li>System Design & Architecture</li>
+                                <li>Multithreading & Concurrency</li>
+                                <li>Network Protocols (TCP/UDP)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-white p-2 flex justify-center items-center">
+                        <div class="chart-container">
+                            <canvas id="skillsRadarChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <div class="text-sm text-stone-500 font-medium uppercase tracking-wide">Avg. Entry Compensation</div>
+                    <div class="mt-2 flex items-baseline">
+                        <span class="text-3xl font-bold text-stone-900">High</span>
+                        <span class="ml-2 text-sm text-green-600 font-medium">Top 1% Tier</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <div class="text-sm text-stone-500 font-medium uppercase tracking-wide">Key Language</div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="stat-lang" class="text-3xl font-bold text-stone-900">C++ / Python</span>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <div class="text-sm text-stone-500 font-medium uppercase tracking-wide">Math Intensity</div>
+                    <div class="mt-2 flex items-baseline">
+                        <span id="stat-math" class="text-3xl font-bold text-stone-900">High</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: CURRICULUM -->
+        <div id="curriculum" class="view-section hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-900">The Syllabus</h2>
+                <p class="text-stone-600">Structured learning path curated by Kalyanjit Hatibaruah. Click to expand topics.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- CS Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="w-3 h-3 rounded-full bg-blue-500"></span>
+                        <h3 class="font-bold text-stone-800">Computer Science</h3>
+                    </div>
+                    <div class="bg-white border border-stone-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-4 py-3 text-left font-medium text-stone-800 bg-stone-50 hover:bg-stone-100 flex justify-between items-center" onclick="toggleAccordion('cs-1')">
+                            <span>1. Algorithms & Data Structures</span>
+                            <span class="text-stone-400 text-sm transform transition-transform" id="icon-cs-1">▼</span>
+                        </button>
+                        <div id="cs-1" class="hidden px-4 py-4 text-sm text-stone-600 border-t border-stone-200">
+                            <p class="mb-2"><strong>Focus:</strong> Graphs, Trees, Heaps, Dynamic Programming.</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Intro to Algorithms (CLRS)</li>
+                                <li>LeetCode (Hard/Medium)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-stone-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-4 py-3 text-left font-medium text-stone-800 bg-stone-50 hover:bg-stone-100 flex justify-between items-center" onclick="toggleAccordion('cs-2')">
+                            <span>2. Modern C++ & Systems</span>
+                            <span class="text-stone-400 text-sm transform transition-transform" id="icon-cs-2">▼</span>
+                        </button>
+                        <div id="cs-2" class="hidden px-4 py-4 text-sm text-stone-600 border-t border-stone-200">
+                            <p class="mb-2"><strong>Focus:</strong> Templates, Smart Pointers, Memory Models, OS internals.</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Effective Modern C++ (Meyers)</li>
+                                <li>OSTEP (Operating Systems)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Math Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="w-3 h-3 rounded-full bg-orange-500"></span>
+                        <h3 class="font-bold text-stone-800">Mathematics</h3>
+                    </div>
+                    <div class="bg-white border border-stone-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-4 py-3 text-left font-medium text-stone-800 bg-stone-50 hover:bg-stone-100 flex justify-between items-center" onclick="toggleAccordion('math-1')">
+                            <span>1. Probability & Statistics</span>
+                            <span class="text-stone-400 text-sm transform transition-transform" id="icon-math-1">▼</span>
+                        </button>
+                        <div id="math-1" class="hidden px-4 py-4 text-sm text-stone-600 border-t border-stone-200">
+                            <p class="mb-2"><strong>Focus:</strong> Bayes, Expectations, Hypothesis Testing.</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Blitzstein (Probability)</li>
+                                <li>Heard on the Street (Puzzles)</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-white border border-stone-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-4 py-3 text-left font-medium text-stone-800 bg-stone-50 hover:bg-stone-100 flex justify-between items-center" onclick="toggleAccordion('math-2')">
+                            <span>2. Linear Algebra</span>
+                            <span class="text-stone-400 text-sm transform transition-transform" id="icon-math-2">▼</span>
+                        </button>
+                        <div id="math-2" class="hidden px-4 py-4 text-sm text-stone-600 border-t border-stone-200">
+                            <p class="mb-2"><strong>Focus:</strong> Eigenvalues, SVD, Cholesky Decomposition.</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>Gilbert Strang (MIT OCW)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finance Column -->
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="w-3 h-3 rounded-full bg-green-600"></span>
+                        <h3 class="font-bold text-stone-800">Market Dynamics</h3>
+                    </div>
+                    <div class="bg-white border border-stone-200 rounded-lg overflow-hidden">
+                        <button class="w-full px-4 py-3 text-left font-medium text-stone-800 bg-stone-50 hover:bg-stone-100 flex justify-between items-center" onclick="toggleAccordion('fin-1')">
+                            <span>1. Derivatives & Options</span>
+                            <span class="text-stone-400 text-sm transform transition-transform" id="icon-fin-1">▼</span>
+                        </button>
+                        <div id="fin-1" class="hidden px-4 py-4 text-sm text-stone-600 border-t border-stone-200">
+                            <p class="mb-2"><strong>Focus:</strong> Black-Scholes, The Greeks, Arbitrage.</p>
+                            <ul class="list-disc list-inside space-y-1">
+                                <li>John Hull (Derivatives)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION: PROJECTS -->
+        <div id="projects" class="view-section hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-900">Project Laboratory</h2>
+                <p class="text-stone-600">Demonstrate engineering excellence with these portfolio-standard projects.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Project 1 -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden card-hover transition-all">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-stone-800 mb-2">1. Limit Order Book (LOB)</h3>
+                        <p class="text-sm text-stone-600 mb-4">C++ matching engine optimized for Price-Time priority.</p>
+                        <button class="text-orange-600 text-sm font-semibold hover:text-orange-800" onclick="showProjectDetails('lob')">View Details &rarr;</button>
+                    </div>
+                </div>
+                <!-- Project 2 -->
+                <div class="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden card-hover transition-all">
+                    <div class="p-6">
+                        <h3 class="text-lg font-bold text-stone-800 mb-2">2. Market Data Handler</h3>
+                        <p class="text-sm text-stone-600 mb-4">Binary parser for ITCH/FIX exchange protocols.</p>
+                        <button class="text-orange-600 text-sm font-semibold hover:text-orange-800" onclick="showProjectDetails('feed')">View Details &rarr;</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="project-detail-view" class="mt-8 bg-stone-800 text-white p-6 rounded-xl hidden">
+                <h3 id="project-detail-title" class="text-xl font-bold mb-2 text-orange-400">Project Strategy</h3>
+                <p id="project-detail-content" class="text-stone-300 text-sm leading-relaxed"></p>
+                <button onclick="document.getElementById('project-detail-view').classList.add('hidden')" class="mt-4 text-xs bg-stone-700 px-3 py-1 rounded hover:bg-stone-600">Close</button>
+            </div>
+        </div>
+
+        <!-- SECTION: COMPANIES -->
+        <div id="companies" class="view-section hidden animate-fade-in">
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold text-stone-900">Target Firms</h2>
+                <p class="text-stone-600">Elite landscape for Quants in India and Abroad.</p>
+            </div>
+
+            <div class="space-y-8">
+                <div>
+                    <h3 class="text-lg font-bold text-stone-800 mb-4 border-l-4 border-orange-500 pl-3">Top HFTs & Prop Trading</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Graviton Research</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Quadeye Securities</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Alphagrep</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">NK Securities</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">iRage Capital</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Quantbox</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Estee Advisors</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Numatix</div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-lg font-bold text-stone-800 mb-4 border-l-4 border-blue-500 pl-3">Global Investment Banks</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Goldman Sachs</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">Morgan Stanley</div>
+                        <div class="bg-white p-4 rounded border border-stone-200 font-bold">JP Morgan</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-white border-t border-stone-200 mt-8 py-10">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center text-stone-500 text-sm">
+            <div class="text-center md:text-left mb-6 md:mb-0">
+                <p class="font-bold text-stone-900 mb-1">Kalyanjit Hatibaruah</p>
+                <p>Strategic Career Roadmap for Engineering Students</p>
+                <div class="mt-4 flex space-x-4 justify-center md:justify-start">
+                    <a href="https://wa.me/919864011106" class="hover:text-stone-900">WhatsApp</a>
+                    <a href="https://www.linkedin.com/in/kalyanjit_" class="hover:text-stone-900">LinkedIn</a>
+                </div>
+            </div>
+            <div class="text-center md:text-right">
+                <p>&copy; 2024 Quant Roadmap. Educational Content Only.</p>
+                <p class="mt-1 text-xs text-stone-400 italic">"Precision in preparation determines the edge in competition."</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const appState = {
+            currentView: 'dashboard',
+            currentRole: 'dev',
+            charts: {}
+        };
+
+        const roleData = {
+            dev: {
+                title: "Quant Developer",
+                desc: "Focuses on implementation, latency, and infrastructure. You bridge the gap between complex mathematical models and the production trading system.",
+                focus: ["Low Latency C++", "System Architecture", "Multithreading", "Network Protocols"],
+                chartData: [95, 85, 50, 55, 40],
+                statLang: "C++",
+                statMath: "Medium"
+            },
+            analyst: {
+                title: "Quant Analyst / Researcher",
+                desc: "Focuses on modeling, alpha generation, and backtesting. You use math to find signals in noise.",
+                focus: ["Probability & Stats", "Stochastic Calculus", "Alpha Research", "Python (Pandas)"],
+                chartData: [55, 65, 95, 80, 90],
+                statLang: "Python",
+                statMath: "Very High"
+            }
+        };
+
+        const projectDetails = {
+            lob: "Implement an OrderBook class in C++ using `std::map` or custom doubly-linked lists with arrays for O(1) cancelation. Challenge: Maintain price-time priority under high tick-load.",
+            feed: "Parser for binary market data. Use `reinterpret_cast` carefully with network-to-host byte order conversions (`ntohl`, `ntohs`). Benchmarking parsing speed is key for HFT dev roles."
+        };
+
+        function switchView(viewId) {
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-target') === viewId);
+            });
+            document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(viewId).classList.remove('hidden');
+            appState.currentView = viewId;
+        }
+
+        document.querySelectorAll('.nav-item, .mobile-nav-item').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                switchView(btn.getAttribute('data-target'));
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        });
+
+        function updateRole(role) {
+            appState.currentRole = role;
+            const data = roleData[role];
+            document.getElementById('btn-role-dev').className = role === 'dev' ? "px-4 py-2 rounded-md text-sm font-medium bg-white shadow-sm text-stone-900" : "px-4 py-2 rounded-md text-sm font-medium text-stone-500 hover:text-stone-900";
+            document.getElementById('btn-role-analyst').className = role === 'analyst' ? "px-4 py-2 rounded-md text-sm font-medium bg-white shadow-sm text-stone-900" : "px-4 py-2 rounded-md text-sm font-medium text-stone-500 hover:text-stone-900";
+            
+            document.getElementById('role-title').innerText = data.title;
+            document.getElementById('role-desc').innerText = data.desc;
+            document.getElementById('stat-lang').innerText = data.statLang;
+            document.getElementById('stat-math').innerText = data.statMath;
+
+            const list = document.getElementById('role-focus-list');
+            list.innerHTML = data.focus.map(f => `<li>${f}</li>`).join('');
+            updateChart(data.chartData);
+        }
+
+        function initChart() {
+            const ctx = document.getElementById('skillsRadarChart').getContext('2d');
+            appState.charts.radar = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Coding', 'Algorithms', 'Mathematics', 'Finance', 'Statistics'],
+                    datasets: [{
+                        label: 'Requirement Level',
+                        data: roleData.dev.chartData,
+                        fill: true,
+                        backgroundColor: 'rgba(234, 88, 12, 0.2)',
+                        borderColor: 'rgb(234, 88, 12)',
+                        pointBackgroundColor: 'rgb(234, 88, 12)',
+                        pointBorderColor: '#fff'
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    scales: { r: { suggestedMin: 0, suggestedMax: 100 } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateChart(newData) {
+            appState.charts.radar.data.datasets[0].data = newData;
+            appState.charts.radar.update();
+        }
+
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            content.classList.toggle('hidden');
+            icon.style.transform = content.classList.contains('hidden') ? "rotate(0deg)" : "rotate(180deg)";
+        }
+
+        function showProjectDetails(key) {
+            const container = document.getElementById('project-detail-view');
+            document.getElementById('project-detail-content').innerHTML = projectDetails[key];
+            container.classList.remove('hidden');
+            container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        window.addEventListener('DOMContentLoaded', initChart);
+    </script>
+</body>
+</html>
