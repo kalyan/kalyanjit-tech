@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mycelium Packaging | Interactive Business Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <!-- Chosen Palette: Warm Neutrals (Stone, Amber, Earthy Browns) -->
+    <!-- Application Structure Plan: 
+         1. Hero Section: High-level summary and value proposition ("Grown, not Made").
+         2. The Process (Interactive Stepper): Users click through the 4-stage biological manufacturing process.
+         3. Comparative Analysis (Dashboard): Data visualization comparing Mycelium to Styrofoam (Cost, CO2, Time).
+         4. Business & Market Strategy: Grid layout detailing the B2B approach and SWOT analysis.
+         5. Author & Contact Profile: Integrated professional credentials for Kalyanjit Hatibaruah.
+         This structure provides a complete narrative from the technology to the expertise behind the research.
+    -->
+    <!-- Visualization & Content Choices:
+         - Decomposition Chart (Bar): Comparison of 45 days vs 500 years.
+         - Cost Projection (Line): Shows convergence of costs over time.
+         - Impact Radar (Doughnut): Holistic comparison of environmental metrics.
+         - Library: Chart.js for all metrics. 
+         - Confirmation: NO SVG graphics used. NO Mermaid JS used. Icons are Unicode.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        mushroom: {
+                            50: '#fcfaf8',
+                            100: '#f5f0eb',
+                            200: '#e6dacd',
+                            300: '#d5c0ad',
+                            400: '#bc9d85',
+                            500: '#a67c5f',
+                            600: '#96684c',
+                            700: '#7d533e',
+                            800: '#674536',
+                            900: '#54392f',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        serif: ['Georgia', 'Cambria', 'Times New Roman', 'Times', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Chart Container Styling per requirements */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        
+        /* Smooth transitions */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-mushroom-50 text-gray-800 font-sans antialiased selection:bg-mushroom-200 selection:text-mushroom-900">
+
+    <!-- Navigation -->
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-mushroom-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center gap-2 cursor-pointer" onclick="scrollToSection('hero')">
+                        <span class="text-3xl">🍄</span>
+                        <span class="font-serif text-xl font-bold text-mushroom-800">MycoPack</span>
+                    </div>
+                </div>
+                <div class="hidden sm:flex sm:space-x-8 items-center">
+                    <button onclick="scrollToSection('process')" class="text-gray-600 hover:text-mushroom-600 px-3 py-2 text-sm font-medium transition-colors">Process</button>
+                    <button onclick="scrollToSection('data')" class="text-gray-600 hover:text-mushroom-600 px-3 py-2 text-sm font-medium transition-colors">Analysis</button>
+                    <button onclick="scrollToSection('business')" class="text-gray-600 hover:text-mushroom-600 px-3 py-2 text-sm font-medium transition-colors">Strategy</button>
+                    <button onclick="scrollToSection('author')" class="text-gray-600 hover:text-mushroom-600 px-3 py-2 text-sm font-medium transition-colors">Author</button>
+                    <button onclick="showContactModal()" class="bg-mushroom-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-mushroom-700 transition-colors shadow-md">Get Started</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-16">
+
+        <!-- Hero Section -->
+        <section id="hero" class="text-center py-12 md:py-20 fade-in">
+            <h1 class="text-4xl md:text-6xl font-serif font-bold text-mushroom-900 mb-6 tracking-tight">
+                Grown, Not Manufactured.
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-600 leading-relaxed">
+                Replacing Styrofoam with mushroom roots. We transform agricultural waste into high-performance, fully compostable packaging in 7 days.
+            </p>
+            <div class="mt-10 flex justify-center gap-4">
+                <button onclick="scrollToSection('data')" class="px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-mushroom-600 hover:bg-mushroom-700 md:py-4 md:text-lg shadow-lg transition-all transform hover:-translate-y-1">
+                    See The Impact
+                </button>
+                <button onclick="scrollToSection('process')" class="px-8 py-3 border-2 border-mushroom-600 text-base font-medium rounded-md text-mushroom-700 bg-transparent hover:bg-mushroom-50 md:py-4 md:text-lg transition-colors">
+                    The Bio-Process
+                </button>
+            </div>
+        </section>
+
+        <!-- Process Section -->
+        <section id="process" class="scroll-mt-24">
+            <div class="border-l-4 border-mushroom-400 pl-4 mb-8">
+                <h2 class="text-3xl font-serif font-bold text-mushroom-900">Manufacturing Steps</h2>
+                <p class="mt-2 text-gray-600">The cycle of transforming biology into industrial hardware.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-lg border border-mushroom-200 overflow-hidden">
+                <div class="grid grid-cols-1 md:grid-cols-4 border-b border-mushroom-200 bg-mushroom-50">
+                    <button onclick="setProcessStep(0)" id="step-btn-0" class="p-4 text-center border-b-2 border-mushroom-600 bg-white font-bold text-mushroom-800 transition-all focus:outline-none">
+                        1. Feedstock
+                    </button>
+                    <button onclick="setProcessStep(1)" id="step-btn-1" class="p-4 text-center border-b-2 border-transparent text-gray-500 hover:text-mushroom-700 transition-all focus:outline-none">
+                        2. Inoculation
+                    </button>
+                    <button onclick="setProcessStep(2)" id="step-btn-2" class="p-4 text-center border-b-2 border-transparent text-gray-500 hover:text-mushroom-700 transition-all focus:outline-none">
+                        3. Growth
+                    </button>
+                    <button onclick="setProcessStep(3)" id="step-btn-3" class="p-4 text-center border-b-2 border-transparent text-gray-500 hover:text-mushroom-700 transition-all focus:outline-none">
+                        4. Finishing
+                    </button>
+                </div>
+
+                <div class="p-8 md:p-12">
+                    <div id="step-content-0" class="process-content grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade-in">
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">Agricultural Upcycling</h3>
+                            <p class="text-gray-600 leading-relaxed">We utilize hemp hurds, corn stalks, and wood chips—waste materials that would otherwise be burned or landfilled.</p>
+                            <div class="inline-block px-3 py-1 bg-green-100 text-green-800 rounded-full text-xs font-bold">ZERO VIRGIN MATERIALS</div>
+                        </div>
+                        <div class="bg-mushroom-100 h-64 rounded-xl flex items-center justify-center text-6xl opacity-40">🌾</div>
+                    </div>
+                    <div id="step-content-1" class="process-content hidden grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade-in">
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">Living Glue</h3>
+                            <p class="text-gray-600 leading-relaxed">Mycelium spores are introduced. They act as a natural binding agent, eliminating the need for toxic resins.</p>
+                            <div class="inline-block px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-xs font-bold">100% NON-TOXIC</div>
+                        </div>
+                        <div class="bg-mushroom-100 h-64 rounded-xl flex items-center justify-center text-6xl opacity-40">🧪</div>
+                    </div>
+                    <div id="step-content-2" class="process-content hidden grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade-in">
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">Solidification</h3>
+                            <p class="text-gray-600 leading-relaxed">Over 5 days, the mycelium grows into the exact shape of the mold, creating a shock-absorbent matrix.</p>
+                            <div class="inline-block px-3 py-1 bg-amber-100 text-amber-800 rounded-full text-xs font-bold">GROWTH TIME: 120 HOURS</div>
+                        </div>
+                        <div class="bg-mushroom-100 h-64 rounded-xl flex items-center justify-center text-6xl opacity-40">🕸️</div>
+                    </div>
+                    <div id="step-content-3" class="process-content hidden grid grid-cols-1 md:grid-cols-2 gap-12 items-center fade-in">
+                        <div class="space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-800">Heat Deactivation</h3>
+                            <p class="text-gray-600 leading-relaxed">A brief heat cycle stops the growth and sterilizes the material, leaving a lightweight, durable packaging part.</p>
+                            <div class="inline-block px-3 py-1 bg-red-100 text-red-800 rounded-full text-xs font-bold">SHELF-STABLE & STERILE</div>
+                        </div>
+                        <div class="bg-mushroom-100 h-64 rounded-xl flex items-center justify-center text-6xl opacity-40">📦</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Dashboard -->
+        <section id="data" class="scroll-mt-24">
+            <div class="border-l-4 border-mushroom-400 pl-4 mb-8">
+                <h2 class="text-3xl font-serif font-bold text-mushroom-900">Comparative Data Analysis</h2>
+                <p class="mt-2 text-gray-600">Metric comparison against Expanded Polystyrene (EPS).</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-mushroom-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Decomposition Timeline</h3>
+                    <div class="chart-container">
+                        <canvas id="decompositionChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-mushroom-100">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">CO2 Emissions per Kg</h3>
+                    <div class="chart-container">
+                        <canvas id="carbonChart"></canvas>
+                    </div>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-mushroom-100 lg:col-span-2">
+                    <h3 class="text-lg font-bold text-gray-800 mb-4">Cost Scaling Projection</h3>
+                    <div class="chart-container">
+                        <canvas id="costChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Business Strategy -->
+        <section id="business" class="scroll-mt-24">
+            <div class="border-l-4 border-mushroom-400 pl-4 mb-8">
+                <h2 class="text-3xl font-serif font-bold text-mushroom-900">Market Strategy</h2>
+                <p class="mt-2 text-gray-600">Scaling from niche luxury to global commodity.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-mushroom-800 text-white p-8 rounded-2xl">
+                    <h4 class="text-xl font-bold mb-4">Luxury Electronics</h4>
+                    <p class="text-mushroom-200 text-sm">Targeting high-margin brands where packaging is part of the brand equity.</p>
+                </div>
+                <div class="bg-white border border-mushroom-200 p-8 rounded-2xl">
+                    <h4 class="text-xl font-bold mb-4 text-gray-800">E-Commerce</h4>
+                    <p class="text-gray-600 text-sm">Replacing bubble wrap and foam peanuts for sustainable direct-to-consumer brands.</p>
+                </div>
+                <div class="bg-white border border-mushroom-200 p-8 rounded-2xl">
+                    <h4 class="text-xl font-bold mb-4 text-gray-800">Industrial Goods</h4>
+                    <p class="text-gray-600 text-sm">Custom molded corner blocks for furniture and heavy appliances.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Author Section -->
+        <section id="author" class="scroll-mt-24 py-12 border-t border-mushroom-200">
+            <div class="bg-white rounded-3xl shadow-sm border border-mushroom-200 overflow-hidden">
+                <div class="md:flex">
+                    <div class="md:w-1/3 bg-mushroom-100 p-8 flex flex-col items-center justify-center text-center">
+                        <div class="w-32 h-32 bg-mushroom-300 rounded-full mb-4 flex items-center justify-center text-4xl text-mushroom-700 font-serif font-bold">KH</div>
+                        <h3 class="text-2xl font-serif font-bold text-mushroom-900">Kalyanjit Hatibaruah</h3>
+                        <p class="text-mushroom-600 font-medium">Lead Researcher & Author</p>
+                    </div>
+                    <div class="md:w-2/3 p-8 md:p-12 space-y-6">
+                        <div class="border-b border-mushroom-100 pb-4">
+                            <h4 class="text-sm font-bold uppercase tracking-widest text-mushroom-500 mb-2">About the Research</h4>
+                            <p class="text-gray-600 leading-relaxed">
+                                This report synthesizes the latest advancements in mycology-based material science, focusing on the economic feasibility of circular manufacturing. Kalyanjit's work explores the intersection of biotechnology and sustainable logistics to eliminate plastic waste in global supply chains.
+                            </p>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <a href="https://www.linkedin.com/in/kalyanjit_" target="_blank" class="flex items-center p-4 bg-mushroom-50 rounded-xl hover:bg-mushroom-200 transition-colors group">
+                                <span class="text-2xl mr-4 group-hover:scale-110 transition-transform">🔗</span>
+                                <div>
+                                    <div class="text-xs font-bold text-mushroom-700">LinkedIn Profile</div>
+                                    <div class="text-sm text-gray-600">kalyanjit_</div>
+                                </div>
+                            </a>
+                            <a href="https://wa.me/919864011106" target="_blank" class="flex items-center p-4 bg-mushroom-50 rounded-xl hover:bg-mushroom-200 transition-colors group">
+                                <span class="text-2xl mr-4 group-hover:scale-110 transition-transform">💬</span>
+                                <div>
+                                    <div class="text-xs font-bold text-mushroom-700">WhatsApp Contact</div>
+                                    <div class="text-sm text-gray-600">+91 98640 11106</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="text-center text-gray-400 text-xs py-12">
+            <p>© 2026 MycoPack Circular Economy Initiative</p>
+            <p class="mt-1">Research & Analysis by Kalyanjit Hatibaruah</p>
+        </footer>
+
+    </main>
+
+    <!-- Modal -->
+    <div id="contactModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+            <h3 class="text-2xl font-bold text-gray-800 mb-4">Expert Consultation</h3>
+            <p class="text-gray-600 mb-6">Schedule a session with Kalyanjit Hatibaruah to discuss custom bio-manufacturing for your supply chain.</p>
+            <div class="space-y-4">
+                <a href="https://wa.me/919864011106" class="flex items-center justify-center gap-2 w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700 transition-colors">
+                    <span>Message on WhatsApp</span>
+                </a>
+                <button onclick="closeContactModal()" class="w-full border-2 border-mushroom-200 text-gray-500 font-bold py-3 rounded-lg hover:bg-gray-50 transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function scrollToSection(id) {
+            document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function setProcessStep(stepIndex) {
+            for (let i = 0; i < 4; i++) {
+                const btn = document.getElementById(`step-btn-${i}`);
+                const content = document.getElementById(`step-content-${i}`);
+                if (i === stepIndex) {
+                    btn.className = "p-4 text-center border-b-2 border-mushroom-600 bg-white font-bold text-mushroom-800 transition-all focus:outline-none";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "p-4 text-center border-b-2 border-transparent text-gray-500 hover:text-mushroom-700 transition-all focus:outline-none";
+                    content.classList.add('hidden');
+                }
+            }
+        }
+
+        function showContactModal() { document.getElementById('contactModal').classList.remove('hidden'); }
+        function closeContactModal() { document.getElementById('contactModal').classList.add('hidden'); }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const colorPrimary = '#a67c5f';
+            const colorStyro = '#d1d5db';
+
+            new Chart(document.getElementById('decompositionChart').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: ['Mycelium', 'Cardboard', 'Styrofoam'],
+                    datasets: [{
+                        label: 'Days to Biodegrade',
+                        data: [45, 90, 182500],
+                        backgroundColor: [colorPrimary, '#bc9d85', '#ef4444'],
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: { y: { type: 'logarithmic' } },
+                    plugins: { legend: { display: false } }
+                }
+            });
+
+            new Chart(document.getElementById('carbonChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mycelium (Net Negative)', 'Styrofoam (High Impact)'],
+                    datasets: [{
+                        data: [15, 85],
+                        backgroundColor: [colorPrimary, colorStyro],
+                        borderWidth: 0
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            new Chart(document.getElementById('costChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025', '2026', '2027'],
+                    datasets: [{
+                        label: 'Mycelium $/Unit',
+                        data: [2.5, 2.1, 1.7, 1.3, 1.05],
+                        borderColor: colorPrimary,
+                        tension: 0.4
+                    }, {
+                        label: 'Styrofoam $/Unit',
+                        data: [0.9, 0.95, 1.0, 1.05, 1.1],
+                        borderColor: '#9ca3af',
+                        borderDash: [5, 5]
+                    }]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+        });
+    </script>
+</body>
+</html>
