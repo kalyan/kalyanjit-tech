@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Top 10 Development Stacks for Tech Engineers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f5f5f4; 
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0f766e', 
+                        secondary: '#44403c', 
+                        bglight: '#fafaf9',
+                        surface: '#ffffff'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-bglight text-secondary font-sans antialiased">
+
+    <!-- Chosen Palette: Warm Neutrals with Teal Accents (Stone-50 background, Teal-700 primary, Stone-700 text) -->
+    <!-- Application Structure Plan: The SPA uses a dashboard-style split layout. It begins with an authoritative header and introductory context. A top-level visualization (bar chart) provides an immediate macro-view of stack popularity. Below, an interactive explorer uses a two-column layout: a selectable list of stacks on the left and a dynamic, detailed content panel on the right. This structure was chosen because comparing 10 complex stacks requires both a high-level summary and the ability to drill down into specifics without losing context or navigating away from the page. -->
+    <!-- Visualization & Content Choices: 
+         - Popularity Overview -> Goal: Compare adoption rates -> Viz: Bar Chart (Chart.js) -> Interaction: Clickable bars to filter details -> Justification: Easiest way to compare scalar values across categories. NO SVG used.
+         - Stack Explorer -> Goal: Detailed feature breakdown -> Viz: Interactive List + Detail Panel -> Interaction: Click list items -> Justification: Allows user-driven exploration of dense qualitative data (pros, cons, components) without overwhelming the initial view. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <header class="bg-surface shadow-sm border-b border-stone-200 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-stone-800 tracking-tight">Tech Stack Explorer 2026</h1>
+                <p class="text-sm text-stone-500">Top 10 Development Architectures</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-right bg-stone-100 py-2 px-4 rounded-lg border border-stone-200">
+                <p class="text-xs text-stone-500 font-semibold uppercase tracking-wider">Research Author</p>
+                <p class="text-sm font-bold text-primary">Kalyanjit Hatibaruah</p>
+                <p class="text-sm text-stone-600 font-mono mt-1">&#x1F4F1; WhatsApp: +91-9864011106</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-12">
+
+        <section class="bg-surface rounded-2xl shadow-sm border border-stone-200 p-6 md:p-8">
+            <h2 class="text-xl font-bold text-stone-800 mb-4 border-l-4 border-primary pl-3">Landscape Overview</h2>
+            <p class="text-stone-600 mb-8 max-w-3xl leading-relaxed">
+                Choosing the right development stack is a critical architectural decision that impacts application scalability, developer velocity, and maintenance costs. This report synthesizes the top 10 most adopted and effective technology combinations for modern software engineering. The chart below illustrates relative market demand and community support for each stack. Interact with the chart or the explorer below to analyze individual components.
+            </p>
+            
+            <div class="chart-container">
+                <canvas id="popularityChart"></canvas>
+            </div>
+            <p class="text-center text-xs text-stone-400 mt-4 italic">Interactive Chart: Click any bar to view stack details.</p>
+        </section>
+
+        <section class="bg-surface rounded-2xl shadow-sm border border-stone-200 overflow-hidden flex flex-col md:flex-row h-[800px] md:h-[600px]">
+            
+            <div class="w-full md:w-1/3 bg-stone-50 border-r border-stone-200 flex flex-col h-1/3 md:h-full">
+                <div class="p-4 border-b border-stone-200 bg-stone-100">
+                    <h3 class="font-bold text-stone-800 uppercase tracking-wider text-sm">Select a Stack</h3>
+                </div>
+                <div class="overflow-y-auto custom-scrollbar flex-grow p-2" id="stack-list">
+                </div>
+            </div>
+
+            <div class="w-full md:w-2/3 p-6 md:p-8 overflow-y-auto custom-scrollbar h-2/3 md:h-full relative" id="stack-detail-panel">
+                <div class="absolute inset-0 flex items-center justify-center text-stone-400 flex-col" id="empty-state">
+                    <div class="text-6xl mb-4">&#x2190;</div>
+                    <p class="text-lg">Select a stack from the list to view detailed architecture.</p>
+                </div>
+                
+                <div id="detail-content" class="hidden h-full flex flex-col">
+                    <div class="mb-6 pb-6 border-b border-stone-100">
+                        <div class="flex items-center justify-between mb-2">
+                            <h2 id="detail-title" class="text-3xl font-bold text-stone-900"></h2>
+                            <span id="detail-badge" class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide"></span>
+                        </div>
+                        <p id="detail-desc" class="text-stone-600 text-lg leading-relaxed mt-4"></p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-stone-50 rounded-xl p-4 border border-stone-200">
+                            <div class="text-2xl mb-2">&#x1F4BB;</div>
+                            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Frontend</h4>
+                            <p id="detail-frontend" class="font-semibold text-stone-800"></p>
+                        </div>
+                        <div class="bg-stone-50 rounded-xl p-4 border border-stone-200">
+                            <div class="text-2xl mb-2">&#x2699;&#xFE0F;</div>
+                            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Backend</h4>
+                            <p id="detail-backend" class="font-semibold text-stone-800"></p>
+                        </div>
+                        <div class="bg-stone-50 rounded-xl p-4 border border-stone-200">
+                            <div class="text-2xl mb-2">&#x1F4C4;</div>
+                            <h4 class="text-xs font-bold text-stone-500 uppercase tracking-wider mb-1">Database</h4>
+                            <p id="detail-database" class="font-semibold text-stone-800"></p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-auto">
+                        <div>
+                            <h4 class="font-bold text-emerald-700 flex items-center mb-3">
+                                <span class="mr-2 text-xl">&#x2714;&#xFE0F;</span> Key Advantages
+                            </h4>
+                            <ul id="detail-pros" class="space-y-2 text-sm text-stone-700"></ul>
+                        </div>
+                        <div>
+                            <h4 class="font-bold text-red-700 flex items-center mb-3">
+                                <span class="mr-2 text-xl">&#x274C;</span> Challenges
+                            </h4>
+                            <ul id="detail-cons" class="space-y-2 text-sm text-stone-700"></ul>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 bg-primary text-white p-4 rounded-xl">
+                        <h4 class="text-sm font-bold uppercase tracking-wider mb-1 opacity-80">Ideal Use Case</h4>
+                        <p id="detail-usecase" class="font-medium"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-8 text-center text-sm mt-12">
+        <p>&copy; 2026 Interactive Architecture Report.</p>
+        <p class="mt-2">Prepared by Kalyanjit Hatibaruah | +91-9864011106</p>
+    </footer>
+
+    <script>
+        const stacksData = [
+            {
+                id: 'mern',
+                name: 'MERN Stack',
+                category: 'JavaScript Ecosystem',
+                popularity: 95,
+                color: '#0ea5e9',
+                desc: 'A pure JavaScript stack using MongoDB, Express.js, React, and Node.js. It allows developers to build entire applications using a single language, making it highly popular for modern Single Page Applications (SPAs).',
+                components: { frontend: 'React.js', backend: 'Node.js & Express', database: 'MongoDB (NoSQL)' },
+                pros: ['Single language (JS) across entire stack', 'Massive open-source community and libraries', 'Highly responsive frontend UI', 'JSON data flows naturally from DB to Client'],
+                cons: ['Relational data handling is complex in MongoDB', 'Heavy reliance on third-party libraries', 'SEO can be challenging without SSR configuration'],
+                usecase: 'Dynamic Single Page Applications, Social Networks, Workflow Management Tools.'
+            },
+            {
+                id: 'mean',
+                name: 'MEAN Stack',
+                category: 'JavaScript Ecosystem',
+                popularity: 82,
+                color: '#dc2626',
+                desc: 'Similar to MERN, but replaces React with Angular. It provides a more structured, opinionated framework for the frontend, heavily utilizing TypeScript for robust, enterprise-level applications.',
+                components: { frontend: 'Angular (TypeScript)', backend: 'Node.js & Express', database: 'MongoDB (NoSQL)' },
+                pros: ['Highly structured and opinionated framework', 'Two-way data binding', 'Excellent for enterprise-scale architecture', 'TypeScript ensures better code quality'],
+                cons: ['Steeper learning curve than React', 'Slightly lower performance for simple DOM updates', 'Angular updates can sometimes break backward compatibility'],
+                usecase: 'Enterprise-level applications, Complex Dashboard Interfaces, Progressive Web Apps (PWAs).'
+            },
+            {
+                id: 'lamp',
+                name: 'LAMP Stack',
+                category: 'Traditional Web',
+                popularity: 75,
+                color: '#ca8a04',
+                desc: 'The classic, time-tested architecture comprising Linux, Apache, MySQL, and PHP/Python/Perl. It powers a vast portion of the internet, including major CMS platforms like WordPress.',
+                components: { frontend: 'HTML/CSS/JS (Vanilla)', backend: 'PHP & Apache', database: 'MySQL (Relational)' },
+                pros: ['Extremely stable and universally supported', 'Easy and cheap to host anywhere', 'Vast legacy ecosystem (WordPress, Drupal)', 'Excellent for relational data structures'],
+                cons: ['Can be monolithic and harder to scale horizontally', 'Less suited for highly interactive SPAs', 'PHP is considered less modern by some developers'],
+                usecase: 'Content Management Systems (CMS), E-commerce (Magento, WooCommerce), Standard Informational Sites.'
+            },
+            {
+                id: 'pern',
+                name: 'PERN Stack',
+                category: 'JavaScript Ecosystem',
+                popularity: 88,
+                color: '#4f46e5',
+                desc: 'A variation of MERN that swaps the NoSQL MongoDB for the robust, relational PostgreSQL. Ideal for applications requiring complex transactions and strict data integrity.',
+                components: { frontend: 'React.js', backend: 'Node.js & Express', database: 'PostgreSQL (Relational)' },
+                pros: ['ACID compliance and strict data integrity', 'Excellent for complex queries and reporting', 'Modern UI capabilities with React', 'Highly scalable relational architecture'],
+                cons: ['Mapping JSON to relational tables requires ORMs (like Prisma/Sequelize)', 'Slower initial setup compared to NoSQL'],
+                usecase: 'Financial Technology (FinTech), E-commerce platforms, Data-heavy analytical applications.'
+            },
+            {
+                id: 'django',
+                name: 'Django Stack',
+                category: 'Python Ecosystem',
+                popularity: 90,
+                color: '#166534',
+                desc: 'Built around Python and the Django framework ("batteries included"). Often paired with PostgreSQL and a frontend framework or Django templates. Renowned for rapid development.',
+                components: { frontend: 'Django Templates or Vue/React', backend: 'Python (Django)', database: 'PostgreSQL / MySQL' },
+                pros: ['"Batteries included" (Auth, Admin panel built-in)', 'Extremely fast time-to-market', 'Highly secure by default against common vulnerabilities', 'Seamless integration with Data Science/ML tools'],
+                cons: ['Can feel monolithic', 'Slightly slower execution speed than Node.js or Go', 'Overkill for very small microservices'],
+                usecase: 'Data-driven applications, Secure Government/Enterprise software, MVP rapid prototyping.'
+            },
+            {
+                id: 'springboot',
+                name: 'Spring Boot Stack',
+                category: 'Java Ecosystem',
+                popularity: 85,
+                color: '#ea580c',
+                desc: 'The gold standard for enterprise Java development. Provides an extensive, highly scalable backend often paired with Angular or React on the frontend and robust relational databases.',
+                components: { frontend: 'Angular / React / Thymeleaf', backend: 'Java (Spring Boot)', database: 'Oracle / PostgreSQL' },
+                pros: ['Unmatched scalability for massive enterprise loads', 'Strong typing and JVM performance', 'Massive pool of enterprise developers', 'Highly secure and standardized'],
+                cons: ['High memory consumption', 'Verbose code and steeper learning curve', 'Slower startup times (though improving with GraalVM)'],
+                usecase: 'Banking systems, Large-scale corporate infrastructure, High-throughput transactional systems.'
+            },
+            {
+                id: 'serverless',
+                name: 'Serverless Stack',
+                category: 'Cloud Native',
+                popularity: 92,
+                color: '#f97316',
+                desc: 'An architecture where cloud providers (like AWS) dynamically manage the allocation of machine resources. Functions (Lambda) execute logic, communicating with managed databases (DynamoDB).',
+                components: { frontend: 'React / Next.js', backend: 'AWS Lambda & API Gateway', database: 'DynamoDB / Firebase' },
+                pros: ['Infinite auto-scaling with zero server management', 'Pay-only-for-what-you-use pricing model', 'Faster deployments of individual functions', 'High geographic availability'],
+                cons: ['Cold start latency issues', 'Vendor lock-in (e.g., heavily tied to AWS)', 'Difficult to debug locally and trace errors across microservices'],
+                usecase: 'Unpredictable traffic applications, Event-driven architectures, IoT backends.'
+            },
+            {
+                id: 'rubyonrails',
+                name: 'Ruby on Rails Stack',
+                category: 'Ruby Ecosystem',
+                popularity: 68,
+                color: '#be123c',
+                desc: 'A highly productive framework prioritizing "Convention over Configuration". Historically the favorite of Y-Combinator startups for getting complex products to market incredibly fast.',
+                components: { frontend: 'Hotwire / React', backend: 'Ruby (Rails)', database: 'PostgreSQL' },
+                pros: ['Incredible developer happiness and speed', 'Vast library of "gems" for instant features', 'Strong community conventions lead to clean code'],
+                cons: ['Slower runtime performance compared to compiled languages', 'Magic can make deep debugging difficult', 'Declining popularity compared to JS/Python stacks'],
+                usecase: 'Startup MVPs, Content platforms, Subscription-based SaaS applications.'
+            },
+            {
+                id: 'mevn',
+                name: 'MEVN Stack',
+                category: 'JavaScript Ecosystem',
+                popularity: 78,
+                color: '#10b981',
+                desc: 'Replaces React or Angular with Vue.js. Vue offers a balance between the structure of Angular and the flexibility of React, resulting in a very approachable and lightweight stack.',
+                components: { frontend: 'Vue.js', backend: 'Node.js & Express', database: 'MongoDB' },
+                pros: ['Gentle learning curve for frontend', 'Excellent documentation and clean syntax', 'Highly performant and lightweight frontend footprint'],
+                cons: ['Smaller ecosystem compared to React', 'Fewer massive corporate backers compared to Angular/React', 'Over-flexibility can lead to inconsistent code across large teams'],
+                usecase: 'Lightweight SPAs, Interactive web portals, Migrating legacy apps incrementally.'
+            },
+            {
+                id: 'flutter',
+                name: 'Flutter Stack',
+                category: 'Mobile / Cross-Platform',
+                popularity: 89,
+                color: '#0284c7',
+                desc: 'Google\'s UI toolkit for building natively compiled applications for mobile, web, and desktop from a single codebase. Often paired with Firebase for a complete backend-as-a-service.',
+                components: { frontend: 'Flutter (Dart)', backend: 'Firebase / Supabase', database: 'Firestore / PostgreSQL' },
+                pros: ['True cross-platform from a single codebase (iOS/Android/Web)', 'Beautiful, customizable widgets', 'Hot reload speeds up development exponentially'],
+                cons: ['Dart is less universally known than JS or Python', 'App sizes can be larger than native apps', 'Web rendering is canvas-based, affecting traditional SEO'],
+                usecase: 'Mobile-first startups, Cross-platform corporate apps, Rapid UI prototyping.'
+            }
+        ];
+
+        let chartInstance = null;
+        let currentActiveId = null;
+
+        function initApp() {
+            renderChart();
+            renderList();
+            
+            if(stacksData.length > 0) {
+                selectStack(stacksData[0].id);
+            }
+        }
+
+        function renderChart() {
+            const ctx = document.getElementById('popularityChart').getContext('2d');
+            
+            const labels = stacksData.map(s => s.name);
+            const data = stacksData.map(s => s.popularity);
+            const bgColors = stacksData.map(s => s.color + 'CC'); 
+            const borderColors = stacksData.map(s => s.color);
+
+            chartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Market Popularity Index (0-100)',
+                        data: data,
+                        backgroundColor: bgColors,
+                        borderColor: borderColors,
+                        borderWidth: 1,
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: '#44403c',
+                            titleFont: { size: 14, family: 'sans-serif' },
+                            bodyFont: { size: 13, family: 'sans-serif' },
+                            padding: 12,
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Index Score: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: {
+                                color: '#f5f5f4',
+                                drawBorder: false
+                            },
+                            ticks: {
+                                color: '#78716c'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: '#78716c',
+                                maxRotation: 45,
+                                minRotation: 45,
+                                callback: function(value, index, values) {
+                                    const label = this.getLabelForValue(value);
+                                    return label.length > 12 ? label.substring(0, 12) + '...' : label;
+                                }
+                            }
+                        }
+                    },
+                    onClick: (e, activeEls) => {
+                        if (activeEls.length > 0) {
+                            const dataIndex = activeEls[0].index;
+                            const stackId = stacksData[dataIndex].id;
+                            selectStack(stackId);
+                            document.getElementById('stack-detail-panel').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderList() {
+            const listContainer = document.getElementById('stack-list');
+            listContainer.innerHTML = '';
+
+            stacksData.forEach(stack => {
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 mb-2 rounded-xl transition-all duration-200 border border-transparent flex flex-col items-start stack-btn`;
+                btn.dataset.id = stack.id;
+                
+                btn.innerHTML = `
+                    <span class="font-bold text-stone-800 text-lg">${stack.name}</span>
+                    <span class="text-xs font-medium mt-1 px-2 py-0.5 rounded-md" style="background-color: ${stack.color}15; color: ${stack.color}">${stack.category}</span>
+                `;
+
+                btn.onclick = () => selectStack(stack.id);
+                listContainer.appendChild(btn);
+            });
+        }
+
+        function selectStack(id) {
+            currentActiveId = id;
+            const stack = stacksData.find(s => s.id === id);
+            
+            document.querySelectorAll('.stack-btn').forEach(btn => {
+                if(btn.dataset.id === id) {
+                    btn.classList.add('bg-white', 'shadow-sm', 'border-stone-200');
+                    btn.classList.remove('hover:bg-stone-100');
+                } else {
+                    btn.classList.remove('bg-white', 'shadow-sm', 'border-stone-200');
+                    btn.classList.add('hover:bg-stone-100');
+                }
+            });
+
+            document.getElementById('empty-state').classList.add('hidden');
+            document.getElementById('detail-content').classList.remove('hidden');
+
+            document.getElementById('detail-title').textContent = stack.name;
+            const badge = document.getElementById('detail-badge');
+            badge.textContent = `Pop Index: ${stack.popularity}`;
+            badge.style.backgroundColor = stack.color + '20';
+            badge.style.color = stack.color;
+            
+            document.getElementById('detail-desc').textContent = stack.desc;
+            
+            document.getElementById('detail-frontend').textContent = stack.components.frontend;
+            document.getElementById('detail-backend').textContent = stack.components.backend;
+            document.getElementById('detail-database').textContent = stack.components.database;
+
+            const prosList = document.getElementById('detail-pros');
+            prosList.innerHTML = stack.pros.map(pro => `<li class="flex items-start"><span class="text-emerald-500 mr-2 font-bold">&#x2022;</span> <span>${pro}</span></li>`).join('');
+
+            const consList = document.getElementById('detail-cons');
+            consList.innerHTML = stack.cons.map(con => `<li class="flex items-start"><span class="text-red-500 mr-2 font-bold">&#x2022;</span> <span>${con}</span></li>`).join('');
+
+            document.getElementById('detail-usecase').textContent = stack.usecase;
+            document.getElementById('detail-usecase').parentElement.style.backgroundColor = stack.color;
+        }
+
+        window.addEventListener('DOMContentLoaded', initApp);
+
+    </script>
+</body>
+</html>
