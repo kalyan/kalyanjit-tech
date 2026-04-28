@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vibe Programming Tools & Ecosystems</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Chosen Palette: Warm Neutrals with Teal Accents (Stone, Sand, White, Teal) -->
+    <!-- Application Structure Plan: A single-page dashboard-style application. The structure begins with an executive summary and architecture breakdown to establish context. It then moves into a data-driven section featuring an interactive tool explorer (allowing users to filter and search the core tools) and analytical charts visualizing learning curves and domain difficulties. The final section provides a deep dive into specialized domains using a tabbed interface, concluding with an actionable roadmap. This flow moves from high-level understanding to specific tool selection, optimizing for easy consumption of the research. -->
+    <!-- Visualization & Content Choices: 
+         - Architecture: Stacked HTML/CSS blocks -> Goal: Organize/Explain -> Interaction: Hover effects -> Justification: Clearly shows the 3-layer stack without needing external images/SVG. Library: Vanilla HTML/Tailwind.
+         - Tool Explorer: CSS Grid with JS filtering -> Goal: Inform/Organize -> Interaction: Search bar & category buttons -> Justification: Allows users to quickly find tools matching their skill level. Library: Vanilla JS.
+         - Domain Difficulty: Bar Chart -> Goal: Compare -> Interaction: Tooltips -> Justification: Best way to compare quantitative difficulty (stars) across discrete domains. Library: Chart.js (Canvas).
+         - Learning Curves: Doughnut Chart -> Goal: Proportions -> Interaction: Tooltips/Hover -> Justification: Shows the distribution of accessibility among core tools. Library: Chart.js (Canvas).
+         - Specialized Domains: Tabbed Interface -> Goal: Organize -> Interaction: Click tabs to reveal content -> Justification: Prevents overwhelming the user with text, chunking specialized info logically. Library: Vanilla JS.
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #F7F5F0; /* Light warm neutral */
+            color: #333333;
+        }
+        
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+
+        /* Custom Scrollbar for sleekness */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #F7F5F0; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+
+        .tab-active {
+            background-color: #0f766e; /* Teal 700 */
+            color: white;
+            border-color: #0f766e;
+        }
+        .tab-inactive {
+            background-color: #f1f5f9;
+            color: #475569;
+            border-color: #e2e8f0;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- Header Section -->
+    <header class="bg-[#EBE6DD] border-b border-[#D6D0C4] pt-12 pb-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
+                <div>
+                    <h1 class="text-4xl font-extrabold text-stone-800 tracking-tight mb-2">Vibe Programming Ecosystems</h1>
+                    <p class="text-xl text-stone-600 max-w-2xl">A comprehensive research plan analyzing the shift from syntax-heavy coding to intent-based development across diverse industrial domains.</p>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex items-center gap-4">
+                    <div class="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 text-xl font-bold">
+                        KH
+                    </div>
+                    <div>
+                        <p class="text-sm text-stone-500 uppercase tracking-wider font-semibold">Author</p>
+                        <p class="font-bold text-stone-800">Kalyanjit Hatibaruah</p>
+                        <p class="text-sm text-teal-600 font-medium">&#128222; +91-9864011106</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-16">
+
+        <!-- Executive Summary & Architecture -->
+        <section id="overview" class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
+            <div>
+                <h2 class="text-2xl font-bold text-stone-800 mb-4 border-b-2 border-teal-500 pb-2 inline-block">The Paradigm Shift</h2>
+                <p class="text-stone-600 mb-4 leading-relaxed">
+                    This section introduces the foundational concept of the report. "Vibe Programming" represents a fundamental shift in software creation. Instead of manually writing syntax, developers use natural language prompts and contextual "vibes" to drive AI models that generate, orchestrate, and debug code.
+                </p>
+                <div class="bg-white p-6 rounded-xl shadow-sm border border-stone-200">
+                    <h3 class="text-lg font-bold text-stone-800 mb-3">&#128161; Key Takeaway</h3>
+                    <p class="text-stone-600">The tools analyzed here categorize this movement across diverse domains, evaluating their technical foundations, chosen LLMs (largely dominated by Claude 3.5 Sonnet), and accessibility for developers.</p>
+                </div>
+            </div>
+
+            <div>
+                <h2 class="text-2xl font-bold text-stone-800 mb-4 border-b-2 border-teal-500 pb-2 inline-block">Technical Architecture</h2>
+                <p class="text-stone-600 mb-6 text-sm">Hover over the layers below to understand the standard "Vibe Stack" structure powering these tools.</p>
+                
+                <div class="flex flex-col gap-3">
+                    <!-- Layer 1 -->
+                    <div class="group bg-white border border-stone-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-all hover:border-teal-400 cursor-pointer relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-teal-500 group-hover:w-3 transition-all"></div>
+                        <div class="pl-4">
+                            <h4 class="font-bold text-stone-800 text-lg flex items-center gap-2">&#128187; 1. The Interface</h4>
+                            <p class="text-sm text-stone-600 mt-1">IDEs (Cursor, Windsurf) or Browser-based sandboxes (Bolt, Replit) where the developer interacts.</p>
+                        </div>
+                    </div>
+                    <!-- Layer 2 -->
+                    <div class="group bg-white border border-stone-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-all hover:border-teal-400 cursor-pointer relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-teal-600 group-hover:w-3 transition-all"></div>
+                        <div class="pl-4">
+                            <h4 class="font-bold text-stone-800 text-lg flex items-center gap-2">&#9881; 2. The Orchestrator</h4>
+                            <p class="text-sm text-stone-600 mt-1">Agentic frameworks that handle file-system access, terminal execution, and multi-step reasoning.</p>
+                        </div>
+                    </div>
+                    <!-- Layer 3 -->
+                    <div class="group bg-white border border-stone-200 p-4 rounded-lg shadow-sm hover:shadow-md transition-all hover:border-teal-400 cursor-pointer relative overflow-hidden">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-teal-700 group-hover:w-3 transition-all"></div>
+                        <div class="pl-4">
+                            <h4 class="font-bold text-stone-800 text-lg flex items-center gap-2">&#129416; 3. The Inference Layer</h4>
+                            <p class="text-sm text-stone-600 mt-1">Integration with frontier LLMs. Claude 3.5 Sonnet is currently the industry favorite for coding tasks.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Analytics / Data Visualizations -->
+        <section class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-8">
+            <h2 class="text-2xl font-bold text-stone-800 mb-2">Industry Landscape Analytics</h2>
+            <p class="text-stone-600 mb-8 max-w-3xl">Explore the quantitative distribution of the tools across different learning curves and the relative difficulty of implementing Vibe Programming in various industrial domains.</p>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <!-- Chart 1: Learning Curve -->
+                <div>
+                    <h3 class="text-lg font-bold text-stone-700 mb-4 text-center">Core Tools: Learning Curve Distribution</h3>
+                    <div class="chart-container">
+                        <canvas id="learningCurveChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center text-stone-500 mt-4">The majority of general web tools prioritize a low learning curve to enable rapid prototyping.</p>
+                </div>
+
+                <!-- Chart 2: Domain Difficulty -->
+                <div>
+                    <h3 class="text-lg font-bold text-stone-700 mb-4 text-center">Implementation Difficulty by Domain</h3>
+                    <div class="chart-container">
+                        <canvas id="domainDifficultyChart"></canvas>
+                    </div>
+                    <p class="text-sm text-center text-stone-500 mt-4">Hardware and Infrastructure domains present significantly higher barriers compared to Web Development.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive Tool Explorer -->
+        <section>
+            <div class="flex flex-col md:flex-row justify-between items-end mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-stone-800 border-b-2 border-teal-500 pb-2 inline-block">Core Vibe Tools Explorer</h2>
+                    <p class="text-stone-600 mt-3 max-w-2xl">Use this interactive directory to filter general-purpose and web-focused tools based on their learning curve. Search by name or tech stack to find the right tool for your prototyping needs.</p>
+                </div>
+                
+                <div class="mt-6 md:mt-0 flex flex-col gap-3 w-full md:w-auto">
+                    <input type="text" id="toolSearch" placeholder="Search tools or stacks..." class="px-4 py-2 border border-stone-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 w-full md:w-64">
+                    <div class="flex gap-2" id="filterButtons">
+                        <button class="px-3 py-1 text-sm rounded-full bg-teal-600 text-white font-medium filter-btn" data-filter="All">All</button>
+                        <button class="px-3 py-1 text-sm rounded-full bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors filter-btn" data-filter="Low">Low</button>
+                        <button class="px-3 py-1 text-sm rounded-full bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors filter-btn" data-filter="Medium">Medium</button>
+                        <button class="px-3 py-1 text-sm rounded-full bg-stone-200 text-stone-700 hover:bg-stone-300 transition-colors filter-btn" data-filter="High">High</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid Container -->
+            <div id="toolsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- Cards injected via JS -->
+            </div>
+        </section>
+
+        <!-- Specialized Domains Deep Dive (Tabs) -->
+        <section class="bg-stone-100 rounded-2xl p-6 sm:p-8 border border-stone-200">
+            <h2 class="text-2xl font-bold text-stone-800 mb-2">Specialized Industrial Domains</h2>
+            <p class="text-stone-600 mb-8 max-w-3xl">Vibe programming is moving beyond simple web applications. Explore how different, more complex industries are adopting intent-based frameworks by selecting a domain below.</p>
+
+            <div class="flex flex-wrap gap-2 mb-6" id="domainTabs">
+                <button class="tab-btn px-6 py-3 rounded-t-lg font-bold transition-colors tab-active" data-target="vlsi">VLSI & Semiconductor</button>
+                <button class="tab-btn px-6 py-3 rounded-t-lg font-bold transition-colors tab-inactive" data-target="iot">IoT & Embedded</button>
+                <button class="tab-btn px-6 py-3 rounded-t-lg font-bold transition-colors tab-inactive" data-target="web3">Web3 & Blockchain</button>
+                <button class="tab-btn px-6 py-3 rounded-t-lg font-bold transition-colors tab-inactive" data-target="cloud">Cloud & DevOps</button>
+            </div>
+
+            <div class="bg-white p-6 sm:p-8 rounded-b-lg rounded-tr-lg shadow-sm border border-stone-200 min-h-[250px]" id="domainContentArea">
+                <!-- Content injected via JS -->
+            </div>
+        </section>
+
+        <!-- Next Steps / Roadmap -->
+        <section>
+            <h2 class="text-2xl font-bold text-stone-800 mb-6 border-b-2 border-teal-500 pb-2 inline-block">Implementation Roadmap</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="bg-white p-6 rounded-xl border-l-4 border-teal-600 shadow-sm">
+                    <div class="text-2xl mb-3">&#128256;</div>
+                    <h3 class="font-bold text-lg text-stone-800 mb-2">Evaluate Interoperability</h3>
+                    <p class="text-stone-600 text-sm">Testing how general-purpose IDEs like <strong>Windsurf</strong> handle highly specialized tasks, such as VLSI-specific Python scripts.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-l-4 border-teal-600 shadow-sm">
+                    <div class="text-2xl mb-3">&#128200;</div>
+                    <h3 class="font-bold text-lg text-stone-800 mb-2">Benchmark Logic Accuracy</h3>
+                    <p class="text-stone-600 text-sm">Comparing model outputs (Claude 3.5 vs. GPT-4o) specifically for high-stakes environments like complex <strong>Blockchain</strong> smart contract security.</p>
+                </div>
+
+                <div class="bg-white p-6 rounded-xl border-l-4 border-teal-600 shadow-sm">
+                    <div class="text-2xl mb-3">&#128274;</div>
+                    <h3 class="font-bold text-lg text-stone-800 mb-2">Local LLM Integration</h3>
+                    <p class="text-stone-600 text-sm">Exploring open-weight models like Llama-3 (70B) for sensitive <strong>Semiconductor</strong> IP development to ensure absolute data privacy and avoid leakage.</p>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-stone-800 text-stone-300 py-10 text-center mt-12">
+        <p class="mb-2">Compiled based on the research plan by <strong>Kalyanjit Hatibaruah</strong>.</p>
+        <p class="text-sm">Contact: <a href="tel:+919864011106" class="text-teal-400 hover:text-teal-300 transition-colors">+91-9864011106</a></p>
+    </footer>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- Data Storage ---
+        const coreTools = [
+            { name: "Cursor", stack: "VS Code Fork, Electron", llms: "Claude 3.5 Sonnet, GPT-4o", curve: "Low", curveRaw: "Low", domain: "General Web/Software", icon: "&#128187;" },
+            { name: "Windsurf", stack: "Go, TypeScript (Flow)", llms: "Claude 3.5, GPT-4o", curve: "Medium", curveRaw: "Medium", domain: "Full-stack Web", icon: "&#127744;" },
+            { name: "Lovable", stack: "React, Supabase", llms: "Claude 3.5", curve: "Low (No-code)", curveRaw: "Low", domain: "Web Apps", icon: "&#10084;&#65039;" },
+            { name: "Bolt.new", stack: "Vite, WebContainers", llms: "Claude 3.5, GPT-4o", curve: "Very Low", curveRaw: "Low", domain: "Full-stack Web", icon: "&#9889;" },
+            { name: "Devin", stack: "Proprietary Agentic OS", llms: "GPT-4 / Custom", curve: "High (Agent Mgmt)", curveRaw: "High", domain: "DevOps & Web", icon: "&#129302;" },
+            { name: "Replit Agent", stack: "Python, Nix", llms: "Claude 3.5", curve: "Low", curveRaw: "Low", domain: "Prototyping", icon: "&#128296;" },
+            { name: "PearAI", stack: "Open Source (VS Code)", llms: "Open-weights / GPT-4", curve: "Medium", curveRaw: "Medium", domain: "General", icon: "&#127824;" },
+            { name: "Trae", stack: "ByteDance Engine", llms: "Claude 3.5 / GPT-4o", curve: "Low", curveRaw: "Low", domain: "Cross-platform Web", icon: "&#128640;" },
+            { name: "Aider", stack: "CLI (Python)", llms: "GPT-4o, Claude 3.5", curve: "High (CLI-based)", curveRaw: "High", domain: "Backend/System", icon: "&#128421;" },
+            { name: "Supermaven", stack: "Rust (High-speed)", llms: "Custom (Smaug)", curve: "Low", curveRaw: "Low", domain: "Low-latency Coding", icon: "&#128644;" }
+        ];
+
+        const domainData = {
+            vlsi: {
+                title: "VLSI & Semiconductor",
+                tools: "ChipAgents, RapidSilicon (AI Suite)",
+                stack: "Python, Verilog, C++, LLMs (GPT-4 optimized for hardware)",
+                difficulty: "High (Domain expertise in logic design required) - 5/5 Stars",
+                desc: "Leverages LLMs to generate Verilog/VHDL code and automate complex tasks like floorplanning, synthesis, and routing via natural language."
+            },
+            iot: {
+                title: "IoT & Embedded Systems",
+                tools: "Codey Online, Wokwi AI",
+                stack: "C++, MicroPython, RTOS",
+                difficulty: "Medium - 3/5 Stars",
+                desc: "Focuses on microcontroller ecosystems (Arduino, ESP32) using block-to-code, natural language prompts, and integrates simulation with AI coding for instant hardware-in-the-loop 'vibing'."
+            },
+            web3: {
+                title: "Web3 & Blockchain",
+                tools: "Abstraxn, OpenZeppelin Defender AI, Bunzz",
+                stack: "Solidity, Rust, Substrate, Claude 3.5 (excellent for logic auditing)",
+                difficulty: "Medium/High - 3/5 Stars",
+                desc: "Driven by agentic platforms for deploying smart contracts, managing cross-chain liquidity, and focusing on secure smart contract auditing through natural language analysis."
+            },
+            cloud: {
+                title: "Cloud & Infrastructure (Platform Eng)",
+                tools: "Pulumi Insights, Kubiya",
+                stack: "Go, Terraform, Python, Kubernetes",
+                difficulty: "High - 4/5 Stars",
+                desc: "Transforms natural language to Infrastructure-as-Code (IaC). Uses AI agents that 'vibe' with Slack or CLI to manage Kubernetes clusters and DevOps workflows."
+            }
+        };
+
+        // --- Core Interaction Handling & UI Generation ---
+
+        // 1. Tool Explorer Logic
+        const gridContainer = document.getElementById('toolsGrid');
+        const searchInput = document.getElementById('toolSearch');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        let currentFilter = 'All';
+        let currentSearch = '';
+
+        function getDifficultyColor(curve) {
+            if (curve.includes("Low")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
+            if (curve.includes("Medium")) return "bg-amber-100 text-amber-800 border-amber-200";
+            return "bg-rose-100 text-rose-800 border-rose-200";
+        }
+
+        function renderTools() {
+            gridContainer.innerHTML = '';
+            
+            const filtered = coreTools.filter(tool => {
+                const matchesFilter = currentFilter === 'All' || tool.curveRaw === currentFilter;
+                const matchesSearch = tool.name.toLowerCase().includes(currentSearch.toLowerCase()) || 
+                                      tool.stack.toLowerCase().includes(currentSearch.toLowerCase()) ||
+                                      tool.domain.toLowerCase().includes(currentSearch.toLowerCase());
+                return matchesFilter && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                gridContainer.innerHTML = `<div class="col-span-full text-center py-10 text-stone-500">No tools found matching your criteria.</div>`;
+                return;
+            }
+
+            filtered.forEach(tool => {
+                const diffColor = getDifficultyColor(tool.curve);
+                const card = document.createElement('div');
+                card.className = "bg-white p-5 rounded-xl border border-stone-200 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full";
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl">${tool.icon}</span>
+                            <h3 class="font-bold text-lg text-stone-800">${tool.name}</h3>
+                        </div>
+                        <span class="text-xs px-2 py-1 rounded border ${diffColor} font-medium">${tool.curveRaw}</span>
+                    </div>
+                    <div class="flex-grow space-y-2 mt-2">
+                        <div>
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider">Domain</p>
+                            <p class="text-sm text-stone-700">${tool.domain}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider">Tech Stack</p>
+                            <p class="text-sm text-stone-700 font-mono bg-stone-50 p-1 rounded border border-stone-100 mt-1">${tool.stack}</p>
+                        </div>
+                        <div>
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider mt-2">Primary LLMs</p>
+                            <p class="text-sm text-teal-700 font-medium">${tool.llms}</p>
+                        </div>
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // Event Listeners for Filtering
+        searchInput.addEventListener('input', (e) => {
+            currentSearch = e.target.value;
+            renderTools();
+        });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Update active state styles
+                filterBtns.forEach(b => {
+                    b.classList.remove('bg-teal-600', 'text-white');
+                    b.classList.add('bg-stone-200', 'text-stone-700');
+                });
+                e.target.classList.remove('bg-stone-200', 'text-stone-700');
+                e.target.classList.add('bg-teal-600', 'text-white');
+                
+                currentFilter = e.target.getAttribute('data-filter');
+                renderTools();
+            });
+        });
+
+        // 2. Specialized Domains Tab Logic
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const contentArea = document.getElementById('domainContentArea');
+
+        function renderDomainContent(domainKey) {
+            const data = domainData[domainKey];
+            contentArea.innerHTML = `
+                <div class="animate-fade-in">
+                    <h3 class="text-2xl font-extrabold text-teal-800 mb-4">${data.title}</h3>
+                    <p class="text-stone-700 text-lg mb-6 leading-relaxed">${data.desc}</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider mb-1">Leading Tools</p>
+                            <p class="font-medium text-stone-800">${data.tools}</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider mb-1">Tech Stack Focus</p>
+                            <p class="font-medium text-stone-800">${data.stack}</p>
+                        </div>
+                        <div class="bg-stone-50 p-4 rounded-lg border border-stone-200">
+                            <p class="text-xs text-stone-500 uppercase font-bold tracking-wider mb-1">Learning Curve</p>
+                            <p class="font-medium text-rose-700">${data.difficulty}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // Style updates
+                tabBtns.forEach(b => {
+                    b.classList.remove('tab-active');
+                    b.classList.add('tab-inactive');
+                });
+                e.target.classList.remove('tab-inactive');
+                e.target.classList.add('tab-active');
+
+                // Content update
+                const target = e.target.getAttribute('data-target');
+                renderDomainContent(target);
+            });
+        });
+
+        // Add simple animation style dynamically for tab content
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+            .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        `;
+        document.head.appendChild(style);
+
+        // 3. Initialize Charts (Chart.js)
+        function initCharts() {
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.color = '#78716c';
+
+            // Chart 1: Learning Curve (Doughnut)
+            // Calculate distributions from data
+            const lowCount = coreTools.filter(t => t.curveRaw === 'Low').length;
+            const medCount = coreTools.filter(t => t.curveRaw === 'Medium').length;
+            const highCount = coreTools.filter(t => t.curveRaw === 'High').length;
+
+            const ctxCurve = document.getElementById('learningCurveChart').getContext('2d');
+            new Chart(ctxCurve, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Low Barrier', 'Medium Barrier', 'High Barrier'],
+                    datasets: [{
+                        data: [lowCount, medCount, highCount],
+                        backgroundColor: [
+                            '#14b8a6', // Teal 500
+                            '#f59e0b', // Amber 500
+                            '#f43f5e'  // Rose 500
+                        ],
+                        borderWidth: 0,
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` ${context.label}: ${context.raw} Tools`;
+                                }
+                            }
+                        }
+                    },
+                    cutout: '65%'
+                }
+            });
+
+            // Chart 2: Domain Difficulty (Bar)
+            // Based on Domain Summary Table mapping difficulty stars to 1-5 scale
+            const ctxDomain = document.getElementById('domainDifficultyChart').getContext('2d');
+            new Chart(ctxDomain, {
+                type: 'bar',
+                data: {
+                    labels: ['Web Dev', 'Web3 / Crypto', 'IoT / Embedded', 'Cloud / DevOps', 'VLSI / Semi'],
+                    datasets: [{
+                        label: 'Difficulty Level (Stars)',
+                        data: [1, 3, 3, 4, 5],
+                        backgroundColor: '#0d9488', // Teal 600
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 5,
+                            ticks: { stepSize: 1 }
+                        },
+                        x: {
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ` Difficulty: ${context.raw}/5 Stars`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTools();
+            renderDomainContent('vlsi'); // Load default tab
+            initCharts();
+        });
+
+    </script>
+</body>
+</html>
