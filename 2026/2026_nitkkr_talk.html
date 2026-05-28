@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Start-Up Legal & Ethical Steps - Digital Companion</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #FAF8F5; /* Warm Sand */
+    color: #1A202C;
+}
+h1, h2, h3, h4,.font-heading {
+    font-family: 'Space Grotesk', sans-serif;
+}
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 320px;
+}
+.tab-content {
+    display: none;
+    animation: fadeIn 0.4s ease-in-out;
+}
+.tab-content.active {
+    display: block;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.glass-panel {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(226, 232, 240, 0.8);
+}
+.accent-terracotta {
+    color: #C05621;
+}
+.bg-terracotta {
+    background-color: #C05621;
+}
+.border-terracotta {
+    border-color: #C05621;
+}
+</style>
+</head>
+<body class="antialiased min-h-screen flex flex-col selection:bg-orange-100 selection:text-orange-900">
+
+<nav class="sticky top-0 z-50 glass-panel border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16 items-center">
+            <div class="flex-shrink-0 flex items-center gap-2">
+                <div class="w-10 h-10 bg-terracotta text-white rounded-xl font-bold flex items-center justify-center text-lg shadow-md shadow-orange-700/20">IIC</div>
+                <div class="flex flex-col">
+                    <span class="font-bold text-base tracking-tight leading-none text-gray-900">NIT Kurukshetra</span>
+                    <span class="text-xs text-orange-600 font-semibold tracking-wider uppercase">Innovation Council</span>
+                </div>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="#event-meta" class="text-gray-600 hover:text-terracotta px-3 py-2 text-sm font-medium transition-colors">The Session</a>
+                <a href="#compliance-dashboard" class="text-gray-600 hover:text-terracotta px-3 py-2 text-sm font-medium transition-colors">Compliance Engine</a>
+                <a href="#frameworks" class="text-gray-600 hover:text-terracotta px-3 py-2 text-sm font-medium transition-colors">Legal Frameworks</a>
+            </div>
+            <div>
+                <a href="https://meet.google.com/ezm-oxwp-rfh" target="_blank" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-bold rounded-xl text-white bg-terracotta hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-all shadow-md shadow-orange-700/10">
+                    &#128187; Join Google Meet
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<header class="relative overflow-hidden pt-12 pb-20 lg:pt-20 lg:pb-28 border-b border-orange-100 bg-gradient-to-b from-orange-50/50 to-transparent">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-7 space-y-6">
+                <div class="inline-flex items-center gap-2 bg-orange-100/80 border border-orange-200 px-3 py-1.5 rounded-full text-xs font-bold text-orange-800 tracking-wide uppercase">
+                    <span>&#127891;</span> NIT Kurukshetra Alumni Expert Lecture
+                </div>
+                
+                <h1 class="text-4xl sm:text-5xl md:text-6xl font-black text-gray-900 tracking-tight leading-none">
+                    Start-Up Legal &<br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-700">Ethical Steps:</span><br>
+                    <span class="text-2xl sm:text-3xl font-bold text-gray-700">Navigate. Comply. Build with Integrity.</span>
+                </h1>
+                
+                <p class="text-base sm:text-lg text-gray-600 max-w-2xl leading-relaxed">
+                    A comprehensive, interactive companion synthesis mapping foundational corporate legal requirements, IP patenting strategies, DPDP data governance architecture, and FEMA overseas expansion compliance rules.
+                </p>
+
+                <div class="p-4 bg-white/90 border border-orange-100 rounded-2xl shadow-sm flex flex-col sm:flex-row items-center gap-4 max-w-md">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl animate-pulse">&#128336;</span>
+                        <div>
+                            <p class="text-xs text-gray-400 font-bold uppercase tracking-wider">Session Starts In</p>
+                            <p class="text-xs font-medium text-gray-600">29 May 2026, 10:00 AM</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2 text-center ml-auto" id="timer-container">
+                        <div class="bg-orange-50 px-2 py-1 rounded-lg border border-orange-100"><span id="days" class="font-bold text-orange-700 text-sm">00</span><p class="text-[9px] text-gray-400 uppercase font-semibold">Days</p></div>
+                        <div class="bg-orange-50 px-2 py-1 rounded-lg border border-orange-100"><span id="hours" class="font-bold text-orange-700 text-sm">00</span><p class="text-[9px] text-gray-400 uppercase font-semibold">Hrs</p></div>
+                        <div class="bg-orange-50 px-2 py-1 rounded-lg border border-orange-100"><span id="minutes" class="font-bold text-orange-700 text-sm">00</span><p class="text-[9px] text-gray-400 uppercase font-semibold">Mins</p></div>
+                        <div class="bg-orange-50 px-2 py-1 rounded-lg border border-orange-100"><span id="seconds" class="font-bold text-orange-700 text-sm">00</span><p class="text-[9px] text-gray-400 uppercase font-semibold">Secs</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-5">
+                <div class="bg-white rounded-3xl p-6 border border-gray-200/80 shadow-xl relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-orange-100 rounded-full filter blur-2xl opacity-50 -mr-10 -mt-10"></div>
+                    
+                    <div class="relative space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-20 h-20 bg-orange-150 rounded-2xl flex items-center justify-center text-4xl border border-orange-200 shadow-inner">&#128302;</div>
+                            <div>
+                                <p class="text-xs text-orange-600 font-extrabold tracking-wider uppercase">Speaker Profile</p>
+                                <h2 class="text-2xl font-extrabold text-gray-900 leading-tight">Mr. Kalyanjit Hatibaruah</h2>
+                                <p class="text-xs text-gray-500 font-medium">NIT Kurukshetra Alumnus (BTech, ECE) | MBA Pune Univ.</p>
+                            </div>
+                        </div>
+
+                        <div class="h-px bg-gray-100"></div>
+
+                        <div class="space-y-3 text-sm text-gray-600">
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-base text-orange-600 leading-none">&#128188;</span>
+                                <p><strong>Chairman</strong>, Flugelsoft Group</p>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-base text-orange-600 leading-none">&#128181;</span>
+                                <p><strong>Angel Investor</strong>, Mumbai Angels Network</p>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-base text-orange-600 leading-none">&#128202;</span>
+                                <p><strong>Distinguished Expert</strong> in Blockchain Technology, Web3, & AI/ML Integration</p>
+                            </div>
+                            <div class="flex items-start gap-2.5">
+                                <span class="text-base text-orange-600 leading-none">&#129309;</span>
+                                <p><strong>Mentor</strong> at T-Hub, IIT Madras (Nirmaan), & IIM Kozhikode</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-4 flex gap-3">
+                            <a href="https://meet.google.com/ezm-oxwp-rfh" target="_blank" class="flex-1 text-center bg-gray-900 text-white font-bold py-3 px-4 rounded-xl text-xs hover:bg-gray-800 transition-colors shadow">
+                                &#128204; Google Meet: ezm-oxwp-rfh
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-20 flex-grow">
+
+    <section id="compliance-dashboard" class="scroll-mt-24 space-y-8">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Venture Risk & Capital Analytics</h2>
+            <p class="mt-2 text-gray-600 max-w-3xl text-sm leading-relaxed">
+                Explore structured data analyzing early-stage compliance risks and the macroeconomic impact of India's recent regulatory reforms on start-up capital efficiency.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+                <h3 class="text-lg font-bold text-gray-900">Start-Up Operational Compliance Risk Audit</h3>
+                <p class="text-xs text-gray-500">Relative impact and readiness evaluation metrics across the core legal parameters defined during the lecture.</p>
+                <div class="chart-container">
+                    <canvas id="riskChart"></canvas>
+                </div>
+                <div class="p-3 bg-orange-50 rounded-xl border border-orange-100">
+                    <p class="text-xs text-orange-950"><strong>Audit Insight:</strong> Data Privacy (DPDP Act) represents the highest ongoing regulatory liability for technology platforms, requiring active database controls.[3]</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="text-lg font-bold text-gray-900">Angel Capital Allocation (12-Year Shift)</h3>
+                    <div class="inline-flex rounded-lg p-1 bg-gray-100 gap-1">
+                        <button onclick="toggleTaxData('pre')" id="tax-pre-btn" class="px-3 py-1 text-xs font-semibold rounded bg-white text-gray-900 shadow-sm transition-all">Pre-Abolition (FY24)</button>
+                        <button onclick="toggleTaxData('post')" id="tax-post-btn" class="px-3 py-1 text-xs font-semibold rounded text-gray-500 hover:text-gray-900 transition-all">Post-Abolition (FY26)</button>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-500">How the complete removal of the Section 56(2)(viib) "Angel Tax" changes early-stage seed round utilization.[2]</p>
+                <div class="chart-container flex items-center justify-center">
+                    <canvas id="taxChart"></canvas>
+                </div>
+                <div class="p-3 bg-orange-50 rounded-xl border border-orange-100">
+                    <p id="tax-insight-text" class="text-xs text-orange-950"><strong>FY24 Baseline:</strong> Up to 31% of startup seed premiums were tied up in escrow or direct tax penalties due to government valuation disputes.[2]</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="frameworks" class="scroll-mt-24 space-y-8">
+        <div>
+            <h2 class="text-3xl font-extrabold text-gray-900 tracking-tight">Key Venture Structuring Frameworks</h2>
+            <p class="mt-2 text-gray-600 max-w-3xl text-sm leading-relaxed">
+                Click through the modules below to review the synthesis of the practical corporate law, data protection architecture, and international flipping methodologies shared in the expert session.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
+            <div class="flex border-b border-gray-200 bg-gray-50/50 overflow-x-auto">
+                <button class="tab-link flex-1 py-4 px-6 text-center text-sm font-bold text-terracotta border-b-2 border-terracotta bg-orange-50/20 whitespace-nowrap transition-all" data-target="dpiit">1. DPIIT & Corporate Base</button>
+                <button class="tab-link flex-1 py-4 px-6 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-900 whitespace-nowrap transition-all" data-target="patent">2. Software Patents & Section 3(k)</button>
+                <button class="tab-link flex-1 py-4 px-6 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-900 whitespace-nowrap transition-all" data-target="dpdp">3. Data Ethics & DPDP Act</button>
+                <button class="tab-link flex-1 py-4 px-6 text-center text-sm font-medium text-gray-500 border-b-2 border-transparent hover:text-gray-900 whitespace-nowrap transition-all" data-target="fema">4. FEMA Outbound & Flipping</button>
+            </div>
+
+            <div class="p-8">
+                <div id="dpiit" class="tab-content active space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-8 space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-900">Corporate Foundation & Government Recognition</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                Establishing a Private Limited structure remains the core prerequisite for institutional venture scale.[6] Under the Startup India initiative, obtaining recognition from the Department for Promotion of Industry and Internal Trade (DPIIT) unlocks unparalleled tax and compliance offsets.[6]
+                            </p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                                <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                    <p class="text-xs font-bold text-orange-600 uppercase mb-1">Corporate Structuring</p>
+                                    <p class="text-xs text-gray-600">Private Limited offers equity transferability, board configurations, and limited liability preferred by institutional VCs.[6, 7]</p>
+                                </div>
+                                <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/50">
+                                    <p class="text-xs font-bold text-orange-600 uppercase mb-1">Section 80-IAC Tax Exemption</p>
+                                    <p class="text-xs text-gray-600">Grants recognized innovative startups a 100% tax holiday on corporate profits for 3 consecutive years.[8]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 bg-orange-50/50 border border-orange-100 rounded-2xl p-6 space-y-4">
+                            <p class="text-sm font-bold text-orange-950 uppercase tracking-wider">DPIIT Eligibility Checklist</p>
+                            <ul class="space-y-3 text-xs text-orange-900 font-medium">
+                                <li class="flex items-center gap-2"><span>&#10004;</span> Entity age is under 10 years [6]</li>
+                                <li class="flex items-center gap-2"><span>&#10004;</span> Incorporated as Private Ltd/LLP [6]</li>
+                                <li class="flex items-center gap-2"><span>&#10004;</span> Annual Turnover &lt; INR 100 Crore [6]</li>
+                                <li class="flex items-center gap-2"><span>&#10004;</span> Novelty or process innovation focus [6]</li>
+                                <li class="flex items-center gap-2"><span>&#10004;</span> Not a reconstruction of old business [6]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="patent" class="tab-content space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-8 space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-900">Navigating Section 3(k) of the Indian Patents Act</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                Section 3(k) explicitly excludes "a mathematical or business method or a computer programme per se or algorithms" from patent protection to keep pure abstractions in the public domain.[9, 4] To successfully protect your Deeptech, AI/ML, or Web3 blockchain IP, your patent claims must reflect a demonstrable hardware interaction.[10, 4]
+                            </p>
+                            
+                            <div class="p-5 bg-gray-50 border border-gray-200 rounded-xl">
+                                <p class="text-xs font-bold text-gray-700 uppercase tracking-wider mb-4 text-center">Software Patentability Evaluation Pipeline</p>
+                                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div class="bg-white border border-gray-250 p-3 rounded-lg text-center shadow-sm w-full"><p class="text-xs font-bold">Deeptech/AI Code</p><p class="text-[10px] text-gray-400">Pure standalone software</p></div>
+                                    <div class="text-gray-400 font-bold">&#10132;</div>
+                                    <div class="bg-red-50 border border-red-200 p-3 rounded-lg text-center shadow-sm w-full"><p class="text-xs font-bold text-red-800">"Per Se" Filter</p><p class="text-[10px] text-red-500">Subject to Sec 3(k) [9]</p></div>
+                                    <div class="text-gray-400 font-bold">&#10132;</div>
+                                    <div class="bg-green-50 border border-green-200 p-3 rounded-lg text-center shadow-sm w-full"><p class="text-xs font-bold text-green-800">Technical Effect</p><p class="text-[10px] text-green-600">Hardware interaction [10]</p></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 bg-gray-50 border border-gray-200 rounded-2xl p-6 space-y-4">
+                            <p class="text-sm font-bold text-gray-900 uppercase tracking-wider">Judicial Benchmarks</p>
+                            <div class="space-y-4 text-xs text-gray-600">
+                                <div>
+                                    <p class="font-bold text-gray-900">Ferid Allani v. Union of India</p>
+                                    <p class="mt-1">Established that software is patentable if it produces a novel "technical contribution" or "technical effect".[10, 11]</p>
+                                </div>
+                                <div class="h-px bg-gray-200"></div>
+                                <div>
+                                    <p class="font-bold text-gray-900">Accenture Global Services v. IPO</p>
+                                    <p class="mt-1">Confirmed that novel hardware modifications are not mandatory; the technical contribution can lie within software execution.[10]</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dpdp" class="tab-content space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-8 space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-900">The DPDP Act 2023 Compliance Blueprint</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                Under India's Digital Personal Data Protection (DPDP) Act, 2023, startups collecting user information are designated as "Data Fiduciaries" and face statutory penalties of up to INR 250 crore for processing failures or breaches.[12, 3, 13]
+                            </p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                                <div class="p-4 border border-gray-150 rounded-xl bg-white text-center shadow-sm">
+                                    <span class="text-2xl">&#9997;</span>
+                                    <p class="text-xs font-extrabold text-gray-950 mt-2 mb-1">Clear Notice & Consent</p>
+                                    <p class="text-[11px] text-gray-500">Provide user privacy notifications in English or 22 scheduled languages before collecting data.[3, 13]</p>
+                                </div>
+                                <div class="p-4 border border-gray-150 rounded-xl bg-white text-center shadow-sm">
+                                    <span class="text-2xl">&#128683;</span>
+                                    <p class="text-xs font-extrabold text-gray-950 mt-2 mb-1">Children's Data Laws</p>
+                                    <p class="text-[11px] text-gray-500">Strictly no behavior-tracking, target marketing, or unverified profiling for users under 18.[14, 3]</p>
+                                </div>
+                                <div class="p-4 border border-gray-150 rounded-xl bg-white text-center shadow-sm">
+                                    <span class="text-2xl">&#128165;</span>
+                                    <p class="text-xs font-extrabold text-gray-950 mt-2 mb-1">Breach Playbook</p>
+                                    <p class="text-[11px] text-gray-500">Notify the Data Protection Board (DPBI) and users within the strict regulatory timelines.[14, 3, 13]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 bg-orange-50/50 border border-orange-100 rounded-2xl p-6 space-y-4">
+                            <p class="text-sm font-bold text-orange-950 uppercase tracking-wider">Operational Rollout Tasks</p>
+                            <div class="space-y-3 text-xs text-orange-900 font-medium">
+                                <p><strong>1. Record of Processing Activities (RoPA):</strong> Inventory where digital personal data lives.[13]</p>
+                                <p><strong>2. Grievance Redressal:</strong> Formally publish an accessible complaint channel and designate a contact officer.[3, 13]</p>
+                                <p><strong>3. Vendor Processor Auditing:</strong> Revise third-party subprocessor contracts.[3, 13]</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="fema" class="tab-content space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+                        <div class="md:col-span-8 space-y-4">
+                            <h3 class="text-2xl font-bold text-gray-900">Offshore Holding Companies & Outbound Regulations</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed">
+                                For startups seeking global VCs, establishing an offshore holding company (e.g., in Singapore or Delaware) is a highly strategic milestone, commonly known as "flipping".[7, 15] This process is governed under FEMA's Overseas Investment (OI) Rules of 2022 and strictly monitored to prevent unauthorized "round-tripping".[16, 5]
+                            </p>
+                            
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                                <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/30">
+                                    <p class="text-xs font-bold text-gray-800 uppercase mb-1">Gradual Migration Model</p>
+                                    <p class="text-[11px] text-gray-500">Incorporating a new offshore entity that creates a new Indian operational subsidiary. Avoids high capital gains taxes upon direct share-swapping.[7]</p>
+                                </div>
+                                <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/30">
+                                    <p class="text-xs font-bold text-gray-800 uppercase mb-1">The LRS Limit</p>
+                                    <p class="text-[11px] text-gray-500">Individual Indian residents are capped at remitting a maximum of USD 250,000 per financial year for overseas direct investments.[15]</p>
+                                </div>
+                                <div class="p-4 border border-gray-100 rounded-xl bg-gray-50/30">
+                                    <p class="text-xs font-bold text-gray-800 uppercase mb-1">Round-Tripping Block</p>
+                                    <p class="text-[11px] text-gray-500">Overseas investments must not create multi-tier downstream Indian subsidiaries beyond the regulatory 2-layer limit.[16, 5]</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="md:col-span-4 bg-gray-50 border border-gray-200 rounded-2xl p-6 space-y-4">
+                            <p class="text-sm font-bold text-gray-900 uppercase tracking-wider">Due Diligence Checklist</p>
+                            <ul class="space-y-3 text-xs text-gray-600 font-medium">
+                                <li class="flex items-start gap-2"><span>&#10004;</span> FEMA Pricing Guidelines & FMV Valuation compliance [7, 16]</li>
+                                <li class="flex items-start gap-2"><span>&#10004;</span> Undergo Section 44AB audits if digital turnover &gt; 10 Cr [17]</li>
+                                <li class="flex items-start gap-2"><span>&#10004;</span> Implement reverse-vesting models with a 1-year cliff [18]</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<footer class="bg-gray-950 text-white py-12 border-t border-orange-900/20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
+        <p class="text-xs text-gray-500 font-bold uppercase tracking-widest">Coordinated Joint Initiative</p>
+        <p class="text-sm text-gray-400">
+            Institution's Innovation Council (Ministry of Education Initiative) • National Institute of Technology Kurukshetra • Infrastructure Society of NITK
+        </p>
+        <p class="text-[11px] text-gray-600">
+            All rights reserved. Digital Synthesis Manual based on the May 29, 2026 expert session by Mr. Kalyanjit Hatibaruah.[1]
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Live Event Countdown Script
+    const targetDate = new Date("May 29, 2026 10:00:00").getTime();
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const difference = targetDate - now;
+
+        if (difference < 0) {
+            document.getElementById("timer-container").innerHTML = "<p class='text-xs font-extrabold text-orange-600 uppercase tracking-widest animate-pulse'>Live Session In Progress</p>";
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        document.getElementById("days").innerText = String(days).padStart(2, "0");
+        document.getElementById("hours").innerText = String(hours).padStart(2, "0");
+        document.getElementById("minutes").innerText = String(minutes).padStart(2, "0");
+        document.getElementById("seconds").innerText = String(seconds).padStart(2, "0");
+    }
+    
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Chart A: Risk Audit Radar Chart
+    const riskCtx = document.getElementById('riskChart').getContext('2d');
+    new Chart(riskCtx, {
+        type: 'radar',
+        data: {
+            labels: ['Corporate Base', 'IP Protection', 'Data Privacy (DPDP)', 'FEMA / Flipping', 'Ethical Governance'],
+            datasets: [{
+                label: 'Relative Readiness Assessment Score',
+                data: [75, 45, 60, 50, 80],
+                backgroundColor: 'rgba(192, 86, 33, 0.25)',
+                borderColor: '#C05621',
+                pointBackgroundColor: '#C05621',
+                borderWidth: 2
+            },
+            {
+                label: 'Relative Legal Liability Multiplier',
+                data: [60, 80, 95, 85, 70],
+                backgroundColor: 'rgba(26, 32, 44, 0.05)',
+                borderColor: '#1A202C',
+                pointBackgroundColor: '#1A202C',
+                borderWidth: 1.5,
+                borderDash: [4, 4]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12, font: { family: 'Plus Jakarta Sans', size: 10 } } }
+            },
+            scales: {
+                r: {
+                    grid: { color: 'rgba(0,0,0,0.05)' },
+                    angleLines: { color: 'rgba(0,0,0,0.08)' },
+                    pointLabels: { font: { family: 'Plus Jakarta Sans', size: 9, weight: 'bold' } },
+                    ticks: { display: false, min: 0, max: 100 }
+                }
+            }
+        }
+    });
+
+    // Chart B: Tax Data and toggle system
+    const taxDataSets = {
+        pre: {
+            labels: ['Tax Escrow Holdback', 'Valuation Disputes', 'Core Operations', 'Tech Expansion'],
+            data: [31, 29, 25, 15],
+            insight: "<strong>FY24 Baseline:</strong> Up to 31% of startup seed premiums were tied up in escrow or direct tax penalties due to government valuation disputes.[2]"
+        },
+        post: {
+            labels: ['Core Operations', 'Tech Expansion', 'Market Scaling', 'Unallocated Reserves'],
+            data: [45, 35, 15, 5],
+            insight: "<strong>FY26 Outlook (Post-Reform):</strong> Angel Tax abolition permits founders to deploy 100% of seed capital directly to operational growth and tech expansion with clean compliance records.[2]"
+        }
+    };
+
+    const taxCtx = document.getElementById('taxChart').getContext('2d');
+    let taxChart = new Chart(taxCtx, {
+        type: 'doughnut',
+        data: {
+            labels: taxDataSets.pre.labels,
+            datasets: [{
+                data: taxDataSets.pre.data,
+                backgroundColor: ['#C05621', '#E2E8F0', '#ED8936', '#4A5568'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: { position: 'right', labels: { boxWidth: 10, font: { family: 'Plus Jakarta Sans', size: 10 } } }
+            }
+        }
+    });
+
+    function toggleTaxData(mode) {
+        const preBtn = document.getElementById('tax-pre-btn');
+        const postBtn = document.getElementById('tax-post-btn');
+        const insightText = document.getElementById('tax-insight-text');
+
+        taxChart.data.labels = taxDataSets[mode].labels;
+        taxChart.data.datasets[0].data = taxDataSets[mode].data;
+        taxChart.data.datasets[0].backgroundColor = mode === 'pre' ? ['#C05621', '#E2E8F0', '#ED8936', '#4A5568'] : ['#C05621', '#319795', '#38A169', '#718096'];
+        taxChart.update();
+
+        insightText.innerHTML = taxDataSets[mode].insight;
+
+        if (mode === 'pre') {
+            preBtn.classList.add('bg-white', 'shadow-sm', 'text-gray-900');
+            preBtn.classList.remove('text-gray-500');
+            postBtn.classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
+            postBtn.classList.add('text-gray-500');
+        } else {
+            postBtn.classList.add('bg-white', 'shadow-sm', 'text-gray-900');
+            postBtn.classList.remove('text-gray-500');
+            preBtn.classList.remove('bg-white', 'shadow-sm', 'text-gray-900');
+            preBtn.classList.add('text-gray-500');
+        }
+    }
+
+    // Interactive Tab Controller
+    const tabLinks = document.querySelectorAll('.tab-link');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            tabLinks.forEach(b => {
+                b.classList.remove('border-terracotta', 'text-terracotta', 'bg-orange-50/20');
+                b.classList.add('border-transparent', 'text-gray-500');
+            });
+            
+            link.classList.remove('border-transparent', 'text-gray-500');
+            link.classList.add('border-terracotta', 'text-terracotta', 'bg-orange-50/20');
+
+            tabContents.forEach(content => content.classList.remove('active'));
+            document.getElementById(link.dataset.target).classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>
