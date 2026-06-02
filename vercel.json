@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "cleanUrls": true,
+  "routes": [
+    {
+      "src": "/api/send-email",
+      "methods": ["POST", "OPTIONS"],
+      "dest": "/api/send-email.js"
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}
