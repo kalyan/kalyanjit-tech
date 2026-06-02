@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talk Contents & Project Decks - Kalyanjit Hatibaruah</title>
+    <meta name="description" content="Explore presentations, interactive reports, startup proposals, and technology strategy frameworks by Kalyanjit Hatibaruah.">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" style="background: rgba(255, 255, 255, 0.98); box-shadow: 0 2px 20px rgba(0, 0, 0, 0.05);">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="index.html" style="text-decoration: none;"><h2 style="color: #2563eb; font-weight: 600; margin: 0;">Kalyanjit Hatibaruah</h2></a>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#expertise">Expertise</a></li>
+                <li><a href="index.html#services">Services</a></li>
+                <li><a href="index.html#activities">Activities</a></li>
+                <li><a href="#" class="active" style="color: #2563eb;">Talk Contents</a></li>
+                <li><a href="index.html#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Talks Hero -->
+    <header class="talks-hero">
+        <div class="talks-hero-container">
+            <h1>Talk Contents & Project Decks</h1>
+            <p>An interactive catalog of reference decks, strategic reports, academic modules, and technology implementations across AI, Blockchain, and Regional Development.</p>
+        </div>
+    </header>
+
+    <!-- Talks Catalog Section -->
+    <section class="talks-section">
+        <div class="container">
+            
+            <!-- Controls (Search & Filter Tabs) -->
+            <div class="controls-container">
+                
+                <!-- Search Box -->
+                <div class="search-box-wrapper">
+                    <i class="fas fa-search search-icon-inside"></i>
+                    <input type="text" id="talksSearch" class="talks-search-input" placeholder="Search by title, keyword, or filename (e.g. blockchain, 2026, startups)...">
+                </div>
+                
+                <!-- Category Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-tab-btn active" data-category="all">All Files</button>
+                    <button class="filter-tab-btn" data-category="startup">Startup & Incubation</button>
+                    <button class="filter-tab-btn" data-category="ai">AI & Technology</button>
+                    <button class="filter-tab-btn" data-category="web3">Web3 & Blockchain</button>
+                    <button class="filter-tab-btn" data-category="regional">Regional & Policy</button>
+                    <button class="filter-tab-btn" data-category="career">Careers & Industry</button>
+                </div>
+            </div>
+
+            <!-- Stats Counter -->
+            <div class="talks-stats" id="talksStats">Showing 0 of 0 files</div>
+
+            <!-- Grid Grid Container -->
+            <div id="talksGrid" class="talks-grid-container">
+                <!-- Dynamically populated via talks.js -->
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-text">
+                    <p>&copy; 2025 Kalyanjit Hatibaruah. All rights reserved.</p>
+                </div>
+                <div class="footer-social">
+                    <a href="https://linkedin.com/in/kalyanjit" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    <a href="mailto:kalyanjit@gmail.com"><i class="fas fa-envelope"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="talks.js"></script>
+</body>
+</html>
