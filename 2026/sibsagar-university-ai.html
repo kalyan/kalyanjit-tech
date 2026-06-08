@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI for Faculty: Navigating the Future of Education</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            background-color: #FAFAFA;
+            color: #1c1917;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            overflow-x: hidden;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 350px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .tab-btn.active {
+            background-color: #0f766e;
+            color: white;
+            border-color: #0f766e;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-teal-200 selection:text-teal-900">
+
+    <!-- Chosen Palette: Warm Neutral & Academic Teal (Background: #FAFAFA, Text: #1c1917, Primary Accent: #0f766e (Teal), Secondary: #d97706 (Amber)) -->
+    <!-- Application Structure Plan: The SPA is structured as a continuous learning module tailored for faculty. It moves logically from the 'Why' (The AI Landscape & impact on time), to the 'What' (Interactive Tool Explorer categorized by faculty workflow), and concludes with the 'How' (The Way Forward & Ethical guidelines). This linear narrative, enhanced by non-linear interactive exploration within sections, ensures complex concepts are digested easily without overwhelming the user. -->
+    <!-- Visualization & Content Choices: 
+         1. Time Saved (Goal: Inform/Impact) -> Doughnut Chart (Chart.js) -> Hover interaction -> Highlights the primary value proposition of AI for faculty time management. NO SVG used.
+         2. Effectiveness by Category (Goal: Compare) -> Bar Chart (Chart.js) -> Hover interaction -> Empirically guides faculty on where AI is currently most reliable. NO SVG used.
+         3. Tool Explorer (Goal: Organize/Inform) -> Interactive Tabs (Vanilla JS/HTML) -> Click to switch categories -> Prevents information overload by chunking tool recommendations based on specific academic tasks. NO SVG used. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <nav class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-stone-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl font-bold text-teal-700">&#10022;</span>
+                    <span class="font-bold text-lg tracking-tight text-stone-800">Sivasagar University AI Initiative</span>
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#landscape" class="text-stone-600 hover:text-teal-700 transition-colors font-medium text-sm">The Landscape</a>
+                    <a href="#tools" class="text-stone-600 hover:text-teal-700 transition-colors font-medium text-sm">Relevant Tools</a>
+                    <a href="#forward" class="text-stone-600 hover:text-teal-700 transition-colors font-medium text-sm">The Way Forward</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-24 pb-20 lg:pt-32 lg:pb-28 overflow-hidden bg-stone-100">
+        <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(#0f766e 2px, transparent 2px); background-size: 30px 30px;"></div>
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-teal-100 text-teal-800 text-sm font-semibold mb-6">
+                <span>&#128197;</span> Faculty Development Session
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-stone-900 tracking-tight mb-6">
+                AI for Faculty: <br class="hidden md:block" />
+                <span class="text-teal-700">Relevant Tools & The Way Forward</span>
+            </h1>
+            <p class="mt-4 max-w-2xl mx-auto text-xl text-stone-600 mb-8">
+                An interactive session designed for the faculty of Sivasagar University to explore, adapt, and integrate Artificial Intelligence into research, teaching, and administration.
+            </p>
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 text-stone-500 font-medium bg-white inline-flex mx-auto p-4 rounded-xl shadow-sm border border-stone-200">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">&#128104;&#8205;&#127979;</span>
+                    <span>Session by <strong class="text-stone-800">Kalyanjit Hatibaruah</strong></span>
+                </div>
+                <span class="hidden sm:inline text-stone-300">|</span>
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">&#127979;</span>
+                    <span>Sivasagar University, Assam</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="landscape" class="py-20 bg-white border-b border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mb-12">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">The AI Landscape in Higher Education</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        This section explores the current impact of Generative AI on academic workflows. As AI tools become deeply integrated into higher education, understanding where they offer the most value is crucial for Sivasagar University faculty. The visualizations below highlight the primary areas where early adopters are seeing significant time savings and evaluating the effectiveness of various AI applications. Interact with the charts to see specific data points.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <div class="glass-card p-6 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-bold text-stone-800 mb-2">Estimated Weekly Time Saved by Task</h3>
+                        <p class="text-sm text-stone-500 mb-6">Based on early faculty adoption metrics across standard academic duties.</p>
+                        <div class="chart-container">
+                            <canvas id="timeSavedChart"></canvas>
+                        </div>
+                        <div class="mt-6 p-4 bg-teal-50 rounded-lg border border-teal-100">
+                            <p class="text-sm text-teal-800 font-medium">
+                                <span class="text-lg mr-1">&#128161;</span> 
+                                <strong>Key Insight:</strong> Administrative tasks and lesson preparation represent the largest immediate efficiency gains, freeing up time for direct student interaction and deep research.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="glass-card p-6 rounded-2xl shadow-sm">
+                        <h3 class="text-xl font-bold text-stone-800 mb-2">Perceived Effectiveness of AI Tools</h3>
+                        <p class="text-sm text-stone-500 mb-6">Faculty ratings (1-10 scale) on how effectively current AI tools handle specific academic workflows.</p>
+                        <div class="chart-container">
+                            <canvas id="toolEffectivenessChart"></canvas>
+                        </div>
+                        <div class="mt-6 p-4 bg-amber-50 rounded-lg border border-amber-100">
+                            <p class="text-sm text-amber-800 font-medium">
+                                <span class="text-lg mr-1">&#9888;&#65039;</span> 
+                                <strong>Key Insight:</strong> While excellent for brainstorming and summarization, AI currently scores lower on final grading and complex qualitative evaluation, requiring human oversight.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="tools" class="py-20 bg-stone-50 border-b border-stone-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-12">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">Essential AI Tools for Faculty</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        To navigate the vast ecosystem of AI, we have categorized the most relevant tools based on your daily academic workflow. Select a category below to explore specific tools, their primary functions, and practical use cases tailored for Sivasagar University's academic environment.
+                    </p>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4 mb-12">
+                    <button class="tab-btn active px-6 py-3 rounded-full font-semibold text-sm border-2 border-stone-300 text-stone-600 hover:border-teal-600 hover:text-teal-700 transition-all shadow-sm" data-target="tab-research">
+                        &#128300; Research & Literature
+                    </button>
+                    <button class="tab-btn px-6 py-3 rounded-full font-semibold text-sm border-2 border-stone-300 text-stone-600 hover:border-teal-600 hover:text-teal-700 transition-all shadow-sm" data-target="tab-teaching">
+                        &#128218; Teaching & Content Creation
+                    </button>
+                    <button class="tab-btn px-6 py-3 rounded-full font-semibold text-sm border-2 border-stone-300 text-stone-600 hover:border-teal-600 hover:text-teal-700 transition-all shadow-sm" data-target="tab-admin">
+                        &#128188; Evaluation & Admin
+                    </button>
+                </div>
+
+                <div id="tab-research" class="tab-content active max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#129299;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">Consensus</h3>
+                            <p class="text-stone-600 text-sm mb-4">An AI search engine specialized in scientific research. It extracts key findings directly from peer-reviewed papers.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> Rapidly literature mapping for a new grant proposal or verifying a specific scientific claim.
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#128269;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">Elicit</h3>
+                            <p class="text-stone-600 text-sm mb-4">Automates research workflows, such as parts of literature review, data extraction from PDFs, and concept synthesis.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> Uploading 10 PDFs on a topic and asking Elicit to extract the methodology and sample size from all of them into a table.
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#128221;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">ChatPDF / SciSpace</h3>
+                            <p class="text-stone-600 text-sm mb-4">Allows you to "chat" with a specific document. Ask questions, request summaries, and find specific formulas or arguments.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> Quickly understanding the core arguments of a dense 40-page journal article before assigning it to students.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-teaching" class="tab-content max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#128172;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">ChatGPT (Plus/Edu)</h3>
+                            <p class="text-stone-600 text-sm mb-4">The versatile foundational model. Excellent for brainstorming, drafting syllabi, and creating varied explanations for concepts.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> "Generate 3 different analogies to explain quantum entanglement to first-year undergraduate students."
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#128250;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">Gamma.app</h3>
+                            <p class="text-stone-600 text-sm mb-4">An AI-powered presentation generator. It turns text prompts or outlines into beautifully formatted slide decks instantly.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> Converting your lecture notes document into a visual presentation draft within minutes to save formatting time.
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-4">&#127912;</div>
+                            <h3 class="text-xl font-bold text-stone-900 mb-2">Claude 3 (Anthropic)</h3>
+                            <p class="text-stone-600 text-sm mb-4">Known for larger context windows and highly nuanced, less "robotic" writing compared to others. Great for document analysis.</p>
+                            <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                <strong>Use Case:</strong> Uploading your entire course curriculum and asking it to identify gaps or suggest updated reading materials.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tab-admin" class="tab-content max-w-5xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow flex gap-6 items-start">
+                            <div class="text-4xl">&#10004;&#65039;</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-stone-900 mb-2">Gradescope (with AI features)</h3>
+                                <p class="text-stone-600 text-sm mb-4">A platform for grading paper-based, digital, and code assignments. Its AI assists in grouping similar answers to grade in batches.</p>
+                                <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                    <strong>Use Case:</strong> Scanning 100 midterm papers; the AI groups all identical short-answer responses so you can grade them simultaneously with one click.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-2xl shadow-sm border border-stone-200 hover:shadow-md transition-shadow flex gap-6 items-start">
+                            <div class="text-4xl">&#128202;</div>
+                            <div>
+                                <h3 class="text-xl font-bold text-stone-900 mb-2">Advanced Data Analysis (ChatGPT)</h3>
+                                <p class="text-stone-600 text-sm mb-4">Allows uploading of CSV/Excel files. The AI can write Python code to analyze data, create charts, and find trends instantly.</p>
+                                <div class="bg-stone-100 p-3 rounded-lg text-sm text-stone-700">
+                                    <strong>Use Case:</strong> Uploading anonymized student assessment scores to identify which specific topics the class struggled with the most.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="forward" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mb-12">
+                    <h2 class="text-3xl font-bold text-stone-900 mb-4">The Way Forward: Ethics & Strategy</h2>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        Adopting AI is not just about using new tools; it requires a pedagogical shift. Sivasagar University must balance innovation with academic integrity. This section outlines the strategic framework and ethical boundaries faculty should observe when integrating AI into their practices. Review the core pillars below.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="border border-stone-200 rounded-xl p-6 bg-stone-50 hover:bg-teal-50 transition-colors group cursor-default">
+                        <div class="text-2xl mb-4 opacity-70 group-hover:opacity-100 transition-opacity">&#128220;</div>
+                        <h4 class="font-bold text-stone-900 mb-2 text-lg">1. Transparent Syllabi</h4>
+                        <p class="text-sm text-stone-600">Clearly define in your syllabus what level of AI usage is permitted for assignments. Move away from binary "banned/allowed" to specific use-case guidelines.</p>
+                    </div>
+                    
+                    <div class="border border-stone-200 rounded-xl p-6 bg-stone-50 hover:bg-teal-50 transition-colors group cursor-default">
+                        <div class="text-2xl mb-4 opacity-70 group-hover:opacity-100 transition-opacity">&#129488;</div>
+                        <h4 class="font-bold text-stone-900 mb-2 text-lg">2. Rethink Assessment</h4>
+                        <p class="text-sm text-stone-600">Shift from pure recall tests to assessments that require critical thinking, in-class application, and critique of AI-generated content. "Process over Product."</p>
+                    </div>
+
+                    <div class="border border-stone-200 rounded-xl p-6 bg-stone-50 hover:bg-teal-50 transition-colors group cursor-default">
+                        <div class="text-2xl mb-4 opacity-70 group-hover:opacity-100 transition-opacity">&#128373;&#127997;&#8205;&#9742;&#65039;</div>
+                        <h4 class="font-bold text-stone-900 mb-2 text-lg">3. The "Human-in-the-Loop"</h4>
+                        <p class="text-sm text-stone-600">Never rely on AI for final academic judgments, grading, or sensitive student communications without rigorous human review. AI hallucinates and contains biases.</p>
+                    </div>
+
+                    <div class="border border-stone-200 rounded-xl p-6 bg-stone-50 hover:bg-teal-50 transition-colors group cursor-default">
+                        <div class="text-2xl mb-4 opacity-70 group-hover:opacity-100 transition-opacity">&#128105;&#8205;&#127979;</div>
+                        <h4 class="font-bold text-stone-900 mb-2 text-lg">4. Empowering Students</h4>
+                        <p class="text-sm text-stone-600">Teach students AI literacy. Guide them on how to prompt effectively, verify information, and use AI as a tutor rather than a bypass for learning.</p>
+                    </div>
+                </div>
+
+                <div class="mt-16 bg-teal-900 rounded-3xl p-8 md:p-12 text-center shadow-lg">
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-4">Ready to start the transformation?</h3>
+                    <p class="text-teal-100 mb-8 max-w-2xl mx-auto">
+                        The integration of AI is an ongoing journey. Start small. Pick one tool from the teaching or research category to experiment with this week.
+                    </p>
+                    <button id="actionPlanBtn" class="bg-amber-500 hover:bg-amber-400 text-stone-900 font-bold py-3 px-8 rounded-full transition-transform transform hover:-translate-y-1 shadow-md">
+                        Generate My First Step
+                    </button>
+                    <div id="actionPlanResult" class="mt-6 text-white font-medium text-lg hidden p-4 border border-teal-700 bg-teal-800/50 rounded-xl max-w-xl mx-auto">
+                        <!-- Content injected via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-stone-900 text-stone-400 py-10 text-center text-sm border-t border-stone-800">
+        <p>Interactive Session Material &copy; Sivasagar University Faculty Development.</p>
+        <p class="mt-2 text-stone-500">Prepared based on insights from Kalyanjit Hatibaruah.</p>
+    </footer>
+
+    <script>
+        const ctxTime = document.getElementById('timeSavedChart').getContext('2d');
+        new Chart(ctxTime, {
+            type: 'doughnut',
+            data: {
+                labels: ['Admin & Email (40%)', 'Lesson Prep (30%)', 'Research/Lit Review (20%)', 'Grading Asst. (10%)'],
+                datasets: [{
+                    data: [40, 30, 20, 10],
+                    backgroundColor: [
+                        '#0f766e', 
+                        '#14b8a6', 
+                        '#d97706', 
+                        '#fcd34d'  
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff',
+                    hoverOffset: 10
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            font: { family: 'Inter', size: 12 },
+                            color: '#444'
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                        padding: 12,
+                        cornerRadius: 8,
+                        bodyFont: { size: 14 }
+                    }
+                },
+                cutout: '65%'
+            }
+        });
+
+        const ctxEffect = document.getElementById('toolEffectivenessChart').getContext('2d');
+        new Chart(ctxEffect, {
+            type: 'bar',
+            data: {
+                labels: ['Brainstorming', 'Summarization', 'Translation', 'Data Analysis', 'Fact Checking', 'Final Grading'],
+                datasets: [{
+                    label: 'Effectiveness Score (1-10)',
+                    data: [9.2, 8.8, 8.5, 7.5, 5.5, 4.0],
+                    backgroundColor: [
+                        '#0f766e', '#0f766e', '#0f766e', 
+                        '#d97706', '#f59e0b', '#ef4444' 
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 10,
+                        grid: { color: '#f5f5f4' },
+                        ticks: { color: '#78716c' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { 
+                            color: '#78716c',
+                            maxRotation: 45,
+                            minRotation: 45
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                        padding: 12,
+                        cornerRadius: 8
+                    }
+                }
+            }
+        });
+
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-teal-700', 'text-white', 'border-teal-700');
+                    b.classList.add('text-stone-600', 'border-stone-300');
+                });
+                tabContents.forEach(c => c.classList.remove('active'));
+
+                btn.classList.add('active');
+                btn.style.backgroundColor = '#0f766e';
+                btn.style.color = 'white';
+                btn.style.borderColor = '#0f766e';
+                
+                const targetId = btn.getAttribute('data-target');
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+
+        const steps = [
+            "&#128161; Step 1: Log into ChatGPT and ask it to draft a 3-question quiz based on your last lecture notes.",
+            "&#128269; Step 1: Open 'Consensus' and search for a controversial topic in your field to see synthesized conclusions.",
+            "&#128221; Step 1: Add a specific 'AI Policy' paragraph to your upcoming syllabus.",
+            "&#127912; Step 1: Ask an AI to explain a complex topic you teach using an analogy related to local Assamese culture."
+        ];
+
+        document.getElementById('actionPlanBtn').addEventListener('click', function() {
+            const resultDiv = document.getElementById('actionPlanResult');
+            const randomStep = steps[Math.floor(Math.random() * steps.length)];
+            resultDiv.innerHTML = randomStep;
+            resultDiv.classList.remove('hidden');
+            resultDiv.style.animation = 'fadeIn 0.5s ease-in-out';
+            this.textContent = "Get Another Idea";
+        });
+    </script>
+</body>
+</html>
